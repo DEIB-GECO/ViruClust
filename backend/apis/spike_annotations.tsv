@@ -1,0 +1,10 @@
+Protein	Annotation	Short_annotation	Start	Stop
+Spike (surface glycoprotein)	signal peptide at N-terminus		1	13
+Spike (surface glycoprotein)	N-terminal domain	NTD	14	305
+Spike (surface glycoprotein)	Receptor binding domain	RBD	319	541
+Spike (surface glycoprotein)	Receptor binding motif	RBM	438	506
+Spike (surface glycoprotein)	fusion peptide	FP	788	806
+Spike (surface glycoprotein)	heptapeptide repeat sequence 1	HR1	912	984
+Spike (surface glycoprotein)	heptapeptide repeat sequence 2	HR2	1163	1213
+Spike (surface glycoprotein)	TM domain	TM	1213	1237
+Spike (surface glycoprotein)	cytoplasm domain	CD	1237	1273

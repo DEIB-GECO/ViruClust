@@ -2,14 +2,11 @@ import os
 from logging.config import dictConfig
 
 import flask
-from flask import Flask, render_template, redirect, Blueprint, url_for
+from flask import Flask, redirect, Blueprint, url_for, render_template
 from flask_cors import CORS
 from flask_executor import Executor
 
 from apis import api_blueprint
-from model.models import db
-from utils import load_viruses
-from apis import epitope
 
 base_url = '/ufl/'
 api_url = base_url + 'api'
@@ -24,45 +21,45 @@ def get_env_variable(name):
         raise Exception(message)
 
 
-def get_db_uri():
-    database_name = "vcm_du_1"
-
-    try:
-        # /home/metadata/virusurf_active_databases.txt
-        with open("/home/metadata/virusurf_active_databases.txt") as f:
-            lines = f.readlines()
-            database_name = [x for x in lines if 'gisaid' not in x][0]
-    except IOError:
-        pass
-
-    # postgres_url = get_env_variable("POSTGRES_URL")
-    # postgres_user = get_env_variable("POSTGRES_USER")
-    # postgres_pw = get_env_variable("POSTGRES_PW")
-    # postgres_db = get_env_variable("POSTGRES_DB")
-    postgres_url = "localhost"
-    postgres_user = "geco"
-    postgres_pw = "geco78"
-    postgres_db = database_name.strip()
-
-    application_name = []
-
-    if 'ENV' in my_app.config:
-        application_name.append(my_app.config['ENV'])
-
-    application_name.append(os.uname()[1])
-
-    application_name.append(base_url)
-
-    application_name = ", ".join(application_name)
-
-    result = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}?application_name="{application_name}"'.format(
-        user=postgres_user,
-        pw=postgres_pw,
-        url=postgres_url,
-        db=postgres_db,
-        application_name=application_name, )
-    print(result)
-    return result
+# def get_db_uri():
+#     database_name = "vcm_du_1"
+#
+#     try:
+#         # /home/metadata/virusurf_active_databases.txt
+#         with open("/home/metadata/virusurf_active_databases.txt") as f:
+#             lines = f.readlines()
+#             database_name = [x for x in lines if 'gisaid' not in x][0]
+#     except IOError:
+#         pass
+#
+#     # postgres_url = get_env_variable("POSTGRES_URL")
+#     # postgres_user = get_env_variable("POSTGRES_USER")
+#     # postgres_pw = get_env_variable("POSTGRES_PW")
+#     # postgres_db = get_env_variable("POSTGRES_DB")
+#     postgres_url = "localhost"
+#     postgres_user = "geco"
+#     postgres_pw = "geco78"
+#     postgres_db = database_name.strip()
+#
+#     application_name = []
+#
+#     if 'ENV' in my_app.config:
+#         application_name.append(my_app.config['ENV'])
+#
+#     application_name.append(os.uname()[1])
+#
+#     application_name.append(base_url)
+#
+#     application_name = ", ".join(application_name)
+#
+#     result = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}?application_name="{application_name}"'.format(
+#         user=postgres_user,
+#         pw=postgres_pw,
+#         url=postgres_url,
+#         db=postgres_db,
+#         application_name=application_name, )
+#     print(result)
+#     return result
 
 
 dictConfig({
@@ -87,15 +84,15 @@ cors = CORS(my_app)
 my_app.debug = False
 
 
-my_app.config['SQLALCHEMY_DATABASE_URI'] = get_db_uri()
-my_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-my_app.config['SQLALCHEMY_POOL_SIZE'] = 1
-my_app.config['SQLALCHEMY_MAX_OVERFLOW'] = 30
+# my_app.config['SQLALCHEMY_DATABASE_URI'] = get_db_uri()
+# my_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# my_app.config['SQLALCHEMY_POOL_SIZE'] = 1
+# my_app.config['SQLALCHEMY_MAX_OVERFLOW'] = 30
 
 my_app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 my_app.config['EXECUTOR_MAX_WORKERS'] = 20
 
-db.init_app(my_app)
+# db.init_app(my_app)
 
 executor_inner = Executor(my_app)
 
@@ -116,11 +113,13 @@ def index():
     flask.current_app.logger.info("serve index")
     return render_template('index.html')
 
+
 # base url defined in apis init
 @simple_page.route('/epitope/')
 def index_epitope():
     flask.current_app.logger.info("serve index")
     return render_template('index.html')
+
 
 # Make a "catch all route" so all requests match our index.html file.
 # This lets us use the new history APIs in the browser.
@@ -165,5 +164,3 @@ def add_header(r):
         # r.headers["Expires"] = "0"
         # r.headers['Cache-Control'] = 'public, max-age=0'
     return r
-
-

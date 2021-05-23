@@ -1,2 +1,4 @@
 # Project exclude paths
 /frontend/node_modules/
+.idea
+venv
