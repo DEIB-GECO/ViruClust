@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid grid-list-xl style="justify-content: center;">
+  <v-container fluid grid-list-xl style="justify-content: center; width: 1500px">
       <v-row justify="center" align="center">
         <div :id="nameMetadata" style="width: 1200px; height: 500px; user-select: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
@@ -107,7 +107,9 @@ export default {
       this.barChart.series[0].data = arrY;
       this.barChart.xAxis.data = arrX;
 
-      this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      if(this.my_chart === null) {
+        this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      }
       this.my_chart.setOption(this.barChart, true);
     }
   },
@@ -116,6 +118,10 @@ export default {
       this.renderGraph(met);
   },
   watch: {
+    metadataContent(){
+      let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      this.renderGraph(met);
+    },
     filterDate(){
       if(this.filterDate === 'Month'){
         let met =  JSON.parse(JSON.stringify(this.metadataContent));

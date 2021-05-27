@@ -59,7 +59,9 @@ export default {
         let num2 = b['value'];
         return num1 - num2;
       });
-      this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      if(this.my_chart === null) {
+        this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      }
       this.my_chart.setOption(this.pieChart, true);
     }
   },
@@ -68,6 +70,10 @@ export default {
       this.renderGraph(met);
   },
   watch: {
+    metadataContent(){
+      let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      this.renderGraph(met);
+    },
     filterDate(){
       if(this.filterDate === 'Month'){
         let met =  JSON.parse(JSON.stringify(this.metadataContent));

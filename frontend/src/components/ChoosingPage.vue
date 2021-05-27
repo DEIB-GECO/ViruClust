@@ -1,8 +1,8 @@
 <template>
   <div>
-    <LoadPage id="loadPage"></LoadPage>
-    <MetadataPage id="metadataPage" class="notShow"></MetadataPage>
-    <StatisticsPage id="statisticsPage" class="notShow"></StatisticsPage>
+    <LoadPage id="loadPage" v-if="this.page === 'loadPage'"></LoadPage>
+    <MetadataPage id="metadataPage" v-if="this.page === 'metadataPage'"></MetadataPage>
+    <StatisticsPage id="statisticsPage" v-if="this.page === 'statisticsPage'"></StatisticsPage>
   </div>
 </template>
 
@@ -24,25 +24,10 @@ export default {
     ...mapActions([]),
   },
   watch: {
-    page() {
-      let page = this.page;
-      const load = document.getElementById('loadPage');
-      const metadata = document.getElementById('metadataPage')
-      const statistics = document.getElementById('statisticsPage')
-      load.classList.add("notShow");
-      metadata.classList.add("notShow");
-      statistics.classList.add("notShow");
-      const page_now = document.getElementById(page);
-      page_now.classList.remove("notShow");
-    }
   }
 }
 </script>
 
 <style scoped>
-
-.notShow{
-  display: none;
-}
 
 </style>

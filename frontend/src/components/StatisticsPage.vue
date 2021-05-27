@@ -1,16 +1,23 @@
 <template>
   <div>
     <v-container fluid grid-list-xl style="justify-content: center;">
-
       <v-row justify="center" align="center">
-      <v-card width="95%" style="margin-top:50px" color="#F0E68C">
+      <v-card width="95%" style="margin-top:50px; padding: 50px" color="#F0E68C">
+        <v-btn color="red" class="white--text" @click="setMetadataPage()">
+          <v-icon style="margin-right: 5px">mdi-arrow-left-bold-outline</v-icon>CHANGE POPULATION / CHANGE METADATA
+        </v-btn>
         <v-card-title class="justify-center"><h1>STATISTICS</h1></v-card-title>
         <v-card-text>
           <v-layout row wrap justify-center style="padding: 30px;">
-            <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+              <v-btn small color="blue" class="white--text" @click="inputStatsDialog = true">
+                INPUT STATISTICS
+              </v-btn>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
               <v-card width="500px" color="#DAA520">
                 <v-card-title>
-                  <h5>Cluster counter: </h5>
+                  <h5>Cluster counter (num of seq.):  (greater than)</h5>
                 </v-card-title>
                 <v-card-text style="margin-top: 30px">
                   <v-slider
@@ -27,10 +34,26 @@
                 </v-card-text>
               </v-card>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
               <v-card width="500px" color="#DAA520">
                 <v-card-title>
-                  <h5>Lineage frequency: </h5>
+                  <h5>Select Protein:</h5>
+                </v-card-title>
+                <v-card-text style="margin-top: 30px">
+                  <v-select
+                    v-model="selectedProtein"
+                    :items="possibleProtein"
+                    label="Protein"
+                    solo
+                    hide-details
+                  ></v-select>
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+              <v-card width="500px" color="#DAA520">
+                <v-card-title>
+                  <h5>Lineage frequency: (less than)</h5>
                 </v-card-title>
                 <v-card-text style="margin-top: 30px">
                   <v-slider
@@ -38,9 +61,9 @@
                     always-dirty
                     persistent-hint
                     thumb-label="always"
-                    :step="0.01"
+                    :step="1"
                     min = "0"
-                    max = "1"
+                    max = "100"
                     color="#191970"
                     track-color="#191970"
                     thumb-color="#191970"
@@ -77,6 +100,7 @@
                       :items="results"
                       class="data-table"
                       style="width: 90%; margin-top: 50px; margin-bottom: 50px"
+                      multi-sort
               >
                 <!--height="650"
                       fixed-header-->
@@ -165,7 +189,9 @@
 
                         <span v-else>
                           <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
-                            <span>{{item[header.value]}}</span>
+                            <span v-if="header.value === '% lineage' || header.value === '% cluster'">{{(item[header.value]*100).toFixed(3)}}</span>
+                            <span v-else-if="header.value === 'FC'">{{(item[header.value]).toFixed(3)}}</span>
+                            <span v-else>{{item[header.value]}}</span>
                           </span>
                           <span v-else>
                             <span>N/D</span>
@@ -183,41 +209,107 @@
         </v-card-text>
       </v-card>
     </v-row>
-      <div id="new" style="margin-top: 50px"></div>
+
+    <div v-if = "applied">
+      <ListResults></ListResults>
+    </div>
+
     </v-container>
+
+    <v-dialog
+      persistent
+    v-model="inputStatsDialog"
+    width="1500"
+  >
+    <v-card>
+      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+        Input Statistics
+        <v-spacer></v-spacer>
+        <v-btn
+            style="background-color: rgb(122, 139, 157)"
+            slot="activator"
+            icon
+            small
+          color="white"
+          @click="inputStatsDialog = !inputStatsDialog"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-card-text class="text-xs-center">
+        <InputStats></InputStats>
+      </v-card-text>
+
+    </v-card>
+  </v-dialog>
+
   </div>
 </template>
 
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import BarSeqChart from "./BarSeqChart";
+import ListResults from "./ListResults";
+import InputStats from "./InputStats";
 
 export default {
   name: "StatisticsPage",
-  components: {BarSeqChart},
+  components: {InputStats, ListResults, BarSeqChart},
   data(){
     return{
       results: [],
       toBarGraphY: [],
-      sliderClusterCount: 0,
+      sliderClusterCount: 2,
       sliderLineageFrequency: 1,
       applied: false,
+      inputStatsDialog: false,
+      possibleProtein: ['Spike (surface glycoprotein)'],
+      selectedProtein: 'Spike (surface glycoprotein)',
+      listProteinLength: {
+        'Spike (surface glycoprotein)' : 1274,
+      }
     }
   },
   computed: {
-    ...mapState(['allResultTable', 'allResultTableHeaders', 'htmlAttached', 'allResultTable', 'allResultTableFixed']),
+    ...mapState(['allResultTable', 'allResultTableHeaders', 'allResultTable', 'allResultTableFixed', 'listResFixed', 'listRes', 'proteinSelected']),
     ...mapGetters({}),
   },
   methods: {
-     ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setAllResultTable', 'setYAxisBarSeqChart']),
+     ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setAllResultTable', 'setYAxisBarSeqChart', 'setListRes',
+      'setProteinSelected']),
     ...mapActions([]),
     apply(){
 
       this.setAllResultTable(this.allResultTableFixed);
       var that = this;
       this.setAllResultTable(this.allResultTable.filter(function (i){
-          let freq = i['% lineage'];
+          let freq = JSON.parse(JSON.stringify(i['% lineage']));
+          if (freq === -1 || freq === null){
+            i['% lineage'] = null;
+            i['FC'] = null;
+            freq = 100;
+          }
+          else{
+            freq = freq * 100;
+          }
           let num_clust = i['# cluster']
+          return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+        })
+      );
+
+      this.setListRes(this.listResFixed);
+      this.setListRes(this.listRes.filter(function (i){
+          let freq = JSON.parse(JSON.stringify(i['perc_lineage']));
+          if (freq === -1 || freq === null){
+            i['% lineage'] = null;
+            i['FC'] = null;
+            freq = 100;
+          }
+          else{
+            freq = freq * 100;
+          }
+          let num_clust = i['num_cluster']
           return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
         })
       );
@@ -229,7 +321,8 @@ export default {
       let res_table = JSON.parse(JSON.stringify(this.allResultTable));
       let len = res_table.length;
       let i = 0;
-      let barGraphY = new Array(1274).fill(0);
+      let proteinLength = this.listProteinLength[this.proteinSelected];
+      let barGraphY = new Array(proteinLength).fill(0);
 
       while (i < len){
         res_table[i]['sequences_count'] = res_table[i]['sequences'].length;
@@ -258,15 +351,15 @@ export default {
     allResultTable(){
       this.results = JSON.parse(JSON.stringify(this.allResultTable));
     },
-    htmlAttached(){
-      let element = document.getElementById("new");
-      element.insertAdjacentHTML('afterend', this.htmlAttached);
-    },
     sliderLineageFrequency(){
       this.applied = false;
     },
     sliderClusterCount(){
       this.applied = false;
+    },
+    selectedProtein(){
+      this.applied = false;
+      this.setProteinSelected(this.selectedProtein);
     }
   }
 }

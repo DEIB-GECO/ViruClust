@@ -5,7 +5,7 @@
       color="#DAA520"
       dark
     >
-      <div class="d-flex align-center">
+      <!--<div class="d-flex align-center">
         <v-img
           class="shrink mt-1 hidden-sm-and-down"
           contain
@@ -13,7 +13,7 @@
           src="https://freepikpsd.com/wp-content/uploads/2019/10/lavori-in-corso-png-3.png"
           width="100"
         />
-      </div>
+      </div>-->
 
     </v-app-bar>
 

@@ -3,6 +3,7 @@ from flask_restplus import Api
 
 from .ufl import api as ufl
 from .analyze_file import api as analyze_file
+from .analyze_file_example import api as analyze_file_example
 
 enable_doc = True
 
@@ -18,3 +19,4 @@ api.init_app(api_blueprint, add_specs=enable_doc)
 
 api.add_namespace(ufl)
 api.add_namespace(analyze_file)
+api.add_namespace(analyze_file_example)

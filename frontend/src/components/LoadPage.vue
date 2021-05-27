@@ -2,10 +2,10 @@
 <div>
   <v-container fluid grid-list-xl style="justify-content: center;">
     <v-row justify="center" align="center">
-      <v-card width="600px" style="margin-top:50px" color="#F0E68C">
+      <v-card width="600px" style="margin-top:50px; padding: 50px" color="#F0E68C">
         <v-card-title class="justify-center"><h1>UPLOAD</h1></v-card-title>
         <v-card-text>
-          <v-layout wrap justify-center style="padding: 30px;">
+          <v-layout wrap justify-center style="padding: 30px; margin-top: 20px">
             <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
               <input id="fileInputCSV" type="file" style="display:none"
                            v-on:change="loadCSV()" accept=".csv"
@@ -31,13 +31,6 @@
                 ></v-text-field>
             </v-flex>
           </v-layout>
-        </v-card-text>
-      </v-card>
-    </v-row>
-
-    <v-row justify="center" align="center">
-      <v-card width="600px" style="margin-top:50px" color="#F0E68C">
-        <v-card-text>
           <v-layout wrap justify-center style="padding: 30px;">
             <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
               <input id="fileInputFASTA" type="file" style="display:none"
@@ -64,13 +57,6 @@
                 ></v-text-field>
             </v-flex>
           </v-layout>
-        </v-card-text>
-      </v-card>
-    </v-row>
-
-    <v-row justify="center" align="center">
-      <v-card width="600px" style="margin-top:50px" color="#F0E68C">
-        <v-card-text>
           <v-layout row wrap justify-center style="padding: 30px;">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
               <v-btn
@@ -78,7 +64,7 @@
                      class="white--text"
                      color="red"
               >
-                  APPLY
+                  PREPARE YOUR DATA
               </v-btn>
             </v-flex>
           </v-layout>
@@ -119,6 +105,13 @@
     </v-card>
   </v-dialog>
 
+  <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
+
 </div>
 </template>
 
@@ -131,6 +124,7 @@ export default {
   data(){
     return{
       missingFiles: false,
+      overlay: false,
     }
   },
   computed: {
@@ -139,7 +133,7 @@ export default {
   },
   methods: {
      ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setFileCSV', 'setFileFASTA',
-     'setNameFileCSV', 'setNameFileFASTA', 'setAllMetadata']),
+     'setNameFileCSV', 'setNameFileFASTA', 'setAllMetadata', 'setMutDict']),
     ...mapActions([]),
     loadCSV(){
       this.setFileCSV(null);
@@ -179,6 +173,7 @@ export default {
         this.missingFiles = true;
       }
       else {
+        this.overlay = true;
 
         let url = '/analyze_file/firstAnalysis'
         let to_send = {'fileCSV': this.fileCSV}
@@ -190,6 +185,22 @@ export default {
               this.setAllMetadata(res);
             });
 
+        let url2 = '/analyze_file/alignmentSequence'
+        let to_send2 = {'fileFASTA': this.fileFASTA}
+        axios.post(url2, to_send2)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.setMutDict(res);
+              this.overlay = false;
+            });
+      }
+    }
+  },
+  watch: {
+    overlay(){
+      if(!this.overlay){
         this.setMetadataPage();
       }
     }
