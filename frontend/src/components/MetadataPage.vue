@@ -43,6 +43,7 @@
                        @click="apply()"
                        class="white--text"
                        color="red"
+                       :disabled="disableMetadata"
                   >
                       APPLY
                   </v-btn>
@@ -58,8 +59,8 @@
                <v-tab style="border-bottom: orangered solid 1px">
                  <b><u>SELECT METADATA:</u></b>
                </v-tab>
-              <v-tab v-for="(v1, v2) in allMetadata" v-bind:key="v2" style="border-bottom: orange solid 1px">
-                {{v2.toUpperCase()}}
+              <v-tab v-for="v in allFields" v-bind:key="v" style="border-bottom: orange solid 1px">
+                {{v.toUpperCase()}}
               </v-tab>
 
                <v-tab-item>
@@ -72,19 +73,56 @@
                  </v-card>
                </v-tab-item>
 
-              <v-tab-item v-for="(v1, v2) in allMetadata" v-bind:key="v2" style="background-color: red">
-                  <v-card color="#DAA520" style="padding: 50px; border-radius: 0px">
+              <v-tab-item v-for="v2 in allFields" v-bind:key="v2" style="background-color: red">
+                  <v-card color="#DAA520" style="border-radius: 0px; padding-bottom: 50px; padding-top: 50px">
                     <v-container fluid grid-list-xl style="justify-content: center;">
                       <v-row justify="center" align="center">
                        <h2>{{v2.toUpperCase()}}</h2>
                       </v-row>
                     </v-container>
-                    <v-container fluid grid-list-xl style="justify-content: center; margin-top: 50px;" v-if="v1.length === 0">
+                    <v-container fluid grid-list-xl
+                                 style="justify-content: center;"
+                                 v-if="(allMetadata !== null && allMetadata.length === 0) && v2 === 'date'">
                       <v-row justify="center" align="center">
-                       <h1>NOTHING TO SHOW</h1>
+                        <span style="background-color: #F0E68C;
+                                 width: 1420px; height: 620px; position: absolute; top: 235px; z-index: 3; border-radius: 10%; border: darkred solid 10px">
+                          <v-layout row wrap justify-center style="padding: 70px;">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                              <span style="font-size: 50px; color: red">NO DATA TO SHOW</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                              <span style="font-size: 30px; color: red">Please remove some filters</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                                <img alt= "" style="width: 250px; position: absolute; top: 230px" id="pie_chart_img1" src="../images/pie_chart.png">
+                                <img alt= "" style="width: 350px; position: absolute; top: 180px" id="deny_img1" src="../images/deny.png">
+                            </v-flex>
+                          </v-layout>
+                        </span>
                       </v-row>
                     </v-container>
-                    <v-layout wrap align-center justify-center v-if="v2 === 'date'">
+                    <v-container fluid grid-list-xl
+                                 style="justify-content: center;"
+                                 v-if="(allMetadata !== null && allMetadata.length === 0)  && v2 !== 'date'">
+                      <v-row justify="center" align="center">
+                        <span style="background-color: #F0E68C;
+                                 width: 1400px; height: 620px; position: absolute; top: 100px; z-index: 3; border-radius: 10%; border: darkred solid 10px">
+                          <v-layout row wrap justify-center style="padding: 70px;">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                              <span style="font-size: 50px; color: red">NO DATA TO SHOW</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                              <span style="font-size: 30px; color: red">Please remove some filters</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                                <img alt= "" style="width: 250px; position: absolute; top: 230px" id="pie_chart_img2" src="../images/pie_chart.png">
+                                <img alt= "" style="width: 350px; position: absolute; top: 180px" id="deny_img2" src="../images/deny.png">
+                            </v-flex>
+                          </v-layout>
+                        </span>
+                      </v-row>
+                    </v-container>
+                    <v-layout wrap align-center justify-center v-if="v2 === 'date'" style="padding-left: 50px; padding-right: 50px">
                       <v-container fluid grid-list-xl style="justify-content: center; margin-top: 50px">
                         <v-row justify="center" align="center">
                          <h5>Select Date Filter:</h5>
@@ -97,6 +135,7 @@
                             :items="possibleDateFilter"
                             label="Date filter"
                             solo
+                            :disabled="disableMetadata"
                           ></v-select>
                         </v-row>
                       </v-container>
@@ -104,7 +143,7 @@
                         <v-flex class="xs6 d-flex">
                           <MetadataPieChart
                               :nameMetadata="v2"
-                              :metadataContent="v1"
+                              :metadataContent="allMetadata"
                               :filterDate = "selectedDateFilter">
                           </MetadataPieChart>
                         </v-flex>
@@ -112,25 +151,25 @@
                         <v-flex class="xs6 d-flex">
                           <MetadataBarChart
                               :nameMetadata="v2+v2"
-                              :metadataContent="v1"
+                              :metadataContent="allMetadata"
                               :filterDate = "selectedDateFilter">
                           </MetadataBarChart>
                         </v-flex>
                       </v-row>
                     </v-layout>
 
-                    <v-layout wrap align-center justify-center v-else>
+                    <v-layout wrap align-center justify-center v-else style="padding-left: 50px; padding-right: 50px">
                       <v-flex class="xs6 d-flex">
                         <MetadataPieChart
                             :nameMetadata="v2"
-                            :metadataContent="v1">
+                            :metadataContent="allMetadata">
                         </MetadataPieChart>
                       </v-flex>
                       <v-spacer></v-spacer>
                       <v-flex class="xs6 d-flex">
                         <MetadataBarChart
                             :nameMetadata="v2+v2"
-                            :metadataContent="v1">
+                            :metadataContent="allMetadata">
                         </MetadataBarChart>
                       </v-flex>
                     </v-layout>
@@ -139,7 +178,7 @@
                        <v-flex class="no-horizontal-padding xs12 d-flex">
                         <SelectorFilter
                             :nameMetadata="v2"
-                            :metadataContent="v1"
+                            :metadataContent="allMetadata"
                             :filterDate = "selectedDateFilter"></SelectorFilter>
                        </v-flex>
                     </v-layout>
@@ -147,7 +186,7 @@
                        <v-flex class="no-horizontal-padding xs6 d-flex">
                           <SelectorFilter
                             :nameMetadata="v2"
-                            :metadataContent="v1"></SelectorFilter>
+                            :metadataContent="allMetadata"></SelectorFilter>
                        </v-flex>
                     </v-layout>
                   </v-card>
@@ -193,17 +232,18 @@ export default {
       selectedTab: 0,
       possibleDateFilter: ['Day', 'Month', 'Year'],
       selectedDateFilter: 'Day',
+      allFields: [],
     }
   },
   computed: {
     ...mapState(['fileFASTA', 'fileCSV', 'allMetadata', 'selectedFilters', 'mutDict', 'selectedFilters',
-    'allPossibleMetadataField']),
+      'disableMetadata', 'sessionId']),
     ...mapGetters({}),
   },
   methods: {
      ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setAllResultTable',
        'setAllResultTableHeaders', 'setAllResultTableFixed', 'setListRes', 'setListResFixed', 'setStatisticsInput',
-     'setAllMetadata']),
+     'setAllMetadata', 'setTrueDisableMetadata', 'setFalseDisableMetadata']),
     ...mapActions(['setSelectedFilter']),
     deleteFilter(value){
        let val = {field: value, list:[]};
@@ -211,27 +251,26 @@ export default {
     },
     apply(){
        this.overlay = true;
-       let url = '/analyze_file/secondAnalysis'
-      let to_send = {'fileCSV': this.fileCSV, 'mutDict': this.mutDict, 'selectedFilters': this.selectedFilters}
+       let url = `/private/query?session_id=${this.sessionId}`
+      let to_send = {'selectedFilters': this.selectedFilters}
       axios.post(url, to_send)
       .then((res) => {
           return res.data;
       })
       .then((res) => {
           let res_table = JSON.parse(JSON.stringify(res['table']));
-          let res_html = JSON.parse(JSON.stringify(res['html']));
           let res_stats = JSON.parse(JSON.stringify(res['stats']));
 
           this.setStatisticsInput(res_stats);
 
-          res_html = res_html.sort(function(a, b){
-            let num1 = a['cluster_name'].match(/\d+/g);
-            let num2 = b['cluster_name'].match(/\d+/g);
+          res_table = res_table.sort(function(a, b){
+            let num1 = a['cluster'].match(/\d+/g);
+            let num2 = b['cluster'].match(/\d+/g);
             return num1[0] - num2[0];
           });
 
-          this.setListRes(res_html);
-          this.setListResFixed(res_html);
+          this.setListRes(res_table);
+          this.setListResFixed(res_table);
 
           let single_line = res_table[0];
           let headers = [];
@@ -250,7 +289,7 @@ export default {
 
               single_header['show'] = true;
               single_header['align'] = 'center';
-              single_header['width'] = '15vh';
+              single_header['width'] = '18vh';
 
               if (key === 'cluster'){
                 single_header['sort'] = (a, b) => {
@@ -319,21 +358,21 @@ export default {
   watch: {
     selectedFilters(){
       this.overlay2 = true;
-      let url = '/analyze_file/firstAnalysis'
-      let to_send = {'fileCSV': this.fileCSV, 'selectedFilters': this.selectedFilters}
+       let specific_field = this.allFields[this.selectedTab - 1];
+      let url = `/private/field/${specific_field}?session_id=${this.sessionId}`
+      let to_send = {'selectedFilters': this.selectedFilters}
       axios.post(url, to_send)
       .then((res) => {
           return res.data;
         })
         .then((res) => {
-          let allMeta = JSON.parse(JSON.stringify(this.allMetadata));
-          Object.keys(allMeta).forEach(key => {
-            allMeta[key] = [];
-          });
-          Object.keys(res).forEach(key => {
-            allMeta[key] = res[key];
-          });
-          this.setAllMetadata(allMeta);
+          if (res.length === 0){
+            this.setTrueDisableMetadata();
+          }
+          else{
+            this.setFalseDisableMetadata();
+          }
+          this.setAllMetadata(res);
           this.overlay2 = false;
         });
     },
@@ -341,7 +380,33 @@ export default {
       if(!this.overlay){
         this.setStatisticsPage();
       }
+    },
+    selectedTab(){
+      this.overlay2 = true;
+      let specific_field = this.allFields[this.selectedTab - 1];
+      let url = `/private/field/${specific_field}?session_id=${this.sessionId}`
+      let to_send = {'selectedFilters': this.selectedFilters}
+      axios.post(url, to_send)
+      .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+            this.setAllMetadata(res);
+             this.overlay2 = false;
+        });
     }
+  },
+  mounted() {
+    this.overlay2 = true;
+    let url = `/private/fields?session_id=${this.sessionId}`
+    axios.get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+            this.allFields = res;
+            this.overlay2 = false;
+        });
   }
 }
 </script>

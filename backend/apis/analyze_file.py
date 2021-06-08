@@ -1,6 +1,8 @@
 from __future__ import print_function
 # %config Completer.use_jedi = False
 import datetime
+import os
+import re
 
 import requests
 import io
@@ -197,6 +199,8 @@ class FieldList(Resource):
         if selected_filters is not None:
             metadata = filterMetadata(metadata, selected_filters)
 
+        metadata2 = metadata.copy()
+
         metadata = pd.DataFrame(metadata).T
 
         metadata['mut'] = pd.DataFrame(mut_dict).set_index('id').mut
@@ -317,21 +321,23 @@ class FieldList(Resource):
 
         def all_seq_data(mutation_name, cluster_name, lineage_name, num_cluster, perc_lineage, perc_cluster, fc, epi_start, epi_stop, epi_seq, epi_linear, epi_nonlinear, sequences, list_linear,list_nonlinear, domains):
             res = {}
-            res['mutation_name'] = mutation_name
-            res['cluster_name'] = cluster_name
-            res['lineage_name'] = lineage_name
-            res['num_cluster'] = num_cluster
-            res['perc_lineage'] = perc_lineage
-            res['perc_cluster'] = perc_cluster
-            res['fc'] = fc
+            res['mutation'] = mutation_name
+            res['cluster'] = cluster_name
+            res['lineage'] = lineage_name
+            res['# cluster'] = num_cluster
+            res['% lineage'] = perc_lineage
+            res['% cluster'] = perc_cluster
+            res['FC'] = fc
             res['epi_start'] = epi_start
             res['epi_stop'] = epi_stop
             res['epi_seq'] = epi_seq
-            res['epi_linear'] = epi_linear
-            res['epi_nonlinear'] = epi_nonlinear
-            res['list_linear'] = list_linear
-            res['list_nonlinear'] = list_nonlinear
-            res['domains'] = domains
+            res['#linear'] = epi_linear
+            res['#non-linear'] = epi_nonlinear
+            res['pubs linear'] = list_linear
+            res['pubs non-linear'] = list_nonlinear
+            res['annotations'] = domains
+            res['#pubs linear'] = len(list_linear)
+            res['#pubs non-linear'] = len(list_nonlinear)
 
             all_seq = {}
 
@@ -351,6 +357,7 @@ class FieldList(Resource):
                 all_seq[x] = single_seq
 
             res['sequences'] = all_seq
+            res['sequences_count'] = len(all_seq)
 
             return res
 
@@ -449,11 +456,78 @@ class FieldList(Resource):
                         lin = item['lineage']
                         statistics_lineage[f'{lin}'].append(seq)
 
+
+        # seq_mut_arr = []
+        # y = 0
+        # for seq in mut_dict:
+        #     seq_json = {}
+        #     meta = metadata2[seq['id']]
+        #     if len(meta) != 0:
+        #         y = y + 1
+        #         print("", y)
+        #         lineage = meta['lineage']
+        #         mutations = seq['mut']
+        #         strstr = seq['id'].split('|')
+        #         conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        #         headers = {'Content-type': 'application/json'}
+        #         foo = strstr[1]
+        #         json_data = json.dumps(foo)
+        #         conn.request('POST', '/virusurf_epitope/api/epitope/mutationForSequence', json_data, headers)
+        #         response = conn.getresponse()
+        #         all_res = response.read().decode()
+        #         all_res2 = json.loads(all_res)
+        #         seq_json['id_loaded'] = seq['id']
+        #         seq_json['id_gisaid'] = strstr[1]
+        #         seq_json['lineage_loaded'] = lineage
+        #         if not all_res2:
+        #             seq_json['lineage_gisaid'] = ""
+        #         else:
+        #             seq_json['lineage_gisaid'] = all_res2[0]['lineage']
+        #         if seq_json['lineage_loaded'] == seq_json['lineage_gisaid']:
+        #             seq_json['same_lineage'] = True
+        #         else:
+        #             seq_json['same_lineage'] = False
+        #
+        #         arr_mutation_loaded = []
+        #         if not all_res2:
+        #             arr_mutation_gisaid = []
+        #             seq_json['num_mut_gisaid'] = len(arr_mutation_gisaid)
+        #         else:
+        #             string_mut = all_res2[0]['array_agg']
+        #             string_mut = string_mut[2:]
+        #             string_mut = string_mut[:-2]
+        #             arr_mutation_gisaid = string_mut.split('","')
+        #             seq_json['num_mut_gisaid'] = len(arr_mutation_gisaid)
+        #
+        #         seq_json['num_mut_loaded_equal_to_gisaid'] = 0
+        #         seq_json['mut_loaded_different_from_gisaid'] = []
+        #         for sin_mut in mutations:
+        #             str_sin_mut = str(sin_mut)
+        #             str_sin_mut = str_sin_mut.replace(' ', '')
+        #             str_sin_mut = str_sin_mut.replace('\'', '')
+        #             arr_mutation_loaded.append(str_sin_mut)
+        #             if str_sin_mut in arr_mutation_gisaid:
+        #                 seq_json['num_mut_loaded_equal_to_gisaid'] = seq_json['num_mut_loaded_equal_to_gisaid'] + 1
+        #             else:
+        #                 seq_json['mut_loaded_different_from_gisaid'].append(str_sin_mut)
+        #         seq_json['num_mut_loaded'] = len(arr_mutation_loaded)
+        #         if all_res2:
+        #             seq_json['% equals'] = seq_json['num_mut_loaded_equal_to_gisaid']/seq_json['num_mut_gisaid']
+        #         else:
+        #             seq_json['% equals'] = 1
+        #         seq_json['all_mut_gisaid'] = arr_mutation_gisaid
+        #         seq_json['all_mut_loaded'] = arr_mutation_loaded
+        #
+        #         seq_mut_arr.append(seq_json)
+        #
+        # print("q", seq_mut_arr)
+
         statistics_input = {'arr_clu': array_cluster, 'stat_clu': statistics_cluster, 'arr_lin': array_lineage,
                             'stat_lin': statistics_lineage, 'stat_group': statistics_group_lineage,
                             'stat_group_mut': statistics_group_lineage_mut, 'stat_lin_mut': statistics_lineage_mut,
                             'stat_clu_mut': statistics_cluster_mut,
                             'stat_gr_c_mut_seq': statistics_group_count_mut_seq}
+    #'sequence_mutation_arr': seq_mut_arr
 
         results = {'table': list_dict, 'html': html_to, 'stats': statistics_input}
 
@@ -473,17 +547,27 @@ def filterMetadata(metadata, selected_filters):
                     if metakey == 'date':
                         min_date = selected_filters[metakey][0]['min_val']
                         max_date = selected_filters[metakey][0]['max_val']
-                        count = min_date.count('-')
-                        format = '%Y-%m-%d'
-                        if count == 2:
-                            format = '%Y-%m-%d'
-                        elif count == 1:
-                            format = '%Y-%m'
                         if min_date is not None:
+                            count = min_date.count('-')
+                        elif max_date is not None:
+                            count = max_date.count('-')
+                        format = '%Y-%m-%d'
+                        if min_date is not None:
+                            if count == 1:
+                                min_date = min_date + '-1'
                             date_min = datetime.datetime.strptime(min_date, format)
                         else:
                             date_min = None
                         if max_date is not None:
+                            if count == 1:
+                                arr_date = max_date.split('-')
+                                month = int(arr_date[1])
+                                if month == 4 or month == 6 or month == 9 or month == 11:
+                                    max_date = max_date + '-30'
+                                elif month == 2:
+                                    max_date = max_date + '-28'
+                                else:
+                                    max_date = max_date + '-31'
                             date_max = datetime.datetime.strptime(max_date, format)
                         else:
                             date_max = None

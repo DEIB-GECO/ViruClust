@@ -65,64 +65,7 @@ export default {
   methods: {
     ...mapMutations([]),
     ...mapActions([]),
-    renderGraph(met){
-      let that = this;
-      if (that.nameMetadata.includes('cluster')){
-        met= met.sort(function(a, b) {
-          let num1 = a['name'];
-          let num2 = b['name'];
-          return num1 - num2;
-        });
-      }
-      else if (that.nameMetadata.includes('date')){
-        met= met.sort(function(a, b) {
-            let dt1 = a['name'];
-            let p1 = dt1.split("-");
-            let date1 = new Date(p1[0],p1[1],p1[2]);
-            let dt2 = b['name'];
-            let p2 = dt2.split("-");
-            let date2 = new Date(p2[0],p2[1],p2[2]);
-            return date1 > date2 ? 1 : -1;
-        });
-      }
-      else {
-         met= met.sort(function(a, b) {
-          let num1 = a['name'];
-          let num2 = b['name'];
-          return num1 > num2 ? 1 : -1;
-        })
-      }
-
-      let len = met.length;
-      let i = 0;
-      let arrX = [];
-      let arrY = [];
-      while (i < len){
-        let single_line = met[i];
-        arrX.push(single_line['name']);
-        arrY.push(single_line['value']);
-        i = i + 1;
-      }
-
-      this.barChart.series[0].data = arrY;
-      this.barChart.xAxis.data = arrX;
-
-      if(this.my_chart === null) {
-        this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
-      }
-      this.my_chart.setOption(this.barChart, true);
-    }
-  },
-  mounted() {
-      let met =  JSON.parse(JSON.stringify(this.metadataContent));
-      this.renderGraph(met);
-  },
-  watch: {
-    metadataContent(){
-      let met =  JSON.parse(JSON.stringify(this.metadataContent));
-      this.renderGraph(met);
-    },
-    filterDate(){
+    renderGraphFilterDate(){
       if(this.filterDate === 'Month'){
         let met =  JSON.parse(JSON.stringify(this.metadataContent));
         let new_met = [];
@@ -190,6 +133,71 @@ export default {
         let met =  JSON.parse(JSON.stringify(this.metadataContent));
         this.renderGraph(met);
       }
+    },
+    renderGraph(met){
+      let that = this;
+      if (that.nameMetadata.includes('cluster')){
+        met= met.sort(function(a, b) {
+          let num1 = a['name'];
+          let num2 = b['name'];
+          return num1 - num2;
+        });
+      }
+      else if (that.nameMetadata.includes('date')){
+        met= met.sort(function(a, b) {
+            let dt1 = a['name'];
+            let p1 = dt1.split("-");
+            let date1 = new Date(p1[0],p1[1],p1[2]);
+            let dt2 = b['name'];
+            let p2 = dt2.split("-");
+            let date2 = new Date(p2[0],p2[1],p2[2]);
+            return date1 > date2 ? 1 : -1;
+        });
+      }
+      else {
+         met= met.sort(function(a, b) {
+          let num1 = a['name'];
+          let num2 = b['name'];
+          return num1 > num2 ? 1 : -1;
+        })
+      }
+
+      let len = met.length;
+      let i = 0;
+      let arrX = [];
+      let arrY = [];
+      while (i < len){
+        let single_line = met[i];
+        arrX.push(single_line['name']);
+        arrY.push(single_line['value']);
+        i = i + 1;
+      }
+
+      this.barChart.series[0].data = arrY;
+      this.barChart.xAxis.data = arrX;
+
+      if(this.my_chart === null) {
+        this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      }
+      this.my_chart.setOption(this.barChart, true);
+    }
+  },
+  mounted() {
+      //let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      //this.renderGraph(met);
+  },
+  watch: {
+    metadataContent(){
+      let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      if(this.nameMetadata === 'datedate'){
+        this.renderGraphFilterDate();
+      }
+      else {
+        this.renderGraph(met);
+      }
+    },
+    filterDate(){
+      this.renderGraphFilterDate();
     }
   }
 }

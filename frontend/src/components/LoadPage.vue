@@ -128,12 +128,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nameLoadedFileFASTA', 'nameLoadedFileCSV', 'fileCSV', 'fileFASTA']),
+    ...mapState(['nameLoadedFileFASTA', 'nameLoadedFileCSV', 'fileCSV', 'fileFASTA', 'sessionId']),
     ...mapGetters({}),
   },
   methods: {
      ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setFileCSV', 'setFileFASTA',
-     'setNameFileCSV', 'setNameFileFASTA', 'setAllMetadata', 'setMutDict']),
+     'setNameFileCSV', 'setNameFileFASTA', 'setAllMetadata', 'setMutDict', 'setTrueDisableMetadata',
+     'setFalseDisableMetadata', 'setSessionId']),
     ...mapActions([]),
     loadCSV(){
       this.setFileCSV(null);
@@ -175,17 +176,20 @@ export default {
       else {
         this.overlay = true;
 
-        let url = '/analyze_file/firstAnalysis'
-        let to_send = {'fileCSV': this.fileCSV}
-        axios.post(url, to_send)
+        let url3 = '/private/upload_csv'
+        let to_send3 = {'fileCSV': this.fileCSV}
+        axios.post(url3, to_send3)
             .then((res) => {
               return res.data;
             })
             .then((res) => {
-              this.setAllMetadata(res);
+              this.setSessionId(res);
+              this.uploadFASTA();
             });
-
-        let url2 = '/analyze_file/alignmentSequence'
+      }
+    },
+    uploadFASTA(){
+       let url2 = `/private/upload_fasta?session_id=${this.sessionId}`
         let to_send2 = {'fileFASTA': this.fileFASTA}
         axios.post(url2, to_send2)
             .then((res) => {
@@ -195,8 +199,7 @@ export default {
               this.setMutDict(res);
               this.overlay = false;
             });
-      }
-    }
+    },
   },
   watch: {
     overlay(){
@@ -206,16 +209,6 @@ export default {
     }
   },
   mounted() {
-
-    /*let count_url = `ufl`;
-
-    axios.get(count_url)
-      .then((res) => {
-          return res.data;
-      })
-      .then((res) => {
-          console.log("res",res);
-      });*/
   }
 }
 </script>

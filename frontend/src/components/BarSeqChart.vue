@@ -195,7 +195,7 @@ export default {
             })
           );
           this.setListRes(this.listRes.filter(function (i){
-              let mut = i['mutation_name'];
+              let mut = i['mutation'];
               return mut[0] === that.selectedPosition;
             })
           );

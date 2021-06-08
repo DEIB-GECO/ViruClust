@@ -2,138 +2,180 @@
   <div>
     <v-layout wrap align-center justify-center style="margin-top: 50px">
       <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-        <v-data-table
-                :headers="headerCluster"
-                :items="rowsCluster"
-                class="data-table"
-                style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
-        >
-            <template v-slot:item ="{ item }">
-              <tr>
-                <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerCluster"
-                    :key="header.value" v-show="header.show">
-                  <span>
-                    <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
-                      <span v-if="header.value === 'count_seq' || header.value === 'count_mutation'">
-                        <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'cluster')">
-                          {{item[header.value]}}
-                        </v-btn>
-                      </span>
-                      <span v-else>{{item[header.value]}}</span>
-                    </span>
-                    <span v-else>
-                      <span>N/D</span>
-                    </span>
-                  </span>
-
-                </td>
-              </tr>
-            </template>
-            <template slot="body.append" style="text-align: center;">
-                <tr style="text-align: center; background-color: darkgrey">
-                  <td><b>Tot: {{totNumCluster}}</b></td>
-                  <td><b>Tot: {{totNumSeqCluster}}</b></td>
-                  <td><b></b></td>
-                </tr>
-            </template>
-
-        </v-data-table>
-      </v-flex>
-      <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-        <v-data-table
-                :headers="headerLineage"
-                :items="rowsLineage"
-                class="data-table"
-                style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
-        >
-            <template v-slot:item ="{ item }">
-              <tr>
-                <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerLineage"
-                    :key="header.value" v-show="header.show">
-                  <span>
-                    <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
-                      <span v-if="header.value === 'count_seq' || header.value === 'count_mutation'">
-                        <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'lineage')">
-                          {{item[header.value]}}
-                        </v-btn>
-                      </span>
-                      <span v-else>{{item[header.value]}}</span>
-                    </span>
-                    <span v-else>
-                      <span>N/D</span>
-                    </span>
-                  </span>
-
-                </td>
-              </tr>
-            </template>
-            <template slot="body.append" style="text-align: center;">
-                <tr style="text-align: center; background-color: darkgrey">
-                  <td><b>Tot: {{totNumLineage}}</b></td>
-                  <td><b>Tot: {{totNumSeqLineage}}</b></td>
-                  <td><b></b></td>
-                </tr>
-            </template>
-
-        </v-data-table>
-      </v-flex>
-      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-        <v-data-table
-                :headers="headerGroup"
-                :items="rowsGroup"
-                class="data-table"
-                style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
-        >
-            <template v-slot:item ="{ item }">
-              <tr>
-                <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerGroup"
-                    :key="header.value" v-show="header.show">
-                  <span>
-                    <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
-                      <span v-if="header.value === 'count_mutation_per_sequence'" style="white-space: nowrap; display: inline-block;">
-                        <span v-for="(singMut, index) in item[header.value]" v-bind:key="index">
-                          <span v-if="index !== 0"> , </span>
-                          <span>{{singMut}}</span>
+        <v-layout wrap align-center justify-center style="margin-bottom: 50px">
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+            <h3>CLUSTER</h3>
+          </v-flex>
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-data-table
+                    :headers="headerCluster"
+                    :items="rowsCluster"
+                    class="data-table"
+                    style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                    :sort-by.sync="sortByCluster"
+                    :sort-desc.sync="sortDescCluster"
+            >
+                <template v-slot:item ="{ item }">
+                  <tr>
+                    <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerCluster"
+                        :key="header.value" v-show="header.show">
+                      <span>
+                        <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
+                          <span v-if="header.value === 'count_seq' || header.value === 'count_mutation'">
+                            <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'cluster')">
+                              {{item[header.value]}}
+                            </v-btn>
+                          </span>
+                          <span v-else>{{item[header.value]}}</span>
+                        </span>
+                        <span v-else>
+                          <span>N/D</span>
                         </span>
                       </span>
-                      <span v-else-if="header.value === 'count_seq' || header.value === 'count_mutation'">
-                        <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'group')">
-                          {{item[header.value]}}
-                        </v-btn>
-                      </span>
-                      <span v-else>{{item[header.value]}}</span>
-                    </span>
-                    <span v-else>
-                      <span v-if="header.value === 'analyze_mutation_per_sequence'">
-                        <v-btn class="white--text" color="blue" small @click="analyzeMutPerSeq(item)">
-                          ANALYZE MUT PER SEQ
-                        </v-btn>
-                      </span>
-                      <span v-else>N/D</span>
-                    </span>
-                  </span>
 
-                </td>
-              </tr>
-            </template>
-            <template slot="body.append" style="text-align: center;">
-                <tr style="text-align: center; background-color: darkgrey">
-                  <td colspan="2"><b>Tot: {{totNumGroup}}</b></td>
-                  <td><b>Tot: {{totNumSeqGroup}}</b></td>
-                  <td><b></b></td>
-                  <td><b></b></td>
-                  <td><b></b></td>
-                </tr>
-            </template>
+                    </td>
+                  </tr>
+                </template>
+                <template slot="body.append" style="text-align: center;">
+                    <tr style="text-align: center; background-color: darkgrey">
+                      <td><b>Tot: {{totNumCluster}}</b></td>
+                      <td><b>Tot: {{totNumSeqCluster}}</b></td>
+                      <td><b></b></td>
+                    </tr>
+                </template>
+            </v-data-table>
+          </v-flex>
 
-        </v-data-table>
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-btn @click="downloadTable('cluster')"
+                   class="white--text"
+                       small
+                   color="rgb(122, 139, 157)">
+              Download Cluster Table</v-btn>
+          </v-flex>
+        </v-layout>
       </v-flex>
+      <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
+        <v-layout wrap align-center justify-center style="margin-bottom: 50px">
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+            <h3>LINEAGE</h3>
+          </v-flex>
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-data-table
+                    :headers="headerLineage"
+                    :items="rowsLineage"
+                    class="data-table"
+                    style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                    :sort-by.sync="sortByLineage"
+                    :sort-desc.sync="sortDescLineage"
+            >
+                <template v-slot:item ="{ item }">
+                  <tr>
+                    <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerLineage"
+                        :key="header.value" v-show="header.show">
+                      <span>
+                        <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
+                          <span v-if="header.value === 'count_seq' || header.value === 'count_mutation'">
+                            <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'lineage')">
+                              {{item[header.value]}}
+                            </v-btn>
+                          </span>
+                          <span v-else>{{item[header.value]}}</span>
+                        </span>
+                        <span v-else>
+                          <span>N/D</span>
+                        </span>
+                      </span>
+
+                    </td>
+                  </tr>
+                </template>
+                <template slot="body.append" style="text-align: center;">
+                    <tr style="text-align: center; background-color: darkgrey">
+                      <td><b>Tot: {{totNumLineage}}</b></td>
+                      <td><b>Tot: {{totNumSeqLineage}}</b></td>
+                      <td><b></b></td>
+                    </tr>
+                </template>
+            </v-data-table>
+          </v-flex>
+
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-btn @click="downloadTable('lineage')"
+                 class="white--text"
+                     small
+                 color="rgb(122, 139, 157)">
+            Download Lineage Table</v-btn>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+
       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-        <v-btn @click="downloadTable()"
-             class="white--text"
-                 small
-             color="rgb(122, 139, 157)">
-        Download Group Table</v-btn>
+        <v-layout wrap align-center justify-center style="margin-bottom: 50px">
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+            <h3>GROUP CLUSTER - LINEAGE</h3>
+          </v-flex>
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-data-table
+                    :headers="headerGroup"
+                    :items="rowsGroup"
+                    class="data-table"
+                    style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                    :sort-by.sync="sortByGroup"
+                    :sort-desc.sync="sortDescGroup"
+            >
+                <template v-slot:item ="{ item }">
+                  <tr>
+                    <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerGroup"
+                        :key="header.value" v-show="header.show">
+                      <span>
+                        <span v-if="item[header.value] !== '' && item[header.value] !== null && item[header.value] !== undefined">
+                          <span v-if="header.value === 'count_mutation_per_sequence'" style="white-space: nowrap; display: inline-block;">
+                            <span v-for="(singMut, index) in item[header.value]" v-bind:key="index">
+                              <span v-if="index !== 0"> , </span>
+                              <span>{{singMut}}</span>
+                            </span>
+                          </span>
+                          <span v-else-if="header.value === 'count_seq' || header.value === 'count_mutation'">
+                            <v-btn class="white--text" color="blue" small @click="analyzeSeqOrMut(item, header.value, 'group')">
+                              {{item[header.value]}}
+                            </v-btn>
+                          </span>
+                          <span v-else>{{item[header.value]}}</span>
+                        </span>
+                        <span v-else>
+                          <span v-if="header.value === 'analyze_mutation_per_sequence'">
+                            <v-btn class="white--text" color="blue" small @click="analyzeMutPerSeq(item)">
+                              ANALYZE MUT PER SEQ
+                            </v-btn>
+                          </span>
+                          <span v-else>N/D</span>
+                        </span>
+                      </span>
+
+                    </td>
+                  </tr>
+                </template>
+                <template slot="body.append" style="text-align: center;">
+                    <tr style="text-align: center; background-color: darkgrey">
+                      <td colspan="2"><b>Tot: {{totNumGroup}}</b></td>
+                      <td><b>Tot: {{totNumSeqGroup}}</b></td>
+                      <td><b></b></td>
+                      <td><b></b></td>
+                      <td><b></b></td>
+                    </tr>
+                </template>
+
+            </v-data-table>
+          </v-flex>
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+            <v-btn @click="downloadTable('group')"
+                 class="white--text"
+                     small
+                 color="rgb(122, 139, 157)">
+            Download Group Table</v-btn>
+          </v-flex>
+        </v-layout>
       </v-flex>
   </v-layout>
 
@@ -281,6 +323,12 @@ export default {
       dialogShowSeqOrMut: false,
       analyzedMutPerSeqInstance: {},
       selectedSequencesOrMutation: {},
+      sortByCluster: [],
+      sortDescCluster: [],
+      sortByLineage: [],
+      sortDescLineage: [],
+      sortByGroup: [],
+      sortDescGroup: [],
     }
   },
   computed: {
@@ -290,9 +338,19 @@ export default {
   methods: {
     ...mapMutations([]),
     ...mapActions([]),
-    downloadTable(){
-      let text = this.json2csv(this.rowsGroup, this.headerGroup);
-      let filename = "result.csv";
+    downloadTable(table){
+      let text = "";
+      let result_sorted = this.sortResults(table);
+      if(table === 'group') {
+        text = this.json2csv(result_sorted, this.headerGroup);
+      }
+      if(table === 'lineage') {
+        text = this.json2csv(result_sorted, this.headerLineage);
+      }
+      if(table === 'cluster') {
+        text = this.json2csv(result_sorted, this.headerCluster);
+      }
+      let filename = table + '_table.csv';
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);
@@ -306,10 +364,14 @@ export default {
         var fields = [];
         var fields2 = [];
         selected_headers.forEach(function (el) {
-          fields.push(el.text);
+          if(el.value !== 'analyze_mutation_per_sequence') {
+            fields.push(el.text);
+          }
         });
         selected_headers.forEach(function (el) {
-          fields2.push(el.value);
+          if(el.value !== 'analyze_mutation_per_sequence') {
+            fields2.push(el.value);
+          }
         });
         var csv = json.map(function (row) {
             return fields2.map(function (fieldName) {
@@ -323,11 +385,69 @@ export default {
 
         return csv.join('\r\n')
     },
+    sortResults(table){
+       let len
+       let results
+       let sortBy
+       let sortDesc
+       if(table === 'group') {
+         len = this.sortByGroup.length;
+         sortBy = this.sortByGroup;
+         sortDesc = this.sortDescGroup;
+         results = JSON.parse(JSON.stringify(this.rowsGroup));
+       }
+       if(table === 'lineage') {
+         len = this.sortByLineage.length;
+         sortBy = this.sortByLineage;
+         sortDesc = this.sortDescLineage;
+         results = JSON.parse(JSON.stringify(this.rowsLineage));
+       }
+       if(table === 'cluster') {
+         len = this.sortByCluster.length;
+         sortBy = this.sortByCluster;
+         sortDesc = this.sortDescCluster;
+         results = JSON.parse(JSON.stringify(this.rowsCluster));
+       }
+      if(len > 0) {
+         return results.sort(function(a1, b1) {
+            let i = 0;
+            let a = a1[sortBy[i]];
+            let b = b1[sortBy[i]];
+            if(sortDesc[i] === false) {
+              if (sortBy[i] === 'cluster_name'){
+                let num1 = a.match(/\d+/g);
+                let num2 = b.match(/\d+/g);
+                return num1[0] - num2[0];
+              }
+              else {
+                return a > b ? 1 : -1;
+              }
+            }
+            else{
+              if (sortBy[i] === 'cluster_name'){
+                let num1 = a.match(/\d+/g);
+                let num2 = b.match(/\d+/g);
+                return num2[0] - num1[0];
+              }
+              else {
+                return a < b ? 1 : -1;
+              }
+            }
+         });
+       }
+       else{
+         return results;
+       }
+    },
     analyzeMutPerSeq(item){
       this.dialogAnalyzeMutPerSeq = true;
       let all_stats_gr_c_mut_seq = JSON.parse(JSON.stringify(this.statisticsInput['stat_gr_c_mut_seq']));
       let id_seq = item['cluster_name'] + '-' + item['lineage_name'];
       let json_mut_per_seq = all_stats_gr_c_mut_seq[id_seq];
+
+      json_mut_per_seq  = json_mut_per_seq.sort(function(a, b) {
+          return a['count'].length - b['count'].length;
+        });
 
       this.analyzedMutPerSeqInstance['infos'] = JSON.parse(JSON.stringify(item));
       this.analyzedMutPerSeqInstance['sequences'] = json_mut_per_seq;
@@ -503,6 +623,27 @@ export default {
       let num2 = b['cluster_name'].match(/\d+/g);
       return num1 - num2;
     });
+
+    // let seq_mut_arr = JSON.parse(JSON.stringify(this.statisticsInput['sequence_mutation_arr']));
+    //
+    // this.headerLineage = [];
+    //
+    // let single_line = seq_mut_arr[0];
+    //       let headers = [];
+    //       Object.keys(single_line).forEach(key => {
+    //           let single_header = {};
+    //           single_header['text'] = key;
+    //           single_header['value'] = key;
+    //
+    //           single_header['show'] = true;
+    //           single_header['align'] = 'center';
+    //           single_header['width'] = '18vh';
+    //
+    //           headers.push(single_header);
+    //       })
+    // this.headerLineage = headers;
+    //
+    // this.rowsLineage = seq_mut_arr;
 
   }
 }

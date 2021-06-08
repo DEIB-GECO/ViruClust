@@ -2,7 +2,7 @@
   <div>
     <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
-      <v-card width="95%" style="margin-top:50px; padding: 50px" color="#F0E68C">
+      <v-card width="95%" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F0E68C">
         <v-btn color="red" class="white--text" @click="setMetadataPage()">
           <v-icon style="margin-right: 5px">mdi-arrow-left-bold-outline</v-icon>CHANGE POPULATION / CHANGE METADATA
         </v-btn>
@@ -72,10 +72,72 @@
               </v-card>
             </v-flex>
           </v-layout>
+          <v-layout row wrap justify-center style="margin-top: 50px">
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+              <v-card width="500px" color="#DAA520">
+                <v-layout row wrap justify-center style="padding: 30px;">
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                    <h3>Filter graph on cluster and lineages:</h3>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
+                    <v-select
+                      v-model="selectedClusters"
+                      :items="possibleClusters"
+                      label="Clusters"
+                      multiple
+                      solo
+                      hide-details
+                    ></v-select>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
+                    <v-select
+                      v-model="selectedLineages"
+                      :items="possibleLineages"
+                      label="Lineages"
+                      multiple
+                      solo
+                      hide-details
+                    ></v-select>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                    <div v-if="selectedClusters.length > 0 || selectedLineages.length > 0" style="text-align: center">
+                      <h4>Filters:</h4>
+                      <span v-if="selectedClusters.length > 0">
+                        <span>CLUSTERS: </span>
+                        <span v-for="(cluster,index) in selectedClusters" v-bind:key="cluster">
+                          <span v-if="index !== 0">, </span>
+                          <span>{{cluster}}</span>
+                        </span>
+                      </span>
+                      <span v-if="selectedLineages.length > 0">
+                        <br>
+                        <span>LINEAGES: </span>
+                        <span v-for="(lineage, index) in selectedLineages" v-bind:key="lineage">
+                          <span v-if="index !== 0">, </span>
+                          <span>{{lineage}}</span>
+                        </span>
+                      </span>
+                    </div>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                    <v-btn
+                           @click="removeClusterLineageFilter()"
+                           color="red"
+                           class="white--text"
+                           small
+                           :disabled="selectedClusters.length === 0 && selectedLineages.length === 0"
+                    >
+                        REMOVE FILTERS
+                    </v-btn>
+                  </v-flex>
+               </v-layout>
+              </v-card>
+            </v-flex>
+          </v-layout>
           <v-layout row wrap justify-center style="padding: 30px;">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
               <v-btn
-                     @click="apply()"
+                     @click="apply(); $vuetify.goTo(1200, {duration: 1000, offset: 0, easing: 'easeInOutQuart'})"
                      color="red"
                      class="white--text"
               >
@@ -83,31 +145,38 @@
               </v-btn>
             </v-flex>
           </v-layout>
+        </v-card-text>
+      </v-card>
 
-          <div v-if = "applied">
-            <v-layout row wrap justify-center style="padding: 30px; margin-bottom: 50px">
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                <div style="width:80%; background-color: white">
-                  <BarSeqChart></BarSeqChart>
-                </div>
-              </v-flex>
-            </v-layout>
+      <v-card width="95%" style="margin-top:50px; padding: 50px" color="#F0E68C" v-if="applied">
+        <v-card-text>
 
-            <v-card color="#DAA520">
-            <v-layout wrap align-center justify-center style="margin-bottom: 50px">
+          <v-layout row wrap justify-center style="padding: 30px; margin-bottom: 50px">
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+              <div style="width:80%; background-color: white">
+                <BarSeqChart></BarSeqChart>
+              </div>
+            </v-flex>
+          </v-layout>
+
+          <v-card color="#DAA520" style="padding-bottom: 50px">
+            <v-layout wrap align-center justify-center>
               <v-data-table
                       :headers="allResultTableHeaders"
                       :items="results"
                       class="data-table"
                       style="width: 90%; margin-top: 50px; margin-bottom: 50px"
                       multi-sort
+                      :sort-by.sync="sortBy"
+                      :sort-desc.sync="sortDesc"
+                      :custom-sort="customSort"
               >
                 <!--height="650"
                       fixed-header-->
                   <template v-slot:item ="{ item }">
                     <tr>
                       <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in allResultTableHeaders"
-                          :key="header.value" v-show="header.show" :title=header.text>
+                          :key="header.value" v-show="header.show">
 
                         <span v-if="header.value === 'pubs linear' || header.value === 'pubs non-linear' || header.value === 'sequences_count'">
                             <v-dialog width="500" scrollable>
@@ -203,15 +272,25 @@
 
               </v-data-table>
             </v-layout>
-            </v-card>
-          </div>
+            <v-layout wrap align-center justify-center>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                <v-btn @click="downloadTable()"
+                     class="white--text" small
+                     color="rgb(122, 139, 157)">
+                Download Result Table</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-card>
 
         </v-card-text>
       </v-card>
     </v-row>
 
     <div v-if = "applied">
-      <ListResults></ListResults>
+      <ListResults
+      :sortBy = sortBy
+      :sortDesc = sortDesc>
+      </ListResults>
     </div>
 
     </v-container>
@@ -268,7 +347,15 @@ export default {
       selectedProtein: 'Spike (surface glycoprotein)',
       listProteinLength: {
         'Spike (surface glycoprotein)' : 1274,
-      }
+      },
+      sortBy: [],
+      sortDesc: [],
+      selectedClusters: [],
+      selectedLineages: [],
+      possibleClusters: [],
+      possibleLineages: [],
+      resultsInstance: null,
+      listResultsInstance: null,
     }
   },
   computed: {
@@ -279,12 +366,229 @@ export default {
      ...mapMutations(['setLoadPage', 'setMetadataPage', 'setStatisticsPage', 'setAllResultTable', 'setYAxisBarSeqChart', 'setListRes',
       'setProteinSelected']),
     ...mapActions([]),
-    apply(){
+    customSort(){
+         let len = this.sortBy.length;
+         let results = JSON.parse(JSON.stringify(this.results));
+         let that = this;
+         return results.sort(function(a1, b1) {
+              let i = 0;
+              while(i < len) {
+                let a = a1[that.sortBy[i]];
+                let b = b1[that.sortBy[i]];
+                let is_same = false;
+                if (Array.isArray(a)){
+                  is_same = (a.length === b.length) && a.every(function(element, index) {
+                      return element === b[index];
+                  });
+                }
+                else{
+                  if(a === b){
+                    is_same = true;
+                  }
+                }
+                if(is_same && (i+1) < len){
+                  i = i + 1;
+                }
+                else if (is_same && (i+1) >= len){
+                  let a2 = a1['cluster'];
+                  let b2 = b1['cluster'];
+                  if (a2 === b2){
+                    let a = a1['mutation'];
+                    let b = b1['mutation'];
+                    if (a[0] === b[0]) {
+                      if (a[1] === b[1]) {
+                        if(a[2] === "-"){
+                          return 1;
+                        }
+                        else if(b[2] === "-"){
+                          return -1;
+                        }
+                        else {
+                          return a[2] > b[2] ? 1 : -1;
+                        }
+                      }
+                      else{
+                        if(a[1] === "-"){
+                          return 1;
+                        }
+                        else if(b[1] === "-"){
+                          return -1;
+                        }
+                        else {
+                          return a[1] > b[1] ? 1 : -1;
+                        }
+                      }
+                    }
+                    else {
+                      return parseInt(a[0],10) > parseInt(b[0], 10) ? 1 : -1;
+                    }
+                  }
+                  else {
+                    let num11 = a2.match(/\d+/g);
+                    let num22 = b2.match(/\d+/g);
+                    return num11[0] - num22[0];
+                  }
+                }
+                else{
+                  if(that.sortDesc[i] === false) {
+                    if (that.sortBy[i] === 'cluster'){
+                      let num1 = a.match(/\d+/g);
+                      let num2 = b.match(/\d+/g);
+                      return num1[0] - num2[0];
+                    }
+                    else if (that.sortBy[i] === 'mutation'){
+                      if (a[0] === b[0]) {
+                        if (a[1] === b[1]) {
+                          if(a[2] === "-"){
+                            return 1;
+                          }
+                          else if(b[2] === "-"){
+                            return -1;
+                          }
+                          else {
+                            return a[2] > b[2] ? 1 : -1;
+                          }
+                        }
+                        else{
+                          if(a[1] === "-"){
+                            return 1;
+                          }
+                          else if(b[1] === "-"){
+                            return -1;
+                          }
+                          else {
+                            return a[1] > b[1] ? 1 : -1;
+                          }
+                        }
+                      }
+                      else {
+                        return parseInt(a[0],10) > parseInt(b[0], 10) ? 1 : -1;
+                      }
+                    }
+                    else {
+                      return a > b ? 1 : -1;
+                    }
+                  }
+                  else{
+                    if (that.sortBy[i] === 'cluster'){
+                      let num1 = a.match(/\d+/g);
+                      let num2 = b.match(/\d+/g);
+                      return num2[0] - num1[0];
+                    }
+                    else if (that.sortBy[i] === 'mutation'){
+                      if (a[0] === b[0]) {
+                        if (a[1] === b[1]) {
+                          if(a[2] === "-"){
+                            return -1;
+                          }
+                          else if(b[2] === "-"){
+                            return 1;
+                          }
+                          else {
+                            return a[2] < b[2] ? 1 : -1;
+                          }
+                        }
+                        else{
+                          if(a[1] === "-"){
+                            return -1;
+                          }
+                          else if(b[1] === "-"){
+                            return 1;
+                          }
+                          else {
+                            return a[1] < b[1] ? 1 : -1;
+                          }
+                        }
+                      }
+                      else {
+                        return parseInt(a[0],10) < parseInt(b[0], 10) ? 1 : -1;
+                      }
+                    }
+                    else {
+                      return a < b ? 1 : -1;
+                    }
+                  }
+                }
+              }
+         });
+    },
+    downloadTable(){
+      let result_sorted = this.sortResults();
+      let text = this.json2csv(result_sorted, this.allResultTableHeaders);
+      let filename = 'result.csv';
+      let element = document.createElement('a');
+      element.setAttribute('download', filename);
+      var data = new Blob([text]);
+      element.href = URL.createObjectURL(data);
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
+    json2csv(input, selected_headers) {
+        var json = input;
+        var fields = [];
+        var fields2 = [];
+        selected_headers.forEach(function (el) {
+          if (el.value !== 'sequences_count') {
+            fields.push(el.text);
+          }
+          else{
+            fields.push('sequences');
+          }
+        });
+        selected_headers.forEach(function (el) {
+          if (el.value !== 'sequences_count') {
+            fields2.push(el.text);
+          }
+          else{
+            fields2.push('sequences');
+          }
+        });
+        var csv = json.map(function (row) {
+            return fields2.map(function (fieldName) {
+                let string_val ;
+                let val ;
+                if(fieldName.includes('%') && row[fieldName]!== null){
+                  val = (row[fieldName]*100);
+                  string_val = String(val);
+                }
+                else if (fieldName === 'FC' && row[fieldName]!== null){
+                  val = row[fieldName];
+                  string_val = String(val);
+                }
+                else {
+                  if (row[fieldName] === null || (Array.isArray(row[fieldName]) && row[fieldName].length === 0)){
+                    string_val = 'N/D';
+                  }
+                  else {
+                    string_val = String(row[fieldName]);
+                  }
+                }
+                string_val = string_val.replaceAll("\n", " ");
+                return JSON.stringify(string_val);
+            }).join(',')
+        });
+        csv.unshift(fields.join(','));
 
+        return csv.join('\r\n')
+    },
+    sortResults(){
+       if(this.sortBy.length > 0) {
+         return this.customSort();
+       }
+       else{
+         return this.results;
+       }
+    },
+    apply(){
+      this.sortBy = [];
+      this.sortDesc = [];
       this.setAllResultTable(this.allResultTableFixed);
       var that = this;
       this.setAllResultTable(this.allResultTable.filter(function (i){
           let freq = JSON.parse(JSON.stringify(i['% lineage']));
+          let cluster = i['cluster'];
+          let lineage = i['lineage'];
           if (freq === -1 || freq === null){
             i['% lineage'] = null;
             i['FC'] = null;
@@ -294,13 +598,29 @@ export default {
             freq = freq * 100;
           }
           let num_clust = i['# cluster']
-          return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+        if(that.selectedClusters.length > 0 && that.selectedLineages.length > 0) {
+            return (that.selectedClusters.includes(cluster) && that.selectedLineages.includes(lineage)
+              && freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+          }
+          else if (that.selectedClusters.length > 0){
+            return (that.selectedClusters.includes(cluster) && freq <= that.sliderLineageFrequency
+                && num_clust >= that.sliderClusterCount);
+          }
+          else if (that.selectedLineages.length > 0) {
+            return (that.selectedLineages.includes(lineage) && freq <= that.sliderLineageFrequency
+                && num_clust >= that.sliderClusterCount);
+          }
+          else{
+            return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+          }
         })
       );
 
       this.setListRes(this.listResFixed);
       this.setListRes(this.listRes.filter(function (i){
-          let freq = JSON.parse(JSON.stringify(i['perc_lineage']));
+          let freq = JSON.parse(JSON.stringify(i['% lineage']));
+          let cluster = i['cluster'];
+          let lineage = i['lineage'];
           if (freq === -1 || freq === null){
             i['% lineage'] = null;
             i['FC'] = null;
@@ -309,8 +629,22 @@ export default {
           else{
             freq = freq * 100;
           }
-          let num_clust = i['num_cluster']
-          return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+          let num_clust = i['# cluster']
+          if(that.selectedClusters.length > 0 && that.selectedLineages.length > 0) {
+            return (that.selectedClusters.includes(cluster) && that.selectedLineages.includes(lineage)
+              && freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+          }
+          else if (that.selectedClusters.length > 0){
+            return (that.selectedClusters.includes(cluster) && freq <= that.sliderLineageFrequency
+                && num_clust >= that.sliderClusterCount);
+          }
+          else if (that.selectedLineages.length > 0) {
+            return (that.selectedLineages.includes(lineage) && freq <= that.sliderLineageFrequency
+                && num_clust >= that.sliderClusterCount);
+          }
+          else{
+            return (freq <= that.sliderLineageFrequency && num_clust >= that.sliderClusterCount);
+          }
         })
       );
 
@@ -345,7 +679,27 @@ export default {
 
       this.setYAxisBarSeqChart(this.toBarGraphY);
 
+      this.resultsInstance = JSON.parse(JSON.stringify(this.allResultTable));
+      this.listResultsInstance = JSON.parse(JSON.stringify(this.listRes));
+
+    },
+    removeClusterLineageFilter(){
+       this.applied = false;
+       this.selectedClusters = [];
+       this.selectedLineages = [];
     }
+  },
+  mounted() {
+    this.possibleClusters = [];
+    this.possibleLineages = [];
+    this.allResultTable.forEach(elem => {
+      if(!this.possibleClusters.includes(elem['cluster'])){
+        this.possibleClusters.push(elem['cluster']);
+      }
+      if(!this.possibleLineages.includes(elem['lineage'])){
+        this.possibleLineages.push(elem['lineage']);
+      }
+    })
   },
   watch: {
     allResultTable(){
@@ -360,6 +714,12 @@ export default {
     selectedProtein(){
       this.applied = false;
       this.setProteinSelected(this.selectedProtein);
+    },
+    selectedClusters(){
+      this.applied = false;
+    },
+    selectedLineages(){
+      this.applied = false;
     }
   }
 }

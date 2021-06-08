@@ -63,18 +63,8 @@ export default {
         this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
       }
       this.my_chart.setOption(this.pieChart, true);
-    }
-  },
-  mounted() {
-      let met =  JSON.parse(JSON.stringify(this.metadataContent));
-      this.renderGraph(met);
-  },
-  watch: {
-    metadataContent(){
-      let met =  JSON.parse(JSON.stringify(this.metadataContent));
-      this.renderGraph(met);
     },
-    filterDate(){
+    renderGraphFilterDate(){
       if(this.filterDate === 'Month'){
         let met =  JSON.parse(JSON.stringify(this.metadataContent));
         let new_met = [];
@@ -142,6 +132,24 @@ export default {
         let met =  JSON.parse(JSON.stringify(this.metadataContent));
         this.renderGraph(met);
       }
+    }
+  },
+  mounted() {
+      //let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      //this.renderGraph(met);
+  },
+  watch: {
+    metadataContent(){
+      let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      if(this.nameMetadata === 'date'){
+        this.renderGraphFilterDate();
+      }
+      else {
+        this.renderGraph(met);
+      }
+    },
+    filterDate() {
+      this.renderGraphFilterDate();
     }
   }
 }

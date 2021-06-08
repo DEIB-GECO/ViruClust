@@ -9,6 +9,7 @@
           multiple
           solo
           hide-details
+          :disabled="disableMetadata"
         ></v-select>
       </v-container>
     </v-row>
@@ -25,6 +26,7 @@
             @click="openMenu()"
             @click:append="openMenu()"
             hide-details
+            :disabled="disableMetadata"
         >
         </v-text-field>
       </v-container>
@@ -69,6 +71,7 @@
                @click="addFilter()"
                class="white--text"
                color="red"
+               :disabled="disableMetadata"
           >
               APPLY
           </v-btn>
@@ -135,7 +138,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedFilters', 'fileCSV', 'allMetadata']),
+    ...mapState(['selectedFilters', 'fileCSV', 'allMetadata', 'disableMetadata']),
     ...mapGetters({}),
     selectedMetadataFilter: {
       get() {
@@ -181,17 +184,19 @@ export default {
         this.notProperDates = true;
       }
       else {
-        let c = this.selectedMin;
-        let b = this.selectedMax;
+        if(this.min !== null || this.max !== null) {
+          let c = this.selectedMin;
+          let b = this.selectedMax;
 
-        let a = [{
-          'min_val': c,
-          'max_val': b,
-        }];
+          let a = [{
+            'min_val': c,
+            'max_val': b,
+          }];
 
-        this.payload = {'field': this.nameMetadata, 'list': a};
+          this.payload = {'field': this.nameMetadata, 'list': a};
 
-        this.shown_value = this.textBoxValue;
+          this.shown_value = this.textBoxValue;
+        }
 
         this.menuDate = false;
       }
@@ -204,13 +209,12 @@ export default {
         this.menuDate=false;
     },
     addFilter(){
-      this.setSelectedFilter(this.payload);
-    }
-  },
-  mounted() {
-    let met =  JSON.parse(JSON.stringify(this.metadataContent));
-
-    if (this.nameMetadata.includes('cluster')){
+      if(this.payload !== null) {
+        this.setSelectedFilter(this.payload);
+      }
+    },
+    chooseSelectableFilter(met){
+      if (this.nameMetadata.includes('cluster')){
       met= met.sort(function(a, b) {
         let num1 = a['name'];
         let num2 = b['name'];
@@ -245,6 +249,11 @@ export default {
       i = i + 1;
     }
     this.possibleMetadataFilter = arr;
+    }
+  },
+  mounted() {
+    //let met =  JSON.parse(JSON.stringify(this.metadataContent));
+    //this.chooseSelectableFilter(met);
   },
   watch: {
     filterDate(){
@@ -267,6 +276,10 @@ export default {
           this.shown_value = this.textBoxValue;
         }
       }
+    },
+    metadataContent(){
+      let met =  JSON.parse(JSON.stringify(this.metadataContent));
+      this.chooseSelectableFilter(met);
     }
   }
 }

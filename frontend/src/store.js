@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 const state = {
     page: 'loadPage',
+    sessionId: '',
     nameLoadedFileCSV: '',
     fileCSV: null,
     nameLoadedFileFASTA: '',
@@ -21,6 +22,7 @@ const state = {
     yAxisBarSeqChart: [],
     selectedFilters: {},
     statisticsInput: {},
+    disableMetadata: false,
 };
 
 const getters = {
@@ -28,6 +30,9 @@ const getters = {
 };
 
 const mutations = {
+    setSessionId: (state, value) => {
+        state.sessionId = value;
+    },
     setLoadPage: (state) => {
         state.page = "loadPage";
     },
@@ -90,6 +95,12 @@ const mutations = {
     },
     reloadSelectedFilter: (state) => {
         state.selectedFilters = Object.assign({}, state.selectedFilters);
+    },
+    setTrueDisableMetadata: (state) => {
+        state.disableMetadata = true;
+    },
+    setFalseDisableMetadata: (state) => {
+        state.disableMetadata = false;
     },
 };
 
