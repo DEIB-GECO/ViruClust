@@ -237,6 +237,62 @@
                               </span>
                             </span>
 
+                            <span v-else-if="header.value === 'annotations'">
+                              <v-dialog width="800" scrollable>
+                                <template v-slot:activator="{ on }">
+                                  <v-btn
+                                    v-on="on"
+                                    slot="activator"
+                                    color="rgb(122, 139, 157)"
+                                    small
+                                    class="white--text">
+                                    <span>
+                                      Annotations
+                                    </span>
+                                  </v-btn>
+                                </template>
+                                <v-card>
+                                  <v-card-title
+                                          style="background-color: #DAA520 ; color: white;"
+                                          class="justify-center"
+                                  >
+                                    <span>
+                                      Annotations
+                                    </span>
+                                  </v-card-title>
+                                  <v-card-text style="margin-top: 20px;">
+                                    <span v-for="(annotation, index) in item[header.value]" v-bind:key="index">
+                                      <v-layout row wrap justify-center>
+                                        <v-card style=" padding: 20px; margin-bottom: 20px; margin-top: 20px; border: darkgrey solid 1px; border-radius: 15px" width="500">
+                                          <span v-for="(value, key) in annotation" v-bind:key="key">
+                                            <span><b> - {{key}}: </b>
+                                              <span v-if="key !== 'EvidenceUrls'">
+                                                {{value}}
+                                              </span>
+                                              <span v-else>
+                                                <div style="display: inline-grid; vertical-align: central;">
+                                                  <span v-for="link in value.slice(1,-1).replaceAll('\'', '').split(',')" v-bind:key="link" style="word-wrap:break-word; max-width: 400px">
+                                                    <span v-if="link !== ''">
+                                                      <a :href="link" target="_blank"> {{link}}</a>
+                                                      <br>
+                                                    </span>
+                                                    <span v-else>
+                                                      N/D
+                                                    </span>
+                                                  </span>
+                                                </div>
+                                              </span>
+                                            </span>
+                                            <br>
+                                          </span>
+                                        </v-card>
+                                      </v-layout>
+                                    </span>
+                                  </v-card-text>
+                                </v-card>
+                              </v-dialog>
+                            </span>
+
                             <span v-else-if="header.value === 'pubs linear' || header.value === 'pubs non-linear'">
                               <br>
                               <span v-for="item2 in item[header.value]" v-bind:key="item2">

@@ -356,10 +356,17 @@ class FieldList(Resource):
 
         mut_table['sequences'] = mut_table.apply(find_sequences, axis=1)
 
-        annotations = pd.read_csv("/Users/LucaCillo/Desktop/UFL project/backend/apis/spike_annotations.tsv", delimiter='\t')
+        # annotations = pd.read_csv("/Users/LucaCillo/Desktop/UFL project/backend/apis/spike_annotations.tsv", delimiter='\t')
+
+        annotations = pd.read_csv("apis/protein_annotations.csv",
+                                  delimiter=',')
 
         def find_annotation(m):
-            return list(annotations[(annotations.Start <= m[0]) & (annotations.Stop >= m[0])].Annotation)
+            # return list(annotations[(annotations.Start <= m[0]) & (annotations.Stop >= m[0])].Annotation)
+            ann = annotations[(annotations.Protein == protein) & (annotations.Begin <= m[0]) & (annotations.End >= m[0])]
+            ann2 = ann[['Type', 'Category', 'Description', 'EvidenceUrls']]
+            ann3 = ann2.to_json(orient="records")
+            return json.loads(ann3)
 
         mut_table['annotations'] = mut_table.mutation.apply(find_annotation)
 
