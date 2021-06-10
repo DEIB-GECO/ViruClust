@@ -612,6 +612,21 @@ export default {
                   val = row[fieldName];
                   string_val = String(val);
                 }
+                else if (fieldName === 'annotations' && row[fieldName]!== null){
+                  json = JSON.parse(JSON.stringify(row[fieldName]));
+                  let i = 0;
+                  while (i < json.length) {
+                    if(json[i]['Description'].indexOf('\'') > -1){
+                      json[i]['Description'] = json[i]['Description'].replaceAll('\'', '°');
+                    }
+                    json[i]['EvidenceUrls'] =  json[i]['EvidenceUrls'].slice(1,-1).replaceAll('\'', '').split(',');
+                    i = i + 1;
+                  }
+                  val = JSON.stringify(json);
+                  val = String(val);
+                  val = val.replaceAll("\"", "'");
+                  string_val = val;
+                }
                 else {
                   if (row[fieldName] === null || (Array.isArray(row[fieldName]) && row[fieldName].length === 0)){
                     string_val = 'N/D';
