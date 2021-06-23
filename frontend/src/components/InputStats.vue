@@ -624,6 +624,9 @@ export default {
       return num1 - num2;
     });
 
+
+    //// PER TABELLA ANALISI SEQ MUT ARRAY
+
     // let seq_mut_arr = JSON.parse(JSON.stringify(this.statisticsInput['sequence_mutation_arr']));
     //
     // this.headerLineage = [];
@@ -641,6 +644,51 @@ export default {
     //
     //           headers.push(single_header);
     //       })
+    // this.headerLineage = headers;
+    //
+    // this.rowsLineage = seq_mut_arr;
+
+
+    //// PER TABELLA LINEAGE COUNTRY
+
+    // let seq_mut_arr = JSON.parse(JSON.stringify(this.statisticsInput['lineage_country_arr']));
+    //
+    // this.headerLineage = [];
+    //
+    // let ii = 0;
+    // let len_arr = seq_mut_arr.length;
+    // let headers = [];
+    // let arr_name_headers = [];
+    // while (ii < len_arr) {
+    //   let single_line = seq_mut_arr[ii];
+    //   Object.keys(single_line).forEach(key => {
+    //     if(!arr_name_headers.includes(key) && key !== 'lineage') {
+    //       let single_header = {};
+    //       arr_name_headers.push(key);
+    //       single_header['text'] = key;
+    //       single_header['value'] = key;
+    //
+    //       single_header['show'] = true;
+    //       single_header['align'] = 'center';
+    //       single_header['width'] = '18vh';
+    //
+    //       headers.push(single_header);
+    //     }
+    //   })
+    //   ii = ii + 1;
+    // }
+    //
+    // headers.sort( function( a, b ) {
+    //     a = a.value.toLowerCase();
+    //     b = b.value.toLowerCase();
+    //
+    //     return a < b ? -1 : a > b ? 1 : 0;
+    // });
+    //
+    // let lineage_header = {'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '18vh'};
+    //
+    // headers.unshift(lineage_header);
+    //
     // this.headerLineage = headers;
     //
     // this.rowsLineage = seq_mut_arr;

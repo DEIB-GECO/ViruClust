@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const state = {
-    page: 'loadPage',
+    page: 'entryPage',
     sessionId: '',
     nameLoadedFileCSV: '',
     fileCSV: null,
@@ -23,6 +23,10 @@ const state = {
     selectedFilters: {},
     statisticsInput: {},
     disableMetadata: false,
+    all_geo: [],
+    all_lineages: [],
+    all_protein: [],
+    timeRangesTargetAndBackground: {},
 };
 
 const getters = {
@@ -41,6 +45,9 @@ const mutations = {
     },
     setStatisticsPage: (state) => {
         state.page = "statisticsPage";
+    },
+    setAnalyzePage: (state) => {
+        state.page = "analyzePage";
     },
     setFileCSV: (state, value) => {
         state.fileCSV = value;
@@ -101,6 +108,18 @@ const mutations = {
     },
     setFalseDisableMetadata: (state) => {
         state.disableMetadata = false;
+    },
+    setAllGeo: (state, value) => {
+        state.all_geo = value;
+    },
+    setAllLineages: (state, value) => {
+        state.all_lineages = value;
+    },
+    setAllProtein: (state, value) => {
+        state.all_protein = value;
+    },
+    setTimeRangesTargetAndBackground: (state, value) => {
+        state.timeRangesTargetAndBackground = value;
     },
 };
 

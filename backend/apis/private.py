@@ -458,6 +458,7 @@ class FieldList(Resource):
                         lin = item['lineage']
                         statistics_lineage[f'{lin}'].append(seq)
 
+        # PER TABELLA ANALYSI SEQ MUT ARR
 
         # seq_mut_arr = []
         # y = 0
@@ -524,12 +525,17 @@ class FieldList(Resource):
         #
         # print("q", seq_mut_arr)
 
+
+        # PER TABELLA LINEAGE COUNTRY
+        # lineage_country = create_table_lineage_country()
+
         statistics_input = {'arr_clu': array_cluster, 'stat_clu': statistics_cluster, 'arr_lin': array_lineage,
                             'stat_lin': statistics_lineage, 'stat_group': statistics_group_lineage,
                             'stat_group_mut': statistics_group_lineage_mut, 'stat_lin_mut': statistics_lineage_mut,
                             'stat_clu_mut': statistics_cluster_mut,
                             'stat_gr_c_mut_seq': statistics_group_count_mut_seq}
     #'sequence_mutation_arr': seq_mut_arr
+    #'lineage_country_arr': lineage_country
 
         results = {'table': list_dict, 'stats': statistics_input}
 
@@ -586,3 +592,24 @@ def filter_metadata(metadata, selected_filters):
             metadata2[seq] = metadata[seq]
     return metadata2
 
+
+def create_table_lineage_country():
+    table = []
+    # all_data = pd.read_csv("apis/all_data.csv", delimiter=',')
+    all_data = pd.read_csv("apis/all_data2.csv", delimiter=',')
+    all_data_json = all_data.to_json(orient="records")
+    json_object = json.loads(all_data_json)
+    for item in json_object:
+        single_line = {'lineage': item['lineage']}
+        country_count = item['country_count']
+        country_count = country_count.replace("'", "")
+        country_count = country_count.replace("(", "")
+        country_count = country_count.replace("[", "")
+        country_count = country_count.replace("]", "")
+        array_country_count = country_count.split("),")
+        for single_country in array_country_count:
+            single_country = single_country.replace(")", "")
+            array_single_country = single_country.split(',')
+            single_line[array_single_country[0]] = array_single_country[1]
+        table.append(single_line)
+    return table
