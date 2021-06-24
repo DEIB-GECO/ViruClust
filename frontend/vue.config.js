@@ -13,5 +13,5 @@ module.exports = {
           },
       }
   },
-  baseUrl: '/ufl/',
+  baseUrl: '/epiclust/',
 }

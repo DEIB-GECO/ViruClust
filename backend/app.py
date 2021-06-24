@@ -8,7 +8,7 @@ from flask_executor import Executor
 
 from apis import api_blueprint
 
-base_url = '/ufl/'
+base_url = '/epiclust/'
 api_url = base_url + 'api'
 repo_static_url = base_url + 'repo_static'
 
