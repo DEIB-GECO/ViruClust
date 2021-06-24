@@ -1,14 +1,17 @@
 <template>
   <div>
-    <v-card width="100%" color="#F0E68C" style="margin-bottom: 50px; margin-top: 50px; padding: 50px">
+    <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="600px" style="padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            REGION (TARGET) vs COUNTRY (BACKGROUND)
+            <h1>REGION (TARGET) vs COUNTRY (BACKGROUND)</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
-              <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+               <h2>SELECT SPECIFIC GEO LOCALITY (until REGION is selected)</h2>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedContinent_forProvReg"
                   :items="possibleContinent_forProvReg"
@@ -17,7 +20,7 @@
                   hide-details
                 ></v-select>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedCountry_forProvReg"
                   :items="possibleCountry_forProvReg"
@@ -27,12 +30,19 @@
                   :disabled="selectedContinent_forProvReg === null"
                 ></v-select>
               </v-flex>
-              <RegionProvincePieChart
-                v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"
-                :nameGeo="geoSelectedName"
-                :geoContent="geoSelectedContent">
-              </RegionProvincePieChart>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+               v-if="selectedCountryToLower !== 'usa'">
+                <RegionProvincePieChart
+                  v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"
+                  :nameGeo="geoSelectedName"
+                  :geoContent="geoSelectedContent">
+                </RegionProvincePieChart>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"
+              v-if="selectedCountryToLower !== 'usa'">
+                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedRegion_forProvReg"
                   :items="possibleRegion_forProvReg"
@@ -42,12 +52,19 @@
                   :disabled="selectedCountry_forProvReg === null"
                 ></v-select>
               </v-flex>
-              <RegionProvincePieChart
-                v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"
-                :nameGeo="geoSelectedName"
-                :geoContent="geoSelectedContent">
-              </RegionProvincePieChart>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+               v-if="selectedCountryToLower === 'usa'">
+                <RegionProvincePieChart
+                  v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"
+                  :nameGeo="geoSelectedName"
+                  :geoContent="geoSelectedContent">
+                </RegionProvincePieChart>
+               </v-flex>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"
+              v-if="selectedCountryToLower === 'usa'">
+                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"
                       v-if="(selectedCountryToLower === 'usa')">
                 <v-select
                   v-model="selectedProvince_forProvReg"
@@ -59,11 +76,14 @@
                 ></v-select>
               </v-flex>
              </v-layout>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               {{num_sequences_forProvReg}}
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
+               <h2>SELECT PROTEINS TO ANALYZE</h2>
              </v-flex>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+               <h4>(no selection means "all protein")</h4>
+             </v-flex>
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                     <v-select
                       v-model="selectedProtein"
                       :items="possibleProtein"
@@ -94,106 +114,137 @@
         <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Numerator_target:  (greater than)</h5>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                 <h2>APPLY FILTERS TO TABLE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>% BACKGROUND:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderNumeratorTargetProvReg"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        min = "0"
-                        :max = "maxNumeratorTarget"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundFrequency"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundFrequency"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundFrequency"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundFrequency"
+                                            max = "100"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>% background: (less than)</h5>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>% TARGET:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderBackgroundFrequencyProvReg"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="1"
-                        min = "0"
-                        max = "100"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetFrequency"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetFrequency"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetFrequency"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetFrequency"
+                                            max = "100"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Denominator_target:  (greater than)</h5>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>P-VALUE:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderDenominatorTargetProvReg"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        min = "0"
-                        :max = "maxDenominatorTarget"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>% target: (greater than)</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderTargetFrequencyProvReg"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="1"
-                        min = "0"
-                        max = "100"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>p-value: (less than)</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderPValueProvReg"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="0.01"
-                        min = "0"
-                        max = "1"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPValue"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPValue"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPValue"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPValue"
+                                            max = "1"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
@@ -203,15 +254,18 @@
                          color="red"
                          class="white--text"
                   >
-                      APPLY
+                      APPLY FILTERS
                   </v-btn>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+                 <h2>TABLE</h2>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
                         :headers="headerTableProvReg"
                         :items="rowsTableProvReg"
                         class="data-table table_prov_reg"
-                        style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                        style="width: 90%; border: grey solid 1px"
                         multi-sort
                         :sort-by.sync="sortByTableProvReg"
                         :sort-desc.sync="sortDescTableProvReg"
@@ -266,36 +320,60 @@
                          color="rgb(122, 139, 157)">
                     Download Table</v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px">
-                 <h1> BAR CHART based on P-VALUE</h1>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+                 <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>p-value: (less than)</h5>
+                 <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>P-VALUE:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderPValueBarChart"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="0.01"
-                        min = "0"
-                        max = "1"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPValueBarChart"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPValueBarChart"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPValueBarChart"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPValueBarChart"
+                                            max = "1"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                  </v-card>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Select protein:</h5>
+                 <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>SELECT PROTEIN:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 5px">
+                    <v-card-text style="margin-top: 30px">
                       <v-select
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
@@ -352,11 +430,6 @@ export default {
   data() {
     return {
       overlay: false,
-      sliderNumeratorTargetProvReg: 0,
-      sliderBackgroundFrequencyProvReg: 100,
-      sliderDenominatorTargetProvReg: 0,
-      sliderTargetFrequencyProvReg: 0,
-      sliderPValueProvReg: 1,
       maxNumeratorTarget: 100,
       maxDenominatorTarget: 100,
       num_sequences_forProvReg: null,
@@ -375,7 +448,6 @@ export default {
       sortDescTableProvReg: [],
       geoSelectedName: '',
       geoSelectedContent: [],
-      sliderPValueBarChart: 0.05,
       pValueName: 'p_value_province_region',
       pValueContent: [],
       tableApplied: false,
@@ -385,6 +457,15 @@ export default {
 
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
+
+      selectedMinBackgroundFrequency: 0,
+      selectedMaxBackgroundFrequency: 100,
+      selectedMinTargetFrequency: 0,
+      selectedMaxTargetFrequency: 100,
+      selectedMinPValue: 0,
+      selectedMaxPValue: 1,
+      selectedMinPValueBarChart: 0,
+      selectedMaxPValueBarChart: 1,
     }
   },
   computed: {
@@ -476,16 +557,15 @@ export default {
       let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
       var that = this;
       result = result.filter(function (i){
-          let denominator_target = JSON.parse(JSON.stringify(i['denominator_background']));
-          let numerator_target = JSON.parse(JSON.stringify(i['numerator_target']));
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
           let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          return (background_frequency <= that.sliderBackgroundFrequencyProvReg
-              && numerator_target >= that.sliderNumeratorTargetProvReg
-              && denominator_target >= that.sliderDenominatorTargetProvReg
-              && target_frequency >= that.sliderTargetFrequencyProvReg
-              && p_value <= that.sliderPValueProvReg );
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue);
         })
       this.rowsTableProvReg = result;
     },
@@ -563,8 +643,9 @@ export default {
       result = result.filter(function (i){
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
-          return (p_value <= that.sliderPValueBarChart
-          && that.selectedProteinForPValue === product);
+          return (p_value >= that.selectedMinPValueBarChart
+              && p_value <= that.selectedMaxPValueBarChart
+              && that.selectedProteinForPValue === product);
         })
 
       let arrayToBarChart = [];
@@ -596,11 +677,9 @@ export default {
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
-    sliderPValueBarChart(){
-      this.pValueBarChartApplied = false;
-    },
     selectedContinent_forProvReg(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
@@ -633,6 +712,7 @@ export default {
     },
     selectedCountry_forProvReg(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
@@ -689,6 +769,7 @@ export default {
     },
     selectedRegion_forProvReg(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
@@ -743,6 +824,7 @@ export default {
     },
     selectedProvince_forProvReg(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
@@ -776,14 +858,96 @@ export default {
     },
     selectedProtein(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.tableApplied = false;
     },
     selectedProteinForPValue(){
       this.pValueBarChartApplied = false;
     },
+    selectedMinBackgroundFrequency(){
+      if (this.selectedMinBackgroundFrequency < 0 ){
+        this.selectedMinBackgroundFrequency= 0;
+      }
+      else if (this.selectedMinBackgroundFrequency > this.selectedMaxBackgroundFrequency){
+        this.selectedMinBackgroundFrequency = this.selectedMaxBackgroundFrequency;
+      }
+    },
+    selectedMaxBackgroundFrequency(){
+      if (this.selectedMaxBackgroundFrequency < this.selectedMinBackgroundFrequency ){
+        this.selectedMaxBackgroundFrequency = this.selectedMinBackgroundFrequency;
+      }
+      else if (this.selectedMaxBackgroundFrequency > 100){
+        this.selectedMaxBackgroundFrequency = 100;
+      }
+    },
+    selectedMinTargetFrequency(){
+      if (this.selectedMinTargetFrequency < 0 ){
+        this.selectedMinTargetFrequency= 0;
+      }
+      else if (this.selectedMinTargetFrequency > this.selectedMaxTargetFrequency){
+        this.selectedMinTargetFrequency = this.selectedMaxTargetFrequency;
+      }
+    },
+    selectedMaxTargetFrequency(){
+      if (this.selectedMaxTargetFrequency < this.selectedMinTargetFrequency ){
+        this.selectedMaxTargetFrequency = this.selectedMinTargetFrequency;
+      }
+      else if (this.selectedMaxTargetFrequency > 100){
+        this.selectedMaxTargetFrequency = 100;
+      }
+    },
+    selectedMinPValue(){
+      if (this.selectedMinPValue < 0 ){
+        this.selectedMinPValue = 0;
+      }
+      else if (this.selectedMinPValue > this.selectedMaxPValue){
+        this.selectedMinPValue = this.selectedMaxPValue;
+      }
+    },
+    selectedMaxPValue(){
+      if (this.selectedMaxPValue < this.selectedMinPValue ){
+        this.selectedMaxPValue = this.selectedMinPValue;
+      }
+      else if (this.selectedMaxPValue > 1){
+        this.selectedMaxPValue = 1;
+      }
+    },
+    selectedMinPValueBarChart(){
+      this.pValueBarChartApplied = false;
+      if (this.selectedMinPValueBarChart < 0 ){
+        this.selectedMinPValueBarChart = 0;
+      }
+      else if (this.selectedMinPValueBarChart > this.selectedMaxPValueBarChart){
+        this.selectedMinPValueBarChart = this.selectedMaxPValueBarChart;
+      }
+    },
+    selectedMaxPValueBarChart(){
+      this.pValueBarChartApplied = false;
+      if (this.selectedMaxPValueBarChart < this.selectedMinPValueBarChart ){
+        this.selectedMaxPValueBarChart = this.selectedMinPValueBarChart;
+      }
+      else if (this.selectedMaxPValueBarChart > 1){
+        this.selectedMaxPValueBarChart = 1;
+      }
+    },
   },
   mounted() {
+    let array_specific_geo = [];
+      this.all_geo.forEach(elem => {
+        if(elem['geo_group'] !== null) {
+          if (!array_specific_geo.includes(elem['geo_group'])) {
+            array_specific_geo.push(elem['geo_group']);
+          }
+        }
+      })
+      array_specific_geo.sort( function( a, b ) {
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        return a < b ? -1 : a > b ? 1 : 0;
+      });
+      this.possibleContinent_forProvReg = array_specific_geo;
 
+    this.possibleProtein = this.all_protein;
   }
 }
 </script>
@@ -793,6 +957,10 @@ export default {
   .table_prov_reg table > tbody > tr > td:nth-child(9),
   .table_prov_reg table > tbody > tr > td:nth-child(12){
     box-shadow: inset -0.5px 0 0 0 grey;
+  }
+
+  .centered-input >>> input {
+    text-align: center
   }
 
 </style>

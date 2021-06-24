@@ -5,16 +5,19 @@
       color="#DAA520"
       dark
     >
-      <!--<div class="d-flex align-center">
+      <div class="d-flex align-center">
         <v-img
           class="shrink mt-1 hidden-sm-and-down"
-          contain
           max-height="50"
-          src="https://freepikpsd.com/wp-content/uploads/2019/10/lavori-in-corso-png-3.png"
+          src="./images/work_in_progress.png"
           width="100"
+          style="margin-left: 30px"
         />
-      </div>-->
-
+      </div>
+      <v-toolbar-title class="headline" style="font-size: 32px !important; margin-left: 20px">
+          <span>Epi</span>
+          <span class="font-weight-light">Clust</span>
+      </v-toolbar-title>
     </v-app-bar>
 
     <v-main>

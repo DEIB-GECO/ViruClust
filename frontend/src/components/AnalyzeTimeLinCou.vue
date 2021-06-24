@@ -1,13 +1,19 @@
 <template>
   <div>
-    <v-card width="100%" color="#F0E68C" style="margin-bottom: 50px; margin-top: 50px; padding: 50px">
+    <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1800px" style="padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            TIME (TARGET) vs TIME (BACKGROUND) in LINEAGE & COUNTRY
+            <h1>TIME (TARGET) vs TIME (BACKGROUND) in LINEAGE & COUNTRY</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+                 <h2>SELECT LINEAGE AND COUNTRY OF INTEREST</h2>
+               </v-flex>
+               <!--<v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                 <h4>(both fields can be empty, meaning that all lineages/countries are interesting)</h4>
+               </v-flex>-->
                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                   <v-select
                     v-model="selectedLineage"
@@ -50,6 +56,12 @@
              </v-layout>
 
              <v-layout row wrap justify-center style="padding: 30px;" v-if="chosenApplied && timeContent.length !== 0">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                 <h2>SELECT PROTEINS TO ANALYZE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                 <h4>(no selection means "all protein")</h4>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                     <v-select
@@ -93,106 +105,137 @@
         <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Numerator_target:  (greater than)</h5>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                 <h2>APPLY FILTERS TO TABLE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>% BACKGROUND:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderNumeratorTarget"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        min = "0"
-                        :max = "maxNumeratorTarget"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundFrequency"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundFrequency"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundFrequency"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundFrequency"
+                                            max = "100"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>% background: (less than)</h5>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>% TARGET:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderBackgroundFrequency"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="1"
-                        min = "0"
-                        max = "100"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetFrequency"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetFrequency"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetFrequency"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetFrequency"
+                                            max = "100"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Denominator_target:  (greater than)</h5>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>P-VALUE:</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderDenominatorTarget"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        min = "0"
-                        :max = "maxDenominatorTarget"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>% target: (greater than)</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderTargetFrequency"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="1"
-                        min = "0"
-                        max = "100"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-               <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>p-value: (less than)</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderPValue"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="0.01"
-                        min = "0"
-                        max = "1"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPValue"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPValue"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPValue"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPValue"
+                                            max = "1"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
                     </v-card-text>
                   </v-card>
                 </v-flex>
@@ -202,15 +245,18 @@
                          color="red"
                          class="white--text"
                   >
-                      APPLY
+                      APPLY FILTERS
                   </v-btn>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+                 <h2>TABLE</h2>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
                         :headers="headerAnalyzeTime"
                         :items="rowsAnalyzeTime"
-                        class="data-tabl table_analyze_time"
-                        style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                        class="data-table table_analyze_time"
+                        style="width: 90%; border: grey solid 1px"
                         multi-sort
                         :sort-by.sync="sortByAnalyzeTime"
                         :sort-desc.sync="sortDescAnalyzeTime"
@@ -233,36 +279,60 @@
                          color="rgb(122, 139, 157)">
                     Download Table</v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px">
-                 <h1> BAR CHART based on P-VALUE</h1>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+                 <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>p-value: (less than)</h5>
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>P-VALUE:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPValueBarChart"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPValueBarChart"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPValueBarChart"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPValueBarChart"
+                                            max = "1"
+                                            step = "0.01"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                 <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>SELECT PROTEIN:</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
-                      <v-slider
-                        v-model="sliderPValueBarChart"
-                        always-dirty
-                        persistent-hint
-                        thumb-label="always"
-                        :step="0.01"
-                        min = "0"
-                        max = "1"
-                        color="#191970"
-                        track-color="#191970"
-                        thumb-color="#191970"
-                      ></v-slider>
-                    </v-card-text>
-                 </v-card>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#A9A9A9">
-                    <v-card-title>
-                      <h5>Select protein:</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 5px">
                       <v-select
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
@@ -328,15 +398,9 @@ export default {
       headerAnalyzeTime: [],
       sortByAnalyzeTime: [],
       sortDescAnalyzeTime: [],
-      sliderNumeratorTarget: 0,
-      sliderBackgroundFrequency: 100,
-      sliderDenominatorTarget: 0,
-      sliderTargetFrequency: 0,
-      sliderPValue: 1,
       maxNumeratorTarget: 100,
       maxDenominatorTarget: 100,
       tableApplied: false,
-      sliderPValueBarChart: 0.05,
       pValueName: 'p_value_time',
       pValueContent: [],
       pValueBarChartApplied: false,
@@ -350,6 +414,15 @@ export default {
 
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
+
+      selectedMinBackgroundFrequency: 0,
+      selectedMaxBackgroundFrequency: 100,
+      selectedMinTargetFrequency: 0,
+      selectedMaxTargetFrequency: 100,
+      selectedMinPValue: 0,
+      selectedMaxPValue: 1,
+      selectedMinPValueBarChart: 0,
+      selectedMaxPValueBarChart: 1,
     }
   },
   computed: {
@@ -511,16 +584,15 @@ export default {
       let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
       var that = this;
       result = result.filter(function (i){
-          let denominator_target = JSON.parse(JSON.stringify(i['denominator_background']));
-          let numerator_target = JSON.parse(JSON.stringify(i['numerator_target']));
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
           let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          return (background_frequency <= that.sliderBackgroundFrequency
-              && numerator_target >= that.sliderNumeratorTarget
-              && denominator_target >= that.sliderDenominatorTarget
-              && target_frequency >= that.sliderTargetFrequency
-              && p_value <= that.sliderPValue);
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue);
         })
       this.rowsAnalyzeTime = result;
     },
@@ -530,8 +602,9 @@ export default {
       result = result.filter(function (i){
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
-          return (p_value <= that.sliderPValueBarChart
-          && that.selectedProteinForPValue === product);
+          return (p_value >= that.selectedMinPValueBarChart
+              && p_value <= that.selectedMaxPValueBarChart
+              && that.selectedProteinForPValue === product);
         })
 
       let arrayToBarChart = [];
@@ -635,34 +708,119 @@ export default {
       });
       this.possibleCountry = array_specific_geo;
     },
-    sliderPValueBarChart(){
-      this.pValueBarChartApplied = false;
-    },
     selectedLineage(){
        this.pValueBarChartApplied = false;
+       this.selectedProteinForPValue = null;
        this.tableApplied = false;
        this.chosenApplied = false;
        this.selectedProtein = null;
     },
     selectedCountry() {
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.tableApplied = false;
       this.chosenApplied = false;
       this.selectedProtein = null;
     },
     selectedProtein(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.tableApplied = false;
     },
     timeRangesTargetAndBackground(){
       this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
       this.tableApplied = false;
     },
     selectedProteinForPValue(){
       this.pValueBarChartApplied = false;
     },
+    selectedMinBackgroundFrequency(){
+      if (this.selectedMinBackgroundFrequency < 0 ){
+        this.selectedMinBackgroundFrequency= 0;
+      }
+      else if (this.selectedMinBackgroundFrequency > this.selectedMaxBackgroundFrequency){
+        this.selectedMinBackgroundFrequency = this.selectedMaxBackgroundFrequency;
+      }
+    },
+    selectedMaxBackgroundFrequency(){
+      if (this.selectedMaxBackgroundFrequency < this.selectedMinBackgroundFrequency ){
+        this.selectedMaxBackgroundFrequency = this.selectedMinBackgroundFrequency;
+      }
+      else if (this.selectedMaxBackgroundFrequency > 100){
+        this.selectedMaxBackgroundFrequency = 100;
+      }
+    },
+    selectedMinTargetFrequency(){
+      if (this.selectedMinTargetFrequency < 0 ){
+        this.selectedMinTargetFrequency= 0;
+      }
+      else if (this.selectedMinTargetFrequency > this.selectedMaxTargetFrequency){
+        this.selectedMinTargetFrequency = this.selectedMaxTargetFrequency;
+      }
+    },
+    selectedMaxTargetFrequency(){
+      if (this.selectedMaxTargetFrequency < this.selectedMinTargetFrequency ){
+        this.selectedMaxTargetFrequency = this.selectedMinTargetFrequency;
+      }
+      else if (this.selectedMaxTargetFrequency > 100){
+        this.selectedMaxTargetFrequency = 100;
+      }
+    },
+    selectedMinPValue(){
+      if (this.selectedMinPValue < 0 ){
+        this.selectedMinPValue = 0;
+      }
+      else if (this.selectedMinPValue > this.selectedMaxPValue){
+        this.selectedMinPValue = this.selectedMaxPValue;
+      }
+    },
+    selectedMaxPValue(){
+      if (this.selectedMaxPValue < this.selectedMinPValue ){
+        this.selectedMaxPValue = this.selectedMinPValue;
+      }
+      else if (this.selectedMaxPValue > 1){
+        this.selectedMaxPValue = 1;
+      }
+    },
+    selectedMinPValueBarChart(){
+      this.pValueBarChartApplied = false;
+      if (this.selectedMinPValueBarChart < 0 ){
+        this.selectedMinPValueBarChart = 0;
+      }
+      else if (this.selectedMinPValueBarChart > this.selectedMaxPValueBarChart){
+        this.selectedMinPValueBarChart = this.selectedMaxPValueBarChart;
+      }
+    },
+    selectedMaxPValueBarChart(){
+      this.pValueBarChartApplied = false;
+      if (this.selectedMaxPValueBarChart < this.selectedMinPValueBarChart ){
+        this.selectedMaxPValueBarChart = this.selectedMinPValueBarChart;
+      }
+      else if (this.selectedMaxPValueBarChart > 1){
+        this.selectedMaxPValueBarChart = 1;
+      }
+    },
   },
   mounted() {
+
+    let array_specific_geo = [];
+      this.all_geo.forEach(elem => {
+        if(elem['country'] !== null) {
+          if (!array_specific_geo.includes(elem['country'])) {
+            array_specific_geo.push(elem['country']);
+          }
+        }
+      })
+      array_specific_geo.sort( function( a, b ) {
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        return a < b ? -1 : a > b ? 1 : 0;
+      });
+      this.possibleCountry = array_specific_geo;
+
+      this.possibleProtein = this.all_protein;
+      this.possibleLineage = this.all_lineages;
   }
 }
 </script>
@@ -673,6 +831,10 @@ export default {
   .table_analyze_time table > tbody > tr > td:nth-child(8),
   .table_analyze_time table > tbody > tr > td:nth-child(11){
     box-shadow: inset -0.5px 0 0 0 grey;
+  }
+
+  .centered-input >>> input {
+    text-align: center
   }
 
 </style>

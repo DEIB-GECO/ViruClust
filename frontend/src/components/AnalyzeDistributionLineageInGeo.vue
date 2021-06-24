@@ -1,45 +1,52 @@
 <template>
   <div>
-    <v-card width="100%" color="#F0E68C" style="margin-bottom: 50px; margin-top: 50px; padding: 50px">
+    <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="600px" style="padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            DISTRIBUTION LINEAGE IN GEO
+            <h1>DISTRIBUTION LINEAGE IN GEO</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
-              <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+               <h2>SELECT GRANULARITY, SPECIFIC GEO LOCALITY AND MIN %</h2>
+              </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+               <h4>(The minimum percentage is used to filter the list of lineages in the result. Only the lineages
+                 with at least the min % of the total number of sequences in that country will appear)</h4>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedGeo"
                   :items="possibleGeo"
-                  label="Geo"
+                  label="Granularity"
                   solo
                   hide-details
                 ></v-select>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedSpecificGeo"
                   :items="possibleSpecificGeo"
-                  label="Geo"
+                  label="Specific Locality"
                   solo
                   hide-details
                 ></v-select>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-text-field v-model="selectedGeoCount" solo type="number"></v-text-field>
+              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+                <v-text-field v-model.number="selectedGeoCount" min="0" max="100" solo type="number" hide-details></v-text-field>
               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                 <v-btn
+                         @click="applyTableLineageCountry()"
+                         color="red"
+                         class="white--text"
+                         :disabled="selectedGeo === null || selectedSpecificGeo === null"
+                  >
+                      APPLY
+                  </v-btn>
+               </v-flex>
              </v-layout>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               <v-btn
-                       @click="applyTableLineageCountry()"
-                       color="red"
-                       class="white--text"
-                       :disabled="selectedGeo === null || selectedSpecificGeo === null"
-                >
-                    APPLY
-                </v-btn>
-             </v-flex>
            </v-card-text>
         </v-card>
       </v-row>
@@ -47,12 +54,15 @@
         <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                 <h2>TABLE</h2>
+               </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
                         :headers="headerTableLineageCountry"
                         :items="rowsTableLineageCountry"
                         class="data-table table_distribution_lineage_geo"
-                        style="width: 90%; margin-bottom: 50px; border: grey solid 1px"
+                        style="width: 90%; border: grey solid 1px"
                         :sort-by.sync="sortByTableLineageCountry"
                         :sort-desc.sync="sortDescTableLineageCountry"
                   >
@@ -102,7 +112,7 @@ export default {
       possibleGeo: ['geo_group', 'country', 'region'],
       selectedSpecificGeo: null,
       possibleSpecificGeo: [],
-      selectedGeoCount: 1000,
+      selectedGeoCount: 5,
       headerTableLineageCountry: [],
       rowsTableLineageCountry: [],
       sortByTableLineageCountry: [],
@@ -272,17 +282,17 @@ export default {
       this.headerTableLineageCountry = [];
       this.rowsTableLineageCountry = [];
     },
+    selectedGeoCount(){
+      if(this.selectedGeoCount < 0){
+        this.selectedGeoCount = 0;
+      }
+      else if(this.selectedGeoCount > 100){
+        this.selectedGeoCount = 100;
+      }
+    }
   },
   mounted() {
-    let url = `/analyze/allGeo`;
-    axios.get(url)
-    .then((res) => {
-      return res.data;
-    })
-    .then((res) => {
-      this.setAllGeo(res);
 
-    });
   }
 }
 </script>

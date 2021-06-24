@@ -1,13 +1,55 @@
 <template>
-  <v-container fluid grid-list-xl style="justify-content: center;">
+  <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px">
 
-    <AnalyzeDistributionLineageInGeo></AnalyzeDistributionLineageInGeo>
+    <v-tabs v-model="selectedTabAnalyze"
+            background-color="#800000"
+            dark
+            show-arrows
+            slider-color="orange"
+            slider-size="6"
+            height="60">
 
-    <AnalyzeTimeLinCou></AnalyzeTimeLinCou>
+      <v-tab id="tab0" style="border-right: black solid 1px; font-weight: bold; width: 20%">
+         ANALYZE DISTRIBUTION LINEAGE IN GEO
+      </v-tab>
 
-    <AnalyzeLineageAndCountry></AnalyzeLineageAndCountry>
+      <v-tab id="tab1" style="border-right: black solid 1px; font-weight: normal; width: 20%">
+         TIME VS TIME
+      </v-tab>
 
-    <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
+      <v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+         COUNTRY VS LINEAGE
+      </v-tab>
+
+      <v-tab id="tab3"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+         REGION VS COUNTRY
+      </v-tab>
+
+      <v-tab-item>
+        <AnalyzeDistributionLineageInGeo></AnalyzeDistributionLineageInGeo>
+      </v-tab-item>
+
+      <v-tab-item>
+        <AnalyzeTimeLinCou></AnalyzeTimeLinCou>
+      </v-tab-item>
+
+      <v-tab-item>
+        <AnalyzeLineageAndCountry></AnalyzeLineageAndCountry>
+      </v-tab-item>
+
+      <v-tab-item>
+         <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
+      </v-tab-item>
+
+    </v-tabs>
+
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
+
 
   </v-container>
 </template>
@@ -23,13 +65,44 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 export default {
   name: "AnalyzePage",
   components: {AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeLineageAndCountry, AnalyzeDistributionLineageInGeo},
+  data() {
+    return {
+      selectedTabAnalyze: 0,
+      overlay: true,
+      finished_api: 0,
+    }
+  },
   computed: {
     ...mapState([]),
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setAllProtein']),
+    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo']),
     ...mapActions([]),
+  },
+  watch:{
+    finished_api(){
+      if(this.finished_api === 3){
+        this.overlay = false;
+      }
+    },
+    selectedTabAnalyze(){
+      let i = 0;
+      while(i < 4){
+        let id = 'tab' + i;
+        if (i === this.selectedTabAnalyze){
+          let elem = document.getElementById(id);
+          //elem.style.fontSize = '15px';
+          elem.style['font-weight'] = 'bold';
+        }
+        else{
+          let elem = document.getElementById(id);
+          //elem.style.fontSize = '12px';
+          elem.style['font-weight'] = 'normal';
+        }
+        i = i + 1;
+      }
+    }
   },
   mounted() {
     let url = `/analyze/allProtein`;
@@ -39,7 +112,29 @@ export default {
       return res.data;
     })
     .then((res) => {
+      this.finished_api = this.finished_api + 1;
       this.setAllProtein(res);
+    });
+
+    let url2 = `/analyze/allLineages`;
+    axios.get(url2)
+    .then((res) => {
+      return res.data;
+    })
+    .then((res) => {
+      this.finished_api = this.finished_api + 1;
+      this.possibleLineage = res;
+      this.setAllLineages(res);
+    });
+
+    let url3 = `/analyze/allGeo`;
+    axios.get(url3)
+    .then((res) => {
+      return res.data;
+    })
+    .then((res) => {
+      this.finished_api = this.finished_api + 1;
+      this.setAllGeo(res);
     });
   }
 }

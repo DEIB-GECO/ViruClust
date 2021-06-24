@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
-        <div :id="nameGeo" style="width: 1200px; height: 500px; user-select: none;
+        <div :id="nameGeo" style="width: 600px; height: 500px; user-select: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
          background-color: white; margin-top: 30px; margin-bottom: 30px">
         </div>
