@@ -30,6 +30,8 @@ const state = {
 
     queryTime: {},
     queryGeo: {},
+    startDateQueryGeo: null,
+    stopDateQueryGeo: null,
 };
 
 const getters = {
@@ -141,6 +143,12 @@ const mutations = {
     },
     reloadQueryGeo: (state) => {
         state.queryGeo = Object.assign({}, state.queryGeo);
+    },
+    setStartDateQueryGeo: (state, value) => {
+        state.startDateQueryGeo = value;
+    },
+    setStopDateQueryGeo: (state, value) => {
+        state.stopDateQueryGeo = value;
     },
 };
 

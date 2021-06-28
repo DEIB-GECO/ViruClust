@@ -9,7 +9,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT LINEAGE AND LOCATION (TARGET)</h2>
+               <h2>SELECT LINEAGE, TIME RANGE AND LOCATION (TARGET)</h2>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <h4>(Background will be 1 level of location above)</h4>
@@ -40,6 +40,12 @@
                  <SelectorsQueryGeo
                   field = 'province'>
                  </SelectorsQueryGeo>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                 <TimeSelectorQueryGeo
+                    timeName="timeDistributionGeo"
+                    filterDate = "Day">
+                 </TimeSelectorQueryGeo>
                </v-flex>
 <!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
 <!--                <v-select-->
@@ -642,10 +648,11 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import PValueBarChart from "./PValueBarChart";
 import SelectorsQueryGeo from "./SelectorsQueryGeo";
+import TimeSelectorQueryGeo from "./TimeSelectorQueryGeo";
 
 export default {
   name: "AnalyzeProvinceRegion",
-  components: {SelectorsQueryGeo, PValueBarChart},
+  components: {TimeSelectorQueryGeo, SelectorsQueryGeo, PValueBarChart},
   data() {
     return {
       overlay: false,
@@ -701,7 +708,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['all_geo', 'all_protein', 'queryGeo']),
+    ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -842,6 +849,12 @@ export default {
       }
 
       let query = JSON.parse(JSON.stringify(this.queryGeo));
+      if(this.startDateQueryGeo !== null){
+        query['minDate'] = this.startDateQueryGeo;
+      }
+      if(this.stopDateQueryGeo !== null){
+        query['maxDate'] = this.stopDateQueryGeo;
+      }
 
       let to_send = {'query': query,
                      'protein': array_protein};
