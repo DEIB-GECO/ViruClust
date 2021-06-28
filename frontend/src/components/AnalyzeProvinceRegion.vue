@@ -12,7 +12,7 @@
                <h2>SELECT LINEAGE, TIME RANGE AND LOCATION (TARGET)</h2>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               <h4>(Background will be 1 level of location above)</h4>
+               <h4>(Background will be 1 level above)</h4>
               </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
@@ -934,6 +934,20 @@ export default {
     }
   },
   watch: {
+    startDateQueryGeo(){
+      this.pValueBarChartApplied = false;
+     this.selectedProteinForPValue = null;
+     this.selectedProteinTable = null;
+     this.tableApplied = false;
+     this.selectedProtein = null;
+    },
+    stopDateQueryGeo(){
+      this.pValueBarChartApplied = false;
+       this.selectedProteinForPValue = null;
+       this.selectedProteinTable = null;
+       this.tableApplied = false;
+       this.selectedProtein = null;
+    },
     'queryGeo.geo_group': function (){
         this.setQueryGeo({field: 'country', list: null});
         this.setQueryGeo({field: 'region', list: null});
