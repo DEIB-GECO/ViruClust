@@ -4,7 +4,7 @@
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-           background-color: white; margin-top: 50px;  z-index: 1">
+           background-color: white;  z-index: 1">
           </div>
         </v-row>
     </v-container>

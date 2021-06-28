@@ -20,6 +20,10 @@
                     hide-details
                     :item-text="getFieldText"
                   >
+                    <template slot="item" slot-scope="data">
+                        <span class="item-value-span">{{getFieldText(data.item)}}</span>
+                        <span class="item-count-span">{{data.item.count}}</span>
+                    </template>
                   </v-select>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
@@ -227,6 +231,137 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR BACKGROUND:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundNumerator"
+                                            :max = "totalMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR TARGET:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetNumerator"
+                                            :max = "totalMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>ODDS RATIO:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinOddsRatio"
+                                            :max = "totalMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
                          @click="applyFilterOnTable()"
@@ -238,6 +373,58 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
                  <h2>TABLE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsAnalyzeMutation.length !== 0">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>INFO:</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <span>
+                            <b> - TARGET: </b>
+                            <span>{{rowsAnalyzeMutation[0]['background']}} in {{rowsAnalyzeMutation[0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{rowsAnalyzeMutation[0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> - BACKGROUND: </b>
+                            <span>{{rowsAnalyzeMutation[0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{rowsAnalyzeMutation[0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>SELECT PROTEIN:</h5>
+                        </v-card-title>
+                        <v-card-text style="margin-top: 30px">
+                          <v-select
+                            v-model="selectedProteinForTable"
+                            :items="possibleProteinForTable"
+                            label="Protein"
+                            solo
+                            clearable
+                            hide-details
+                          >
+                          </v-select>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
@@ -254,6 +441,13 @@
                           <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerAnalyzeMutation"
                               :key="header.value" v-show="header.show">
                                 <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
+                                <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                <span v-else-if="header.value === 'odd_ratio'">
+                                  <span v-if="item['percentage_background'] === 0"> INF </span>
+                                  <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                </span>
+                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}})</span>
+                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}})</span>
                                 <span v-else>{{item[header.value]}}</span>
                           </td>
                         </tr>
@@ -324,7 +518,7 @@
                       <v-select
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
-                        label="Lineage"
+                        label="Protein"
                         solo
                         hide-details
                       >
@@ -385,8 +579,8 @@ export default {
       rowsAnalyzeMutation: [],
       fixedRowAnalyzeMutation: [],
       headerAnalyzeMutation: [],
-      sortByAnalyzeMutation: [],
-      sortDescAnalyzeMutation: [],
+      sortByAnalyzeMutation: ['odd_ratio'],
+      sortDescAnalyzeMutation: [true],
       maxNumeratorTarget: 100,
       maxDenominatorTarget: 100,
       tableApplied: false,
@@ -399,14 +593,27 @@ export default {
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
 
+      selectedProteinForTable: null,
+      possibleProteinForTable: [],
+
       selectedMinBackgroundFrequency: 0,
       selectedMaxBackgroundFrequency: 100,
       selectedMinTargetFrequency: 0,
       selectedMaxTargetFrequency: 100,
       selectedMinPValue: 0,
       selectedMaxPValue: 1,
+      selectedMinBackgroundNumerator: 0,
+      selectedMaxBackgroundNumerator: 100,
+      selectedMinTargetNumerator: 0,
+      selectedMaxTargetNumerator: 100,
+      selectedMinOddsRatio: 0,
+      selectedMaxOddsRatio: 100,
       selectedMinPValueBarChart: 0,
       selectedMaxPValueBarChart: 1,
+
+      totalMaxTargetNumerator: 0,
+      totalMaxBackgroundNumerator: 0,
+      totalMaxOddsRatio: 0,
     }
   },
   computed: {
@@ -487,7 +694,9 @@ export default {
        }
     },
     getFieldText(item){
-      return `${item['lineage']}` //  ----- ${item['cnt']}
+      let name = '';
+      name = item['value'];
+      return name;
     },
     applyLoadCountry(){
       let url = `/analyze/possibleCountryLineage`;
@@ -534,29 +743,16 @@ export default {
         .then((res) => {
           let headers = [
               {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'odd_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-
-          //     {'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'country', 'value': 'country', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'count_seq', 'value': 'count_seq', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'product', 'value': 'product', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'start_aa_original', 'value': 'start_aa_original', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'sequence_aa_original', 'value': 'sequence_aa_original', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'sequence_aa_alternative', 'value': 'sequence_aa_alternative', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': '%', 'value': 'fraction', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'numerator', 'value': 'numerator', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'denominator', 'value': 'denominator', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': '%_country', 'value': 'fraction_country', 'show': true, 'align': 'center', 'width': '20vh'},
-          //     {'text': 'denominator_country', 'value': 'denominator_country', 'show': true, 'align': 'center', 'width': '20vh'},
+              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
           ];
           this.headerAnalyzeMutation = headers;
           this.rowsAnalyzeMutation = res;
@@ -564,10 +760,15 @@ export default {
 
           let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeMutation));
           this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+          this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
           let rowTable = JSON.parse(JSON.stringify(this.rowsAnalyzeMutation));
-          this.maxNumeratorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
-          this.maxDenominatorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
+          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable.map(function(o) { return o['odd_ratio']; })));
+          this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
 
           this.tableApplied = true;
           this.overlay = false;
@@ -580,14 +781,27 @@ export default {
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
           let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
           return (background_frequency >= that.selectedMinBackgroundFrequency
               && background_frequency <= that.selectedMaxBackgroundFrequency
               && target_frequency >= that.selectedMinTargetFrequency
               && target_frequency <= that.selectedMaxTargetFrequency
               && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue);
+              && p_value <= that.selectedMaxPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
         })
       this.rowsAnalyzeMutation = result;
+
+      let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeMutation));
+      this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
     },
     applyFilterPValueChart(){
       let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeMutation));
@@ -623,6 +837,20 @@ export default {
       this.pValueContent = arrayToBarChart;
       this.pValueName = 'p_value_country_lineage';
       this.pValueBarChartApplied = true;
+    },
+    createPossibleLineageObject(){
+      let all_lin = this.all_lineages;
+      let i = 0;
+      let len = all_lin.length;
+      let arr_all_lin = [];
+      while(i < len){
+        let elem = { 'count' : all_lin[i]['cnt'], 'value': all_lin[i]['lineage']};
+        if(all_lin[i]['lineage'] !== null){
+          arr_all_lin.push(elem);
+        }
+        i = i + 1;
+      }
+      this.possibleLineage = arr_all_lin;
     }
   },
   watch: {
@@ -630,7 +858,7 @@ export default {
       this.possibleProtein = this.all_protein;
     },
     all_lineages(){
-      this.possibleLineage = this.all_lineages;
+      this.createPossibleLineageObject();
     },
     selectedLineage(){
        this.pValueBarChartApplied = false;
@@ -638,17 +866,20 @@ export default {
        this.tableApplied = false;
        this.countryReceived = false;
        this.selectedProtein = null;
+       this.selectedProteinTable = null;
     },
     selectedCountry(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
       this.selectedProtein = null;
+      this.selectedProteinTable = null;
     },
     selectedProtein(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
+      this.selectedProteinTable = null;
     },
     selectedProteinForPValue(){
       this.pValueBarChartApplied = false;
@@ -701,6 +932,54 @@ export default {
         this.selectedMaxPValue = 1;
       }
     },
+    selectedMinBackgroundNumerator(){
+      if (this.selectedMinBackgroundNumerator < 0 ){
+        this.selectedMinBackgroundNumerator= 0;
+      }
+      else if (this.selectedMinBackgroundNumerator > this.selectedMaxBackgroundNumerator){
+        this.selectedMinBackgroundNumerator = this.selectedMaxBackgroundNumerator;
+      }
+    },
+    selectedMaxBackgroundNumerator(){
+      if (this.selectedMaxBackgroundNumerator < this.selectedMinBackgroundNumerator ){
+        this.selectedMaxBackgroundNumerator = this.selectedMinBackgroundNumerator;
+      }
+      else if (this.selectedMaxBackgroundNumerator > this.totalMaxBackgroundNumerator){
+        this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+      }
+    },
+    selectedMinTargetNumerator(){
+      if (this.selectedMinTargetNumerator < 0 ){
+        this.selectedMinTargetNumerator = 0;
+      }
+      else if (this.selectedMinTargetNumerator > this.selectedMaxTargetNumerator){
+        this.selectedMinTargetNumerator = this.selectedMaxTargetNumerator;
+      }
+    },
+    selectedMaxTargetNumerator(){
+      if (this.selectedMaxTargetNumerator < this.selectedMinTargetNumerator ){
+        this.selectedMaxTargetNumerator = this.selectedMinTargetNumerator;
+      }
+      else if (this.selectedMaxTargetNumerator > this.totalMaxTargetNumerator){
+        this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+      }
+    },
+    selectedMinOddsRatio(){
+      if (this.selectedMinOddsRatio < 0 ){
+        this.selectedMinOddsRatio = 0;
+      }
+      else if (this.selectedMinOddsRatio > this.selectedMaxOddsRatio){
+        this.selectedMinOddsRatio = this.selectedMaxOddsRatio;
+      }
+    },
+    selectedMaxOddsRatio(){
+      if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio ){
+        this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
+      }
+      else if (this.selectedMaxOddsRatio > this.totalMaxOddsRatio){
+        this.selectedMaxOddsRatio = this.totalMaxOddsRatio;
+      }
+    },
     selectedMinPValueBarChart(){
       this.pValueBarChartApplied = false;
       if (this.selectedMinPValueBarChart < 0 ){
@@ -731,10 +1010,62 @@ export default {
       else if(this.selectedMinNumCase > 100){
         this.selectedMinNumCase = 100;
       }
+    },
+    selectedProteinForTable(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeMutation));
+      if(this.selectedProteinForTable !== null) {
+        let that = this;
+        result = result.filter(function (i){
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                && odds_ratio >= that.selectedMinOddsRatio
+                && odds_ratio <= that.selectedMaxOddsRatio
+                && product === that.selectedProteinForTable);
+          })
+      }
+      else{
+        var that = this;
+        result = result.filter(function (i){
+          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+          let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
+        })
+      }
+      this.rowsAnalyzeMutation = result;
     }
   },
   mounted() {
-    this.possibleLineage = this.all_lineages;
+    this.createPossibleLineageObject();
     this.possibleProtein = this.all_protein;
   }
 }
@@ -742,14 +1073,24 @@ export default {
 
 <style scoped>
 
-  .table_analyze_mutation table > tbody > tr > td:nth-child(5),
-  .table_analyze_mutation table > tbody > tr > td:nth-child(8),
-  .table_analyze_mutation table > tbody > tr > td:nth-child(11){
+  .table_analyze_mutation table > tbody > tr > td:nth-child(1),
+  .table_analyze_mutation table > tbody > tr > td:nth-child(3),
+  .table_analyze_mutation table > tbody > tr > td:nth-child(4){
     box-shadow: inset -0.5px 0 0 0 grey;
   }
 
   .centered-input >>> input {
     text-align: center
+  }
+
+  .item-value-span {
+      padding-right: 3.5em;
+  }
+
+  .item-count-span {
+      /*float:right;*/
+      position: absolute;
+      right: 0.5em;
   }
 
 </style>

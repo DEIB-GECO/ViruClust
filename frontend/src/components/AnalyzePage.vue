@@ -17,12 +17,12 @@
          TIME VS TIME
       </v-tab>
 
-      <v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+      <!--<v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
          COUNTRY VS LINEAGE
-      </v-tab>
+      </v-tab>-->
 
-      <v-tab id="tab3"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
-         REGION VS COUNTRY
+      <v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+         GEO VS GEO
       </v-tab>
 
       <v-tab-item>
@@ -33,9 +33,9 @@
         <AnalyzeTimeLinCou></AnalyzeTimeLinCou>
       </v-tab-item>
 
-      <v-tab-item>
+      <!--<v-tab-item>
         <AnalyzeLineageAndCountry></AnalyzeLineageAndCountry>
-      </v-tab-item>
+      </v-tab-item>-->
 
       <v-tab-item>
          <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
@@ -56,7 +56,6 @@
 
 <script>
 import AnalyzeDistributionLineageInGeo from "./AnalyzeDistributionLineageInGeo";
-import AnalyzeLineageAndCountry from "./AnalyzeLineageAndCountry";
 import AnalyzeProvinceRegion from "./AnalyzeProvinceRegion";
 import AnalyzeTimeLinCou from "./AnalyzeTimeLinCou";
 import axios from "axios";
@@ -64,7 +63,7 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
 export default {
   name: "AnalyzePage",
-  components: {AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeLineageAndCountry, AnalyzeDistributionLineageInGeo},
+  components: {AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
   data() {
     return {
       selectedTabAnalyze: 0,
@@ -88,7 +87,7 @@ export default {
     },
     selectedTabAnalyze(){
       let i = 0;
-      while(i < 4){
+      while(i < 3){
         let id = 'tab' + i;
         if (i === this.selectedTabAnalyze){
           let elem = document.getElementById(id);

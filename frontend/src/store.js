@@ -27,6 +27,9 @@ const state = {
     all_lineages: [],
     all_protein: [],
     timeRangesTargetAndBackground: {},
+
+    queryTime: {},
+    queryGeo: {},
 };
 
 const getters = {
@@ -121,6 +124,24 @@ const mutations = {
     setTimeRangesTargetAndBackground: (state, value) => {
         state.timeRangesTargetAndBackground = value;
     },
+     setQueryTimeField: (state, payload) => {
+        state.queryTime[payload.field] = payload.fieldQuery;
+    },
+    resetQueryTimeField: (state, field) => {
+        delete state.queryTime[field];
+    },
+    reloadQueryTime: (state) => {
+        state.queryTime = Object.assign({}, state.queryTime);
+    },
+    setQueryGeoField: (state, payload) => {
+        state.queryGeo[payload.field] = payload.fieldQuery;
+    },
+    resetQueryGeoField: (state, field) => {
+        delete state.queryGeo[field];
+    },
+    reloadQueryGeo: (state) => {
+        state.queryGeo = Object.assign({}, state.queryGeo);
+    },
 };
 
 const actions = {
@@ -143,6 +164,50 @@ const actions = {
                 commit('resetSelectedFilterField', field);
             }
             commit('reloadSelectedFilter');
+        }
+    },
+
+    setQueryTime({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.queryTime[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setQueryTimeField', newPayload);
+            } else {
+                commit('resetQueryTimeField', field);
+            }
+            commit('reloadQueryTime');
+        }
+    },
+
+    setQueryGeo({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.queryGeo[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setQueryGeoField', newPayload);
+            } else {
+                commit('resetQueryGeoField', field);
+            }
+            commit('reloadQueryGeo');
         }
     },
 

@@ -13,5 +13,5 @@ module.exports = {
           },
       }
   },
-  baseUrl: '/epiclust/',
+  baseUrl: '/viruclust/',
 }

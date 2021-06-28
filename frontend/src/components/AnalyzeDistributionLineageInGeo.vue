@@ -31,7 +31,14 @@
                   label="Specific Locality"
                   solo
                   hide-details
-                ></v-select>
+                  :item-text="getFieldText"
+                  :disabled="selectedGeo === null"
+                >
+                  <template slot="item" slot-scope="data">
+                        <span class="item-value-span">{{getFieldText(data.item)}}</span>
+                        <span class="item-count-span">{{data.item.count}}</span>
+                    </template>
+                </v-select>
               </v-flex>
               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-text-field v-model.number="selectedGeoCount" min="0" max="100" solo type="number" hide-details></v-text-field>
@@ -256,13 +263,43 @@ export default {
 
         });
     },
+    createPossibleSpecificGeoObject(){
+      let all_geo = this.all_geo;
+      let i = 0;
+      let geo = this.selectedGeo;
+      let len = all_geo.length;
+      let arr_all_specific_geo = [];
+      while(i < len){
+        let idx = arr_all_specific_geo.findIndex(item => item['value'] === all_geo[i][geo]);
+        if (idx === -1 && all_geo[i][geo] !== null) {
+          let elem = {'count': all_geo[i]['count'], 'value': all_geo[i][geo]};
+          arr_all_specific_geo.push(elem);
+        }
+        else if(all_geo[i][geo] !== null){
+          arr_all_specific_geo[idx]['count'] = arr_all_specific_geo[idx]['count'] + all_geo[i]['count'];
+        }
+        i = i + 1;
+      }
+      arr_all_specific_geo.sort( function( a, b ) {
+          a = a['value'].toLowerCase();
+          b = b['value'].toLowerCase();
+          return a < b ? -1 : a > b ? 1 : 0;
+        });
+      this.possibleSpecificGeo = arr_all_specific_geo;
+    },
+    getFieldText(item){
+      let name = '';
+      name = item['value'];
+      return name;
+    },
   },
   watch: {
     selectedGeo(){
       this.headerTableLineageCountry = [];
       this.rowsTableLineageCountry = [];
       if(this.selectedGeo !== null){
-        let array_specific_geo = [];
+        this.createPossibleSpecificGeoObject();
+        /*let array_specific_geo = [];
         this.all_geo.forEach(elem => {
           if(elem[this.selectedGeo] !== null) {
             if (!array_specific_geo.includes(elem[this.selectedGeo])) {
@@ -275,7 +312,7 @@ export default {
           b = b.toLowerCase();
           return a < b ? -1 : a > b ? 1 : 0;
         });
-        this.possibleSpecificGeo = array_specific_geo;
+        this.possibleSpecificGeo = array_specific_geo;*/
       }
     },
     selectedSpecificGeo() {
@@ -307,5 +344,15 @@ export default {
   /*  left: 0px;*/
   /*  z-index: 9998;*/
   /*  background: white;*/
+
+  .item-value-span {
+      padding-right: 3.5em;
+  }
+
+  .item-count-span {
+      /*float:right;*/
+      position: absolute;
+      right: 0.5em;
+  }
 
 </style>

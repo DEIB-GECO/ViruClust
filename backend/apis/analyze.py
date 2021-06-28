@@ -140,9 +140,12 @@ class FieldList(Resource):
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
-                mutation = 'S_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
+                # mutation = 'S_'
             else:
-                mutation = item['product'] + '_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
             single_item['mutation'] = mutation
             single_item['product'] = item['product']
@@ -157,7 +160,7 @@ class FieldList(Resource):
             single_item['numerator_target'] = item['count_seq']
             single_item['denominator_target'] = item['denominator_country']
 
-            epsilon = 0.001
+            epsilon = 0.00000001
             single_item['odd_ratio'] = (single_item['percentage_target'] + epsilon) / \
                                        (single_item['percentage_background'] + epsilon)
 
@@ -194,9 +197,12 @@ class FieldList(Resource):
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
-                mutation = 'S_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
+                # mutation = 'S_'
             else:
-                mutation = item['product'] + '_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
             single_item['mutation'] = mutation
             single_item['product'] = item['product']
@@ -213,7 +219,7 @@ class FieldList(Resource):
             single_item['numerator_target'] = item['count_seq']
             single_item['denominator_target'] = item['denominator_target']
 
-            epsilon = 0.001
+            epsilon = 0.00000001
             single_item['odd_ratio'] = (single_item['percentage_target'] + epsilon) / \
                                        (single_item['percentage_background'] + epsilon)
 
@@ -270,19 +276,25 @@ class FieldList(Resource):
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
-                mutation = 'S_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
+                # mutation = 'S_'
             else:
-                mutation = item['product'] + '_'
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
             single_item['mutation'] = mutation
             single_item['product'] = item['product']
             single_item['mutation_position'] = item['start_aa_original']
-            if 'country' in item:
-                single_item['target'] = item['region']
-                single_item['background'] = item['country']
-            else:
-                single_item['target'] = item['province']
-                single_item['background'] = item['region']
+            # if 'country' in item:
+            #    single_item['target'] = item['region']
+            #    single_item['background'] = item['country']
+            # else:
+            #    single_item['target'] = item['province']
+            #    single_item['background'] = item['region']
+            single_item['target'] = item['target']
+            single_item['background'] = item['background']
+
             single_item['lineage'] = item['lineage']
             single_item['count_target'] = item['count_seq']
             single_item['percentage_background'] = item['fraction']
@@ -292,7 +304,7 @@ class FieldList(Resource):
             single_item['numerator_target'] = item['count_seq']
             single_item['denominator_target'] = item['denominator_target']
 
-            epsilon = 0.001
+            epsilon = 0.00000001
             single_item['odd_ratio'] = (single_item['percentage_target'] + epsilon) / \
                                        (single_item['percentage_background'] + epsilon)
 
@@ -306,3 +318,23 @@ class FieldList(Resource):
             mutation_table2.append(single_item)
 
         return mutation_table2
+
+
+@api.route('/selectorQuery')
+class FieldList(Resource):
+    @api.doc('selector_query')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/selectorQuery', json_data, headers)
+
+        response = conn.getresponse()
+        all_result = response.read().decode()
+        all_result = json.loads(all_result)
+
+        return all_result

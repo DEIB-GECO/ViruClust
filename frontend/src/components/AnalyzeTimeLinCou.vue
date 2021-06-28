@@ -9,32 +9,38 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-                 <h2>SELECT LINEAGE AND COUNTRY OF INTEREST</h2>
+                 <h2>SELECT LINEAGE AND LOCATION OF INTEREST</h2>
                </v-flex>
                <!--<v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(both fields can be empty, meaning that all lineages/countries are interesting)</h4>
                </v-flex>-->
-                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                  <v-select
-                    v-model="selectedLineage"
-                    :items="possibleLineage"
-                    label="Lineage"
-                    solo
-                    hide-details
-                    :item-text="getFieldText"
-                  >
-                  </v-select>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                  <v-select
-                    v-model="selectedCountry"
-                    :items="possibleCountry"
-                    label="Country"
-                    solo
-                    hide-details
-                  >
-                  </v-select>
-                </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryTime
+                  field = 'lineage'>
+                 </SelectorsQueryTime>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryTime
+                  field = 'geo_group'>
+                 </SelectorsQueryTime>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryTime
+                  field = 'country'>
+                 </SelectorsQueryTime>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryTime
+                  field = 'region'>
+                 </SelectorsQueryTime>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryTime
+                  field = 'province'>
+                 </SelectorsQueryTime>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyChosenLineageCountry()"
@@ -44,6 +50,10 @@
                       CHOSEN
                   </v-btn>
                 </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px;"
+                        v-if = "chosenApplied && timeContent.length !== 0">
+                 <h2>SELECT TARGET AND BACKGROUND:</h2>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <TimeDistributionChart
                      v-if="chosenApplied && timeContent.length !== 0"
@@ -239,6 +249,137 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR BACKGROUND:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundNumerator"
+                                            :max = "totalMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR TARGET:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetNumerator"
+                                            :max = "totalMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>ODDS RATIO:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinOddsRatio"
+                                            :max = "totalMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
                          @click="applyFilterOnTable()"
@@ -250,6 +391,58 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
                  <h2>TABLE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>INFO:</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <span>
+                            <b> - TARGET: </b>
+                            <span>{{rowsAnalyzeTime[0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{rowsAnalyzeTime[0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> - BACKGROUND: </b>
+                            <span>{{rowsAnalyzeTime[0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{rowsAnalyzeTime[0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>SELECT PROTEIN:</h5>
+                        </v-card-title>
+                        <v-card-text style="margin-top: 30px">
+                          <v-select
+                            v-model="selectedProteinForTable"
+                            :items="possibleProteinForTable"
+                            label="Protein"
+                            solo
+                            clearable
+                            hide-details
+                          >
+                          </v-select>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
@@ -266,6 +459,13 @@
                           <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerAnalyzeTime"
                               :key="header.value" v-show="header.show">
                                 <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
+                                <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                <span v-else-if="header.value === 'odd_ratio'">
+                                  <span v-if="item['percentage_background'] === 0"> INF </span>
+                                  <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                </span>
+                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}})</span>
+                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}})</span>
                                 <span v-else>{{item[header.value]}}</span>
                           </td>
                         </tr>
@@ -336,7 +536,7 @@
                       <v-select
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
-                        label="Lineage"
+                        label="Protein"
                         solo
                         hide-details
                       >
@@ -382,22 +582,19 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import PValueBarChart from "./PValueBarChart";
 import TimeDistributionChart from "./TimeDistributionChart";
+import SelectorsQueryTime from "./SelectorsQueryTime";
 
 export default {
   name: "AnalyzeTimeLinCou",
-  components: {TimeDistributionChart, PValueBarChart},
+  components: {SelectorsQueryTime, TimeDistributionChart, PValueBarChart},
   data() {
     return {
       overlay: false,
-      selectedLineage: null,
-      possibleLineage: [],
-      selectedCountry: null,
-      possibleCountry: [],
       rowsAnalyzeTime: [],
       fixedRowAnalyzeTime: [],
       headerAnalyzeTime: [],
-      sortByAnalyzeTime: [],
-      sortDescAnalyzeTime: [],
+      sortByAnalyzeTime: ['odd_ratio'],
+      sortDescAnalyzeTime: [true],
       maxNumeratorTarget: 100,
       maxDenominatorTarget: 100,
       tableApplied: false,
@@ -415,23 +612,36 @@ export default {
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
 
+      selectedProteinForTable: null,
+      possibleProteinForTable: [],
+
       selectedMinBackgroundFrequency: 0,
       selectedMaxBackgroundFrequency: 100,
       selectedMinTargetFrequency: 0,
       selectedMaxTargetFrequency: 100,
       selectedMinPValue: 0,
       selectedMaxPValue: 1,
+      selectedMinBackgroundNumerator: 0,
+      selectedMaxBackgroundNumerator: 100,
+      selectedMinTargetNumerator: 0,
+      selectedMaxTargetNumerator: 100,
+      selectedMinOddsRatio: 0,
+      selectedMaxOddsRatio: 100,
       selectedMinPValueBarChart: 0,
       selectedMaxPValueBarChart: 1,
+
+      totalMaxTargetNumerator: 0,
+      totalMaxBackgroundNumerator: 0,
+      totalMaxOddsRatio: 0,
     }
   },
   computed: {
-    ...mapState(['all_lineages', 'all_geo', 'all_protein', 'timeRangesTargetAndBackground']),
+    ...mapState(['all_protein', 'timeRangesTargetAndBackground', 'queryTime']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations([]),
-    ...mapActions([]),
+    ...mapActions(['setQueryTime']),
     getDaysArray(start, end) {
       for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
         arr.push(new Date(dt).toISOString().slice(0, 10));
@@ -515,20 +725,8 @@ export default {
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
       this.overlay = true;
 
-      let lineage ;
-      let country ;
-      if(this.selectedLineage === null){
-        lineage = 'empty';
-      }
-      else{
-        lineage = this.selectedLineage;
-      }
-      if(this.selectedCountry === null){
-        country = 'empty';
-      }
-      else{
-        country = this.selectedCountry;
-      }
+      let query = JSON.parse(JSON.stringify(this.queryTime));
+
       let start_target_time = this.timeRangesTargetAndBackground['start_target_time'];
       let end_target_time = this.timeRangesTargetAndBackground['end_target_time'];
       let start_background_time = this.timeRangesTargetAndBackground['start_background_time'];
@@ -542,9 +740,11 @@ export default {
         array_protein = this.selectedProtein;
       }
 
-      let to_send = {'lineage': lineage, 'country': [country], 'start_target': start_target_time,
+      let to_send = {'start_target': start_target_time,
               'end_target': end_target_time, 'start_background': start_background_time,
               'end_background': end_background_time, 'protein': array_protein}
+
+      to_send['query'] = query;
 
       axios.post(url, to_send)
         .then((res) => {
@@ -553,16 +753,16 @@ export default {
         .then((res) => {
           let headers = [
               {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'odd_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
           ];
 
           this.headerAnalyzeTime= headers;
@@ -571,10 +771,15 @@ export default {
 
           let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
           this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+          this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
           let rowTable = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
-          this.maxNumeratorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
-          this.maxDenominatorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
+          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable.map(function(o) { return o['odd_ratio']; })));
+          this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
 
           this.tableApplied = true;
           this.overlay = false;
@@ -587,14 +792,27 @@ export default {
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
           let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
           return (background_frequency >= that.selectedMinBackgroundFrequency
               && background_frequency <= that.selectedMaxBackgroundFrequency
               && target_frequency >= that.selectedMinTargetFrequency
               && target_frequency <= that.selectedMaxTargetFrequency
               && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue);
+              && p_value <= that.selectedMaxPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
         })
       this.rowsAnalyzeTime = result;
+
+      let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
+      this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
     },
     applyFilterPValueChart(){
       let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
@@ -635,22 +853,9 @@ export default {
       let url = `/analyze/analyzeTimeDistributionCountryLineage`;
       this.overlay = true;
 
-      let lineage ;
-      let country ;
-      if(this.selectedLineage === null){
-        lineage = 'empty';
-      }
-      else{
-        lineage = this.selectedLineage;
-      }
-      if(this.selectedCountry === null){
-        country = 'empty';
-      }
-      else{
-        country = this.selectedCountry;
-      }
+      let query = JSON.parse(JSON.stringify(this.queryTime));
 
-      let to_send = {'lineage': lineage, 'country': country};
+      let to_send = {'query': query};
 
       axios.post(url, to_send)
         .then((res) => {
@@ -686,50 +891,39 @@ export default {
     }
   },
   watch: {
+    'queryTime.geo_group': function (){
+        this.setQueryTime({field: 'country', list: null});
+        this.setQueryTime({field: 'region', list: null});
+        this.setQueryTime({field: 'province', list: null});
+    },
+    'queryTime.country': function (){
+        this.setQueryTime({field: 'region', list: null});
+        this.setQueryTime({field: 'province', list: null});
+    },
+    'queryTime.region': function (){
+        this.setQueryTime({field: 'province', list: null});
+    },
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
-    all_lineages(){
-      this.possibleLineage = this.all_lineages;
-    },
-    all_geo(){
-      let array_specific_geo = [];
-      this.all_geo.forEach(elem => {
-        if(elem['country'] !== null) {
-          if (!array_specific_geo.includes(elem['country'])) {
-            array_specific_geo.push(elem['country']);
-          }
-        }
-      })
-      array_specific_geo.sort( function( a, b ) {
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        return a < b ? -1 : a > b ? 1 : 0;
-      });
-      this.possibleCountry = array_specific_geo;
-    },
-    selectedLineage(){
+    queryTime(){
        this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
+       this.selectedProteinTable = null;
        this.tableApplied = false;
        this.chosenApplied = false;
        this.selectedProtein = null;
     },
-    selectedCountry() {
-      this.pValueBarChartApplied = false;
-      this.selectedProteinForPValue = null;
-      this.tableApplied = false;
-      this.chosenApplied = false;
-      this.selectedProtein = null;
-    },
     selectedProtein(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
+      this.selectedProteinTable = null;
       this.tableApplied = false;
     },
     timeRangesTargetAndBackground(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
+      this.selectedProteinTable = null;
       this.tableApplied = false;
     },
     selectedProteinForPValue(){
@@ -783,6 +977,54 @@ export default {
         this.selectedMaxPValue = 1;
       }
     },
+    selectedMinBackgroundNumerator(){
+      if (this.selectedMinBackgroundNumerator < 0 ){
+        this.selectedMinBackgroundNumerator= 0;
+      }
+      else if (this.selectedMinBackgroundNumerator > this.selectedMaxBackgroundNumerator){
+        this.selectedMinBackgroundNumerator = this.selectedMaxBackgroundNumerator;
+      }
+    },
+    selectedMaxBackgroundNumerator(){
+      if (this.selectedMaxBackgroundNumerator < this.selectedMinBackgroundNumerator ){
+        this.selectedMaxBackgroundNumerator = this.selectedMinBackgroundNumerator;
+      }
+      else if (this.selectedMaxBackgroundNumerator > this.totalMaxBackgroundNumerator){
+        this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+      }
+    },
+    selectedMinTargetNumerator(){
+      if (this.selectedMinTargetNumerator < 0 ){
+        this.selectedMinTargetNumerator = 0;
+      }
+      else if (this.selectedMinTargetNumerator > this.selectedMaxTargetNumerator){
+        this.selectedMinTargetNumerator = this.selectedMaxTargetNumerator;
+      }
+    },
+    selectedMaxTargetNumerator(){
+      if (this.selectedMaxTargetNumerator < this.selectedMinTargetNumerator ){
+        this.selectedMaxTargetNumerator = this.selectedMinTargetNumerator;
+      }
+      else if (this.selectedMaxTargetNumerator > this.totalMaxTargetNumerator){
+        this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+      }
+    },
+    selectedMinOddsRatio(){
+      if (this.selectedMinOddsRatio < 0 ){
+        this.selectedMinOddsRatio = 0;
+      }
+      else if (this.selectedMinOddsRatio > this.selectedMaxOddsRatio){
+        this.selectedMinOddsRatio = this.selectedMaxOddsRatio;
+      }
+    },
+    selectedMaxOddsRatio(){
+      if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio ){
+        this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
+      }
+      else if (this.selectedMaxOddsRatio > this.totalMaxOddsRatio){
+        this.selectedMaxOddsRatio = this.totalMaxOddsRatio;
+      }
+    },
     selectedMinPValueBarChart(){
       this.pValueBarChartApplied = false;
       if (this.selectedMinPValueBarChart < 0 ){
@@ -801,35 +1043,70 @@ export default {
         this.selectedMaxPValueBarChart = 1;
       }
     },
+    selectedProteinForTable(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
+      if(this.selectedProteinForTable !== null) {
+        let that = this;
+        result = result.filter(function (i){
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                && odds_ratio >= that.selectedMinOddsRatio
+                && odds_ratio <= that.selectedMaxOddsRatio
+                && product === that.selectedProteinForTable);
+          })
+      }
+      else{
+        var that = this;
+        result = result.filter(function (i){
+          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+          let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
+        })
+      }
+      this.rowsAnalyzeTime = result;
+    }
   },
   mounted() {
-
-    let array_specific_geo = [];
-      this.all_geo.forEach(elem => {
-        if(elem['country'] !== null) {
-          if (!array_specific_geo.includes(elem['country'])) {
-            array_specific_geo.push(elem['country']);
-          }
-        }
-      })
-      array_specific_geo.sort( function( a, b ) {
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        return a < b ? -1 : a > b ? 1 : 0;
-      });
-      this.possibleCountry = array_specific_geo;
-
       this.possibleProtein = this.all_protein;
-      this.possibleLineage = this.all_lineages;
   }
 }
 </script>
 
 <style scoped>
 
-  .table_analyze_time table > tbody > tr > td:nth-child(5),
-  .table_analyze_time table > tbody > tr > td:nth-child(8),
-  .table_analyze_time table > tbody > tr > td:nth-child(11){
+  .table_analyze_time table > tbody > tr > td:nth-child(1),
+  .table_analyze_time table > tbody > tr > td:nth-child(3),
+  .table_analyze_time table > tbody > tr > td:nth-child(4){
     box-shadow: inset -0.5px 0 0 0 grey;
   }
 

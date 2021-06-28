@@ -4,77 +4,107 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            <h1>REGION (TARGET) vs COUNTRY (BACKGROUND)</h1>
+            <h1>GEO (TARGET) vs GEO (BACKGROUND)</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT SPECIFIC GEO LOCALITY (until REGION is selected)</h2>
+               <h2>SELECT LINEAGE AND LOCATION (TARGET)</h2>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                <v-select
-                  v-model="selectedContinent_forProvReg"
-                  :items="possibleContinent_forProvReg"
-                  label="Continent"
-                  solo
-                  hide-details
-                ></v-select>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               <h4>(Background will be 1 level of location above)</h4>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                <v-select
-                  v-model="selectedCountry_forProvReg"
-                  :items="possibleCountry_forProvReg"
-                  label="Country"
-                  solo
-                  hide-details
-                  :disabled="selectedContinent_forProvReg === null"
-                ></v-select>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
-               v-if="selectedCountryToLower !== 'usa'">
-                <RegionProvincePieChart
-                  v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"
-                  :nameGeo="geoSelectedName"
-                  :geoContent="geoSelectedContent">
-                </RegionProvincePieChart>
-              </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"
-              v-if="selectedCountryToLower !== 'usa'">
-                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>
-              </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                <v-select
-                  v-model="selectedRegion_forProvReg"
-                  :items="possibleRegion_forProvReg"
-                  label="Region"
-                  solo
-                  hide-details
-                  :disabled="selectedCountry_forProvReg === null"
-                ></v-select>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
-               v-if="selectedCountryToLower === 'usa'">
-                <RegionProvincePieChart
-                  v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"
-                  :nameGeo="geoSelectedName"
-                  :geoContent="geoSelectedContent">
-                </RegionProvincePieChart>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryGeo
+                  field = 'lineage'>
+                 </SelectorsQueryGeo>
                </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"
-              v-if="selectedCountryToLower === 'usa'">
-                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>
-              </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"
-                      v-if="(selectedCountryToLower === 'usa')">
-                <v-select
-                  v-model="selectedProvince_forProvReg"
-                  :items="possibleProvince_forProvReg"
-                  label="Province"
-                  solo
-                  hide-details
-                  :disabled="(selectedCountryToLower !== 'usa' || selectedRegion_forProvReg === null)"
-                ></v-select>
-              </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryGeo
+                  field = 'geo_group'>
+                 </SelectorsQueryGeo>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryGeo
+                  field = 'country'>
+                 </SelectorsQueryGeo>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryGeo
+                  field = 'region'>
+                 </SelectorsQueryGeo>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <SelectorsQueryGeo
+                  field = 'province'>
+                 </SelectorsQueryGeo>
+               </v-flex>
+<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
+<!--                <v-select-->
+<!--                  v-model="selectedContinent_forProvReg"-->
+<!--                  :items="possibleContinent_forProvReg"-->
+<!--                  label="Continent"-->
+<!--                  solo-->
+<!--                  hide-details-->
+<!--                ></v-select>-->
+<!--              </v-flex>-->
+<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
+<!--                <v-select-->
+<!--                  v-model="selectedCountry_forProvReg"-->
+<!--                  :items="possibleCountry_forProvReg"-->
+<!--                  label="Country"-->
+<!--                  solo-->
+<!--                  hide-details-->
+<!--                  :disabled="selectedContinent_forProvReg === null"-->
+<!--                ></v-select>-->
+<!--              </v-flex>-->
+<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
+<!--               v-if="selectedCountryToLower !== 'usa'">-->
+<!--                <RegionProvincePieChart-->
+<!--                  v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"-->
+<!--                  :nameGeo="geoSelectedName"-->
+<!--                  :geoContent="geoSelectedContent">-->
+<!--                </RegionProvincePieChart>-->
+<!--              </v-flex>-->
+<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
+<!--              v-if="selectedCountryToLower !== 'usa'">-->
+<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
+<!--              </v-flex>-->
+<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
+<!--                <v-select-->
+<!--                  v-model="selectedRegion_forProvReg"-->
+<!--                  :items="possibleRegion_forProvReg"-->
+<!--                  label="Region"-->
+<!--                  solo-->
+<!--                  hide-details-->
+<!--                  :disabled="selectedCountry_forProvReg === null"-->
+<!--                ></v-select>-->
+<!--              </v-flex>-->
+<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
+<!--               v-if="selectedCountryToLower === 'usa'">-->
+<!--                <RegionProvincePieChart-->
+<!--                  v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"-->
+<!--                  :nameGeo="geoSelectedName"-->
+<!--                  :geoContent="geoSelectedContent">-->
+<!--                </RegionProvincePieChart>-->
+<!--               </v-flex>-->
+<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
+<!--              v-if="selectedCountryToLower === 'usa'">-->
+<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
+<!--              </v-flex>-->
+<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"-->
+<!--                      v-if="(selectedCountryToLower === 'usa')">-->
+<!--                <v-select-->
+<!--                  v-model="selectedProvince_forProvReg"-->
+<!--                  :items="possibleProvince_forProvReg"-->
+<!--                  label="Province"-->
+<!--                  solo-->
+<!--                  hide-details-->
+<!--                  :disabled="(selectedCountryToLower !== 'usa' || selectedRegion_forProvReg === null)"-->
+<!--                ></v-select>-->
+<!--              </v-flex>-->
              </v-layout>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
                <h2>SELECT PROTEINS TO ANALYZE</h2>
@@ -101,8 +131,7 @@
                        color="red"
                        class="white--text"
                        style="margin-top: 20px"
-                       :disabled="!((selectedCountryToLower === 'usa' && selectedProvince_forProvReg !== null)
-                              || (selectedCountryToLower !== 'usa' && selectedRegion_forProvReg !== null))"
+                       :disabled="!(queryGeo['geo_group'])"
                 >
                     APPLY
                 </v-btn>
@@ -248,6 +277,137 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR BACKGROUND:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundNumerator"
+                                            :max = "totalMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR TARGET:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetNumerator"
+                                            :max = "totalMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>ODDS RATIO:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxOddsRatio"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinOddsRatio"
+                                            :max = "totalMaxOddsRatio"
+                                            step = "0.1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
                          @click="applyFilterOnTableProvReg()"
@@ -259,6 +419,58 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
                  <h2>TABLE</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsTableProvReg.length !== 0">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>INFO:</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <span>
+                            <b> - TARGET: </b>
+                            <span>{{rowsTableProvReg[0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{rowsTableProvReg[0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> - BACKGROUND: </b>
+                            <span>{{rowsTableProvReg[0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{rowsTableProvReg[0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>SELECT PROTEIN:</h5>
+                        </v-card-title>
+                        <v-card-text style="margin-top: 30px">
+                          <v-select
+                            v-model="selectedProteinForTable"
+                            :items="possibleProteinForTable"
+                            label="Protein"
+                            solo
+                            clearable
+                            hide-details
+                          >
+                          </v-select>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
@@ -306,7 +518,14 @@
                                     </v-card>
                                   </v-dialog>
                                 </span>
-                                <span v-else-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
+                                <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
+                                <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                <span v-else-if="header.value === 'odd_ratio'">
+                                  <span v-if="item['percentage_background'] === 0"> INF </span>
+                                  <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                </span>
+                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}})</span>
+                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}})</span>
                                 <span v-else>{{item[header.value]}}</span>
                           </td>
                         </tr>
@@ -377,7 +596,7 @@
                       <v-select
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
-                        label="Lineage"
+                        label="Protein"
                         solo
                         hide-details
                       >
@@ -421,12 +640,12 @@
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
-import RegionProvincePieChart from "./RegionProvincePieChart";
 import PValueBarChart from "./PValueBarChart";
+import SelectorsQueryGeo from "./SelectorsQueryGeo";
 
 export default {
   name: "AnalyzeProvinceRegion",
-  components: {PValueBarChart, RegionProvincePieChart},
+  components: {SelectorsQueryGeo, PValueBarChart},
   data() {
     return {
       overlay: false,
@@ -444,8 +663,8 @@ export default {
       headerTableProvReg: [],
       rowsTableProvReg: [],
       fixedRowsTableProvReg: [],
-      sortByTableProvReg: [],
-      sortDescTableProvReg: [],
+      sortByTableProvReg: ['odd_ratio'],
+      sortDescTableProvReg: [true],
       geoSelectedName: '',
       geoSelectedContent: [],
       pValueName: 'p_value_province_region',
@@ -458,18 +677,31 @@ export default {
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
 
+      selectedProteinForTable: null,
+      possibleProteinForTable: [],
+
       selectedMinBackgroundFrequency: 0,
       selectedMaxBackgroundFrequency: 100,
       selectedMinTargetFrequency: 0,
       selectedMaxTargetFrequency: 100,
       selectedMinPValue: 0,
       selectedMaxPValue: 1,
+      selectedMinBackgroundNumerator: 0,
+      selectedMaxBackgroundNumerator: 100,
+      selectedMinTargetNumerator: 0,
+      selectedMaxTargetNumerator: 100,
+      selectedMinOddsRatio: 0,
+      selectedMaxOddsRatio: 100,
       selectedMinPValueBarChart: 0,
       selectedMaxPValueBarChart: 1,
+
+      totalMaxTargetNumerator: 0,
+      totalMaxBackgroundNumerator: 0,
+      totalMaxOddsRatio: 0,
     }
   },
   computed: {
-    ...mapState(['all_geo', 'all_protein']),
+    ...mapState(['all_geo', 'all_protein', 'queryGeo']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -482,7 +714,7 @@ export default {
   },
   methods: {
     ...mapMutations([]),
-    ...mapActions([]),
+    ...mapActions(['setQueryGeo']),
     downloadTable(table){
       let text = "";
       let result_sorted = this.sortResults(table);
@@ -560,34 +792,47 @@ export default {
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
           let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
           return (background_frequency >= that.selectedMinBackgroundFrequency
               && background_frequency <= that.selectedMaxBackgroundFrequency
               && target_frequency >= that.selectedMinTargetFrequency
               && target_frequency <= that.selectedMaxTargetFrequency
               && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue);
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
         })
       this.rowsTableProvReg = result;
+
+      let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+      this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
     },
     applyTableProvReg(){
       let url = `/analyze/analyzeMutationProvinceRegion`;
-      let type_geo1;
-      let type_geo2;
-      let geo1;
-      let geo2;
       this.overlay = true;
-      if(this.selectedProvince_forProvReg !== null){
-        type_geo1 = 'region';
-        type_geo2 = 'province';
-        geo1 = this.selectedRegion_forProvReg;
-        geo2 = this.selectedProvince_forProvReg;
-      }
-      else{
-        type_geo1 = 'country';
-        type_geo2 = 'region';
-        geo1 = this.selectedCountry_forProvReg;
-        geo2 = this.selectedRegion_forProvReg;
-      }
+      // let type_geo1;
+      // let type_geo2;
+      // let geo1;
+      // let geo2;
+      // this.overlay = true;
+      // if(this.selectedProvince_forProvReg !== null){
+      //   type_geo1 = 'region';
+      //   type_geo2 = 'province';
+      //   geo1 = this.selectedRegion_forProvReg;
+      //   geo2 = this.selectedProvince_forProvReg;
+      // }
+      // else{
+      //   type_geo1 = 'country';
+      //   type_geo2 = 'region';
+      //   geo1 = this.selectedCountry_forProvReg;
+      //   geo2 = this.selectedRegion_forProvReg;
+      // }
       let array_protein = [];
       if(this.selectedProtein === null){
         array_protein = [];
@@ -596,8 +841,9 @@ export default {
         array_protein = this.selectedProtein;
       }
 
-      let to_send = {'type_geo1': type_geo1, 'geo1': geo1,
-                     'type_geo2': type_geo2, 'geo2': geo2,
+      let query = JSON.parse(JSON.stringify(this.queryGeo));
+
+      let to_send = {'query': query,
                      'protein': array_protein};
       axios.post(url, to_send)
         .then((res) => {
@@ -606,21 +852,17 @@ export default {
         .then((res) => {
           let headers = [
               {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'product', 'value': 'product', 'show': true, 'align': 'center', 'width': '20vh'},
-              //{'text': 'start_aa_original', 'value': 'start_aa_original', 'show': true, 'align': 'center', 'width': '20vh'},
-              //{'text': 'sequence_aa_original', 'value': 'sequence_aa_original', 'show': true, 'align': 'center', 'width': '20vh'},
-              //{'text': 'sequence_aa_alternative', 'value': 'sequence_aa_alternative', 'show': true, 'align': 'center', 'width': '20vh'},
-              {'text': 'odd_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
           ];
           this.headerTableProvReg = headers;
           this.rowsTableProvReg = res;
@@ -628,10 +870,15 @@ export default {
 
           let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
           this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+          this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
           let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-          this.maxNumeratorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
-          this.maxDenominatorTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
+          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable.map(function(o) { return o['odd_ratio']; })));
+          this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
 
           this.tableApplied = true;
           this.overlay = false;
@@ -674,10 +921,30 @@ export default {
     }
   },
   watch: {
+    'queryGeo.geo_group': function (){
+        this.setQueryGeo({field: 'country', list: null});
+        this.setQueryGeo({field: 'region', list: null});
+        this.setQueryGeo({field: 'province', list: null});
+    },
+    'queryGeo.country': function (){
+        this.setQueryGeo({field: 'region', list: null});
+        this.setQueryGeo({field: 'province', list: null});
+    },
+    'queryGeo.region': function (){
+        this.setQueryGeo({field: 'province', list: null});
+    },
+    queryGeo(){
+       this.pValueBarChartApplied = false;
+       this.selectedProteinForPValue = null;
+       this.selectedProteinTable = null;
+       this.tableApplied = false;
+       this.selectedProtein = null;
+    },
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
     selectedContinent_forProvReg(){
+      this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.selectedProtein = null;
@@ -711,6 +978,7 @@ export default {
       }
     },
     selectedCountry_forProvReg(){
+      this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.selectedProtein = null;
@@ -768,6 +1036,7 @@ export default {
       }
     },
     selectedRegion_forProvReg(){
+      this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.selectedProtein = null;
@@ -823,6 +1092,7 @@ export default {
       }
     },
     selectedProvince_forProvReg(){
+      this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.selectedProtein = null;
@@ -857,6 +1127,7 @@ export default {
       this.possibleContinent_forProvReg = array_specific_geo;
     },
     selectedProtein(){
+      this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -912,6 +1183,54 @@ export default {
         this.selectedMaxPValue = 1;
       }
     },
+    selectedMinBackgroundNumerator(){
+      if (this.selectedMinBackgroundNumerator < 0 ){
+        this.selectedMinBackgroundNumerator= 0;
+      }
+      else if (this.selectedMinBackgroundNumerator > this.selectedMaxBackgroundNumerator){
+        this.selectedMinBackgroundNumerator = this.selectedMaxBackgroundNumerator;
+      }
+    },
+    selectedMaxBackgroundNumerator(){
+      if (this.selectedMaxBackgroundNumerator < this.selectedMinBackgroundNumerator ){
+        this.selectedMaxBackgroundNumerator = this.selectedMinBackgroundNumerator;
+      }
+      else if (this.selectedMaxBackgroundNumerator > this.totalMaxBackgroundNumerator){
+        this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+      }
+    },
+    selectedMinTargetNumerator(){
+      if (this.selectedMinTargetNumerator < 0 ){
+        this.selectedMinTargetNumerator = 0;
+      }
+      else if (this.selectedMinTargetNumerator > this.selectedMaxTargetNumerator){
+        this.selectedMinTargetNumerator = this.selectedMaxTargetNumerator;
+      }
+    },
+    selectedMaxTargetNumerator(){
+      if (this.selectedMaxTargetNumerator < this.selectedMinTargetNumerator ){
+        this.selectedMaxTargetNumerator = this.selectedMinTargetNumerator;
+      }
+      else if (this.selectedMaxTargetNumerator > this.totalMaxTargetNumerator){
+        this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+      }
+    },
+    selectedMinOddsRatio(){
+      if (this.selectedMinOddsRatio < 0 ){
+        this.selectedMinOddsRatio = 0;
+      }
+      else if (this.selectedMinOddsRatio > this.selectedMaxOddsRatio){
+        this.selectedMinOddsRatio = this.selectedMaxOddsRatio;
+      }
+    },
+    selectedMaxOddsRatio(){
+      if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio ){
+        this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
+      }
+      else if (this.selectedMaxOddsRatio > this.totalMaxOddsRatio){
+        this.selectedMaxOddsRatio = this.totalMaxOddsRatio;
+      }
+    },
     selectedMinPValueBarChart(){
       this.pValueBarChartApplied = false;
       if (this.selectedMinPValueBarChart < 0 ){
@@ -930,6 +1249,58 @@ export default {
         this.selectedMaxPValueBarChart = 1;
       }
     },
+    selectedProteinForTable(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
+      if(this.selectedProteinForTable !== null) {
+        let that = this;
+        result = result.filter(function (i){
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                && odds_ratio >= that.selectedMinOddsRatio
+                && odds_ratio <= that.selectedMaxOddsRatio
+                && product === that.selectedProteinForTable);
+          })
+      }
+      else{
+        var that = this;
+        result = result.filter(function (i){
+          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+          let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              && odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio);
+        })
+      }
+      this.rowsTableProvReg = result;
+    }
   },
   mounted() {
     let array_specific_geo = [];
@@ -953,9 +1324,9 @@ export default {
 </script>
 
 <style scoped>
-  .table_prov_reg table > tbody > tr > td:nth-child(6),
-  .table_prov_reg table > tbody > tr > td:nth-child(9),
-  .table_prov_reg table > tbody > tr > td:nth-child(12){
+  .table_prov_reg table > tbody > tr > td:nth-child(1),
+  .table_prov_reg table > tbody > tr > td:nth-child(3),
+  .table_prov_reg table > tbody > tr > td:nth-child(4){
     box-shadow: inset -0.5px 0 0 0 grey;
   }
 

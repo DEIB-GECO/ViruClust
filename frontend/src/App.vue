@@ -15,7 +15,7 @@
         />
       </div>
       <v-toolbar-title class="headline" style="font-size: 32px !important; margin-left: 20px">
-          <span>Epi</span>
+          <span>Viru</span>
           <span class="font-weight-light">Clust</span>
       </v-toolbar-title>
     </v-app-bar>
