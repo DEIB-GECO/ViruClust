@@ -295,7 +295,9 @@ export default {
       this.renderGraphFilterDate();
     },
     translateIndexToDate(index){
-      return this.timeContent[index].name;
+      if(this.timeContent[index]) {
+        return this.timeContent[index].name;
+      }
     },
     translateDateToIndex(date){
       let index = this.timeContent.findIndex(function(item){

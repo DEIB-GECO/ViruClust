@@ -2,7 +2,8 @@
   <v-layout row wrap justify-center>
      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
        <v-layout row wrap justify-center>
-          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+          v-if="field !== 'lineage'">
             <SelectorsPieChart
                 :nameField = "field"
                 :fieldContent= "possibleValues"
