@@ -11,13 +11,23 @@
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                <h2>SELECT LINEAGE, TIME RANGE AND LOCATION (TARGET)</h2>
               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               <h4>(Background will be 1 level above)</h4>
-              </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'lineage'>
                  </SelectorsQueryGeo>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                  <h3>Select "granularity" distance between target and background</h3>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                 <v-select
+                    v-model="selectedNumLevelAboveBackground"
+                    :items="possibleNumLevelAboveBackground"
+                    label="# level above background"
+                    solo
+                    hide-details></v-select>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
@@ -131,13 +141,17 @@
                     </v-select>
                   </v-flex>
                </v-flex>
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px"
+             v-if="errorNumSeqQueryGeo">
+               <span style="color: red"> # sequences selected is too low (minimum 10)</span>
+             </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <v-btn
                        @click="applyTableProvReg()"
                        color="red"
                        class="white--text"
                        style="margin-top: 20px"
-                       :disabled="!(queryGeo['geo_group'])"
+                       :disabled="!(queryGeo['geo_group']) || errorNumSeqQueryGeo"
                 >
                     APPLY
                 </v-btn>
@@ -376,7 +390,7 @@
                     </v-card-title>
                     <v-card-text >
                       <v-layout row wrap justify-space-around style="margin-top: 10px">
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                               <span>MIN</span>
@@ -393,7 +407,7 @@
                             </v-flex>
                           </v-layout>
                         </v-flex>
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                               <span>MAX</span>
@@ -407,6 +421,19 @@
                                             step = "0.1"
                                             type="number">
                               </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                                <span>INF</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-bottom: 50px">
+                                <v-checkbox v-model="isInfinite"
+                                hide-details
+                                input-value="true">
+                                </v-checkbox>
                             </v-flex>
                           </v-layout>
                         </v-flex>
@@ -530,8 +557,10 @@
                                   <span v-if="item['percentage_background'] === 0"> INF </span>
                                   <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
                                 </span>
-                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}})</span>
-                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}})</span>
+                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                </span>
+                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                </span>
                                 <span v-else>{{item[header.value]}}</span>
                           </td>
                         </tr>
@@ -640,6 +669,41 @@
       ></v-progress-circular>
     </v-overlay>
 
+    <v-dialog
+        persistent
+        scrollable
+      v-model="dialogAccessionIds"
+      width="700"
+    >
+      <v-card>
+        <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+          Accession IDs
+          <v-spacer></v-spacer>
+          <v-btn
+            color="rgb(122, 139, 157)"
+            style="color:white;"
+            text
+            @click="downloadAccessionIds()"
+          >
+            DOWNLOAD
+          </v-btn>
+          <v-btn
+            color="rgb(122, 139, 157)"
+            style="color:white;"
+            text
+            @click="dialogAccessionIds = !dialogAccessionIds"
+          >
+            CLOSE
+          </v-btn>
+        </v-card-title>
+        <v-card-text style="padding: 50px">
+          <span v-for="acc_id in listAccessionIds" v-bind:key="acc_id">
+            <span> - {{acc_id}}</span><br>
+          </span>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -705,10 +769,17 @@ export default {
       totalMaxTargetNumerator: 0,
       totalMaxBackgroundNumerator: 0,
       totalMaxOddsRatio: 0,
+      isInfinite: true,
+
+      listAccessionIds: [],
+      dialogAccessionIds: false,
+
+      possibleNumLevelAboveBackground: [1,2,3,4]
     }
   },
   computed: {
-    ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo']),
+    ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'errorNumSeqQueryGeo',
+      'numLevelAboveBackground']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -717,10 +788,18 @@ export default {
       else{
         return this.selectedCountry_forProvReg;
       }
+    },
+    selectedNumLevelAboveBackground: {
+      get() {
+        return this.numLevelAboveBackground;
+      },
+      set(value){
+        this.setNumLevelAboveBackground(value);
+      }
     }
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['setNumLevelAboveBackground']),
     ...mapActions(['setQueryGeo']),
     downloadTable(table){
       let text = "";
@@ -812,8 +891,12 @@ export default {
               && background_numerator <= that.selectedMaxBackgroundNumerator
               && target_numerator >= that.selectedMinTargetNumerator
               && target_numerator <= that.selectedMaxTargetNumerator
-              && odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio);
+              &&
+                 ((odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio) ||
+                 (that.isInfinite
+              && odds_ratio > that.totalMaxOddsRatio)
+              ));
         })
       this.rowsTableProvReg = result;
 
@@ -856,8 +939,44 @@ export default {
         query['maxDate'] = this.stopDateQueryGeo;
       }
 
+      let query_false;
+      if(!query['country']){
+        query_false = 'geo_group'
+      }
+      else if(!query['region']){
+        let arr_geo = ['geo_group'];
+        let i = 0;
+        let len = arr_geo.length;
+        while (i<len && i<(this.numLevelAboveBackground-1)){
+          delete query[arr_geo[i]];
+          i = i + 1;
+        }
+        query_false = 'country'
+      }
+      else if(!query['province']){
+        let arr_geo = ['country', 'geo_group'];
+        let i = 0;
+        let len = arr_geo.length;
+        while (i<len && i<(this.numLevelAboveBackground-1)){
+          delete query[arr_geo[i]];
+          i = i + 1;
+        }
+        query_false = 'region'
+      }
+      else{
+        let arr_geo = ['region', 'country', 'geo_group'];
+        let i = 0;
+        let len = arr_geo.length;
+        while (i<len && i<(this.numLevelAboveBackground-1)){
+          delete query[arr_geo[i]];
+          i = i + 1;
+        }
+        query_false = 'province'
+      }
+
       let to_send = {'query': query,
-                     'protein': array_protein};
+                     'protein': array_protein,
+                    'query_false': query_false};
       axios.post(url, to_send)
         .then((res) => {
           return res.data;
@@ -886,11 +1005,17 @@ export default {
           this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
           let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['numerator_target']; }))
+          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
           this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
-          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
           this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
-          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable.map(function(o) { return o['odd_ratio']; })));
+          let rowTable2 = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+          rowTable2 = rowTable2.filter(function (i){
+              let perc = i['percentage_background'];
+              return perc !== 0;
+            }
+          );
+          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function(o) { return o['odd_ratio']; })));
           this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
 
           this.tableApplied = true;
@@ -931,9 +1056,82 @@ export default {
       this.pValueContent = arrayToBarChart;
       this.pValueName = 'p_value_province_region';
       this.pValueBarChartApplied = true;
+    },
+    openDialogAccession(type, item){
+      let url = `/analyze/getAccessionIds`;
+      this.overlay = true;
+      this.listAccessionIds = [];
+
+      let query = JSON.parse(JSON.stringify(this.queryGeo));
+      let query_false = '';
+      if(type === 'target'){
+        query['lineage'] = item['lineage'][0];
+        query['start_aa_original'] = item['start_aa_original'];
+        query['sequence_aa_original'] = item['sequence_aa_original'];
+        query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
+        query['minDateBackground'] = this.startDateQueryGeo;
+        query['maxDateBackground'] = this.stopDateQueryGeo;
+        query['product'] = item['product'];
+      }
+      else if(type === 'background'){
+        query['lineage'] = item['lineage'][0];
+        query['start_aa_original'] = item['start_aa_original'];
+        query['sequence_aa_original'] = item['sequence_aa_original'];
+        query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
+        query['minDateBackground'] = this.startDateQueryGeo;
+        query['maxDateBackground'] = this.stopDateQueryGeo;
+        query['product'] = item['product'];
+
+        if(!query['country']){
+          query_false = 'geo_group'
+        }
+        else if(!query['region']){
+          query_false = 'country'
+        }
+        else if(!query['province']){
+          query_false = 'region'
+        }
+        else{
+          query_false = 'province'
+        }
+      }
+
+      let to_send = {'query': query, 'query_false': query_false};
+      axios.post(url, to_send)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+          this.listAccessionIds = res[0]['acc_ids'];
+          this.overlay = false;
+          if(this.listAccessionIds !== null && this.listAccessionIds.length > 0) {
+            this.dialogAccessionIds = true;
+          }
+        })
+    },
+    downloadAccessionIds(){
+      let text = "";
+      for (let i=0; i<this.listAccessionIds.length; i=i+1){
+        text = text + this.listAccessionIds[i] + ';  ';
+      }
+      let filename = 'accession_ids.txt';
+      let element = document.createElement('a');
+      element.setAttribute('download', filename);
+      var data = new Blob([text]);
+      element.href = URL.createObjectURL(data);
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
     }
   },
   watch: {
+    numLevelAboveBackground(){
+      this.pValueBarChartApplied = false;
+     this.selectedProteinForPValue = null;
+     this.selectedProteinTable = null;
+     this.tableApplied = false;
+     this.selectedProtein = null;
+    },
     startDateQueryGeo(){
       this.pValueBarChartApplied = false;
      this.selectedProteinForPValue = null;
@@ -1298,8 +1496,12 @@ export default {
                 && background_numerator <= that.selectedMaxBackgroundNumerator
                 && target_numerator >= that.selectedMinTargetNumerator
                 && target_numerator <= that.selectedMaxTargetNumerator
-                && odds_ratio >= that.selectedMinOddsRatio
-                && odds_ratio <= that.selectedMaxOddsRatio
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                  && odds_ratio <= that.selectedMaxOddsRatio) ||
+                     (that.isInfinite
+                  && odds_ratio > that.totalMaxOddsRatio)
+                )
                 && product === that.selectedProteinForTable);
           })
       }
@@ -1322,8 +1524,12 @@ export default {
               && background_numerator <= that.selectedMaxBackgroundNumerator
               && target_numerator >= that.selectedMinTargetNumerator
               && target_numerator <= that.selectedMaxTargetNumerator
-              && odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio);
+              &&
+                 ((odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio) ||
+                 (that.isInfinite
+              && odds_ratio > that.totalMaxOddsRatio)
+              ));
         })
       }
       this.rowsTableProvReg = result;

@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['queryGeo']),
+    ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo']),
     ...mapGetters({}),
     selected2: {
       get() {
@@ -90,6 +90,12 @@ export default {
         } else if (this.field === 'region') {
           delete query['province'];
         }
+        if(this.startDateQueryGeo){
+          query['minDate'] = this.startDateQueryGeo;
+        }
+        if(this.stopDateQueryGeo){
+          query['maxDate'] = this.stopDateQueryGeo;
+        }
         to_send['field'] = this.field;
         to_send['query'] = query;
 
@@ -114,7 +120,13 @@ export default {
   watch: {
     queryGeo() {
       this.loadData();
-    }
+    },
+    // startDateQueryGeo(){
+    //   this.loadData();
+    // },
+    // stopDateQueryGeo(){
+    //   this.loadData();
+    // }
   }
 }
 </script>

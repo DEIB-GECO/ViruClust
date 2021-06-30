@@ -255,6 +255,9 @@ export default {
       wrongDateStartTarget: false,
       wrongDateStopTarget: false,
 
+      min_num_seq_target: 10,
+      min_num_seq_background: 10,
+
       options_slider: {
         enableCross: false
       },
@@ -320,7 +323,7 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setTimeRangesTargetAndBackground']),
+    ...mapMutations(['setTimeRangesTargetAndBackground', 'setTrueErrorNumSeqQueryTime', 'setFalseErrorNumSeqQueryTime']),
     ...mapActions([]),
     renderGraphFilterDate(){
       if(this.filterDate === 'Month'){
@@ -436,6 +439,13 @@ export default {
           this.num_sequences_target = this.num_sequences_target + this.timeContent[i].value;
         }
         i = i + 1;
+      }
+
+      if (this.num_sequences_target < this.min_num_seq_target || this.num_sequences_background < this.min_num_seq_background){
+        this.setTrueErrorNumSeqQueryTime();
+      }
+      else{
+        this.setFalseErrorNumSeqQueryTime();
       }
 
       this.renderGraphFilterDate();

@@ -32,6 +32,10 @@ const state = {
     queryGeo: {},
     startDateQueryGeo: null,
     stopDateQueryGeo: null,
+    numLevelAboveBackground: 1,
+
+    errorNumSeqQueryTime: false,
+    errorNumSeqQueryGeo: false,
 };
 
 const getters = {
@@ -149,6 +153,21 @@ const mutations = {
     },
     setStopDateQueryGeo: (state, value) => {
         state.stopDateQueryGeo = value;
+    },
+    setTrueErrorNumSeqQueryTime: (state) => {
+        state.errorNumSeqQueryTime = true;
+    },
+    setFalseErrorNumSeqQueryTime: (state) => {
+        state.errorNumSeqQueryTime = false;
+    },
+    setTrueErrorNumSeqQueryGeo: (state) => {
+        state.errorNumSeqQueryGeo = true;
+    },
+    setFalseErrorNumSeqQueryGeo: (state) => {
+        state.errorNumSeqQueryGeo = false;
+    },
+    setNumLevelAboveBackground: (state, value) => {
+        state.numLevelAboveBackground = value;
     },
 };
 

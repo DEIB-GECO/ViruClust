@@ -148,6 +148,9 @@ class FieldList(Resource):
                 mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
             single_item['mutation'] = mutation
+            single_item['start_aa_original'] = item['start_aa_original']
+            single_item['sequence_aa_original'] = item['sequence_aa_original']
+            single_item['sequence_aa_alternative'] = item['sequence_aa_alternative']
             single_item['product'] = item['product']
             single_item['mutation_position'] = item['start_aa_original']
             single_item['target'] = item['country']
@@ -205,6 +208,9 @@ class FieldList(Resource):
                 mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
             single_item['mutation'] = mutation
+            single_item['start_aa_original'] = item['start_aa_original']
+            single_item['sequence_aa_original'] = item['sequence_aa_original']
+            single_item['sequence_aa_alternative'] = item['sequence_aa_alternative']
             single_item['product'] = item['product']
             single_item['mutation_position'] = item['start_aa_original']
             single_item['target'] = item['target_time']
@@ -255,6 +261,26 @@ class FieldList(Resource):
         return all_result
 
 
+@api.route('/analyzeTimeDistributionBackgroundQueryGeo')
+class FieldList(Resource):
+    @api.doc('analyze_time_distribution_country_lineage')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/analyzeTimeDistributionBackgroundQueryGeo', json_data, headers)
+
+        response = conn.getresponse()
+        all_result = response.read().decode()
+        all_result = json.loads(all_result)
+
+        return all_result
+
+
 @api.route('/analyzeMutationProvinceRegion')
 class FieldList(Resource):
     @api.doc('analyze_mutation_province_region')
@@ -283,6 +309,9 @@ class FieldList(Resource):
                 protein = item['product'].split(" ", 1)[0]
                 mutation = protein + '_'
             mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
+            single_item['start_aa_original'] = item['start_aa_original']
+            single_item['sequence_aa_original'] = item['sequence_aa_original']
+            single_item['sequence_aa_alternative'] = item['sequence_aa_alternative']
             single_item['mutation'] = mutation
             single_item['product'] = item['product']
             single_item['mutation_position'] = item['start_aa_original']
@@ -332,6 +361,26 @@ class FieldList(Resource):
         send = to_send
         json_data = json.dumps(send)
         conn.request('POST', '/virusurf_epitope/api/epitope/selectorQuery', json_data, headers)
+
+        response = conn.getresponse()
+        all_result = response.read().decode()
+        all_result = json.loads(all_result)
+
+        return all_result
+
+
+@api.route('/getAccessionIds')
+class FieldList(Resource):
+    @api.doc('selector_query')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/getAccessionIds', json_data, headers)
 
         response = conn.getresponse()
         all_result = response.read().decode()
