@@ -703,7 +703,16 @@ export default {
     ...mapActions(['setQueryTime']),
     getDaysArray(start, end) {
       for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-        arr.push(new Date(dt).toISOString().slice(0, 10));
+        let date = new Date(dt).toISOString().slice(0, 10);
+        if(!arr.includes(date)) {
+          arr.push(date);
+        }
+        if( date.indexOf('-10-24') !== -1){
+          let date2 = new Date(date);
+          date2.setDate(date2.getDate() + 1)
+          let date3 = new Date(date2).toISOString().slice(0, 10);
+          arr.push(date3);
+        }
       }
       return arr;
     },
@@ -984,7 +993,8 @@ export default {
         query['product'] = item['product'];
       }
 
-      let to_send = {'query': query, 'query_false': query_false};
+      let query_target = 'empty';
+      let to_send = {'query': query, 'query_false': query_false, 'query_target': query_target};
 
       axios.post(url, to_send)
         .then((res) => {

@@ -119,6 +119,34 @@ class FieldList(Resource):
         return all_country
 
 
+@api.route('/denominatorLineageCountry')
+class FieldList(Resource):
+    @api.doc('possible_country_lineage')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/denominatorLineageCountry', json_data, headers)
+
+        response = conn.getresponse()
+        resp = response.read().decode()
+        resp = json.loads(resp)
+
+        denominators = {}
+
+        for item in resp:
+            if item['geo'] is None:
+                denominators['N/D'] = item['cnt']
+            else:
+                denominators[item['geo']] = item['cnt']
+
+        return denominators
+
+
 @api.route('/analyzeMutationCountryLineage')
 class FieldList(Resource):
     @api.doc('analyze_mutation_country_lineage')
@@ -347,6 +375,94 @@ class FieldList(Resource):
             mutation_table2.append(single_item)
 
         return mutation_table2
+
+
+@api.route('/analyzeMutationTargetBackgroundFree')
+class FieldList(Resource):
+    @api.doc('analyze_mutation_target_background_free')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/analyzeMutationTargetBackgroundFree', json_data, headers)
+
+        response = conn.getresponse()
+        all_result = response.read().decode()
+        all_result = json.loads(all_result)
+
+        mutation_table2 = []
+        for item in all_result:
+            single_item = {}
+            if item['product'] == 'Spike (surface glycoprotein)':
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
+                # mutation = 'S_'
+            else:
+                protein = item['product'].split(" ", 1)[0]
+                mutation = protein + '_'
+            mutation += item['sequence_aa_original'] + str(item['start_aa_original']) + item['sequence_aa_alternative']
+            single_item['start_aa_original'] = item['start_aa_original']
+            single_item['sequence_aa_original'] = item['sequence_aa_original']
+            single_item['sequence_aa_alternative'] = item['sequence_aa_alternative']
+            single_item['mutation'] = mutation
+            single_item['product'] = item['product']
+            single_item['mutation_position'] = item['start_aa_original']
+            single_item['target'] = item['target']
+            single_item['background'] = item['background']
+
+            single_item['lineage'] = item['lineage']
+            single_item['count_target'] = item['count_seq']
+            single_item['percentage_background'] = item['fraction']
+            single_item['numerator_background'] = item['numerator']
+            single_item['denominator_background'] = item['denominator']
+            single_item['percentage_target'] = item['fraction_target']
+            single_item['numerator_target'] = item['count_seq']
+            single_item['denominator_target'] = item['denominator_target']
+
+            epsilon = 0.00000001
+            single_item['odd_ratio'] = (single_item['percentage_target'] + epsilon) / \
+                                       (single_item['percentage_background'] + epsilon)
+
+            if single_item['odd_ratio'] >= 1:
+                if item['denominator'] != 0:
+                    single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
+                                                       item['numerator'] / item['denominator'])
+                else:
+                    single_item['p_value'] = 0
+            else:
+                if item['denominator'] != 0:
+                    single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
+                                                       item['numerator'] / item['denominator'])
+                else:
+                    single_item['p_value'] = 0
+
+            mutation_table2.append(single_item)
+
+        return mutation_table2
+
+
+@api.route('/countOverlappingSequenceTargetBackground')
+class FieldList(Resource):
+    @api.doc('count_overlapping_sequence_target_background')
+    def post(self):
+
+        to_send = api.payload
+
+        conn = http.client.HTTPConnection('geco.deib.polimi.it')
+        headers = {'Content-type': 'application/json'}
+        send = to_send
+        json_data = json.dumps(send)
+        conn.request('POST', '/virusurf_epitope/api/epitope/countOverlappingSequenceTargetBackground', json_data, headers)
+
+        response = conn.getresponse()
+        all_result = response.read().decode()
+        all_result = json.loads(all_result)
+
+        return all_result
 
 
 @api.route('/selectorQuery')

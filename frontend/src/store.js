@@ -36,6 +36,18 @@ const state = {
 
     errorNumSeqQueryTime: false,
     errorNumSeqQueryGeo: false,
+
+    queryFreeTarget: {},
+    queryFreeBackground: {},
+    startDateQueryFreeTarget: null,
+    stopDateQueryFreeTarget: null,
+    startDateQueryFreeBackground: null,
+    stopDateQueryFreeBackground: null,
+    numSequencesQueryFreeTarget: 0,
+    numSequencesQueryFreeBackground: 0,
+
+    startDateDistributionLineageInGeo: null,
+    stopDateDistributionLineageInGeo: null,
 };
 
 const getters = {
@@ -169,6 +181,48 @@ const mutations = {
     setNumLevelAboveBackground: (state, value) => {
         state.numLevelAboveBackground = value;
     },
+    setStartDateQueryFreeTarget: (state, value) => {
+        state.startDateQueryFreeTarget = value;
+    },
+    setStopDateQueryFreeTarget: (state, value) => {
+        state.stopDateQueryFreeTarget= value;
+    },
+    setStartDateQueryFreeBackground: (state, value) => {
+        state.startDateQueryFreeBackground = value;
+    },
+    setStopDateQueryFreeBackground: (state, value) => {
+        state.stopDateQueryFreeBackground = value;
+    },
+    setQueryFreeTargetField: (state, payload) => {
+        state.queryFreeTarget[payload.field] = payload.fieldQuery;
+    },
+    resetQueryFreeTargetField: (state, field) => {
+        delete state.queryFreeTarget[field];
+    },
+    reloadQueryFreeTarget: (state) => {
+        state.queryFreeTarget = Object.assign({}, state.queryFreeTarget);
+    },
+    setQueryFreeBackgroundField: (state, payload) => {
+        state.queryFreeBackground[payload.field] = payload.fieldQuery;
+    },
+    resetQueryFreeBackgroundField: (state, field) => {
+        delete state.queryFreeBackground[field];
+    },
+    reloadQueryFreeBackground: (state) => {
+        state.queryFreeBackground = Object.assign({}, state.queryFreeBackground);
+    },
+    setNumSequencesQueryFreeTarget: (state, value) => {
+        state.numSequencesQueryFreeTarget = value;
+    },
+    setNumSequencesQueryFreeBackground: (state, value) => {
+        state.numSequencesQueryFreeBackground = value;
+    },
+    setStartDateDistributionLineageInGeo: (state, value) => {
+        state.startDateDistributionLineageInGeo = value;
+    },
+    setStopDateDistributionLineageInGeo: (state, value) => {
+        state.stopDateDistributionLineageInGeo= value;
+    },
 };
 
 const actions = {
@@ -235,6 +289,50 @@ const actions = {
                 commit('resetQueryGeoField', field);
             }
             commit('reloadQueryGeo');
+        }
+    },
+
+    setQueryFreeTarget({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.queryFreeTarget[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setQueryFreeTargetField', newPayload);
+            } else {
+                commit('resetQueryFreeTargetField', field);
+            }
+            commit('reloadQueryFreeTarget');
+        }
+    },
+
+    setQueryFreeBackground({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.queryFreeBackground[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setQueryFreeBackgroundField', newPayload);
+            } else {
+                commit('resetQueryFreeBackgroundField', field);
+            }
+            commit('reloadQueryFreeBackground');
         }
     },
 

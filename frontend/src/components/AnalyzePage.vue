@@ -9,20 +9,24 @@
             slider-size="6"
             height="60">
 
-      <v-tab id="tab0" style="border-right: black solid 1px; font-weight: bold; width: 20%">
+      <v-tab id="tab0" style="border-right: black solid 1px; width: 20%">
          ANALYZE DISTRIBUTION LINEAGE IN GEO
       </v-tab>
 
-      <v-tab id="tab1" style="border-right: black solid 1px; font-weight: normal; width: 20%">
+      <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
          TIME VS TIME
       </v-tab>
 
-      <!--<v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+      <!--<v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
          COUNTRY VS LINEAGE
       </v-tab>-->
 
-      <v-tab id="tab2"  style="border-right: black solid 1px; font-weight: normal; width: 20%">
+      <v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
          GEO VS GEO
+      </v-tab>
+
+      <v-tab id="tab3"  style="border-right: black solid 1px; width: 20%">
+         TARGET VS BACKGROUND (FREE)
       </v-tab>
 
       <v-tab-item>
@@ -39,6 +43,10 @@
 
       <v-tab-item>
          <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
+      </v-tab-item>
+
+      <v-tab-item>
+        <FreeTargetVsBackground></FreeTargetVsBackground>
       </v-tab-item>
 
     </v-tabs>
@@ -60,10 +68,11 @@ import AnalyzeProvinceRegion from "./AnalyzeProvinceRegion";
 import AnalyzeTimeLinCou from "./AnalyzeTimeLinCou";
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import FreeTargetVsBackground from "./FreeTargetVsBackground";
 
 export default {
   name: "AnalyzePage",
-  components: {AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
+  components: {FreeTargetVsBackground, AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
   data() {
     return {
       selectedTabAnalyze: 0,
@@ -87,7 +96,7 @@ export default {
     },
     selectedTabAnalyze(){
       let i = 0;
-      while(i < 3){
+      while(i < 4){
         let id = 'tab' + i;
         if (i === this.selectedTabAnalyze){
           let elem = document.getElementById(id);
@@ -104,6 +113,22 @@ export default {
     }
   },
   mounted() {
+    let i = 0;
+    while(i < 3){
+      let id = 'tab' + i;
+      if (i === this.selectedTabAnalyze){
+        let elem = document.getElementById(id);
+        //elem.style.fontSize = '15px';
+        elem.style['font-weight'] = 'bold';
+      }
+      else{
+        let elem = document.getElementById(id);
+        //elem.style.fontSize = '12px';
+        elem.style['font-weight'] = 'normal';
+      }
+      i = i + 1;
+    }
+
     let url = `/analyze/allProtein`;
     let to_send = {'gcm': {'taxon_name':["severe acute respiratory syndrome coronavirus 2"]}};
     axios.post(url, to_send)

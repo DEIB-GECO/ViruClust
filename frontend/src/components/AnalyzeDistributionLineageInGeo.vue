@@ -9,11 +9,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT GRANULARITY, SPECIFIC GEO LOCALITY AND MIN %</h2>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-               <h4>(The minimum percentage is used to filter the list of lineages in the result. Only the lineages
-                 with at least the min % of the total number of sequences in that country will appear)</h4>
+               <h2>SELECT GRANULARITY AND SPECIFIC GEO LOCALITY</h2>
               </v-flex>
               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
@@ -32,7 +28,7 @@
                   solo
                   hide-details
                   :item-text="getFieldText"
-                  :disabled="selectedGeo === null"
+                  :disabled="selectedGeo === null || selectedGeo === 'world'"
                 >
                   <template slot="item" slot-scope="data">
                         <span class="item-value-span">{{getFieldText(data.item)}}</span>
@@ -40,15 +36,42 @@
                     </template>
                 </v-select>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                <v-text-field v-model.number="selectedGeoCount" min="0" max="100" solo type="number" hide-details></v-text-field>
-              </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                  <v-btn
+                         @click="applyChosen()"
+                         color="red"
+                         class="white--text"
+                         :disabled="(selectedGeo !== 'world' && this.selectedSpecificGeo === null) || selectedGeo === null"
+                  >
+                      CHOSEN
+                  </v-btn>
+                </v-flex>
+                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px" v-if="chosenApplied">
+                 <h2>TIME FILTER</h2>
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
+                  <TimeSelectorDistributionLineageInGeo
+                  timeName = "distributionAnalyzeLineageInGeo"
+                  :geoGranularity = "selectedGeo"
+                  :geoSpecific = "selectedSpecificGeo">
+                  </TimeSelectorDistributionLineageInGeo>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px" v-if="chosenApplied">
+               <h2>MIN %</h2>
+              </v-flex>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0" v-if="chosenApplied">
+               <h4>(The minimum percentage is used to filter the list of lineages in the result. Only the lineages
+                 with at least the min % of the total number of sequences fulfilling all filters will appear)</h4>
+              </v-flex>
+               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"  v-if="chosenApplied">
+                  <v-text-field v-model.number="selectedGeoCount" min="0" max="100" solo type="number" hide-details></v-text-field>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
                  <v-btn
                          @click="applyTableLineageCountry()"
                          color="red"
                          class="white--text"
-                         :disabled="selectedGeo === null || selectedSpecificGeo === null"
+                         :disabled="selectedGeo !== 'world' && (selectedGeo === null || selectedSpecificGeo === null)"
                   >
                       APPLY
                   </v-btn>
@@ -57,7 +80,7 @@
            </v-card-text>
         </v-card>
       </v-row>
-      <v-row justify="center" align="center" v-if="headerTableLineageCountry.length !== 0">
+      <v-row justify="center" align="center" v-if="tableApplied">
         <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
@@ -72,12 +95,49 @@
                         style="width: 90%; border: grey solid 1px"
                         :sort-by.sync="sortByTableLineageCountry"
                         :sort-desc.sync="sortDescTableLineageCountry"
+                        hide-default-header
+                        :custom-sort="customSort"
                   >
+                    <template v-slot:header="{ props }">
+                      <tr style="height: 50px;">
+                        <th style="text-align: center"
+                            v-bind:key="head.value"
+                          v-for="head in props.headers"
+                          :class="['header']"
+                          @click="changeSort(head.value)"
+                          @mouseover="selectHoverHeaderValue(head.value)"
+                          @mouseout="deselectHoverHeaderValue(head.value)">
+                              <span>{{ head.text.toUpperCase() }}</span>
+                              <span v-if="head.value === hoverHeaderValue && head.value !== sortByTableLineageCountry[0]">
+                                <v-icon class="icon_header" small>mdi-arrow-up</v-icon>
+                              </span>
+                              <span v-if="head.value === sortByTableLineageCountry[0]
+                                  && sortDescTableLineageCountry[0] === false">
+                                <v-icon class="icon_header" color="black" small>mdi-arrow-up</v-icon>
+                              </span>
+                              <span v-if="head.value === sortByTableLineageCountry[0]
+                                  && sortDescTableLineageCountry[0] === true">
+                                <v-icon class="icon_header" color="black" small>mdi-arrow-down</v-icon>
+                              </span>
+                          </th>
+                      </tr>
+                    </template>
+
                       <template v-slot:item ="{ item }">
                         <tr>
                           <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerTableLineageCountry"
                               :key="header.value" v-show="header.show" :title="item['lineage']">
-                                <span>{{item[header.value]}}</span>
+                                <div v-if="header.value === 'lineage'" @click="orderColumn(item);" class="row-pointer"
+                                @mouseover="selectHoverItemValue(item[header.value])"
+                                @mouseout="deselectHoverItemValue(item[header.value])">
+                                  <span>{{item[header.value]}}</span>
+                                  <span v-if="item[header.value] === hoverItemValue && item !== selectedItem">
+                                    <v-icon class="icon_header" small>mdi-arrow-up</v-icon>
+                                  </span>
+                                  <v-icon style="margin-left: 10px; color: black;" v-else-if="selectedItem === item && order_by_row_desc" small flat>mdi-arrow-up</v-icon>
+                                  <v-icon style="margin-left: 10px; color: black;" v-else-if="selectedItem === item && !order_by_row_desc" small flat>mdi-arrow-down</v-icon>
+                                </div>
+                                <span v-else>{{item[header.value]}}</span>
                           </td>
                         </tr>
                       </template>
@@ -89,6 +149,21 @@
                          small
                          color="rgb(122, 139, 157)">
                     Download Table</v-btn>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 100px">
+                 <h2>HEATMAP</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                 <HeatmapAnalyzeDistribution
+                  nameHeatmap = "heatmap"
+                  :headerTable = "headerTableLineageCountry"
+                  :rowTable = "rowsTableLineageCountry"
+                  :sortColumn = "sortByTableLineageCountry"
+                  :descColumn = "sortDescTableLineageCountry"
+                  :numSequences = "numberOfSequencesGeo"
+                  :geoGranularity = "selectedGeo"
+                  :denominators = "denominators">
+                 </HeatmapAnalyzeDistribution>
                </v-flex>
              </v-layout>
            </v-card-text>
@@ -109,25 +184,38 @@
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
+import HeatmapAnalyzeDistribution from "./HeatmapAnalyzeDistribution";
+import TimeSelectorDistributionLineageInGeo from "./TimeSelectorDistributionLineageInGeo";
 
 export default {
   name: "AnalyzeDistributionLineageInGeo",
+  components: {TimeSelectorDistributionLineageInGeo, HeatmapAnalyzeDistribution},
   data() {
     return {
       overlay: false,
       selectedGeo: null,
-      possibleGeo: ['geo_group', 'country', 'region'],
+      possibleGeo: ['world', 'geo_group', 'country', 'region'],
       selectedSpecificGeo: null,
       possibleSpecificGeo: [],
       selectedGeoCount: 5,
       headerTableLineageCountry: [],
+      headerTableLineageCountryFixed: [],
       rowsTableLineageCountry: [],
       sortByTableLineageCountry: [],
       sortDescTableLineageCountry: [],
+      hoverHeaderValue: null,
+      hoverItemValue: null,
+      selectedItem: null,
+      order_by_row_desc: true,
+      numberOfSequencesGeo: 0,
+      chosenApplied: false,
+      tableApplied: false,
+
+      denominators: [],
     }
   },
   computed: {
-    ...mapState(['all_geo']),
+    ...mapState(['all_geo', 'startDateDistributionLineageInGeo', 'stopDateDistributionLineageInGeo']),
     ...mapGetters({}),
   },
   methods: {
@@ -202,7 +290,11 @@ export default {
       this.rowsTableLineageCountry = [];
       this.overlay = true;
       let url = `/analyze/tableLineageCountry`;
-      let to_send = {'type': this.selectedGeo, 'value': this.selectedSpecificGeo, 'minCountSeq': this.selectedGeoCount};
+      let to_send = {'type': this.selectedGeo,
+        'value': this.selectedSpecificGeo,
+        'minCountSeq': this.selectedGeoCount,
+        'minDate': this.startDateDistributionLineageInGeo,
+        'maxDate': this.stopDateDistributionLineageInGeo};
       axios.post(url, to_send)
         .then((res) => {
           return res.data;
@@ -215,28 +307,41 @@ export default {
           let len_arr = seq_mut_arr.length;
           let headers = [];
           let arr_name_headers = [];
+          let header_empty = {};
+          let empty_header_present = false;
           while (ii < len_arr) {
             let single_line = seq_mut_arr[ii];
             Object.keys(single_line).forEach(key => {
               if(!arr_name_headers.includes(key) && key !== 'lineage') {
+
+                if(key === ''){
+                  seq_mut_arr[ii]['N/D'] = seq_mut_arr[ii][''];
+                }
+
                 let single_header = {};
                 arr_name_headers.push(key);
-                if (key === null || key === ''){
-                  single_header['text'] = 'N/D';
-                }
-                else {
+                if (key !== null && key !== ''){
                   single_header['text'] = key;
+                  single_header['value'] = key;
+
+                  single_header['show'] = true;
+                  single_header['align'] = 'center';
+                  single_header['width'] = '20vh';
+
+                  headers.push(single_header);
                 }
+                else{
+                  header_empty['text'] = 'N/D';
+                  header_empty['value'] = 'N/D';
 
-                single_header['value'] = key;
-                single_header['show'] = true;
-                single_header['align'] = 'center';
-                single_header['width'] = '20vh';
-
-                headers.push(single_header);
+                  header_empty['show'] = true;
+                  header_empty['align'] = 'center';
+                  header_empty['width'] = '20vh';
+                  empty_header_present = true;
+                }
               }
               else if (key !== 'lineage'){
-                if (single_line['lineage'] === null || key === ''){
+                if (single_line['lineage'] === null){
                   single_line['lineage'] = 'N/D';
                 }
               }
@@ -251,15 +356,35 @@ export default {
               return a < b ? -1 : a > b ? 1 : 0;
           });
 
+          if(empty_header_present) {
+            headers.unshift(header_empty);
+          }
+
           let lineage_header = {'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '20vh'};
 
           headers.unshift(lineage_header);
 
           this.headerTableLineageCountry = headers;
+          this.headerTableLineageCountryFixed = headers;
 
           this.rowsTableLineageCountry = seq_mut_arr;
 
-          this.overlay = false;
+          let url = `/analyze/denominatorLineageCountry`;
+
+          let to_send = {'type': this.selectedGeo,
+            'value': this.selectedSpecificGeo,
+            'minDate': this.startDateDistributionLineageInGeo,
+            'maxDate': this.stopDateDistributionLineageInGeo};
+
+          axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.denominators = res;
+              this.tableApplied = true;
+              this.overlay = false;
+            });
 
         });
     },
@@ -288,10 +413,140 @@ export default {
       this.possibleSpecificGeo = arr_all_specific_geo;
     },
     getFieldText(item){
+      this.numberOfSequencesGeo = item['count'];
       let name = '';
       name = item['value'];
       return name;
     },
+    changeSort(column){
+      if(this.sortByTableLineageCountry[0] === column && this.sortDescTableLineageCountry[0] === true){
+        this.sortByTableLineageCountry = [];
+        this.sortDescTableLineageCountry = [];
+      }
+      else {
+        if (this.sortByTableLineageCountry[0] === column) {
+          if (this.sortDescTableLineageCountry[0] === true) {
+            this.sortDescTableLineageCountry = [false];
+          } else {
+            this.sortDescTableLineageCountry = [true];
+          }
+        } else {
+          this.sortByTableLineageCountry = [column];
+          this.sortDescTableLineageCountry = [false];
+        }
+      }
+    },
+    selectHoverHeaderValue(column){
+      this.hoverHeaderValue = column;
+    },
+    deselectHoverHeaderValue(column){
+      if(this.hoverHeaderValue === column){
+        this.hoverHeaderValue = "";
+      }
+    },
+    selectHoverItemValue(column){
+      this.hoverItemValue = column;
+    },
+    deselectHoverItemValue(column){
+      if(this.hoverItemValue === column){
+        this.hoverItemValue = "";
+      }
+    },
+    orderColumn(lineage){
+
+      if(lineage !== this.selectedItem ) {
+          this.order_by_row_desc = true;
+          this.selectedItem = lineage;
+
+          let old_header = JSON.parse(JSON.stringify(this.headerTableLineageCountry));
+
+          let new_headers = old_header.splice(0, 1);
+
+          let ordered_header = old_header.sort(function (a, b) {
+            let lineage_a = '0';
+            let lineage_b = '0';
+            if(lineage[a.value] !== undefined && lineage[a.value] !== null){
+              lineage_a = lineage[a.value].toString();
+            }
+            if(lineage[b.value] !== undefined && lineage[b.value] !== null){
+              lineage_b = lineage[b.value].toString();
+            }
+            if (lineage_a === lineage_b) {
+              return a.value.toLowerCase() > b.value.toLowerCase() ? 1 : -1;
+            } else {
+              return parseInt(lineage_a, 10) < parseInt(lineage_b, 10) ? 1 : -1;
+            }
+          });
+
+          this.headerTableLineageCountry = new_headers.concat(ordered_header);
+      }
+      else if((lineage === this.selectedItem && !this.order_by_row_desc)){
+          this.order_by_row_desc = true;
+          this.selectedItem = null;
+          this.headerTableLineageCountry = this.headerTableLineageCountryFixed;
+      }
+      else if(lineage === this.selectedItem && this.order_by_row_desc){
+
+        this.order_by_row_desc = false;
+        this.selectedItem = lineage;
+
+        let old_header = JSON.parse(JSON.stringify(this.headerTableLineageCountry));
+
+        let new_headers = old_header.splice(0, 1);
+
+        let ordered_header = old_header.sort(function (a, b) {
+            let lineage_a = '0';
+            let lineage_b = '0';
+            if(lineage[a.value] !== undefined && lineage[a.value] !== null){
+              lineage_a = lineage[a.value].toString();
+            }
+            if(lineage[b.value] !== undefined && lineage[b.value] !== null){
+              lineage_b = lineage[b.value].toString();
+            }
+            if (lineage_a === lineage_b) {
+              return a.value.toLowerCase() > b.value.toLowerCase() ? 1 : -1;
+            } else {
+              return parseInt(lineage_a, 10) > parseInt(lineage_b, 10) ? 1 : -1;
+            }
+          });
+
+        this.headerTableLineageCountry = new_headers.concat(ordered_header);
+      }
+
+    },
+    customSort(items, index2, isDesc2) {
+      let index = index2[0];
+      let isDesc = isDesc2[0];
+      items.sort((a, b) => {
+        let count_a = '0';
+        let count_b = '0';
+        if(a[index] !== undefined && a[index] !== null){
+          count_a = a[index].toString();
+        }
+        if(b[index] !== undefined && b[index] !== null){
+          count_b = b[index].toString();
+        }
+        if (!isDesc) {
+          if(count_a === count_b){
+            return a['lineage'] > b['lineage'] ? 1 : -1;
+          }
+          else {
+            return  parseInt(count_a, 10) < parseInt(count_b, 10)  ? 1 : -1;
+          }
+        } else {
+          if(count_a === count_b){
+            return a['lineage'] > b['lineage'] ? 1 : -1;
+          }
+          else {
+            return  parseInt(count_a, 10) > parseInt(count_b, 10)  ? 1 : -1;
+          }
+        }
+      });
+      return items;
+    },
+    applyChosen(){
+      this.chosenApplied = true;
+    }
   },
   watch: {
     selectedGeo(){
@@ -299,25 +554,15 @@ export default {
       this.rowsTableLineageCountry = [];
       if(this.selectedGeo !== null){
         this.createPossibleSpecificGeoObject();
-        /*let array_specific_geo = [];
-        this.all_geo.forEach(elem => {
-          if(elem[this.selectedGeo] !== null) {
-            if (!array_specific_geo.includes(elem[this.selectedGeo])) {
-              array_specific_geo.push(elem[this.selectedGeo]);
-            }
-          }
-        })
-        array_specific_geo.sort( function( a, b ) {
-          a = a.toLowerCase();
-          b = b.toLowerCase();
-          return a < b ? -1 : a > b ? 1 : 0;
-        });
-        this.possibleSpecificGeo = array_specific_geo;*/
+        this.chosenApplied = false;
+        this.tableApplied = false;
       }
     },
     selectedSpecificGeo() {
       this.headerTableLineageCountry = [];
       this.rowsTableLineageCountry = [];
+      this.chosenApplied = false;
+      this.tableApplied = false;
     },
     selectedGeoCount(){
       if(this.selectedGeoCount < 0){
@@ -326,6 +571,13 @@ export default {
       else if(this.selectedGeoCount > 100){
         this.selectedGeoCount = 100;
       }
+      this.tableApplied = false;
+    },
+    startDateDistributionLineageInGeo(){
+      this.tableApplied = false;
+    },
+    stopDateDistributionLineageInGeo(){
+      this.tableApplied = false;
     }
   },
   mounted() {
@@ -337,6 +589,10 @@ export default {
 <style scoped>
 
   .table_distribution_lineage_geo table > tbody > tr > td:nth-child(1){
+    box-shadow: inset -0.5px 0 0 0 grey;
+  }
+
+  .table_distribution_lineage_geo table > tr > th:nth-child(1){
     box-shadow: inset -0.5px 0 0 0 grey;
   }
   /*position: sticky !important;*/
@@ -353,6 +609,28 @@ export default {
       /*float:right;*/
       position: absolute;
       right: 0.5em;
+  }
+
+  .header {
+    border-bottom: darkgrey solid 1px;
+    min-width: 15vh;
+  }
+
+  .header:hover {
+    cursor: pointer;
+  }
+
+  table > tbody > tr > td:nth-child(1),
+  table > tr > th:nth-child(1){
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    left: 0;
+    z-index: 1;
+    background: white;
+  }
+
+  .row-pointer {
+    cursor: pointer;
   }
 
 </style>

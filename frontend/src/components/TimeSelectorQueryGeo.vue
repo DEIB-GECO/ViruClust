@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: relative;">
     <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
@@ -8,6 +8,14 @@
           </div>
         </v-row>
     </v-container>
+
+
+    <div v-if="overlay" style="position: absolute; top: 200px; left:40%; width: 20%; height: 20%">
+      <v-img
+          src="../images/loading.gif"
+          style="z-index: 1;"
+      />
+    </div>
 
     <v-container fluid grid-list-xl style="justify-content: center;
     background-color: white; width: 100%">
@@ -183,12 +191,12 @@
       </v-row>
     </v-container>
 
-    <v-overlay :value="overlay">
-      <v-progress-circular
-        indeterminate
-        size="64"
-      ></v-progress-circular>
-    </v-overlay>
+<!--    <v-overlay :value="overlay">-->
+<!--      <v-progress-circular-->
+<!--        indeterminate-->
+<!--        size="64"-->
+<!--      ></v-progress-circular>-->
+<!--    </v-overlay>-->
 
   </div>
 </template>
@@ -304,7 +312,16 @@ export default {
     ...mapActions(['setQueryGeo']),
     getDaysArray(start, end) {
       for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-        arr.push(new Date(dt).toISOString().slice(0, 10));
+        let date = new Date(dt).toISOString().slice(0, 10);
+        if(!arr.includes(date)) {
+          arr.push(date);
+        }
+        if( date.indexOf('-10-24') !== -1){
+          let date2 = new Date(date);
+          date2.setDate(date2.getDate() + 1)
+          let date3 = new Date(date2).toISOString().slice(0, 10);
+          arr.push(date3);
+        }
       }
       return arr;
     },

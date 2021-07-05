@@ -1,128 +1,75 @@
 <template>
-  <div>
-    <v-card width="100%" color="white" style="padding: 50px">
+  <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
-          <v-card-title class="justify-center">
-            <h1>GEO (TARGET) vs GEO (BACKGROUND)</h1>
-          </v-card-title>
-           <v-card-text>
-             <v-layout row wrap justify-center style="padding: 30px;">
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT LINEAGE, TIME RANGE AND LOCATION (TARGET)</h2>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'lineage'>
-                 </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                  <h3>Select "granularity" distance between target and background</h3>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <v-select
-                    v-model="selectedNumLevelAboveBackground"
-                    :items="possibleNumLevelAboveBackground"
-                    label="# level above background"
-                    solo
-                    hide-details></v-select>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'geo_group'>
-                 </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'country'>
-                 </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'region'>
-                 </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'province'>
-                 </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <TimeSelectorQueryGeo
-                    timeName="timeDistributionGeo"
-                    filterDate = "Day">
-                 </TimeSelectorQueryGeo>
-               </v-flex>
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedContinent_forProvReg"-->
-<!--                  :items="possibleContinent_forProvReg"-->
-<!--                  label="Continent"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedCountry_forProvReg"-->
-<!--                  :items="possibleCountry_forProvReg"-->
-<!--                  label="Country"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="selectedContinent_forProvReg === null"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
-<!--               v-if="selectedCountryToLower !== 'usa'">-->
-<!--                <RegionProvincePieChart-->
-<!--                  v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"-->
-<!--                  :nameGeo="geoSelectedName"-->
-<!--                  :geoContent="geoSelectedContent">-->
-<!--                </RegionProvincePieChart>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
-<!--              v-if="selectedCountryToLower !== 'usa'">-->
-<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedRegion_forProvReg"-->
-<!--                  :items="possibleRegion_forProvReg"-->
-<!--                  label="Region"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="selectedCountry_forProvReg === null"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
-<!--               v-if="selectedCountryToLower === 'usa'">-->
-<!--                <RegionProvincePieChart-->
-<!--                  v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"-->
-<!--                  :nameGeo="geoSelectedName"-->
-<!--                  :geoContent="geoSelectedContent">-->
-<!--                </RegionProvincePieChart>-->
-<!--               </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
-<!--              v-if="selectedCountryToLower === 'usa'">-->
-<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"-->
-<!--                      v-if="(selectedCountryToLower === 'usa')">-->
-<!--                <v-select-->
-<!--                  v-model="selectedProvince_forProvReg"-->
-<!--                  :items="possibleProvince_forProvReg"-->
-<!--                  label="Province"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="(selectedCountryToLower !== 'usa' || selectedRegion_forProvReg === null)"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-             </v-layout>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
+          <v-layout row wrap justify-center>
+            <v-flex class="no-horizontal-padding xs12 d-flex">
+              <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
+                <v-tabs v-model="selectedTabFreeQuery"
+                        background-color="#DAA520"
+                        dark
+                        show-arrows
+                        slider-color="orange"
+                        slider-size="6"
+                        height="60"
+                        centered>
+
+                  <v-tab style="border: black solid 1px; width: 10%; background-color: #800000">
+                     <v-icon id="tabFree0">mdi-home</v-icon>
+                  </v-tab>
+
+                  <v-tab id="tabFree1" style="border: black solid 1px; border-left: 0!important; width: 45%; background-color: #800000">
+                     TARGET
+                  </v-tab>
+
+                  <v-tab id="tabFree2" style="border: black solid 1px; border-left: 0!important; width: 45%; background-color: #800000">
+                     BACKGROUND
+                  </v-tab>
+
+                  <v-tabs-items v-model="selectedTabFreeQuery" style="background: transparent;">
+
+                    <v-tab-item style="background-color: #DAA520; padding-top: 40px">
+                    </v-tab-item>
+
+                    <v-tab-item style="background-color: #DAA520; padding-top: 40px">
+                      <FreeQuery
+                        type="target">
+                      </FreeQuery>
+                    </v-tab-item>
+
+                    <v-tab-item style="background-color: #DAA520; padding-top: 40px">
+                      <FreeQuery
+                        type="background">
+                      </FreeQuery>
+                    </v-tab-item>
+
+                  </v-tabs-items>
+                </v-tabs>
+
+              </v-container>
+            </v-flex>
+
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+              <FreeQuerySummaryPanel></FreeQuerySummaryPanel>
+            </v-flex>
+
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+              <h2> # OVERLAPPING SEQUENCES </h2>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+              <h4> (overlapping sequences will be removed from background for the analysis) </h4>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px">
+              <v-text-field
+                :value = "num_overlapping_sequences"
+                solo
+                readonly
+                hide-details
+                class = "centered-input"
+              ></v-text-field>
+            </v-flex>
+
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
                <h2>SELECT PROTEINS TO ANALYZE</h2>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -141,24 +88,29 @@
                     </v-select>
                   </v-flex>
                </v-flex>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px"
-             v-if="errorNumSeqQueryGeo">
-               <span style="color: red"> # sequences selected is too low (minimum 10)</span>
-             </v-flex>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               <v-btn
-                       @click="applyTableProvReg()"
-                       color="red"
-                       class="white--text"
-                       style="margin-top: 20px"
-                       :disabled="!(queryGeo['geo_group']) || errorNumSeqQueryGeo"
-                >
-                    APPLY
-                </v-btn>
-             </v-flex>
-           </v-card-text>
+
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+               v-if="errorNumSeqFreeQuery">
+              <span style="text-align: center">
+                 <span style="color: red"> # sequences selected is too low (minimum 10 for both target and background)</span><br>
+                 <span style="color: red"> (the # sequences of the background is calculated taking care of the overlapping sequences)</span>
+              </span>
+               </v-flex>
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                  <v-btn
+                         @click="applyFreeQueryAnalysis()"
+                         color="red"
+                         class="white--text"
+                         :disabled="errorNumSeqFreeQuery"
+                  >
+                      APPLY
+                  </v-btn>
+                </v-flex>
+
+          </v-layout>
         </v-card>
       </v-row>
+
       <v-row justify="center" align="center" v-if="tableApplied">
         <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
            <v-card-text>
@@ -443,7 +395,7 @@
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
-                         @click="applyFilterOnTableProvReg()"
+                         @click="applyFilterOnTable()"
                          color="red"
                          class="white--text"
                   >
@@ -453,38 +405,8 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
                  <h2>TABLE</h2>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsTableProvReg.length !== 0">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsTable.length !== 0">
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <h5>INFO:</h5>
-                        </v-card-title>
-                        <v-card-text>
-                          <span>
-                            <b> - TARGET: </b>
-                            <span>{{rowsTableProvReg[0]['target']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN TARGET: </b>
-                            <span>{{rowsTableProvReg[0]['denominator_target']}}</span>
-                            <br>
-                          </span>
-                          <br>
-                          <span>
-                            <b> - BACKGROUND: </b>
-                            <span>{{rowsTableProvReg[0]['background']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
-                            <span>{{rowsTableProvReg[0]['denominator_background']}}</span>
-                            <br>
-                          </span>
-                        </v-card-text>
-                     </v-card>
-                   </v-flex>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
@@ -507,17 +429,17 @@
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
-                        :headers="headerTableProvReg"
-                        :items="rowsTableProvReg"
-                        class="data-table table_prov_reg"
+                        :headers="headerTable"
+                        :items="rowsTable"
+                        class="data-table table_free"
                         style="width: 90%; border: grey solid 1px"
                         multi-sort
-                        :sort-by.sync="sortByTableProvReg"
-                        :sort-desc.sync="sortDescTableProvReg"
+                        :sort-by.sync="sortByTable"
+                        :sort-desc.sync="sortDescTable"
                   >
                       <template v-slot:item ="{ item }">
                         <tr>
-                          <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerTableProvReg"
+                          <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerTable"
                               :key="header.value" v-show="header.show">
                                 <span v-if="header.value === 'lineage'">
                                   <v-dialog width="800" scrollable>
@@ -568,7 +490,7 @@
                   </v-data-table>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <v-btn @click="downloadTable('table_prov_reg')"
+                  <v-btn @click="downloadTable('table')"
                          class="white--text"
                          small
                          color="rgb(122, 139, 157)">
@@ -660,7 +582,6 @@
            </v-card-text>
         </v-card>
       </v-row>
-    </v-card>
 
     <v-overlay :value="overlay">
       <v-progress-circular
@@ -704,44 +625,42 @@
       </v-card>
     </v-dialog>
 
-  </div>
+  </v-card>
 </template>
 
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import FreeQuery from "./FreeQuery";
+import FreeQuerySummaryPanel from "./FreeQuerySummaryPanel";
 import axios from "axios";
 import PValueBarChart from "./PValueBarChart";
-import SelectorsQueryGeo from "./SelectorsQueryGeo";
-import TimeSelectorQueryGeo from "./TimeSelectorQueryGeo";
 
 export default {
-  name: "AnalyzeProvinceRegion",
-  components: {TimeSelectorQueryGeo, SelectorsQueryGeo, PValueBarChart},
+  name: "FreeTargetVsBackground",
+  components: {PValueBarChart, FreeQuerySummaryPanel, FreeQuery},
   data() {
     return {
-      overlay: false,
-      num_sequences_forProvReg: null,
-      selectedContinent_forProvReg: null,
-      possibleContinent_forProvReg: [],
-      selectedCountry_forProvReg: null,
-      possibleCountry_forProvReg: [],
-      selectedRegion_forProvReg: null,
-      possibleRegion_forProvReg: [],
-      selectedProvince_forProvReg: null,
-      possibleProvince_forProvReg: [],
-      headerTableProvReg: [],
-      rowsTableProvReg: [],
-      fixedRowsTableProvReg: [],
-      sortByTableProvReg: ['odd_ratio'],
-      sortDescTableProvReg: [true],
-      geoSelectedName: '',
-      geoSelectedContent: [],
-      pValueName: 'p_value_province_region',
-      pValueContent: [],
-      tableApplied: false,
-      pValueBarChartApplied: false,
+      selectedTabFreeQuery: 0,
+      errorNumSeqFreeQuery: false,
+      min_num_seq_target: 10,
+      min_num_seq_background: 10,
+
+      num_overlapping_sequences: 0,
+
       selectedProtein: [],
       possibleProtein: [],
+
+      overlay: false,
+      tableApplied: false,
+      headerTable: [],
+      rowsTable: [],
+      fixedRowsTable: [],
+      sortByTable: ['odd_ratio'],
+      sortDescTable: [true],
+
+      pValueName: 'p_value_free',
+      pValueContent: [],
+      pValueBarChartApplied: false,
 
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],
@@ -771,39 +690,38 @@ export default {
 
       listAccessionIds: [],
       dialogAccessionIds: false,
-
-      possibleNumLevelAboveBackground: [1,2,3,4]
     }
   },
   computed: {
-    ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'errorNumSeqQueryGeo',
-      'numLevelAboveBackground']),
+    ...mapState(['queryFreeTarget', 'queryFreeBackground', 'numSequencesQueryFreeTarget',
+      'numSequencesQueryFreeBackground', 'all_protein', 'startDateQueryFreeTarget', "stopDateQueryFreeTarget",
+      'startDateQueryFreeBackground', 'stopDateQueryFreeBackground']),
     ...mapGetters({}),
-    selectedCountryToLower(){
-      if(this.selectedCountry_forProvReg !== null){
-        return this.selectedCountry_forProvReg.toLowerCase();
-      }
-      else{
-        return this.selectedCountry_forProvReg;
-      }
-    },
-    selectedNumLevelAboveBackground: {
-      get() {
-        return this.numLevelAboveBackground;
-      },
-      set(value){
-        this.setNumLevelAboveBackground(value);
-      }
-    }
   },
   methods: {
-    ...mapMutations(['setNumLevelAboveBackground']),
-    ...mapActions(['setQueryGeo']),
+    ...mapMutations([]),
+    ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
+    boldTabs(){
+      let i = 0;
+      while(i < 3){
+        let id = 'tab' + i;
+        if (i === this.selectedTabAnalyze){
+          let elem = document.getElementById(id);
+          elem.style['font-weight'] = 'bold';
+
+        }
+        else{
+          let elem = document.getElementById(id);
+          elem.style['font-weight'] = 'normal';
+        }
+        i = i + 1;
+      }
+    },
     downloadTable(table){
       let text = "";
       let result_sorted = this.sortResults(table);
-      if(table === 'table_prov_reg'){
-        text = this.json2csv(result_sorted, this.headerTableProvReg);
+      if(table === 'table'){
+        text = this.json2csv(result_sorted, this.headerTable);
       }
       let filename = 'result.csv';
       let element = document.createElement('a');
@@ -846,11 +764,11 @@ export default {
       let sortBy;
       let sortDesc;
       let results;
-      if(table === 'table_prov_reg'){
-        len = this.sortByTableProvReg.length;
-        sortBy = this.sortByTableProvReg;
-        sortDesc = this.sortDescTableProvReg;
-        results = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+      if(table === 'table'){
+        len = this.sortByTable.length;
+        sortBy = this.sortByTable;
+        sortDesc = this.sortDescTable;
+        results = JSON.parse(JSON.stringify(this.rowsTable));
       }
       if(len > 0) {
          return results.sort(function(a1, b1) {
@@ -869,8 +787,8 @@ export default {
          return results;
        }
     },
-    applyFilterOnTableProvReg(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
+    applyFilterOnTable(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
       var that = this;
       result = result.filter(function (i){
           let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
@@ -896,31 +814,14 @@ export default {
               && odds_ratio > that.totalMaxOddsRatio)
               ));
         })
-      this.rowsTableProvReg = result;
+      this.rowsTable = result;
 
-      let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+      let copy = JSON.parse(JSON.stringify(this.rowsTable));
       this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
     },
-    applyTableProvReg(){
-      let url = `/analyze/analyzeMutationProvinceRegion`;
+    applyFreeQueryAnalysis(){
+      let url = `/analyze/analyzeMutationTargetBackgroundFree`;
       this.overlay = true;
-      // let type_geo1;
-      // let type_geo2;
-      // let geo1;
-      // let geo2;
-      // this.overlay = true;
-      // if(this.selectedProvince_forProvReg !== null){
-      //   type_geo1 = 'region';
-      //   type_geo2 = 'province';
-      //   geo1 = this.selectedRegion_forProvReg;
-      //   geo2 = this.selectedProvince_forProvReg;
-      // }
-      // else{
-      //   type_geo1 = 'country';
-      //   type_geo2 = 'region';
-      //   geo1 = this.selectedCountry_forProvReg;
-      //   geo2 = this.selectedRegion_forProvReg;
-      // }
       let array_protein = [];
       if(this.selectedProtein === null){
         array_protein = [];
@@ -928,53 +829,25 @@ export default {
       else{
         array_protein = this.selectedProtein;
       }
+      let query_target = JSON.parse(JSON.stringify(this.queryFreeTarget));
+      let query_background = JSON.parse(JSON.stringify(this.queryFreeBackground));
 
-      let query = JSON.parse(JSON.stringify(this.queryGeo));
-      if(this.startDateQueryGeo !== null){
-        query['minDate'] = this.startDateQueryGeo;
+      if(this.startDateQueryFreeTarget !== null){
+        query_target['minDate'] = this.startDateQueryFreeTarget;
       }
-      if(this.stopDateQueryGeo !== null){
-        query['maxDate'] = this.stopDateQueryGeo;
+      if(this.stopDateQueryFreeTarget !== null){
+        query_target['maxDate'] = this.stopDateQueryFreeTarget;
       }
-
-      let query_false;
-      if(!query['country']){
-        query_false = 'geo_group'
+      if(this.startDateQueryFreeBackground !== null){
+        query_background['minDate'] = this.startDateQueryFreeBackground;
       }
-      else if(!query['region']){
-        let arr_geo = ['geo_group'];
-        let i = 0;
-        let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
-          delete query[arr_geo[i]];
-          i = i + 1;
-        }
-        query_false = 'country'
-      }
-      else if(!query['province']){
-        let arr_geo = ['country', 'geo_group'];
-        let i = 0;
-        let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
-          delete query[arr_geo[i]];
-          i = i + 1;
-        }
-        query_false = 'region'
-      }
-      else{
-        let arr_geo = ['region', 'country', 'geo_group'];
-        let i = 0;
-        let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
-          delete query[arr_geo[i]];
-          i = i + 1;
-        }
-        query_false = 'province'
+      if(this.stopDateQueryFreeBackground !== null){
+        query_background['maxDate'] = this.stopDateQueryFreeBackground;
       }
 
-      let to_send = {'query': query,
-                     'protein': array_protein,
-                    'query_false': query_false};
+      let to_send = {'query_target': query_target,
+                     'query_background': query_background,
+                     'protein': array_protein};
       axios.post(url, to_send)
         .then((res) => {
           return res.data;
@@ -982,38 +855,38 @@ export default {
         .then((res) => {
           let headers = [
               {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
               {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
           ];
-          this.headerTableProvReg = headers;
-          this.rowsTableProvReg = res;
-          this.fixedRowsTableProvReg = res;
+          this.headerTable = headers;
+          this.rowsTable = res;
+          this.fixedRowsTable = res;
 
-          let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+          let copy = JSON.parse(JSON.stringify(this.rowsTable));
           this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
           this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
-          let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+          let rowTable = JSON.parse(JSON.stringify(this.rowsTable));
           this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
           this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
           this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
           this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
-          let rowTable2 = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+          let rowTable2 = JSON.parse(JSON.stringify(this.rowsTable));
           rowTable2 = rowTable2.filter(function (i){
               let perc = i['percentage_background'];
               return perc !== 0;
             }
           );
-          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function(o) { return o['odd_ratio']; })));
+          let totalOdds = Math.ceil(Math.max.apply(Math, rowTable2.map(function(o) { return o['odd_ratio']; })));
+          if (totalOdds < 0){
+            this.totalMaxOddsRatio = 0;
+          }
+          else{
+            this.totalMaxOddsRatio = totalOdds;
+          }
+
           this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
 
           this.tableApplied = true;
@@ -1021,7 +894,7 @@ export default {
         });
     },
     applyFilterPValueChart(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
       var that = this;
       result = result.filter(function (i){
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
@@ -1052,7 +925,7 @@ export default {
       });
 
       this.pValueContent = arrayToBarChart;
-      this.pValueName = 'p_value_province_region';
+      this.pValueName = 'p_value_free';
       this.pValueBarChartApplied = true;
     },
     openDialogAccession(type, item){
@@ -1060,15 +933,23 @@ export default {
       this.overlay = true;
       this.listAccessionIds = [];
 
-      let query = JSON.parse(JSON.stringify(this.queryGeo));
+      let query ;
+      if(type === 'target') {
+        query = JSON.parse(JSON.stringify(this.queryFreeTarget));
+      }
+      else if(type === 'background') {
+        query = JSON.parse(JSON.stringify(this.queryFreeBackground));
+      }
+
       let query_false = '';
+      let query_target = 'empty';
       if(type === 'target'){
         query['lineage'] = item['lineage'][0];
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateBackground'] = this.startDateQueryGeo;
-        query['maxDateBackground'] = this.stopDateQueryGeo;
+        query['minDateBackground'] = this.startDateQueryFreeTarget;
+        query['maxDateBackground'] = this.stopDateQueryFreeTarget;
         query['product'] = item['product'];
       }
       else if(type === 'background'){
@@ -1076,25 +957,13 @@ export default {
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateBackground'] = this.startDateQueryGeo;
-        query['maxDateBackground'] = this.stopDateQueryGeo;
+        query['minDateBackground'] = this.startDateQueryFreeBackground;
+        query['maxDateBackground'] = this.stopDateQueryFreeBackground;
         query['product'] = item['product'];
 
-        if(!query['country']){
-          query_false = 'geo_group'
-        }
-        else if(!query['region']){
-          query_false = 'country'
-        }
-        else if(!query['province']){
-          query_false = 'region'
-        }
-        else{
-          query_false = 'province'
-        }
+        query_target = JSON.parse(JSON.stringify(this.queryFreeTarget));
       }
 
-      let query_target = 'empty';
       let to_send = {'query': query, 'query_false': query_false, 'query_target': query_target};
 
       axios.post(url, to_send)
@@ -1122,234 +991,122 @@ export default {
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);
+    },
+    resetApplied(){
+      this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
+      this.selectedProteinTable = null;
+      this.tableApplied = false;
+      this.selectedProtein = null;
+    },
+    countOverlappingSequenceTargetBackground(){
+      let url = `/analyze/countOverlappingSequenceTargetBackground`;
+      this.overlay = true;
+
+      let query_target =  JSON.parse(JSON.stringify(this.queryFreeTarget));
+      let query_background = JSON.parse(JSON.stringify(this.queryFreeBackground));
+
+      if (this.startDateQueryFreeTarget !== null) {
+        query_target['minDate'] = this.startDateQueryFreeTarget;
+      }
+      if (this.stopDateQueryFreeTarget !== null) {
+        query_target['maxDate'] = this.stopDateQueryFreeTarget;
+      }
+      if (this.startDateQueryFreeBackground !== null) {
+        query_background['minDate'] = this.startDateQueryFreeBackground;
+      }
+      if (this.stopDateQueryFreeBackground !== null) {
+        query_background['maxDate'] = this.stopDateQueryFreeBackground;
+      }
+
+      let to_send = {
+        'query_target': query_target,
+        'query_background': query_background
+      };
+
+      this.num_overlapping_sequences = 0;
+
+      if(Object.keys(query_target).length > 0 && Object.keys(query_background).length > 0) {
+
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.num_overlapping_sequences = res[0]['count'];
+              this.overlay = false;
+              if(this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < 10){
+                this.errorNumSeqFreeQuery = true;
+              }
+            });
+      }
+      else {
+        this.overlay = false;
+      }
     }
   },
-  watch: {
-    numLevelAboveBackground(){
-      this.pValueBarChartApplied = false;
-     this.selectedProteinForPValue = null;
-     this.selectedProteinTable = null;
-     this.tableApplied = false;
-     this.selectedProtein = null;
+  watch:{
+    selectedTabFreeQuery(){
+      this.boldTabs();
     },
-    startDateQueryGeo(){
-      this.pValueBarChartApplied = false;
-     this.selectedProteinForPValue = null;
-     this.selectedProteinTable = null;
-     this.tableApplied = false;
-     this.selectedProtein = null;
+    'queryFreeTarget.geo_group': function (){
+        this.setQueryFreeTarget({field: 'country', list: null});
+        this.setQueryFreeTarget({field: 'region', list: null});
+        this.setQueryFreeTarget({field: 'province', list: null});
     },
-    stopDateQueryGeo(){
-      this.pValueBarChartApplied = false;
-       this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
-       this.tableApplied = false;
-       this.selectedProtein = null;
+    'queryFreeTarget.country': function (){
+        this.setQueryFreeTarget({field: 'region', list: null});
+        this.setQueryFreeTarget({field: 'province', list: null});
     },
-    'queryGeo.geo_group': function (){
-        this.setQueryGeo({field: 'country', list: null});
-        this.setQueryGeo({field: 'region', list: null});
-        this.setQueryGeo({field: 'province', list: null});
+    'queryFreeTarget.region': function (){
+        this.setQueryFreeTarget({field: 'province', list: null});
     },
-    'queryGeo.country': function (){
-        this.setQueryGeo({field: 'region', list: null});
-        this.setQueryGeo({field: 'province', list: null});
+    'queryFreeBackground.geo_group': function (){
+        this.setQueryFreeBackground({field: 'country', list: null});
+        this.setQueryFreeBackground({field: 'region', list: null});
+        this.setQueryFreeBackground({field: 'province', list: null});
     },
-    'queryGeo.region': function (){
-        this.setQueryGeo({field: 'province', list: null});
+    'queryFreeBackground.country': function (){
+        this.setQueryFreeBackground({field: 'region', list: null});
+        this.setQueryFreeBackground({field: 'province', list: null});
     },
-    queryGeo(){
-       this.pValueBarChartApplied = false;
-       this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
-       this.tableApplied = false;
-       this.selectedProtein = null;
+    'queryFreeBackground.region': function (){
+        this.setQueryFreeBackground({field: 'province', list: null});
+    },
+    numSequencesQueryFreeTarget(){
+      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background);
+    },
+    numSequencesQueryFreeBackground(){
+      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background);
     },
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
-    selectedContinent_forProvReg(){
-      this.selectedProteinTable = null;
-      this.pValueBarChartApplied = false;
-      this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
-      this.tableApplied = false;
-      this.headerTableProvReg = [];
-      this.rowsTableProvReg = [];
-
-      this.num_sequences_forProvReg = null;
-      this.selectedCountry_forProvReg = null;
-      this.possibleCountry_forProvReg = [];
-      this.selectedRegion_forProvReg = null;
-      this.possibleRegion_forProvReg = [];
-      this.selectedProvince_forProvReg = null;
-      this.possibleProvince_forProvReg = [];
-
-      if(this.selectedContinent_forProvReg !== null) {
-        let array_specific_geo = [];
-        this.all_geo.forEach(elem => {
-          if (elem['country'] !== null) {
-            if (elem['geo_group'] === this.selectedContinent_forProvReg && !array_specific_geo.includes(elem['country'])) {
-              array_specific_geo.push(elem['country']);
-            }
-          }
-        })
-        array_specific_geo.sort(function (a, b) {
-          a = a.toLowerCase();
-          b = b.toLowerCase();
-          return a < b ? -1 : a > b ? 1 : 0;
-        });
-        this.possibleCountry_forProvReg = array_specific_geo;
-      }
+    startDateQueryFreeTarget(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
     },
-    selectedCountry_forProvReg(){
-      this.selectedProteinTable = null;
-      this.pValueBarChartApplied = false;
-      this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
-      this.tableApplied = false;
-      this.headerTableProvReg = [];
-      this.rowsTableProvReg = [];
-
-      this.num_sequences_forProvReg = null;
-      this.selectedRegion_forProvReg = null;
-      this.possibleRegion_forProvReg = [];
-      this.selectedProvince_forProvReg = null;
-      this.possibleProvince_forProvReg = [];
-
-      if(this.selectedCountry_forProvReg !== null) {
-        let array_specific_geo = [];
-        this.all_geo.forEach(elem => {
-          if (elem['region'] !== null) {
-            if (elem['country'] === this.selectedCountry_forProvReg && !array_specific_geo.includes(elem['region'])) {
-              array_specific_geo.push(elem['region']);
-            }
-          }
-        })
-        array_specific_geo.sort(function (a, b) {
-          a = a.toLowerCase();
-          b = b.toLowerCase();
-          return a < b ? -1 : a > b ? 1 : 0;
-        });
-        this.possibleRegion_forProvReg = array_specific_geo;
-
-        if(this.selectedCountryToLower !== 'usa') {
-          this.geoSelectedName = this.selectedCountry_forProvReg;
-          let arrayToPieChart = [];
-          let all_geo2 = JSON.parse(JSON.stringify(this.all_geo));
-
-          all_geo2.forEach(elem => {
-            if(elem['country'] === this.selectedCountry_forProvReg) {
-              let region = '';
-              if(elem['region'] === null){
-                region = 'N/D';
-              }
-              else{
-                region = elem['region'];
-              }
-              let idx = arrayToPieChart.findIndex(item => item['name'] === region);
-              if (idx === -1) {
-                let single_element = {'name': region, 'value': elem['count']};
-                arrayToPieChart.push(single_element);
-              } else {
-                arrayToPieChart[idx]['value'] = arrayToPieChart[idx]['value'] + elem['count'];
-              }
-            }
-          })
-          this.geoSelectedContent = arrayToPieChart;
-        }
-      }
+    stopDateQueryFreeTarget(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
     },
-    selectedRegion_forProvReg(){
-      this.selectedProteinTable = null;
-      this.pValueBarChartApplied = false;
-      this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
-      this.tableApplied = false;
-      this.headerTableProvReg = [];
-      this.rowsTableProvReg = [];
-
-      this.num_sequences_forProvReg = null;
-      this.selectedProvince_forProvReg = null;
-      this.possibleProvince_forProvReg = [];
-
-      if(this.selectedRegion_forProvReg !== null) {
-        let array_specific_geo = [];
-        this.all_geo.forEach(elem => {
-          if (elem['province'] !== null) {
-            if (elem['region'] === this.selectedRegion_forProvReg && !array_specific_geo.includes(elem['province'])) {
-              array_specific_geo.push(elem['province']);
-            }
-          }
-        })
-        array_specific_geo.sort(function (a, b) {
-          a = a.toLowerCase();
-          b = b.toLowerCase();
-          return a < b ? -1 : a > b ? 1 : 0;
-        });
-        this.possibleProvince_forProvReg = array_specific_geo;
-
-       if(this.selectedCountryToLower === 'usa') {
-          this.geoSelectedName = this.selectedRegion_forProvReg;
-          let arrayToPieChart = [];
-          let all_geo2 = JSON.parse(JSON.stringify(this.all_geo));
-
-          all_geo2.forEach(elem => {
-            if(elem['region'] === this.selectedRegion_forProvReg) {
-              let province = '';
-              if(elem['province'] === null){
-                province = 'N/D';
-              }
-              else{
-                province = elem['province'];
-              }
-              let idx = arrayToPieChart.findIndex(item => item['name'] === province);
-              if (idx === -1) {
-                let single_element = {'name': province, 'value': elem['count']};
-                arrayToPieChart.push(single_element);
-              } else {
-                arrayToPieChart[idx]['value'] = arrayToPieChart[idx]['value'] + elem['count'];
-              }
-            }
-          })
-          this.geoSelectedContent = arrayToPieChart;
-        }
-      }
+    startDateQueryFreeBackground(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
     },
-    selectedProvince_forProvReg(){
-      this.selectedProteinTable = null;
-      this.pValueBarChartApplied = false;
-      this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
-      this.tableApplied = false;
-      this.headerTableProvReg = [];
-      this.rowsTableProvReg = [];
-
-      if(this.selectedProvince_forProvReg !== null) {
-        let array_specific_geo = [];
-        this.all_geo.forEach(elem => {
-          if (elem['province'] === this.selectedProvince_forProvReg) {
-            array_specific_geo.push(elem['count']);
-          }
-        })
-        this.num_sequences_forProvReg = array_specific_geo;
-      }
+    stopDateQueryFreeBackground(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
     },
-    all_geo(){
-      let array_specific_geo = [];
-      this.all_geo.forEach(elem => {
-        if(elem['geo_group'] !== null) {
-          if (!array_specific_geo.includes(elem['geo_group'])) {
-            array_specific_geo.push(elem['geo_group']);
-          }
-        }
-      })
-      array_specific_geo.sort( function( a, b ) {
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        return a < b ? -1 : a > b ? 1 : 0;
-      });
-      this.possibleContinent_forProvReg = array_specific_geo;
+    queryFreeTarget(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
+    },
+    queryFreeBackground(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
     },
     selectedProtein(){
       this.selectedProteinTable = null;
@@ -1449,11 +1206,12 @@ export default {
       }
     },
     selectedMaxOddsRatio(){
-      if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio ){
-        this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
-      }
-      else if (this.selectedMaxOddsRatio > this.totalMaxOddsRatio){
-        this.selectedMaxOddsRatio = this.totalMaxOddsRatio;
+      if(this.selectedMaxOddsRatio !== '-Infinity') {
+        if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio) {
+          this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
+        } else if (this.selectedMaxOddsRatio > this.totalMaxOddsRatio) {
+          this.selectedMaxOddsRatio = this.totalMaxOddsRatio;
+        }
       }
     },
     selectedMinPValueBarChart(){
@@ -1475,7 +1233,7 @@ export default {
       }
     },
     selectedProteinForTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
       if(this.selectedProteinForTable !== null) {
         let that = this;
         result = result.filter(function (i){
@@ -1532,39 +1290,30 @@ export default {
               ));
         })
       }
-      this.rowsTableProvReg = result;
+      this.rowsTable = result;
     }
+
   },
   mounted() {
-    let array_specific_geo = [];
-      this.all_geo.forEach(elem => {
-        if(elem['geo_group'] !== null) {
-          if (!array_specific_geo.includes(elem['geo_group'])) {
-            array_specific_geo.push(elem['geo_group']);
-          }
-        }
-      })
-      array_specific_geo.sort( function( a, b ) {
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        return a < b ? -1 : a > b ? 1 : 0;
-      });
-      this.possibleContinent_forProvReg = array_specific_geo;
-
     this.possibleProtein = this.all_protein;
+    this.boldTabs();
+    this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background);
   }
 }
 </script>
 
 <style scoped>
-  .table_prov_reg table > tbody > tr > td:nth-child(1),
-  .table_prov_reg table > tbody > tr > td:nth-child(3),
-  .table_prov_reg table > tbody > tr > td:nth-child(4){
+
+  .table_free table > tbody > tr > td:nth-child(1),
+  .table_free table > tbody > tr > td:nth-child(3),
+  .table_free table > tbody > tr > td:nth-child(4){
     box-shadow: inset -0.5px 0 0 0 grey;
   }
 
   .centered-input >>> input {
     text-align: center
   }
+
 
 </style>
