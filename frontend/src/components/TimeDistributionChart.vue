@@ -62,6 +62,15 @@
             </v-range-slider>
           </div>
         </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
+         padding-top: 0; padding-bottom: 0">
+        </v-flex>
+        <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+            <v-checkbox v-model="isStartTargetStopBackground"
+            label="Start Target = Stop Background + 1"
+            input-value="true">
+            </v-checkbox>
+        </v-flex>
       </v-row>
     </v-container>
     <v-container fluid grid-list-xl style="justify-content: center;
@@ -75,7 +84,7 @@
             <v-card-text>
               <v-layout row wrap justify-center style="padding: 30px;">
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3># SEQUENCES: </h3>
+                  <h3>NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -115,7 +124,7 @@
                 </v-flex>
 
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>STOP BACKGROUND: </h3>
+                  <h3>END BACKGROUND: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -152,7 +161,7 @@
             <v-card-text>
                       <v-layout row wrap justify-center style="padding: 30px;">
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3># SEQUENCES: </h3>
+                  <h3>NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -191,7 +200,7 @@
                 </v-flex>
 
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>STOP TARGET: </h3>
+                  <h3>END TARGET: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -257,6 +266,7 @@ export default {
 
       min_num_seq_target: 10,
       min_num_seq_background: 10,
+      isStartTargetStopBackground: false,
 
       options_slider: {
         enableCross: false
@@ -267,8 +277,15 @@ export default {
         tooltip: {
             trigger: 'item',
         },
+        legend: {
+          data: ['Time distribution', 'AVG of previous 7 days'],
+          top: '20px',
+          selectedMode: false,
+          itemGap: 50,
+        },
         series: [
             {
+                name: 'Time distribution',
                 type: 'bar',
                 radius: '50%',
                 data: [],
@@ -300,7 +317,13 @@ export default {
                         xAxis: 0
                     }] ]
                 }
-            }
+            },
+            {
+                name: 'AVG of previous 7 days',
+                type: 'line',
+                data: [],
+                color: 'rgba(0, 0, 0, 1)',
+            },
         ],
         xAxis: {
             type: 'category',
@@ -400,14 +423,23 @@ export default {
       let i = 0;
       let arrX = [];
       let arrY = [];
+      let arrYLine = [];
       while (i < len){
         let single_line = met[i];
+        let sum = 0;
+        if (i - 7 > 0){
+          for (let j = 8; j > 0; j = j - 1){
+            sum = sum + parseInt(met[i-j]['value']);
+          }
+        }
+        arrYLine.push((sum/7).toFixed(3));
         arrX.push(single_line['name']);
         arrY.push(single_line['value']);
         i = i + 1;
       }
 
       this.barChart.series[0].data = arrY;
+      this.barChart.series[1].data = arrYLine;
       this.barChart.xAxis.data = arrX;
 
       if(this.my_chart === null) {
@@ -435,7 +467,7 @@ export default {
         if( i >= min1 && i <= max1 ){
           this.num_sequences_background = this.num_sequences_background + this.timeContent[i].value;
         }
-        else if( i > min2 && i <= max2 ){
+        else if( i >= min2 && i <= max2 ){
           this.num_sequences_target = this.num_sequences_target + this.timeContent[i].value;
         }
         i = i + 1;
@@ -461,6 +493,11 @@ export default {
     },
   },
   watch: {
+    isStartTargetStopBackground(){
+      let start = this.translateDateToIndex(this.startTargetField);
+      let startBackground = this.background_slider[0];
+      this.background_slider = [startBackground, start - 1];
+    },
     timeContent(){
       this.renderGraphFilterDate();
     },
@@ -481,23 +518,31 @@ export default {
     stopBackgroundField(){
       this.wrongDateStopBackground = false;
       let stop = this.translateDateToIndex(this.stopBackgroundField);
-      if (stop === -1 || stop < this.background_slider[0] || stop > this.target_slider[0]){
+      if (stop === -1 || stop < this.background_slider[0] || (stop >= this.target_slider[0] && !this.isStartTargetStopBackground)){
         this.wrongDateStopBackground = true;
       }
       else {
         let start = this.background_slider[0];
         this.background_slider = [start, stop];
+        if(this.isStartTargetStopBackground) {
+          let stopTarget = this.target_slider[1];
+          this.target_slider = [stop + 1, stopTarget];
+        }
       }
     },
     startTargetField(){
       this.wrongDateStartTarget = false;
       let start = this.translateDateToIndex(this.startTargetField);
-      if (start === -1 || start < this.background_slider[1] || start > this.target_slider[1]){
+      if (start === -1 || (start <= this.background_slider[1] && !this.isStartTargetStopBackground) || start > this.target_slider[1]){
         this.wrongDateStartTarget = true;
       }
       else {
         let stop = this.target_slider[1];
         this.target_slider = [start, stop];
+        if(this.isStartTargetStopBackground) {
+          let startBackground = this.background_slider[0];
+          this.background_slider = [startBackground, start - 1];
+        }
       }
     },
     stopTargetField(){
@@ -512,21 +557,9 @@ export default {
       }
     },
     background_slider(){
-      if(this.target_slider[0] < this.background_slider[1]){
-        this.background_slider[1] = this.target_slider[0];
+      if(this.target_slider[0] <= this.background_slider[1] && !this.isStartTargetStopBackground){
+        this.background_slider[1] = this.target_slider[0] - 1;
       }
-      // let elem = document.getElementById('background_slider');
-      //
-      // let min_value = this.background_slider[0];
-      // let max_value = this.background_slider[1];
-      //
-      // let min = (100 * min_value) / this.max_range;
-      // let max = (100 * max_value) / this.max_range;
-      //
-      // let start_background = ((min*this.total_ranges_width)/ 100) + this.left_ranges_width;
-      // let stop_background = ((max-min)*this.total_ranges_width)/ 100;
-      // elem.style.width = stop_background + "%";
-      // elem.style.left = start_background + "%";
 
       this.changeMarkerAndRender(this.background_slider[0], this.background_slider[1],
           this.target_slider[0], this.target_slider[1]);
@@ -540,21 +573,9 @@ export default {
       this.setTimeRangesTargetAndBackground(timeRanges);
     },
     target_slider(){
-      if(this.background_slider[1] > this.target_slider[0]){
-        this.target_slider[0] = this.background_slider[1];
+      if(this.background_slider[1] >= this.target_slider[0] && !this.isStartTargetStopBackground){
+        this.target_slider[0] = this.background_slider[1] + 1;
       }
-      // let elem = document.getElementById('target_slider');
-      //
-      // let min_value = this.target_slider[0];
-      // let max_value = this.target_slider[1];
-      //
-      // let min = (100 * min_value) / this.max_range;
-      // let max = (100 * max_value) / this.max_range;
-      //
-      // let start_target = ((min*this.total_ranges_width)/ 100) + this.left_ranges_width;
-      // let stop_target = ((max-min)*this.total_ranges_width)/ 100;
-      // elem.style.width = stop_target + "%";
-      // elem.style.left = start_target + "%";
 
        this.changeMarkerAndRender(this.background_slider[0], this.background_slider[1],
           this.target_slider[0], this.target_slider[1]);
@@ -582,7 +603,7 @@ export default {
 
       this.background_slider[0] = 0;
       this.background_slider[1] = index;
-      this.target_slider[0] = index;
+      this.target_slider[0] = index + 1;
       this.target_slider[1] = this.max_range;
 
       this.changeMarkerAndRender(0, index, index, this.max_range);

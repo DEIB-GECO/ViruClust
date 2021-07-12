@@ -1,10 +1,10 @@
 <template>
-<div style="position: relative;">
+  <div style="position: relative;">
     <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-           background-color: white; z-index: 1">
+           background-color: white; margin-top: 50px; z-index: 1">
           </div>
         </v-row>
     </v-container>
@@ -43,23 +43,6 @@
           <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-                 margin-bottom: 40px">
-                  <v-layout row wrap justify-space-around>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                    <h3>NUM SEQUENCES: </h3>
-                    </v-flex>
-                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
-                      <v-text-field
-                        :value = "num_sequences"
-                        solo
-                        readonly
-                        hide-details
-                        class = "centered-input"
-                      ></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative;">
                   <v-layout row wrap justify-space-around>
@@ -118,36 +101,97 @@
             </v-card-text>
           </v-card>
         </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+        </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+          <v-card style="width: 80%; padding: 10px; background: linear-gradient(0deg, #F0E68C 50%, #F0E68C 50%)">
+            <v-card-title class="justify-center"><h3>Select type of analysis</h3></v-card-title>
+            <v-card-text>
+              <v-layout row wrap justify-space-around>
+                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                  <v-select
+                    v-model="selectedTypeOfAnalysis"
+                    :items="possibleTypeOfAnalysis"
+                    label="Protein"
+                    solo
+                    hide-details
+                  ></v-select>
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" >
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs12 md5 lg5 d-flex"
+                        style="justify-content: center; margin-bottom: 5px"
+                        v-for="(period, index) in timeDivision" v-bind:key="period[0]">
+                       <v-row justify-center style="width:  100%; border: green solid 7px;" v-if="timeDivisionAcceptable.includes(period)">
+                          <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>NUM SEQUENCES:</b><br> {{period[2]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>ORDER:</b><br> {{index + 1}}</span>
+                          </v-flex>
+                       </v-row>
+                       <v-row justify-center style="width:  100%; border: orange solid 7px;" v-else-if="timeDivisionNumSeqAcceptable.includes(period)">
+                          <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>NUM SEQUENCE:</b><br> {{period[2]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>ORDER:</b><br> {{index + 1}}</span>
+                          </v-flex>
+                       </v-row>
+                       <v-row justify-center style="width:  100%; border: red solid 7px;" v-else>
+                          <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>NUM SEQUENCES:</b><br> {{period[2]}}</span>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+                            <span style="text-align: center"><b>ORDER:</b><br> {{index + 1}}</span>
+                          </v-flex>
+                       </v-row>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+          </v-card>
+        </v-flex>
 
       </v-row>
     </v-container>
-
   </div>
 </template>
 
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import * as echarts from "echarts";
-import axios from "axios";
 
 export default {
-name: "TimeSelectorDistributionLineageInGeo",
+  name: "TimeDistributionChartWeekMonth",
   props: {
     timeName: {required: true,},
-    geoGranularity: {required: true},
-    geoSpecific: {required: true},
+    timeContent: {required: true,},
+    filterDate: {required: true},
   },
   data(){
     return {
       overlay: false,
       slider: [0, 1500],
       max_range: 0,
-      timeContent: [],
       last_start_date: null,
       last_stop_date: null,
       num_sequences: 0,
       wrong_last_start_date: false,
       wrong_last_stop_date: false,
+
+      selectedTypeOfAnalysis: "30 days",
+      possibleTypeOfAnalysis: ["30 days", "7 days"],
+      timeDivision: [],
+      timeDivisionNumSeqAcceptable: [],
 
       min_num_seq: 10,
 
@@ -219,27 +263,12 @@ name: "TimeSelectorDistributionLineageInGeo",
     }
   },
   computed: {
-    ...mapState(['startDateDistributionLineageInGeo', 'stopDateDistributionLineageInGeo']),
+    ...mapState(['timeDivisionAcceptable']),
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setStartDateDistributionLineageInGeo', 'setStopDateDistributionLineageInGeo']),
+    ...mapMutations(['setTimeDivisionAcceptable']),
     ...mapActions([]),
-    getDaysArray(start, end) {
-      for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-        let date = new Date(dt).toISOString().slice(0, 10);
-        if(!arr.includes(date)) {
-          arr.push(date);
-        }
-        if( date.indexOf('-10-24') !== -1){
-          let date2 = new Date(date);
-          date2.setDate(date2.getDate() + 1)
-          let date3 = new Date(date2).toISOString().slice(0, 10);
-          arr.push(date3);
-        }
-      }
-      return arr;
-    },
     renderGraphFilterDate(){
         let met =  JSON.parse(JSON.stringify(this.timeContent));
         this.renderGraph(met);
@@ -297,79 +326,85 @@ name: "TimeSelectorDistributionLineageInGeo",
       }
     },
     translateDateToIndex(date){
-      let index = this.timeContent.findIndex(function(item){
+      return this.timeContent.findIndex(function(item){
         return item.name === date;
       });
-      return index;
     },
-    loadData(){
-      let url = `/analyze/analyzeTimeDistributionCountryLineage`;
-      this.overlay = true;
-
-      let query = {};
-      if(this.geoGranularity !== 'world') {
-        query[this.geoGranularity] = this.geoSpecific;
+    computeTimeDivision(){
+      this.timeDivision = [];
+      let start = this.slider[0];
+      let stop = this.slider[1];
+      let num_days;
+      if(this.selectedTypeOfAnalysis === '30 days'){
+        num_days = 30;
       }
-      let to_send = {'query': query};
+      else{
+        num_days = 7;
+      }
+      let while_condition = true;
+      let i = start;
+      let arr_acceptable_time_division = [];
+      while (while_condition){
+        let single_period = [];
+        single_period[0] = this.translateIndexToDate(i);
 
-      axios.post(url, to_send)
-        .then((res) => {
-          return res.data;
-        })
-        .then((res) => {
-            let arrOfDates = [];
-            let dayList;
-            let first_date;
-            let last_date;
-            if( res.length !== 0) {
+        if(i + num_days > stop){
+          single_period[1] = this.translateIndexToDate(stop);
+          while_condition = false;
+        }
+        else{
+          single_period[1] = this.translateIndexToDate(i + num_days - 1);
+        }
 
-              first_date = new Date(res[0]['name']);
-              last_date = new Date();
-              last_date.setDate(last_date.getDate() + 1)
+        let j = i;
+        let num_seq = 0;
+        while(j < i + num_days){
+          if(j <= stop) {
+            num_seq = num_seq + this.timeContent[j].value;
+          }
+          j = j + 1;
+        }
+        single_period[2] = num_seq;
 
-              dayList = this.getDaysArray(first_date, last_date);
-              dayList.forEach(day => {
-                let idx = res.findIndex(item => item['name'] === day);
-                if (idx === -1) {
-                  let single_element = {'name': day, 'value': 0};
-                  arrOfDates.push(single_element);
-                } else {
-                  let single_element = {'name': day, 'value': res[idx]['value']};
-                  arrOfDates.push(single_element);
-                }
-              })
-            }
-            this.timeContent = arrOfDates;
-            this.max_range = this.timeContent.length - 1;
+        if(num_seq > this.min_num_seq){
+          arr_acceptable_time_division.push(single_period);
+        }
 
-            let that = this;
-            let index_start = this.timeContent.findIndex(function(item){
-              return item.name === that.last_start_date
-            });
-            if (index_start === -1){
-              index_start = 0;
-            }
+        this.timeDivision.push(single_period);
+        i = i + num_days;
+      }
+      this.timeDivisionNumSeqAcceptable = arr_acceptable_time_division;
 
-            let index_stop = this.timeContent.findIndex(function(item){
-              return item.name === that.last_stop_date
-            });
-            if (index_stop === -1){
-              index_stop = this.max_range;
-            }
+      let arr_full_acceptable = [];
+      for(let k = 0; k < this.timeDivisionNumSeqAcceptable.length; k = k + 1){
+        if(k > 0){
+          let date1 = new Date(this.timeDivisionNumSeqAcceptable[k][0]);
+          let date2 = new Date(this.timeDivisionNumSeqAcceptable[k-1][1]);
+          date1.setDate(date1.getDate() - 1);
+          let date3 = new Date(date1).toISOString().slice(0, 10);
+          let date4 = new Date(date2).toISOString().slice(0, 10);
+          if(date3 === date4){
+            arr_full_acceptable.push(this.timeDivisionNumSeqAcceptable[k]);
+          }
+        }
+        if(k < this.timeDivisionNumSeqAcceptable.length - 1){
+          let date1 = new Date(this.timeDivisionNumSeqAcceptable[k][1]);
+          let date2 = new Date(this.timeDivisionNumSeqAcceptable[k+1][0]);
+          date2.setDate(date2.getDate() - 1);
+          let date3 = new Date(date1).toISOString().slice(0, 10);
+          let date4 = new Date(date2).toISOString().slice(0, 10);
+          if(date3 === date4){
+            arr_full_acceptable.push(this.timeDivisionNumSeqAcceptable[k]);
+          }
+        }
+        // if((k > 0 && this.timeDivisionNumSeqAcceptable[k][0] === this.timeDivisionNumSeqAcceptable[k-1][1]) ||
+        // (k < this.timeDivisionNumSeqAcceptable.length && this.timeDivisionNumSeqAcceptable[k][1] === this.timeDivisionNumSeqAcceptable[k+1][0])){
+        //   arr_full_acceptable.push(this.timeDivisionNumSeqAcceptable[k]);
+        // }
+      }
 
-            this.slider = [index_start, index_stop];
-            this.last_start_date = this.translateIndexToDate(this.slider[0]);
-            this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-            this.changeMarkerAndRender(this.slider[0], this.slider[0]);
-
-            this.setStartDateDistributionLineageInGeo(this.last_start_date);
-            this.setStopDateDistributionLineageInGeo(this.last_stop_date);
-
-            this.chosenApplied = true;
-            this.overlay = false;
-
-        });
-    },
+      this.setTimeDivisionAcceptable(arr_full_acceptable);
+    }
   },
   watch: {
     last_start_date(){
@@ -401,13 +436,17 @@ name: "TimeSelectorDistributionLineageInGeo",
 
       this.last_start_date = this.translateIndexToDate(this.slider[0]);
       this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-
-      this.setStartDateDistributionLineageInGeo(this.last_start_date);
-      this.setStopDateDistributionLineageInGeo(this.last_stop_date);
+      this.computeTimeDivision();
+    },
+    selectedTypeOfAnalysis(){
+      this.computeTimeDivision();
     },
   },
   mounted() {
-      this.loadData();
+      this.max_range = this.timeContent.length - 1;
+      this.slider = [0, this.max_range];
+      this.changeMarkerAndRender(0, this.max_range);
+      this.computeTimeDivision();
   },
 }
 </script>

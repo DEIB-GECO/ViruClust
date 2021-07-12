@@ -1,36 +1,41 @@
 <template>
-  <v-layout row wrap justify-center>
-     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-       <v-layout row wrap justify-center>
-          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
-          v-if="field !== 'lineage'">
-            <SelectorsPieChart
-                :nameField = "field + field"
-                :fieldContent= "possibleValues2"
-                :isLoading = "isLoading">
-            </SelectorsPieChart>
-          </v-flex>
-         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-          <v-select
-            v-model="selected2"
-            :items="possibleValues2"
-            :label="field === 'geo_group' ? 'continent' : field"
-            solo
-            clearable
-            hide-details
-            :item-text="getFieldText"
-            :loading="isLoading"
-            :disabled="isLoading || possibleValues2.length === 0"
-          >
-            <template slot="item" slot-scope="data">
-                <span class="item-value-span">{{getFieldText(data.item)}}</span>
-                <span class="item-count-span">{{data.item.count}}</span>
-            </template>
-          </v-select>
-         </v-flex>
-       </v-layout>
-     </v-flex>
-  </v-layout>
+  <div>
+    <v-layout row wrap justify-center>
+       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+         <v-layout row wrap justify-center>
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+            v-if="field !== 'lineage'">
+              <SelectorsPieChart
+                  :nameField = "field + field"
+                  :field = "field"
+                  nameQuery = 'geo'
+                  :fieldContent= "possibleValues2"
+                  :isLoading = "isLoading">
+              </SelectorsPieChart>
+            </v-flex>
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+            <v-autocomplete
+              v-model="selected2"
+              :items="possibleValues2"
+              :label="field === 'geo_group' ? 'continent' : field"
+              solo
+              clearable
+              hide-details
+              :item-text="getFieldText"
+              :loading="isLoading"
+              :disabled="isLoading || possibleValues2.length === 0"
+              :multiple="checkMultiple()"
+            >
+              <template slot="item" slot-scope="data">
+                  <span class="item-value-span">{{getFieldText(data.item)}}</span>
+                  <span class="item-count-span">{{data.item.count}}</span>
+              </template>
+            </v-autocomplete>
+           </v-flex>
+         </v-layout>
+       </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
@@ -79,6 +84,13 @@ export default {
         this.isLoading = true;
         let url = `/analyze/selectorQuery`;
         let query = JSON.parse(JSON.stringify(this.queryGeo));
+
+        // Object.keys(query).forEach(key => {
+        //   if(Array.isArray(query[key])){
+        //     query[key] = query[key][0];
+        //   }
+        // });
+
         let to_send = {};
         if (this.field === 'geo_group') {
           delete query['country'];
@@ -96,6 +108,7 @@ export default {
         if(this.stopDateQueryGeo){
           query['maxDate'] = this.stopDateQueryGeo;
         }
+        query['includeUK'] = true;
         to_send['field'] = this.field;
         to_send['query'] = query;
 
@@ -112,6 +125,13 @@ export default {
         this.possibleValues2 = [];
         this.isLoading = false;
       }
+    },
+    checkMultiple(){
+      // return (this.field === 'geo_group' && !this.queryGeo['country']) ||
+      //     (this.field === 'country' && !this.queryGeo['region']) ||
+      //     (this.field === 'region' && !this.queryGeo['province']) ||
+      //     (this.field === 'province');
+      return false;
     }
   },
   mounted() {
@@ -121,12 +141,6 @@ export default {
     queryGeo() {
       this.loadData();
     },
-    // startDateQueryGeo(){
-    //   this.loadData();
-    // },
-    // stopDateQueryGeo(){
-    //   this.loadData();
-    // }
   }
 }
 </script>

@@ -2,6 +2,9 @@
   <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
+          <v-card-title class="justify-center">
+            <h1>FREE TARGET VS BACKGROUND</h1>
+          </v-card-title>
           <v-layout row wrap justify-center>
             <v-flex class="no-horizontal-padding xs12 d-flex">
               <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
@@ -54,10 +57,7 @@
             </v-flex>
 
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-              <h2> # OVERLAPPING SEQUENCES </h2>
-            </v-flex>
-            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-              <h4> (overlapping sequences will be removed from background for the analysis) </h4>
+              <h2> NUM OVERLAPPING SEQUENCES </h2>
             </v-flex>
             <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px">
               <v-text-field
@@ -68,6 +68,18 @@
                 class = "centered-input"
               ></v-text-field>
             </v-flex>
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+              <h3> Select from where the overlapping sequences should be removed </h3>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px">
+            <v-select
+                    v-model="selectRemoveOverlapping"
+                    :items="possibleRemoveOverlapping"
+                    label="Remove Overlapping"
+                    solo
+                    hide-details
+                  ></v-select>
+            </v-flex>
 
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
                <h2>SELECT PROTEINS TO ANALYZE</h2>
@@ -77,7 +89,7 @@
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                    <v-select
+                    <v-autocomplete
                       v-model="selectedProtein"
                       :items="possibleProtein"
                       label="Protein"
@@ -85,15 +97,15 @@
                       hide-details
                       multiple
                     >
-                    </v-select>
+                    </v-autocomplete>
                   </v-flex>
                </v-flex>
 
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqFreeQuery">
               <span style="text-align: center">
-                 <span style="color: red"> # sequences selected is too low (minimum 10 for both target and background)</span><br>
-                 <span style="color: red"> (the # sequences of the background is calculated taking care of the overlapping sequences)</span>
+                 <span style="color: red"> number of sequences selected is too low (minimum 10 for both target and background)</span><br>
+                 <span style="color: red"> (the number of sequences in {{selectRemoveOverlapping.toLowerCase()}} is calculated taking care of the overlapping sequences)</span>
               </span>
                </v-flex>
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
@@ -410,10 +422,10 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
-                          <h5>SELECT PROTEIN:</h5>
+                          <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
                         <v-card-text style="margin-top: 30px">
-                          <v-select
+                          <v-autocomplete
                             v-model="selectedProteinForTable"
                             :items="possibleProteinForTable"
                             label="Protein"
@@ -421,7 +433,7 @@
                             clearable
                             hide-details
                           >
-                          </v-select>
+                          </v-autocomplete>
                         </v-card-text>
                      </v-card>
                    </v-flex>
@@ -547,17 +559,17 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
-                      <h5>SELECT PROTEIN:</h5>
+                      <h5>FILTER PROTEIN:</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
-                      <v-select
+                      <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
                         label="Protein"
                         solo
                         hide-details
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-card-text>
                  </v-card>
                </v-flex>
@@ -571,13 +583,42 @@
                       APPLY
                  </v-btn>
                </v-flex>
+               <div v-if="pValueBarChartApplied">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
+                 <v-card width="400px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>HIGHLIGHTS DOMAIN:</h5>
+                    </v-card-title>
+                    <v-card-text style="margin-top: 30px">
+                      <v-autocomplete
+                        v-model="selectedDomainForPValue"
+                        :items="possibleDomainForPValue"
+                        label="Domain"
+                        solo
+                        :item-text="getFieldTextDomain"
+                        hide-details
+                      >
+                        <template slot="item" slot-scope="data">
+                            <span class="item-value-span">{{getFieldTextDomain(data.item)}}</span>
+                        </template>
+                      </v-autocomplete>
+                    </v-card-text>
+                 </v-card>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <PValueBarChart
                      v-if="pValueBarChartApplied"
                      :namePValue="pValueName"
-                     :pValueContent="pValueContent">
+                     :pValueContent="pValueContent"
+                     :totalMaxOddsRatio="totalMaxOddsRatio"
+                     :startStopProtein="startStopProtein"
+                     :selectedDomainForPValue="selectedDomainForPValue"
+                     :possibleDomainForPValue="possibleDomainForPValue">
                  </PValueBarChart>
                </v-flex>
+               </div>
              </v-layout>
            </v-card-text>
         </v-card>
@@ -650,6 +691,9 @@ export default {
       selectedProtein: [],
       possibleProtein: [],
 
+      selectRemoveOverlapping: 'Background',
+      possibleRemoveOverlapping: ['Background', 'Target', 'Both'],
+
       overlay: false,
       tableApplied: false,
       headerTable: [],
@@ -690,17 +734,83 @@ export default {
 
       listAccessionIds: [],
       dialogAccessionIds: false,
+      startStopProtein: {},
+      selectedDomainForPValue: null,
+      possibleDomainForPValue: [],
     }
   },
   computed: {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'numSequencesQueryFreeTarget',
       'numSequencesQueryFreeBackground', 'all_protein', 'startDateQueryFreeTarget', "stopDateQueryFreeTarget",
-      'startDateQueryFreeBackground', 'stopDateQueryFreeBackground']),
+      'startDateQueryFreeBackground', 'stopDateQueryFreeBackground', 'includeUKFreeTarget', 'includeUKFreeBackground']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations([]),
     ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
+    getFieldTextDomain(item){
+      return `${item['Description']}` //  ----- ${item['cnt']}
+    },
+    filter(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
+      if(this.selectedProteinForTable !== null) {
+        let that = this;
+        result = result.filter(function (i){
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                  && odds_ratio <= that.selectedMaxOddsRatio) ||
+                     (that.isInfinite
+                  && odds_ratio > that.totalMaxOddsRatio)
+                )
+                && product === that.selectedProteinForTable);
+          })
+      }
+      else{
+        var that = this;
+        result = result.filter(function (i){
+          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+          let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              &&
+                 ((odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio) ||
+                 (that.isInfinite
+              && odds_ratio > that.totalMaxOddsRatio)
+              ));
+        })
+      }
+      this.rowsTable = result;
+    },
     boldTabs(){
       let i = 0;
       while(i < 3){
@@ -788,33 +898,7 @@ export default {
        }
     },
     applyFilterOnTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
-      var that = this;
-      result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      this.rowsTable = result;
+      this.filter();
 
       let copy = JSON.parse(JSON.stringify(this.rowsTable));
       this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
@@ -845,9 +929,13 @@ export default {
         query_background['maxDate'] = this.stopDateQueryFreeBackground;
       }
 
+      query_background['includeUK'] = this.includeUKFreeBackground;
+      query_target['includeUK'] = this.includeUKFreeTarget;
+
       let to_send = {'query_target': query_target,
                      'query_background': query_background,
-                     'protein': array_protein};
+                     'protein': array_protein,
+                     'removeOverlapping': this.selectRemoveOverlapping};
       axios.post(url, to_send)
         .then((res) => {
           return res.data;
@@ -869,10 +957,26 @@ export default {
           this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
           let rowTable = JSON.parse(JSON.stringify(this.rowsTable));
-          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
-          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
-          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
-          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+          let totalMaxTarget = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
+          if (totalMaxTarget < 0){
+            this.totalMaxTargetNumerator = 0;
+            this.selectedMaxTargetNumerator = 0;
+          }
+          else{
+            this.totalMaxTargetNumerator = totalMaxTarget;
+            this.selectedMaxTargetNumerator = totalMaxTarget;
+          }
+
+          let totalMaxBackground = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
+          if (totalMaxBackground < 0){
+            this.totalMaxBackgroundNumerator = 0;
+            this.selectedMaxBackgroundNumerator = 0;
+          }
+          else{
+            this.totalMaxBackgroundNumerator = totalMaxBackground;
+            this.selectedMaxBackgroundNumerator = totalMaxBackground;
+          }
+
           let rowTable2 = JSON.parse(JSON.stringify(this.rowsTable));
           rowTable2 = rowTable2.filter(function (i){
               let perc = i['percentage_background'];
@@ -894,6 +998,7 @@ export default {
         });
     },
     applyFilterPValueChart(){
+      this.selectedDomainForPValue = null;
       let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
       var that = this;
       result = result.filter(function (i){
@@ -911,7 +1016,8 @@ export default {
         let mutation_position = elem['mutation_position'];
         let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
         if (idx === -1) {
-          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position};
+          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position
+          , 'p_value': elem['p_value'], 'odds_ratio': elem['odd_ratio']};
           arrayToBarChart.push(single_element);
         } else {
           arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
@@ -926,7 +1032,31 @@ export default {
 
       this.pValueContent = arrayToBarChart;
       this.pValueName = 'p_value_free';
-      this.pValueBarChartApplied = true;
+
+      let url = `/analyze/getProteinPosition`;
+
+      let to_send = {'protein': this.selectedProteinForPValue};
+
+      axios.post(url, to_send)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+            this.startStopProtein = res;
+            let url2 = `/analyze/getDomains`;
+
+            let to_send2 = {'protein': this.selectedProteinForPValue};
+
+            axios.post(url2, to_send2)
+              .then((res) => {
+                return res.data;
+              })
+              .then((res) => {
+                  this.possibleDomainForPValue = res;
+                  this.overlay = false;
+                  this.pValueBarChartApplied = true;
+              });
+        });
     },
     openDialogAccession(type, item){
       let url = `/analyze/getAccessionIds`;
@@ -964,6 +1094,13 @@ export default {
         query_target = JSON.parse(JSON.stringify(this.queryFreeTarget));
       }
 
+      if(type === 'target') {
+        query['includeUK'] = this.includeUKFreeTarget;
+      }
+      else if(type === 'background') {
+        query['includeUK'] = this.includeUKFreeBackground;
+      }
+
       let to_send = {'query': query, 'query_false': query_false, 'query_target': query_target};
 
       axios.post(url, to_send)
@@ -997,7 +1134,6 @@ export default {
       this.selectedProteinForPValue = null;
       this.selectedProteinTable = null;
       this.tableApplied = false;
-      this.selectedProtein = null;
     },
     countOverlappingSequenceTargetBackground(){
       let url = `/analyze/countOverlappingSequenceTargetBackground`;
@@ -1019,6 +1155,9 @@ export default {
         query_background['maxDate'] = this.stopDateQueryFreeBackground;
       }
 
+      query_background['includeUK'] = this.includeUKFreeBackground;
+      query_target['includeUK'] = this.includeUKFreeTarget;
+
       let to_send = {
         'query_target': query_target,
         'query_background': query_background
@@ -1035,9 +1174,9 @@ export default {
             .then((res) => {
               this.num_overlapping_sequences = res[0]['count'];
               this.overlay = false;
-              if(this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < 10){
-                this.errorNumSeqFreeQuery = true;
-              }
+              // if(this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < 10){
+              //   this.errorNumSeqFreeQuery = true;
+              // }
             });
       }
       else {
@@ -1046,6 +1185,20 @@ export default {
     }
   },
   watch:{
+    selectRemoveOverlapping(){
+      this.resetApplied();
+      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
+          || (this.selectRemoveOverlapping === 'Target'
+              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+          || (this.selectRemoveOverlapping === 'Background'
+              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          || (this.selectRemoveOverlapping === 'Both' &&
+              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          )
+      );
+    },
     selectedTabFreeQuery(){
       this.boldTabs();
     },
@@ -1075,11 +1228,42 @@ export default {
     },
     numSequencesQueryFreeTarget(){
       this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background);
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
+          || (this.selectRemoveOverlapping === 'Target'
+              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+          || (this.selectRemoveOverlapping === 'Background'
+              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          || (this.selectRemoveOverlapping === 'Both' &&
+              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          )
+      );
     },
     numSequencesQueryFreeBackground(){
       this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background);
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
+          || (this.selectRemoveOverlapping === 'Target'
+              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+          || (this.selectRemoveOverlapping === 'Background'
+              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          || (this.selectRemoveOverlapping === 'Both' &&
+              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          )
+      );
+    },
+    num_overlapping_sequences(){
+      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
+          || (this.selectRemoveOverlapping === 'Target'
+              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+          || (this.selectRemoveOverlapping === 'Background'
+              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          || (this.selectRemoveOverlapping === 'Both' &&
+              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          )
+      );
     },
     all_protein(){
       this.possibleProtein = this.all_protein;
@@ -1105,6 +1289,14 @@ export default {
       this.countOverlappingSequenceTargetBackground();
     },
     queryFreeBackground(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
+    },
+    includeUKFreeTarget(){
+      this.resetApplied();
+      this.countOverlappingSequenceTargetBackground();
+    },
+    includeUKFreeBackground(){
       this.resetApplied();
       this.countOverlappingSequenceTargetBackground();
     },
@@ -1233,64 +1425,7 @@ export default {
       }
     },
     selectedProteinForTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTable));
-      if(this.selectedProteinForTable !== null) {
-        let that = this;
-        result = result.filter(function (i){
-            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-            let p_value = JSON.parse(JSON.stringify(i['p_value']));
-            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-            let product = JSON.parse(JSON.stringify(i['product']));
-            return (background_frequency >= that.selectedMinBackgroundFrequency
-                && background_frequency <= that.selectedMaxBackgroundFrequency
-                && target_frequency >= that.selectedMinTargetFrequency
-                && target_frequency <= that.selectedMaxTargetFrequency
-                && p_value >= that.selectedMinPValue
-                && p_value <= that.selectedMaxPValue
-                && background_numerator >= that.selectedMinBackgroundNumerator
-                && background_numerator <= that.selectedMaxBackgroundNumerator
-                && target_numerator >= that.selectedMinTargetNumerator
-                && target_numerator <= that.selectedMaxTargetNumerator
-                &&
-                ((odds_ratio >= that.selectedMinOddsRatio
-                  && odds_ratio <= that.selectedMaxOddsRatio) ||
-                     (that.isInfinite
-                  && odds_ratio > that.totalMaxOddsRatio)
-                )
-                && product === that.selectedProteinForTable);
-          })
-      }
-      else{
-        var that = this;
-        result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      }
-      this.rowsTable = result;
+      this.filter();
     }
 
   },

@@ -38,9 +38,45 @@
          padding-top: 0; padding-bottom: 0">
           <v-layout row wrap justify-center>
             <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
-                <v-checkbox v-model="viewBackground"
-                label="SHOW BACKGROUND"
+                <v-checkbox v-model="graphOnNumSequences"
+                label="NUM SEQUENCES"
                 input-value="true">
+                </v-checkbox>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+                <v-checkbox v-model="graphOnPercSequences"
+                label="% SEQUENCES"
+                input-value="true">
+                </v-checkbox>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
+         padding-top: 0; padding-bottom: 0">
+          <v-layout row wrap justify-center>
+            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+                <v-checkbox v-model="viewTarget"
+                input-value="true">
+                  <template v-slot:label>
+                    <span>SHOW <span style="color: blue">TARGET</span></span>
+                  </template>
+                </v-checkbox>
+            </v-flex>
+            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+                <v-checkbox v-model="viewBackground"
+                input-value="true">
+                  <template v-slot:label>
+                    <span>SHOW <span style="color: red">BACKGROUND</span></span>
+                  </template>
+                </v-checkbox>
+            </v-flex>
+             <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+                <v-checkbox v-model="viewBothTargetBackground"
+                label="SHOW BOTH"
+                input-value="true">
+                  <template v-slot:label>
+                    <span>SHOW <span style="color: blue">BO</span><span style="color: red">TH</span></span>
+                  </template>
                 </v-checkbox>
             </v-flex>
           </v-layout>
@@ -53,7 +89,7 @@
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
           <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
             <v-card-title class="justify-center">
-              TIME
+              TIME FILTER
             </v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px;">
@@ -97,7 +133,7 @@
                  padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3># SEQUENCES TARGET: </h3>
+                      <h3>NUM SEQUENCES TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -114,7 +150,7 @@
                  padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3># SEQUENCES BACKGROUND: </h3>
+                      <h3>NUM SEQUENCES BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -160,7 +196,7 @@
                  padding: 0; position: relative">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>STOP: </h3>
+                      <h3>END: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -234,6 +270,11 @@ export default {
 
       timeContentBackground: [],
       viewBackground: false,
+      viewTarget: true,
+      viewBothTargetBackground: false,
+
+      graphOnNumSequences: true,
+      graphOnPercSequences: false,
 
       options_slider: {
         enableCross: false
@@ -244,9 +285,16 @@ export default {
         tooltip: {
             trigger: 'item',
         },
+        legend: {
+          data: ['Target', 'Background', 'AVG of previous 7 days in target', 'AVG of previous 7 days in background'],
+          top: '20px',
+          selectedMode: false,
+          itemGap: 50,
+        },
         series: [
             {
                 type: 'bar',
+                name: 'Background',
                 radius: '50%',
                 data: [],
                 itemStyle: {color: 'rgba(255, 0, 0, 1)'},
@@ -257,23 +305,10 @@ export default {
                         shadowColor: 'rgba(255, 0, 0, 1)'
                     }
                 },
-                markArea: {
-                    tooltip: {
-                        show: false,
-                    },
-                    data: [ [{
-                        xAxis: 0,
-                        itemStyle: {
-                            color: 'rgba(50, 255, 50, 0.5)',
-                        },
-                    }, {
-                        xAxis: 0
-                    }]
-                    ]
-                }
             },
             {
                 type: 'bar',
+                name: 'Target',
                 radius: '50%',
                 data: [],
                 itemStyle: {color: 'rgba(0, 0, 255, 1)'},
@@ -284,6 +319,32 @@ export default {
                         shadowColor: 'rgba(0, 0, 255, 1)'
                     }
                 },
+                markArea: {
+                      tooltip: {
+                          show: false,
+                      },
+                      data: [ [{
+                          xAxis: 0,
+                          itemStyle: {
+                              color: 'rgba(50, 255, 50, 0.5)',
+                          },
+                      }, {
+                          xAxis: 0
+                      }]
+                      ]
+                  }
+            },
+            {
+                name: 'AVG of previous 7 days in target',
+                type: 'line',
+                data: [],
+                color: 'rgba(0, 0, 255, 1)',
+            },
+            {
+                name: 'AVG of previous 7 days in background',
+                type: 'line',
+                data: [],
+                color: 'rgba(255, 0, 0, 1)',
             }
         ],
         xAxis: {
@@ -303,7 +364,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'numLevelAboveBackground']),
+    ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'numLevelAboveBackground', 'includeUKGeo']),
     ...mapGetters({}),
   },
   methods: {
@@ -337,19 +398,54 @@ export default {
       let arrX = [];
       let arrYBackground = [];
       let arrYTarget = [];
+      let arrYLineTarget = [];
+      let arrYLineBackground = [];
+      let total_target = 0;
+      let total_background = 0;
       while (i < len){
         let single_line = met[i];
         let single_line2 = met2[i];
         arrX.push(single_line['name']);
-        arrYTarget.push(single_line['value']);
-        if(this.viewBackground) {
+        if(this.viewTarget || this.viewBothTargetBackground) {
+          let sum = 0;
+          if (i - 7 > 0){
+            for (let j = 8; j > 0; j = j - 1){
+              sum = sum + parseInt(met[i-j]['value']);
+            }
+          }
+          total_target = total_target + single_line['value'];
+          arrYLineTarget.push((sum/7).toFixed(3));
+          arrYTarget.push(single_line['value']);
+        }
+        if(this.viewBackground || this.viewBothTargetBackground) {
+          let sum = 0;
+          if (i - 7 > 0){
+            for (let k = 8; k > 0; k = k - 1){
+              sum = sum + parseInt(met2[i-k]['value']);
+            }
+          }
+          total_background = total_background + single_line2['value'];
+          arrYLineBackground.push(sum/7);
           arrYBackground.push(single_line2['value']);
         }
         i = i + 1;
       }
 
+      if(this.graphOnPercSequences){
+        for (let jj = 0; jj < arrYLineTarget.length; jj = jj + 1){
+          arrYTarget[jj] = (arrYTarget[jj]/total_target)*100;
+          arrYLineTarget[jj] = (arrYLineTarget[jj]/total_target)*100;
+        }
+        for (let ii = 0; ii < arrYLineBackground.length; ii = ii + 1){
+          arrYBackground[ii] = (arrYBackground[ii]/total_background)*100;
+          arrYLineBackground[ii] = (arrYLineBackground[ii]/total_background)*100;
+        }
+      }
+
       this.barChart.series[0].data = arrYBackground;
       this.barChart.series[1].data = arrYTarget;
+      this.barChart.series[2].data = arrYLineTarget;
+      this.barChart.series[3].data = arrYLineBackground;
       this.barChart.xAxis.data = arrX;
 
       if(this.my_chart === null) {
@@ -358,8 +454,8 @@ export default {
       this.my_chart.setOption(this.barChart, true);
     },
     changeMarkerAndRender(min, max){
-      this.barChart.series[0].markArea.data[0][0].xAxis = min;
-      this.barChart.series[0].markArea.data[0][1].xAxis = max;
+      this.barChart.series[1].markArea.data[0][0].xAxis = min;
+      this.barChart.series[1].markArea.data[0][1].xAxis = max;
 
       let lenXAxis = this.timeContent.length;
       let i = 0;
@@ -400,6 +496,7 @@ export default {
 
       let query = JSON.parse(JSON.stringify(this.queryGeo));
 
+      query['includeUK'] = true;
       let to_send = {'query': query};
 
       axios.post(url, to_send)
@@ -454,6 +551,7 @@ export default {
             let query_false = '';
             query['minDate'] = first_date.toISOString().slice(0, 10);
             query['maxDate'] = last_date.toISOString().slice(0, 10);
+            query['includeUK'] = this.includeUKGeo;
 
             if(!query['country']){
               query_false = 'geo_group'
@@ -617,7 +715,36 @@ export default {
       this.setStopDateQueryGeo(this.last_stop_date);
     },
     viewBackground(){
+      if(this.viewBackground=== true) {
+        this.viewTarget = false;
+        this.viewBothTargetBackground = false;
+      }
       this.renderGraphFilterDate();
+    },
+    viewTarget(){
+      if(this.viewTarget === true){
+        this.viewBackground = false;
+        this.viewBothTargetBackground = false;
+      }
+      this.renderGraphFilterDate();
+    },
+    viewBothTargetBackground(){
+      if(this.viewBothTargetBackground === true){
+        this.viewBackground = false;
+        this.viewTarget = false;
+      }
+      this.renderGraphFilterDate();
+    },
+    graphOnNumSequences(){
+      this.graphOnPercSequences = (this.graphOnNumSequences !== true);
+      this.renderGraphFilterDate();
+    },
+    graphOnPercSequences(){
+      this.graphOnNumSequences = (this.graphOnPercSequences !== true);
+      this.renderGraphFilterDate();
+    },
+    includeUKGeo(){
+      this.loadData();
     }
   },
   mounted() {

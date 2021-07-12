@@ -4,7 +4,7 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            <h1>GEO (TARGET) vs GEO (BACKGROUND)</h1>
+            <h1>SPATIAL ANALYSIS</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
@@ -15,19 +15,6 @@
                  <SelectorsQueryGeo
                   field = 'lineage'>
                  </SelectorsQueryGeo>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                  <h3>Select "granularity" distance between target and background</h3>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                 <v-select
-                    v-model="selectedNumLevelAboveBackground"
-                    :items="possibleNumLevelAboveBackground"
-                    label="# level above background"
-                    solo
-                    hide-details></v-select>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
@@ -52,75 +39,43 @@
                  </SelectorsQueryGeo>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                  <h3>Select "granularity" distance between target and background</h3>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center; padding: 0">
+                 <v-select
+                    v-model="selectedNumLevelAboveBackground"
+                    :items="possibleNumLevelAboveBackground"
+                    label="Background"
+                    solo
+                    :item-text="getFieldText"
+                    hide-details
+                    :disabled="possibleNumLevelAboveBackground.length === 0">
+                   <template slot="item" slot-scope="data">
+                        <span class="item-value-span">{{data.item.background}}</span>
+                    </template>
+                 </v-select>
+               </v-flex>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;"
+                  v-if="this.queryGeo['geo_group'] === 'Europe'">
+                  <!--(this.selectedNumLevelAboveBackground === 1 && this.queryGeo['country'] && !this.queryGeo['region']
+                        || this.selectedNumLevelAboveBackground === 2 && this.queryGeo['region'] && !this.queryGeo['province']
+                        || this.selectedNumLevelAboveBackground === 3 && this.queryGeo['province'])-->
+                    <v-checkbox
+                      v-model="includeUK"
+                      hide-details
+                      input-value="true"
+                      label="Include UK in Background"
+                      style="background-color: white; border: grey solid 1px; padding: 10px">
+                    </v-checkbox>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <TimeSelectorQueryGeo
                     timeName="timeDistributionGeo"
                     filterDate = "Day">
                  </TimeSelectorQueryGeo>
                </v-flex>
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedContinent_forProvReg"-->
-<!--                  :items="possibleContinent_forProvReg"-->
-<!--                  label="Continent"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedCountry_forProvReg"-->
-<!--                  :items="possibleCountry_forProvReg"-->
-<!--                  label="Country"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="selectedContinent_forProvReg === null"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
-<!--               v-if="selectedCountryToLower !== 'usa'">-->
-<!--                <RegionProvincePieChart-->
-<!--                  v-if="selectedCountry_forProvReg !== null && selectedCountryToLower !== 'usa'"-->
-<!--                  :nameGeo="geoSelectedName"-->
-<!--                  :geoContent="geoSelectedContent">-->
-<!--                </RegionProvincePieChart>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
-<!--              v-if="selectedCountryToLower !== 'usa'">-->
-<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">-->
-<!--                <v-select-->
-<!--                  v-model="selectedRegion_forProvReg"-->
-<!--                  :items="possibleRegion_forProvReg"-->
-<!--                  label="Region"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="selectedCountry_forProvReg === null"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
-<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"-->
-<!--               v-if="selectedCountryToLower === 'usa'">-->
-<!--                <RegionProvincePieChart-->
-<!--                  v-if="selectedRegion_forProvReg !== null && selectedCountryToLower === 'usa'"-->
-<!--                  :nameGeo="geoSelectedName"-->
-<!--                  :geoContent="geoSelectedContent">-->
-<!--                </RegionProvincePieChart>-->
-<!--               </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px"-->
-<!--              v-if="selectedCountryToLower === 'usa'">-->
-<!--                 <h2>SELECT REGION (TARGET) THAT WILL BE ANALYZED AGAINST ITS COUNTRY (BACKGROUND)</h2>-->
-<!--              </v-flex>-->
-<!--              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"-->
-<!--                      v-if="(selectedCountryToLower === 'usa')">-->
-<!--                <v-select-->
-<!--                  v-model="selectedProvince_forProvReg"-->
-<!--                  :items="possibleProvince_forProvReg"-->
-<!--                  label="Province"-->
-<!--                  solo-->
-<!--                  hide-details-->
-<!--                  :disabled="(selectedCountryToLower !== 'usa' || selectedRegion_forProvReg === null)"-->
-<!--                ></v-select>-->
-<!--              </v-flex>-->
              </v-layout>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
                <h2>SELECT PROTEINS TO ANALYZE</h2>
@@ -130,7 +85,7 @@
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                    <v-select
+                    <v-autocomplete
                       v-model="selectedProtein"
                       :items="possibleProtein"
                       label="Protein"
@@ -138,12 +93,12 @@
                       hide-details
                       multiple
                     >
-                    </v-select>
+                    </v-autocomplete>
                   </v-flex>
                </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px"
              v-if="errorNumSeqQueryGeo">
-               <span style="color: red"> # sequences selected is too low (minimum 10)</span>
+               <span style="color: red"> number of sequences selected is too low (minimum 10)</span>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <v-btn
@@ -488,10 +443,10 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
-                          <h5>SELECT PROTEIN:</h5>
+                          <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
                         <v-card-text style="margin-top: 30px">
-                          <v-select
+                          <v-autocomplete
                             v-model="selectedProteinForTable"
                             :items="possibleProteinForTable"
                             label="Protein"
@@ -499,7 +454,7 @@
                             clearable
                             hide-details
                           >
-                          </v-select>
+                          </v-autocomplete>
                         </v-card-text>
                      </v-card>
                    </v-flex>
@@ -625,17 +580,17 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
-                      <h5>SELECT PROTEIN:</h5>
+                      <h5>FILTER PROTEIN:</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
-                      <v-select
+                      <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
                         label="Protein"
                         solo
                         hide-details
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-card-text>
                  </v-card>
                </v-flex>
@@ -649,13 +604,41 @@
                       APPLY
                  </v-btn>
                </v-flex>
+               <div v-if="pValueBarChartApplied">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
+                 <v-card width="400px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>HIGHLIGHTS DOMAIN:</h5>
+                    </v-card-title>
+                    <v-card-text style="margin-top: 30px">
+                      <v-autocomplete
+                        v-model="selectedDomainForPValue"
+                        :items="possibleDomainForPValue"
+                        label="Domain"
+                        solo
+                        :item-text="getFieldTextDomain"
+                        hide-details
+                      >
+                        <template slot="item" slot-scope="data">
+                            <span class="item-value-span">{{getFieldTextDomain(data.item)}}</span>
+                        </template>
+                      </v-autocomplete>
+                    </v-card-text>
+                 </v-card>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <PValueBarChart
-                     v-if="pValueBarChartApplied"
                      :namePValue="pValueName"
-                     :pValueContent="pValueContent">
+                     :pValueContent="pValueContent"
+                     :totalMaxOddsRatio="totalMaxOddsRatio"
+                     :startStopProtein="startStopProtein"
+                     :selectedDomainForPValue="selectedDomainForPValue"
+                     :possibleDomainForPValue="possibleDomainForPValue">
                  </PValueBarChart>
                </v-flex>
+               </div>
              </v-layout>
            </v-card-text>
         </v-card>
@@ -772,12 +755,16 @@ export default {
       listAccessionIds: [],
       dialogAccessionIds: false,
 
-      possibleNumLevelAboveBackground: [1,2,3,4]
+      possibleNumLevelAboveBackground: [],
+      includeUK: true,
+      startStopProtein: {},
+      selectedDomainForPValue: null,
+      possibleDomainForPValue: [],
     }
   },
   computed: {
     ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'errorNumSeqQueryGeo',
-      'numLevelAboveBackground']),
+      'numLevelAboveBackground', 'includeUKGeo']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -797,8 +784,68 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setNumLevelAboveBackground']),
+    ...mapMutations(['setNumLevelAboveBackground', 'setIncludeUKGeo']),
     ...mapActions(['setQueryGeo']),
+    filter(){
+      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
+      if(this.selectedProteinForTable !== null) {
+        let that = this;
+        result = result.filter(function (i){
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                  && odds_ratio <= that.selectedMaxOddsRatio) ||
+                     (that.isInfinite
+                  && odds_ratio > that.totalMaxOddsRatio)
+                )
+                && product === that.selectedProteinForTable);
+          })
+      }
+      else{
+        var that = this;
+        result = result.filter(function (i){
+          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+          let p_value = JSON.parse(JSON.stringify(i['p_value']));
+          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+          return (background_frequency >= that.selectedMinBackgroundFrequency
+              && background_frequency <= that.selectedMaxBackgroundFrequency
+              && target_frequency >= that.selectedMinTargetFrequency
+              && target_frequency <= that.selectedMaxTargetFrequency
+              && p_value >= that.selectedMinPValue
+              && p_value <= that.selectedMaxPValue
+              && background_numerator >= that.selectedMinBackgroundNumerator
+              && background_numerator <= that.selectedMaxBackgroundNumerator
+              && target_numerator >= that.selectedMinTargetNumerator
+              && target_numerator <= that.selectedMaxTargetNumerator
+              &&
+                 ((odds_ratio >= that.selectedMinOddsRatio
+              && odds_ratio <= that.selectedMaxOddsRatio) ||
+                 (that.isInfinite
+              && odds_ratio > that.totalMaxOddsRatio)
+              ));
+        })
+      }
+      this.rowsTableProvReg = result;
+    },
     downloadTable(table){
       let text = "";
       let result_sorted = this.sortResults(table);
@@ -870,33 +917,7 @@ export default {
        }
     },
     applyFilterOnTableProvReg(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
-      var that = this;
-      result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      this.rowsTableProvReg = result;
+      this.filter();
 
       let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
       this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
@@ -974,7 +995,8 @@ export default {
 
       let to_send = {'query': query,
                      'protein': array_protein,
-                    'query_false': query_false};
+                    'query_false': query_false,
+                    'includeUKBackground': this.includeUKGeo};
       axios.post(url, to_send)
         .then((res) => {
           return res.data;
@@ -1021,6 +1043,7 @@ export default {
         });
     },
     applyFilterPValueChart(){
+      this.selectedDomainForPValue = null;
       let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
       var that = this;
       result = result.filter(function (i){
@@ -1038,7 +1061,8 @@ export default {
         let mutation_position = elem['mutation_position'];
         let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
         if (idx === -1) {
-          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position};
+          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position
+          , 'p_value': elem['p_value'], 'odds_ratio': elem['odd_ratio']};
           arrayToBarChart.push(single_element);
         } else {
           arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
@@ -1053,7 +1077,31 @@ export default {
 
       this.pValueContent = arrayToBarChart;
       this.pValueName = 'p_value_province_region';
-      this.pValueBarChartApplied = true;
+
+      let url = `/analyze/getProteinPosition`;
+
+      let to_send = {'protein': this.selectedProteinForPValue};
+
+      axios.post(url, to_send)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+            this.startStopProtein = res;
+            let url2 = `/analyze/getDomains`;
+
+            let to_send2 = {'protein': this.selectedProteinForPValue};
+
+            axios.post(url2, to_send2)
+              .then((res) => {
+                return res.data;
+              })
+              .then((res) => {
+                  this.possibleDomainForPValue = res;
+                  this.overlay = false;
+                  this.pValueBarChartApplied = true;
+              });
+        });
     },
     openDialogAccession(type, item){
       let url = `/analyze/getAccessionIds`;
@@ -1070,6 +1118,7 @@ export default {
         query['minDateBackground'] = this.startDateQueryGeo;
         query['maxDateBackground'] = this.stopDateQueryGeo;
         query['product'] = item['product'];
+        query['includeUK'] = true;
       }
       else if(type === 'background'){
         query['lineage'] = item['lineage'][0];
@@ -1079,6 +1128,7 @@ export default {
         query['minDateBackground'] = this.startDateQueryGeo;
         query['maxDateBackground'] = this.stopDateQueryGeo;
         query['product'] = item['product'];
+        query['includeUK'] = this.includeUKGeo;
 
         if(!query['country']){
           query_false = 'geo_group'
@@ -1122,48 +1172,110 @@ export default {
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);
-    }
+    },
+    modifyPossibleBackground() {
+      let arrayPossibleBackground = [];
+      this.possibleNumLevelAboveBackground = [];
+      if (this.queryGeo['province']) {
+        let possibleBackground1 = {'value': 1,
+          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['region'] }
+        let possibleBackground2 = {'value': 2,
+          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['country'] }
+        let possibleBackground3 = {'value': 3,
+          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['geo_group'] }
+        let possibleBackground4 = {'value': 4,
+          'background': this.queryGeo['province'] + ' vs ' + 'World' }
+        arrayPossibleBackground.push(possibleBackground1);
+        arrayPossibleBackground.push(possibleBackground2);
+        arrayPossibleBackground.push(possibleBackground3);
+        arrayPossibleBackground.push(possibleBackground4);
+      } else if (this.queryGeo['region']) {
+        let possibleBackground2 = {'value': 1,
+          'background': this.queryGeo['region'] + ' vs ' + this.queryGeo['country'] }
+        let possibleBackground3 = {'value': 2,
+          'background': this.queryGeo['region'] + ' vs ' + this.queryGeo['geo_group'] }
+        let possibleBackground4 = {'value': 3,
+          'background': this.queryGeo['region'] + ' vs ' + 'World' }
+        arrayPossibleBackground.push(possibleBackground2);
+        arrayPossibleBackground.push(possibleBackground3);
+        arrayPossibleBackground.push(possibleBackground4);
+      } else if (this.queryGeo['country']) {
+        let possibleBackground3 = {'value': 1,
+          'background': this.queryGeo['country'] + ' vs ' + this.queryGeo['geo_group'] }
+        let possibleBackground4 = {'value': 2,
+          'background': this.queryGeo['country'] + ' vs ' + 'World' }
+        arrayPossibleBackground.push(possibleBackground3);
+        arrayPossibleBackground.push(possibleBackground4);
+      } else if (this.queryGeo['geo_group']) {
+        let possibleBackground4 = {'value': 1,
+          'background': this.queryGeo['geo_group'] + ' vs ' + 'World' }
+        arrayPossibleBackground.push(possibleBackground4);
+      }
+      else {
+        arrayPossibleBackground = [];
+      }
+      this.possibleNumLevelAboveBackground = arrayPossibleBackground;
+    },
+    getFieldText(item){
+      let name = '';
+      name = item['background'];
+      return name;
+    },
+    getFieldTextDomain(item){
+      return `${item['Description']}` //  ----- ${item['cnt']}
+    },
   },
   watch: {
+    includeUK(){
+      this.setIncludeUKGeo(this.includeUK);
+    },
+    IncludeUKGeo(){
+       this.pValueBarChartApplied = false;
+       this.selectedProteinForPValue = null;
+       this.selectedProteinTable = null;
+       this.tableApplied = false;
+    },
     numLevelAboveBackground(){
       this.pValueBarChartApplied = false;
      this.selectedProteinForPValue = null;
      this.selectedProteinTable = null;
      this.tableApplied = false;
-     this.selectedProtein = null;
     },
     startDateQueryGeo(){
       this.pValueBarChartApplied = false;
      this.selectedProteinForPValue = null;
      this.selectedProteinTable = null;
      this.tableApplied = false;
-     this.selectedProtein = null;
     },
     stopDateQueryGeo(){
       this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
        this.selectedProteinTable = null;
        this.tableApplied = false;
-       this.selectedProtein = null;
     },
     'queryGeo.geo_group': function (){
+        this.modifyPossibleBackground();
         this.setQueryGeo({field: 'country', list: null});
         this.setQueryGeo({field: 'region', list: null});
         this.setQueryGeo({field: 'province', list: null});
     },
     'queryGeo.country': function (){
+        this.modifyPossibleBackground();
         this.setQueryGeo({field: 'region', list: null});
         this.setQueryGeo({field: 'province', list: null});
     },
     'queryGeo.region': function (){
+        this.modifyPossibleBackground();
         this.setQueryGeo({field: 'province', list: null});
+    },
+    'queryGeo.province': function (){
+        this.modifyPossibleBackground();
     },
     queryGeo(){
        this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
        this.selectedProteinTable = null;
        this.tableApplied = false;
-       this.selectedProtein = null;
     },
     all_protein(){
       this.possibleProtein = this.all_protein;
@@ -1172,7 +1284,6 @@ export default {
       this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
       this.rowsTableProvReg = [];
@@ -1206,7 +1317,6 @@ export default {
       this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
       this.rowsTableProvReg = [];
@@ -1264,7 +1374,6 @@ export default {
       this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
       this.rowsTableProvReg = [];
@@ -1320,7 +1429,6 @@ export default {
       this.selectedProteinTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProtein = null;
       this.tableApplied = false;
       this.headerTableProvReg = [];
       this.rowsTableProvReg = [];
@@ -1475,64 +1583,7 @@ export default {
       }
     },
     selectedProteinForTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
-      if(this.selectedProteinForTable !== null) {
-        let that = this;
-        result = result.filter(function (i){
-            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-            let p_value = JSON.parse(JSON.stringify(i['p_value']));
-            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-            let product = JSON.parse(JSON.stringify(i['product']));
-            return (background_frequency >= that.selectedMinBackgroundFrequency
-                && background_frequency <= that.selectedMaxBackgroundFrequency
-                && target_frequency >= that.selectedMinTargetFrequency
-                && target_frequency <= that.selectedMaxTargetFrequency
-                && p_value >= that.selectedMinPValue
-                && p_value <= that.selectedMaxPValue
-                && background_numerator >= that.selectedMinBackgroundNumerator
-                && background_numerator <= that.selectedMaxBackgroundNumerator
-                && target_numerator >= that.selectedMinTargetNumerator
-                && target_numerator <= that.selectedMaxTargetNumerator
-                &&
-                ((odds_ratio >= that.selectedMinOddsRatio
-                  && odds_ratio <= that.selectedMaxOddsRatio) ||
-                     (that.isInfinite
-                  && odds_ratio > that.totalMaxOddsRatio)
-                )
-                && product === that.selectedProteinForTable);
-          })
-      }
-      else{
-        var that = this;
-        result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      }
-      this.rowsTableProvReg = result;
+      this.filter();
     }
   },
   mounted() {
@@ -1565,6 +1616,16 @@ export default {
 
   .centered-input >>> input {
     text-align: center
+  }
+
+  .item-value-span {
+      padding-right: 3.5em;
+  }
+
+  .item-count-span {
+      /*float:right;*/
+      position: absolute;
+      right: 0.5em;
   }
 
 </style>

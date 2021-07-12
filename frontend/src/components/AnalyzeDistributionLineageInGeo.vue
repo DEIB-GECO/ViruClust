@@ -21,7 +21,7 @@
                 ></v-select>
               </v-flex>
               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                <v-select
+                <v-autocomplete
                   v-model="selectedSpecificGeo"
                   :items="possibleSpecificGeo"
                   label="Specific Locality"
@@ -34,7 +34,7 @@
                         <span class="item-value-span">{{getFieldText(data.item)}}</span>
                         <span class="item-count-span">{{data.item.count}}</span>
                     </template>
-                </v-select>
+                </v-autocomplete>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
@@ -46,7 +46,7 @@
                       CHOSEN
                   </v-btn>
                 </v-flex>
-                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px" v-if="chosenApplied">
+                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="chosenApplied">
                  <h2>TIME FILTER</h2>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
@@ -150,7 +150,13 @@
                          color="rgb(122, 139, 157)">
                     Download Table</v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 100px">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
+                 <ModifyColumnsHeatmap
+                 :headerTable = "headerTableLineageCountry"
+                 :rowTable = "rowsTableLineageCountry"
+                 :denominators = "denominators"></ModifyColumnsHeatmap>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
                  <h2>HEATMAP</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
@@ -186,10 +192,11 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import HeatmapAnalyzeDistribution from "./HeatmapAnalyzeDistribution";
 import TimeSelectorDistributionLineageInGeo from "./TimeSelectorDistributionLineageInGeo";
+import ModifyColumnsHeatmap from "./ModifyColumnsHeatmap";
 
 export default {
   name: "AnalyzeDistributionLineageInGeo",
-  components: {TimeSelectorDistributionLineageInGeo, HeatmapAnalyzeDistribution},
+  components: {ModifyColumnsHeatmap, TimeSelectorDistributionLineageInGeo, HeatmapAnalyzeDistribution},
   data() {
     return {
       overlay: false,
@@ -199,8 +206,10 @@ export default {
       possibleSpecificGeo: [],
       selectedGeoCount: 5,
       headerTableLineageCountry: [],
+      headerTableLineageCountryLength: 0,
       headerTableLineageCountryFixed: [],
       rowsTableLineageCountry: [],
+      rowsTableLineageCountryFixed: [],
       sortByTableLineageCountry: [],
       sortDescTableLineageCountry: [],
       hoverHeaderValue: null,
@@ -212,6 +221,7 @@ export default {
       tableApplied: false,
 
       denominators: [],
+      denominatorsFixed: [],
     }
   },
   computed: {
@@ -303,19 +313,19 @@ export default {
           let seq_mut_arr = JSON.parse(JSON.stringify(res));
           this.headerTableLineageCountry = [];
 
-          let ii = 0;
+          let i = 0;
           let len_arr = seq_mut_arr.length;
           let headers = [];
           let arr_name_headers = [];
           let header_empty = {};
           let empty_header_present = false;
-          while (ii < len_arr) {
-            let single_line = seq_mut_arr[ii];
+          while (i < len_arr) {
+            let single_line = seq_mut_arr[i];
             Object.keys(single_line).forEach(key => {
               if(!arr_name_headers.includes(key) && key !== 'lineage') {
 
-                if(key === ''){
-                  seq_mut_arr[ii]['N/D'] = seq_mut_arr[ii][''];
+                if(key === "" || key === null || key === ''){
+                  seq_mut_arr[i]['N/D'] = seq_mut_arr[i][""];
                 }
 
                 let single_header = {};
@@ -341,12 +351,15 @@ export default {
                 }
               }
               else if (key !== 'lineage'){
+                if(key === "" || key === null || key === ''){
+                  seq_mut_arr[i]['N/D'] = seq_mut_arr[i][""];
+                }
                 if (single_line['lineage'] === null){
                   single_line['lineage'] = 'N/D';
                 }
               }
             })
-            ii = ii + 1;
+            i = i + 1;
           }
 
           headers.sort( function( a, b ) {
@@ -368,6 +381,7 @@ export default {
           this.headerTableLineageCountryFixed = headers;
 
           this.rowsTableLineageCountry = seq_mut_arr;
+          this.rowsTableLineageCountryFixed = seq_mut_arr;
 
           let url = `/analyze/denominatorLineageCountry`;
 
@@ -382,6 +396,7 @@ export default {
             })
             .then((res) => {
               this.denominators = res;
+              this.denominatorsFixed = res;
               this.tableApplied = true;
               this.overlay = false;
             });
@@ -549,6 +564,13 @@ export default {
     }
   },
   watch: {
+    headerTableLineageCountry(){
+      this.headerTableLineageCountryLength = this.headerTableLineageCountry.length;
+    },
+    headerTableLineageCountryLength(){
+      this.selectedItem = null;
+      this.order_by_row_desc = true;
+    },
     selectedGeo(){
       this.headerTableLineageCountry = [];
       this.rowsTableLineageCountry = [];

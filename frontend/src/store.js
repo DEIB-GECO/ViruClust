@@ -48,6 +48,12 @@ const state = {
 
     startDateDistributionLineageInGeo: null,
     stopDateDistributionLineageInGeo: null,
+
+    includeUKTime: true,
+    includeUKGeo: true,
+    includeUKFreeTarget: true,
+    includeUKFreeBackground: true,
+    timeDivisionAcceptable: [],
 };
 
 const getters = {
@@ -222,6 +228,21 @@ const mutations = {
     },
     setStopDateDistributionLineageInGeo: (state, value) => {
         state.stopDateDistributionLineageInGeo= value;
+    },
+    setIncludeUKTime: (state, value) => {
+        state.includeUKTime = value;
+    },
+    setIncludeUKGeo: (state, value) => {
+        state.includeUKGeo = value;
+    },
+    setIncludeUKFreeTarget: (state, value) => {
+        state.includeUKFreeTarget = value;
+    },
+    setIncludeUKFreeBackground: (state, value) => {
+        state.includeUKFreeBackground = value;
+    },
+    setTimeDivisionAcceptable: (state, value) => {
+        state.timeDivisionAcceptable = value;
     },
 };
 

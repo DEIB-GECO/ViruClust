@@ -4,7 +4,7 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">
-            <h1>TIME (TARGET) vs TIME (BACKGROUND) in LINEAGE & COUNTRY</h1>
+            <h1>TEMPORAL ANALYSIS</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
@@ -54,15 +54,81 @@
                         v-if = "chosenApplied && timeContent.length !== 0">
                  <h2>SELECT TARGET AND BACKGROUND:</h2>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <TimeDistributionChart
-                     v-if="chosenApplied && timeContent.length !== 0"
-                     :timeName="timeName"
-                     :timeContent="timeContent"
-                     :filterDate="filterDate"
-                     style="width: 80%"
-                 ></TimeDistributionChart>
+               <v-flex class="no-horizontal-padding xs12 d-flex" v-if="chosenApplied && timeContent.length !== 0">
+                <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                      <v-btn large class="white--text" color="#800000" @click="selectedTabSelectTargetBackground = 0" style="margin-right: 10px; width: 400px; height: 70px"> FREE PERIOD ANALYSIS </v-btn>
+                      <v-btn large class="white--text" color="#800000" @click="selectedTabSelectTargetBackground = 1" style="margin-left: 10px; width: 400px; height: 70px"> MONTH / WEEK ANALYSIS </v-btn>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                      <div v-if="selectedTabSelectTargetBackground === 0">
+                        <TimeDistributionChart
+                           :timeName="timeName"
+                           :timeContent="timeContent"
+                           :filterDate="filterDate"
+                           style="width: 100%"
+                       ></TimeDistributionChart>
+                      </div>
+                      <div v-if="selectedTabSelectTargetBackground === 1">
+                       <TimeDistributionChartWeekMonth
+                           :timeName="timeName + timeName"
+                           :timeContent="timeContent"
+                           :filterDate="filterDate"
+                           style="width: 100%"></TimeDistributionChartWeekMonth>
+                      </div>
+                    </v-flex>
+                  </v-layout>
+
+
+<!--                  <v-tabs v-model="selectedTabSelectTargetBackground"-->
+<!--                          background-color="#DAA520"-->
+<!--                          dark-->
+<!--                          show-arrows-->
+<!--                          slider-color="orange"-->
+<!--                          slider-size="6"-->
+<!--                          height="60"-->
+<!--                          centered>-->
+<!--                    <v-tab style="border: black solid 1px; width: 50%; background-color: #800000">-->
+<!--                      NORMAL-->
+<!--                    </v-tab>-->
+
+<!--                    <v-tab id="tabFree1" style="border: black solid 1px; border-left: 0!important; width: 50%; background-color: #800000">-->
+<!--                       NEW-->
+<!--                    </v-tab>-->
+<!--                    <v-tabs-items v-model="selectedTabSelectTargetBackground" style="background: transparent;">-->
+
+<!--                      <v-tab-item style="background-color: #DAA520; padding-top: 40px">-->
+<!--                        <div v-if="selectedTabSelectTargetBackground === 0">-->
+<!--                          <TimeDistributionChart-->
+<!--                             v-if="chosenApplied && timeContent.length !== 0"-->
+<!--                             :timeName="timeName"-->
+<!--                             :timeContent="timeContent"-->
+<!--                             :filterDate="filterDate"-->
+<!--                             style="width: 100%"-->
+<!--                         ></TimeDistributionChart>-->
+<!--                        </div>-->
+<!--                      </v-tab-item>-->
+
+<!--                      <v-tab-item style="background-color: #DAA520; padding-top: 40px">-->
+<!--                        <div v-if="selectedTabSelectTargetBackground === 1">-->
+<!--                          <span>CIAO</span>-->
+<!--                        </div>-->
+<!--                      </v-tab-item>-->
+
+<!--                    </v-tabs-items>-->
+<!--                  </v-tabs>-->
+                </v-container>
                </v-flex>
+<!--               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">-->
+<!--                 <TimeDistributionChart-->
+<!--                     v-if="chosenApplied && timeContent.length !== 0"-->
+<!--                     :timeName="timeName"-->
+<!--                     :timeContent="timeContent"-->
+<!--                     :filterDate="filterDate"-->
+<!--                     style="width: 80%"-->
+<!--                 ></TimeDistributionChart>-->
+<!--               </v-flex>-->
              </v-layout>
 
              <v-layout row wrap justify-center style="padding: 30px;" v-if="chosenApplied && timeContent.length !== 0">
@@ -74,7 +140,7 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                    <v-select
+                    <v-autocomplete
                       v-model="selectedProtein"
                       :items="possibleProtein"
                       label="Protein"
@@ -82,12 +148,12 @@
                       hide-details
                       multiple
                     >
-                    </v-select>
+                    </v-autocomplete>
                   </v-flex>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqQueryTime">
-                 <span style="color: red"> # sequences selected is too low (minimum 10 for both target and background)</span>
+                 <span style="color: red"> number of sequences selected is too low (minimum 10 for both target and background)</span>
                </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
@@ -407,48 +473,15 @@
                       APPLY FILTERS
                   </v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
-                 <h2>TABLE</h2>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsAnalyzeTime.length !== 0">
                  <v-layout row wrap justify-center>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
-                          <h5>INFO:</h5>
-                        </v-card-title>
-                        <v-card-text>
-                          <span>
-                            <b> - TARGET: </b>
-                            <span>{{rowsAnalyzeTime[0]['target']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN TARGET: </b>
-                            <span>{{rowsAnalyzeTime[0]['denominator_target']}}</span>
-                            <br>
-                          </span>
-                          <br>
-                          <span>
-                            <b> - BACKGROUND: </b>
-                            <span>{{rowsAnalyzeTime[0]['background']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
-                            <span>{{rowsAnalyzeTime[0]['denominator_background']}}</span>
-                            <br>
-                          </span>
-                        </v-card-text>
-                     </v-card>
-                   </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <h5>SELECT PROTEIN:</h5>
+                          <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
                         <v-card-text style="margin-top: 30px">
-                          <v-select
+                          <v-autocomplete
                             v-model="selectedProteinForTable"
                             :items="possibleProteinForTable"
                             label="Protein"
@@ -456,49 +489,96 @@
                             clearable
                             hide-details
                           >
-                          </v-select>
+                          </v-autocomplete>
                         </v-card-text>
                      </v-card>
                    </v-flex>
                  </v-layout>
                </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                  <v-data-table
-                        :headers="headerAnalyzeTime"
-                        :items="rowsAnalyzeTime"
-                        class="data-table table_analyze_time"
-                        style="width: 90%; border: grey solid 1px"
-                        multi-sort
-                        :sort-by.sync="sortByAnalyzeTime"
-                        :sort-desc.sync="sortDescAnalyzeTime"
-                  >
-                      <template v-slot:item ="{ item }">
-                        <tr>
-                          <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerAnalyzeTime"
-                              :key="header.value" v-show="header.show">
-                                <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
-                                <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
-                                <span v-else-if="header.value === 'odd_ratio'">
-                                  <span v-if="item['percentage_background'] === 0"> INF </span>
-                                  <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
-                                </span>
-                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
-                                </span>
-                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
-                                </span>
-                                <span v-else>{{item[header.value]}}</span>
-                          </td>
-                        </tr>
-                      </template>
-                  </v-data-table>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <v-btn @click="downloadTable('analyze_mutation')"
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsAnalyzeTime.length > 1">
+                <h2>HEATMAP</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsAnalyzeTime.length > 1">
+                 <HeatmapMultipleAnalysis
+                 nameHeatmap = "multipleAnalysisHeatmap"
+                 :contentHeatmap = "rowsAnalyzeTime"
+                 :fixedContent = "fixedRowAnalyzeTime">
+                 </HeatmapMultipleAnalysis>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
+                 <h2>TABLE</h2><h2 v-if="rowsAnalyzeTime.length > 1">S</h2>
+               </v-flex>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="index">
+                <v-layout row wrap justify-space-around style="margin-top: 10px">
+                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>INFO:</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <span>
+                            <b> - TARGET: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> - BACKGROUND: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                    <v-data-table
+                          :headers="headerAnalyzeTime"
+                          :items="rowsAnalTime"
+                          class="data-table table_analyze_time"
+                          style="width: 90%; border: grey solid 1px"
+                          multi-sort
+                          :sort-by.sync="sortByAnalyzeTime"
+                          :sort-desc.sync="sortDescAnalyzeTime"
+                    >
+                        <template v-slot:item ="{ item }">
+                          <tr>
+                            <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerAnalyzeTime"
+                                :key="header.value" v-show="header.show">
+                                  <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
+                                  <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                  <span v-else-if="header.value === 'odd_ratio'">
+                                    <span v-if="item['percentage_background'] === 0"> INF </span>
+                                    <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                  </span>
+                                  <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                  </span>
+                                  <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                  </span>
+                                  <span v-else>{{item[header.value]}}</span>
+                            </td>
+                          </tr>
+                        </template>
+                    </v-data-table>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                  <v-btn @click="downloadTable('analyze_mutation', rowsAnalTime)"
                          class="white--text"
                          small
                          color="rgb(122, 139, 157)">
                     Download Table</v-btn>
-               </v-flex>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
                  <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
@@ -550,17 +630,17 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
-                      <h5>SELECT PROTEIN:</h5>
+                      <h5>FILTER PROTEIN:</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
-                      <v-select
+                      <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
                         label="Protein"
                         solo
                         hide-details
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-card-text>
                  </v-card>
                </v-flex>
@@ -574,13 +654,75 @@
                       APPLY
                  </v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                 <PValueBarChart
-                     v-if="pValueBarChartApplied"
-                     :namePValue="pValueName"
-                     :pValueContent="pValueContent">
-                 </PValueBarChart>
+               <div v-if="pValueBarChartApplied">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
+                 <v-card width="400px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>HIGHLIGHTS DOMAIN:</h5>
+                    </v-card-title>
+                    <v-card-text style="margin-top: 30px">
+                      <v-autocomplete
+                        v-model="selectedDomainForPValue"
+                        :items="possibleDomainForPValue"
+                        label="Domain"
+                        solo
+                        :item-text="getFieldTextDomain"
+                        hide-details
+                      >
+                        <template slot="item" slot-scope="data">
+                            <span class="item-value-span">{{getFieldTextDomain(data.item)}}</span>
+                        </template>
+                      </v-autocomplete>
+                    </v-card-text>
+                 </v-card>
                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="'pValue' + index">
+                <v-layout row wrap justify-space-around style="margin-top: 10px">
+                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C">
+                        <v-card-title class="justify-center">
+                          <h5>INFO:</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <span>
+                            <b> - TARGET: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> - BACKGROUND: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span>
+                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+                     <PValueBarChart
+                         :namePValue="pValueName[index]"
+                         :pValueContent="pValueContent[index]"
+                         :totalMaxOddsRatio="totalMaxOddsRatio"
+                         :startStopProtein="startStopProtein"
+                         :selectedDomainForPValue="selectedDomainForPValue"
+                         :possibleDomainForPValue="possibleDomainForPValue">
+                     </PValueBarChart>
+                   </v-flex>
+                </v-layout>
+               </v-flex>
+               </div>
              </v-layout>
            </v-card-text>
         </v-card>
@@ -638,10 +780,14 @@ import axios from "axios";
 import PValueBarChart from "./PValueBarChart";
 import TimeDistributionChart from "./TimeDistributionChart";
 import SelectorsQueryTime from "./SelectorsQueryTime";
+import TimeDistributionChartWeekMonth from "./TimeDistributionChartWeekMonth";
+import HeatmapMultipleAnalysis from "./HeatmapMultipleAnalysis";
 
 export default {
   name: "AnalyzeTimeLinCou",
-  components: {SelectorsQueryTime, TimeDistributionChart, PValueBarChart},
+  components: {
+    HeatmapMultipleAnalysis,
+    TimeDistributionChartWeekMonth, SelectorsQueryTime, TimeDistributionChart, PValueBarChart},
   data() {
     return {
       overlay: false,
@@ -653,7 +799,7 @@ export default {
       maxNumeratorTarget: 100,
       maxDenominatorTarget: 100,
       tableApplied: false,
-      pValueName: 'p_value_time',
+      pValueName: [],
       pValueContent: [],
       pValueBarChartApplied: false,
 
@@ -692,15 +838,84 @@ export default {
 
       listAccessionIds: [],
       dialogAccessionIds: false,
+
+      selectedTabSelectTargetBackground: 0,
+      startStopProtein: {},
+      selectedDomainForPValue: null,
+      possibleDomainForPValue: [],
     }
   },
   computed: {
-    ...mapState(['all_protein', 'timeRangesTargetAndBackground', 'queryTime', 'errorNumSeqQueryTime']),
+    ...mapState(['all_protein', 'timeRangesTargetAndBackground', 'queryTime', 'errorNumSeqQueryTime'
+                , 'includeUKTime', 'timeDivisionAcceptable']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations([]),
     ...mapActions(['setQueryTime']),
+    filter(){
+      let arr_row_an_time = [];
+      for(let i = 0; i < this.rowsAnalyzeTime.length; i = i + 1) {
+        let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime[i]));
+        if (this.selectedProteinForTable !== null) {
+          let that = this;
+          result = result.filter(function (i) {
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            let product = JSON.parse(JSON.stringify(i['product']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                        && odds_ratio <= that.selectedMaxOddsRatio) ||
+                    (that.isInfinite
+                        && odds_ratio > that.totalMaxOddsRatio)
+                )
+                && product === that.selectedProteinForTable);
+          })
+        } else {
+          var that = this;
+          result = result.filter(function (i) {
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                        && odds_ratio <= that.selectedMaxOddsRatio) ||
+                    (that.isInfinite
+                        && odds_ratio > that.totalMaxOddsRatio)
+                ));
+          })
+        }
+        arr_row_an_time[i] = result;
+      }
+      this.rowsAnalyzeTime = arr_row_an_time;
+    },
     getDaysArray(start, end) {
       for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
         let date = new Date(dt).toISOString().slice(0, 10);
@@ -716,9 +931,9 @@ export default {
       }
       return arr;
     },
-    downloadTable(table){
+    downloadTable(table, rowAnalyzeTime){
       let text = "";
-      let result_sorted = this.sortResults(table);
+      let result_sorted = this.sortResults(table, rowAnalyzeTime);
       if(table === 'analyze_mutation'){
         text = this.json2csv(result_sorted, this.headerAnalyzeTime);
       }
@@ -758,7 +973,7 @@ export default {
         csv.unshift(fields.join(','));
         return csv.join('\r\n')
     },
-    sortResults(table){
+    sortResults(table, rowAnalyzeTime){
       let len;
       let sortBy;
       let sortDesc;
@@ -767,7 +982,7 @@ export default {
         len = this.sortByAnalyzeTime.length;
         sortBy = this.sortByAnalyzeTime;
         sortDesc = this.sortDescAnalyzeTime;
-        results = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
+        results = JSON.parse(JSON.stringify(rowAnalyzeTime));
       }
       if(len > 0) {
          return results.sort(function(a1, b1) {
@@ -789,113 +1004,215 @@ export default {
     getFieldText(item){
       return `${item['lineage']}` //  ----- ${item['cnt']}
     },
+    getFieldTextDomain(item){
+      return `${item['Description']}` //  ----- ${item['cnt']}
+    },
     applySingleLineageAnalysis(){
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
       this.overlay = true;
 
-      let query = JSON.parse(JSON.stringify(this.queryTime));
+      this.possibleProteinForTable = [];
+      this.possibleProteinForPValue = [];
+      this.headerAnalyzeTime = [];
+      this.rowsAnalyzeTime = [];
+      this.fixedRowAnalyzeTime = [];
 
-      let start_target_time = this.timeRangesTargetAndBackground['start_target_time'];
-      let end_target_time = this.timeRangesTargetAndBackground['end_target_time'];
-      let start_background_time = this.timeRangesTargetAndBackground['start_background_time'];
-      let end_background_time = this.timeRangesTargetAndBackground['end_background_time'];
+      if(this.selectedTabSelectTargetBackground === 0) {
+
+        let query = JSON.parse(JSON.stringify(this.queryTime));
+        query['includeUK'] = this.includeUKTime;
+
+        let start_target_time = this.timeRangesTargetAndBackground['start_target_time'];
+        let end_target_time = this.timeRangesTargetAndBackground['end_target_time'];
+        let start_background_time = this.timeRangesTargetAndBackground['start_background_time'];
+        let end_background_time = this.timeRangesTargetAndBackground['end_background_time'];
+        let array_protein = [];
+
+        if (this.selectedProtein === null) {
+          array_protein = [];
+        } else {
+          array_protein = this.selectedProtein;
+        }
+
+        let to_send = {
+          'start_target': start_target_time,
+          'end_target': end_target_time, 'start_background': start_background_time,
+          'end_background': end_background_time, 'protein': array_protein
+        }
+
+        to_send['query'] = query;
+
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.headerAnalyzeTime = [
+                {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+              ];
+
+              this.rowsAnalyzeTime[0] = res;
+              this.fixedRowAnalyzeTime[0] = res;
+
+              let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[0]));
+              this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+              this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
+
+              let rowTable = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[0]));
+              this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_target'];
+              }))
+              this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+              this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_background'];
+              }))
+              this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+              let rowTable2 = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[0]));
+              rowTable2 = rowTable2.filter(function (i) {
+                    let perc = i['percentage_background'];
+                    return perc !== 0;
+                  }
+              );
+              this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
+                return o['odd_ratio'];
+              })));
+              this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
+
+              this.tableApplied = true;
+              this.overlay = false;
+            });
+      }
+      else if(this.selectedTabSelectTargetBackground === 1){
+        let len = this.timeDivisionAcceptable.length - 1;
+        let i = 0;
+        this.headerAnalyzeTime = [
+          {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+        ];
+        if(i < len) {
+          this.applyAnalysisTimeDivisions(i, len);
+        }
+      }
+    },
+    applyAnalysisTimeDivisions(i, len){
+      let url = `/analyze/analyzeMutationCountryLineageInTime`;
+
+      let query = JSON.parse(JSON.stringify(this.queryTime));
+      query['includeUK'] = this.includeUKTime;
+
+      let period_1 = this.timeDivisionAcceptable[i];
+      let period_2 = this.timeDivisionAcceptable[i+1];
+
+      let start_target_time = period_2[0];
+      let end_target_time = period_2[1];
+      let start_background_time = period_1[0];
+      let end_background_time = period_1[1];
       let array_protein = [];
 
-      if(this.selectedProtein === null){
-        array_protein = [];
+      let date1 = new Date(start_target_time);
+      let date2 = new Date(end_background_time);
+      date1.setDate(date1.getDate() - 1);
+      let date3 = new Date(date1).toISOString().slice(0, 10);
+      let date4 = new Date(date2).toISOString().slice(0, 10);
+
+      if(date3 === date4) {
+
+        if (this.selectedProtein === null) {
+          array_protein = [];
+        } else {
+          array_protein = this.selectedProtein;
+        }
+
+        let to_send = {
+          'start_target': start_target_time,
+          'end_target': end_target_time, 'start_background': start_background_time,
+          'end_background': end_background_time, 'protein': array_protein
+        }
+
+        to_send['query'] = query;
+
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.rowsAnalyzeTime.push(res);
+              this.fixedRowAnalyzeTime.push(res);
+
+              let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[this.rowsAnalyzeTime.length - 1]));
+              this.possibleProteinForPValue = [...new Set([...this.possibleProteinForPValue, ...copy.map(elem => elem.product)])];
+              this.possibleProteinForTable = [...new Set([...this.possibleProteinForTable, ...copy.map(elem => elem.product)])];
+
+              let rowTable = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[this.rowsAnalyzeTime.length - 1]));
+
+              let totalMaxTargetNum = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_target'];
+              }))
+              if (totalMaxTargetNum > this.totalMaxTargetNumerator) {
+                this.totalMaxTargetNumerator = totalMaxTargetNum;
+                this.selectedMaxTargetNumerator = totalMaxTargetNum;
+              }
+
+              let totalMaxBackNum = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_background'];
+              }))
+              if (totalMaxBackNum > this.totalMaxBackgroundNumerator) {
+                this.totalMaxBackgroundNumerator = totalMaxBackNum;
+                this.selectedMaxBackgroundNumerator = totalMaxBackNum;
+              }
+
+              let rowTable2 = JSON.parse(JSON.stringify(this.rowsAnalyzeTime[this.rowsAnalyzeTime.length - 1]));
+              rowTable2 = rowTable2.filter(function (i) {
+                    let perc = i['percentage_background'];
+                    return perc !== 0;
+                  }
+              );
+
+              let totalMaxOdds = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
+                return o['odd_ratio'];
+              })));
+              if (totalMaxOdds > this.totalMaxOddsRatio) {
+                this.totalMaxOddsRatio = totalMaxOdds;
+                this.selectedMaxOddsRatio = totalMaxOdds;
+              }
+
+              i = i + 1;
+              if (i < len) {
+                this.applyAnalysisTimeDivisions(i, len);
+              } else {
+                this.tableApplied = true;
+                this.overlay = false;
+              }
+            });
       }
       else{
-        array_protein = this.selectedProtein;
-      }
-
-      let to_send = {'start_target': start_target_time,
-              'end_target': end_target_time, 'start_background': start_background_time,
-              'end_background': end_background_time, 'protein': array_protein}
-
-      to_send['query'] = query;
-
-      axios.post(url, to_send)
-        .then((res) => {
-          return res.data;
-        })
-        .then((res) => {
-          let headers = [
-              {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-          ];
-
-          this.headerAnalyzeTime= headers;
-          this.rowsAnalyzeTime = res;
-          this.fixedRowAnalyzeTime = res;
-
-          let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
-          this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
-          this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
-
-          let rowTable = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
-          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
-          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
-          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
-          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
-          let rowTable2 = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
-          rowTable2 = rowTable2.filter(function (i){
-              let perc = i['percentage_background'];
-              return perc !== 0;
-            }
-          );
-          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function(o) { return o['odd_ratio']; })));
-          this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
-
+        i = i + 1;
+        if (i < len) {
+          this.applyAnalysisTimeDivisions(i, len);
+        } else {
           this.tableApplied = true;
           this.overlay = false;
-        });
+        }
+      }
     },
     applyFilterOnTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
-      var that = this;
-      result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      this.rowsAnalyzeTime = result;
-
-      let copy = JSON.parse(JSON.stringify(this.rowsAnalyzeTime));
-      this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
+      this.filter();
     },
     applyFilterPValueChart(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
-      var that = this;
-      result = result.filter(function (i){
+      this.overlay = true;
+      this.selectedDomainForPValue = null;
+
+      for(let i = 0; i < this.rowsAnalyzeTime.length; i = i + 1) {
+        let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime[i]));
+        var that = this;
+        result = result.filter(function (i) {
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
           return (p_value >= that.selectedMinPValueBarChart
@@ -903,35 +1220,64 @@ export default {
               && that.selectedProteinForPValue === product);
         })
 
-      let arrayToBarChart = [];
+        let arrayToBarChart = [];
 
-      result.forEach(elem => {
-        let mutation = elem['mutation'];
-        let mutation_position = elem['mutation_position'];
-        let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
-        if (idx === -1) {
-          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position};
-          arrayToBarChart.push(single_element);
-        } else {
-          arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
-        }
-      })
+        result.forEach(elem => {
+          let mutation = elem['mutation'];
+          let mutation_position = elem['mutation_position'];
+          let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
+          if (idx === -1) {
+            let single_element = {
+              'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position
+              , 'p_value': elem['p_value'], 'odds_ratio': elem['odd_ratio']
+            };
+            arrayToBarChart.push(single_element);
+          } else {
+            arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
+          }
+        })
 
-      arrayToBarChart = arrayToBarChart.sort(function(a, b){
-        let mutation_position1 = a['position'];
-        let mutation_position2 = b['position'];
-         return mutation_position1 > mutation_position2 ? 1 : -1;
-      });
+        arrayToBarChart = arrayToBarChart.sort(function (a, b) {
+          let mutation_position1 = a['position'];
+          let mutation_position2 = b['position'];
+          return mutation_position1 > mutation_position2 ? 1 : -1;
+        });
 
-      this.pValueContent = arrayToBarChart;
-      this.pValueName = 'p_value_time';
-      this.pValueBarChartApplied = true;
+        this.pValueContent[i] = arrayToBarChart;
+        this.pValueName[i] = 'p_value_time' + i;
+      }
+
+       let url = `/analyze/getProteinPosition`;
+
+      let to_send = {'protein': this.selectedProteinForPValue};
+
+      axios.post(url, to_send)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+            this.startStopProtein = res;
+            let url2 = `/analyze/getDomains`;
+
+            let to_send2 = {'protein': this.selectedProteinForPValue};
+
+            axios.post(url2, to_send2)
+              .then((res) => {
+                return res.data;
+              })
+              .then((res) => {
+                  this.possibleDomainForPValue = res;
+                  this.overlay = false;
+                  this.pValueBarChartApplied = true;
+              });
+        });
     },
     applyChosenLineageCountry(){
       let url = `/analyze/analyzeTimeDistributionCountryLineage`;
       this.overlay = true;
 
       let query = JSON.parse(JSON.stringify(this.queryTime));
+      query['includeUK'] = this.includeUKTime;
 
       let to_send = {'query': query};
 
@@ -979,8 +1325,8 @@ export default {
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateTarget'] = this.timeRangesTargetAndBackground['start_target_time'];
-        query['maxDateTarget'] = this.timeRangesTargetAndBackground['end_target_time'];
+        query['minDateTarget'] = item['target'].split("//")[0];
+        query['maxDateTarget'] = item['target'].split("//")[1];
         query['product'] = item['product'];
       }
       else if(type === 'background'){
@@ -988,10 +1334,12 @@ export default {
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateBackground'] = this.timeRangesTargetAndBackground['start_background_time'];
-        query['maxDateBackground'] = this.timeRangesTargetAndBackground['end_background_time'];
+        query['minDateBackground'] = item['background'].split("//")[0];
+        query['maxDateBackground'] = item['background'].split("//")[1];
         query['product'] = item['product'];
       }
+
+      query['includeUK'] = this.includeUKTime;
 
       let query_target = 'empty';
       let to_send = {'query': query, 'query_false': query_false, 'query_target': query_target};
@@ -1045,7 +1393,13 @@ export default {
        this.selectedProteinTable = null;
        this.tableApplied = false;
        this.chosenApplied = false;
-       this.selectedProtein = null;
+    },
+    includeUKTime(){
+      this.pValueBarChartApplied = false;
+       this.selectedProteinForPValue = null;
+       this.selectedProteinTable = null;
+       this.tableApplied = false;
+       this.chosenApplied = false;
     },
     selectedProtein(){
       this.pValueBarChartApplied = false;
@@ -1054,6 +1408,18 @@ export default {
       this.tableApplied = false;
     },
     timeRangesTargetAndBackground(){
+      this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
+      this.selectedProteinTable = null;
+      this.tableApplied = false;
+    },
+    selectedTabSelectTargetBackground(){
+      this.pValueBarChartApplied = false;
+      this.selectedProteinForPValue = null;
+      this.selectedProteinTable = null;
+      this.tableApplied = false;
+    },
+    timeDivisionAcceptable(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.selectedProteinTable = null;
@@ -1177,64 +1543,7 @@ export default {
       }
     },
     selectedProteinForTable(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime));
-      if(this.selectedProteinForTable !== null) {
-        let that = this;
-        result = result.filter(function (i){
-            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-            let p_value = JSON.parse(JSON.stringify(i['p_value']));
-            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-            let product = JSON.parse(JSON.stringify(i['product']));
-            return (background_frequency >= that.selectedMinBackgroundFrequency
-                && background_frequency <= that.selectedMaxBackgroundFrequency
-                && target_frequency >= that.selectedMinTargetFrequency
-                && target_frequency <= that.selectedMaxTargetFrequency
-                && p_value >= that.selectedMinPValue
-                && p_value <= that.selectedMaxPValue
-                && background_numerator >= that.selectedMinBackgroundNumerator
-                && background_numerator <= that.selectedMaxBackgroundNumerator
-                && target_numerator >= that.selectedMinTargetNumerator
-                && target_numerator <= that.selectedMaxTargetNumerator
-                &&
-                ((odds_ratio >= that.selectedMinOddsRatio
-                  && odds_ratio <= that.selectedMaxOddsRatio) ||
-                     (that.isInfinite
-                  && odds_ratio > that.totalMaxOddsRatio)
-                )
-                && product === that.selectedProteinForTable);
-          })
-      }
-      else{
-        var that = this;
-        result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      }
-      this.rowsAnalyzeTime = result;
+      this.filter();
     }
   },
   mounted() {

@@ -14,7 +14,7 @@
       </v-tab>
 
       <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
-         TIME VS TIME
+         TEMPORAL ANALYSIS
       </v-tab>
 
       <!--<v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
@@ -22,11 +22,11 @@
       </v-tab>-->
 
       <v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
-         GEO VS GEO
+         SPATIAL ANALYSIS
       </v-tab>
 
       <v-tab id="tab3"  style="border-right: black solid 1px; width: 20%">
-         TARGET VS BACKGROUND (FREE)
+         FREE TARGET VS BACKGROUND
       </v-tab>
 
       <v-tab-item>

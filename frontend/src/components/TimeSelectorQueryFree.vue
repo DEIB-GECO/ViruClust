@@ -74,7 +74,7 @@
                  padding: 0; position: relative">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>STOP: </h3>
+                      <h3>END: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -142,8 +142,15 @@ export default {
         tooltip: {
             trigger: 'item',
         },
+        legend: {
+          data: ['Time distribution', 'AVG of previous 7 days'],
+          top: '20px',
+          selectedMode: false,
+          itemGap: 50,
+        },
         series: [
             {
+                name: 'Time distribution',
                 type: 'bar',
                 radius: '50%',
                 data: [],
@@ -170,6 +177,12 @@ export default {
                     ]
                 }
             },
+            {
+                name: 'AVG of previous 7 days',
+                type: 'line',
+                data: [],
+                color: 'rgba(0, 0, 0, 1)',
+            },
         ],
         xAxis: {
             type: 'category',
@@ -189,7 +202,7 @@ export default {
   },
   computed: {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'startDateQueryFreeTarget', 'stopDateQueryFreeTarget',
-                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground']),
+                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground', 'includeUKFreeTarget', 'includeUKFreeBackground']),
     ...mapGetters({}),
   },
   methods: {
@@ -221,14 +234,23 @@ export default {
       let i = 0;
       let arrX = [];
       let arrY = [];
+      let arrYLine = [];
       while (i < len){
         let single_line = met[i];
+        let sum = 0;
+        if (i - 7 > 0){
+          for (let j = 8; j > 0; j = j - 1){
+            sum = sum + parseInt(met[i-j]['value']);
+          }
+        }
+        arrYLine.push((sum/7).toFixed(3));
         arrX.push(single_line['name']);
         arrY.push(single_line['value']);
         i = i + 1;
       }
 
       this.barChart.series[0].data = arrY;
+      this.barChart.series[1].data = arrYLine;
       this.barChart.xAxis.data = arrX;
 
       if(this.my_chart === null) {
@@ -278,9 +300,11 @@ export default {
       let query;
       if(this.type === 'target') {
         query = JSON.parse(JSON.stringify(this.queryFreeTarget));
+        query['includeUK'] = this.includeUKFreeTarget;
       }
       else if(this.type === 'background') {
         query = JSON.parse(JSON.stringify(this.queryFreeBackground));
+        query['includeUK'] = this.includeUKFreeBackground;
       }
 
       let to_send = {'query': query};
@@ -378,6 +402,16 @@ export default {
       }
     },
     queryFreeBackground() {
+      if(this.type === 'background') {
+        this.loadData();
+      }
+    },
+    includeUKFreeTarget() {
+      if(this.type === 'target') {
+        this.loadData();
+      }
+    },
+    includeUKFreeBackground() {
       if(this.type === 'background') {
         this.loadData();
       }

@@ -25,12 +25,13 @@ export default {
     geoGranularity: {required: true,},
     denominators: {required: true,},
   },
-  x_axis: [],
-  y_axis: [],
-  data_inside_heatmap: [],
   data(){
     return {
       overlay: false,
+      x_axis: [],
+      y_axis: [],
+      data_inside_heatmap: [],
+      array_values: [],
 
       options_slider: {
         enableCross: false
@@ -108,9 +109,11 @@ export default {
       this.rowTable = this.customSort(this.rowTable, this.sortColumn, this.descColumn);
 
       this.x_axis = [];
+      this.array_values = [];
       this.headerTable.forEach(elem => {
         if(elem['text'] !== 'lineage') {
-          this.x_axis.push(elem['value']);
+          this.x_axis.push(elem['text']);
+          this.array_values.push(elem['value']);
         }
       });
 
@@ -121,18 +124,18 @@ export default {
       });
 
       this.data_inside_heatmap = [];
-      for (let i = 0; i < this.x_axis.length; i = i + 1){
-        let denominator = this.denominators[this.x_axis[i]];
+      for (let i = 0; i < this.array_values.length; i = i + 1){
+        let denominator = this.denominators[this.array_values[i]];
         for (let j = 0; j < this.rowTable.length; j = j + 1) {
             let value;
             let percentage;
-            if(this.rowTable[j][this.x_axis[i]] === undefined ||  this.rowTable[j][this.x_axis[i]] === null){
+            if(this.rowTable[j][this.array_values[i]] === undefined ||  this.rowTable[j][this.array_values[i]] === null ||  this.rowTable[j][this.array_values[i]] === 0){
               value = '-';
               percentage = '-';
             }
             else{
-              value = parseInt(this.rowTable[j][this.x_axis[i]]);
-              percentage = Math.ceil((value/denominator)*100);
+              value = parseInt(this.rowTable[j][this.array_values[i]]);
+              percentage = ((value/denominator)*100).toFixed(3);
             }
             let a = this.rowTable[j]['lineage'];
             let single_cell = [i, j, value, a, percentage];

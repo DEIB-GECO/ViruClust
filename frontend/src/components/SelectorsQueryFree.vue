@@ -1,36 +1,52 @@
 <template>
-  <v-layout row wrap justify-center>
-     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-       <v-layout row wrap justify-center>
-          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
-          v-if="field !== 'lineage'">
-            <SelectorsPieChart
-                :nameField = "type + field"
-                :fieldContent= "possibleValues"
-                :isLoading = "isLoading">
-            </SelectorsPieChart>
-          </v-flex>
-         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-          <v-select
-            v-model="selected"
-            :items="possibleValues"
-            :label="field === 'geo_group' ? 'continent' : field"
-            solo
-            clearable
+  <div>
+    <v-layout row wrap justify-center>
+       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+         <v-layout row wrap justify-center>
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
+            v-if="field !== 'lineage'">
+              <SelectorsPieChart
+                  :nameField = "type + field"
+                  :field = "field"
+                  :nameQuery = "'free' + type"
+                  :fieldContent= "possibleValues"
+                  :isLoading = "isLoading">
+              </SelectorsPieChart>
+            </v-flex>
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+            <v-autocomplete
+              v-model="selected"
+              :items="possibleValues"
+              :label="field === 'geo_group' ? 'continent' : field"
+              solo
+              clearable
+              hide-details
+              :item-text="getFieldText"
+              :loading="isLoading"
+              :disabled="isLoading || possibleValues.length === 0"
+            >
+              <template slot="item" slot-scope="data">
+                  <span class="item-value-span">{{getFieldText(data.item)}}</span>
+                  <span class="item-count-span">{{data.item.count}}</span>
+              </template>
+            </v-autocomplete>
+           </v-flex>
+         </v-layout>
+       </v-flex>
+    </v-layout>
+    <v-layout>
+      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;"
+        v-if="this.selected === 'Europe'">
+          <v-checkbox
+            v-model="includeUK"
             hide-details
-            :item-text="getFieldText"
-            :loading="isLoading"
-            :disabled="isLoading || possibleValues.length === 0"
-          >
-            <template slot="item" slot-scope="data">
-                <span class="item-value-span">{{getFieldText(data.item)}}</span>
-                <span class="item-count-span">{{data.item.count}}</span>
-            </template>
-          </v-select>
-         </v-flex>
-       </v-layout>
-     </v-flex>
-  </v-layout>
+            input-value="true"
+            label="Include UK"
+            style="background-color: white; border: grey solid 1px; padding: 10px">
+          </v-checkbox>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
@@ -50,10 +66,11 @@ export default {
       possibleValues: [],
       isLoading: false,
       selectorDisabled: false,
+      includeUK: true,
     }
   },
   computed: {
-    ...mapState(['queryFreeTarget', 'queryFreeBackground']),
+    ...mapState(['queryFreeTarget', 'queryFreeBackground', 'includeUKFreeTarget', 'includeUKFreeBackground']),
     ...mapGetters({}),
     selected: {
       get() {
@@ -78,7 +95,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['setIncludeUKFreeTarget', 'setIncludeUKFreeBackground']),
     ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
     getFieldText(item){
       let name = '';
@@ -111,6 +128,13 @@ export default {
         } else if (this.field === 'region') {
           delete query['province'];
         }
+
+        if(this.type === 'target') {
+          query['includeUK'] = this.includeUKFreeTarget;
+        }
+        else if(this.type === 'background') {
+          query['includeUK'] = this.includeUKFreeBackground;
+        }
         to_send['field'] = this.field;
         to_send['query'] = query;
 
@@ -142,7 +166,25 @@ export default {
       if(this.type === 'background') {
         this.loadData();
       }
-    }
+    },
+    includeUK(){
+      if(this.type === 'background') {
+        this.setIncludeUKFreeBackground(this.includeUK);
+      }
+      else if(this.type === 'target') {
+        this.setIncludeUKFreeTarget(this.includeUK);
+      }
+    },
+    includeUKFreeTarget(){
+      if(this.type === 'target') {
+         this.loadData();
+       }
+    },
+    includeUKFreeBackground(){
+       if(this.type === 'background') {
+         this.loadData();
+       }
+    },
   }
 }
 </script>

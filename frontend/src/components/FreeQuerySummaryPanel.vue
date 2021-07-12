@@ -18,7 +18,7 @@
                   <span v-for="(info, key) in arrayQueryFreeTarget" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3># SEQUENCES: </h3>
+                  <h3>NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -47,7 +47,7 @@
                   <span v-for="(info, key) in arrayQueryFreeBackground" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3># SEQUENCES: </h3>
+                  <h3>NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field

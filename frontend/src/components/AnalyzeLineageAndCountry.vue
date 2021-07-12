@@ -12,7 +12,7 @@
                  <h2>SELECT LINEAGE (BACKGROUND) AND MIN % TO FILTER THE COUNTRIES (TARGET) OF INTEREST</h2>
                </v-flex>
                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                  <v-select
+                  <v-autocomplete
                     v-model="selectedLineage"
                     :items="possibleLineage"
                     label="Lineage"
@@ -24,7 +24,7 @@
                         <span class="item-value-span">{{getFieldText(data.item)}}</span>
                         <span class="item-count-span">{{data.item.count}}</span>
                     </template>
-                  </v-select>
+                  </v-autocomplete>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                   <v-text-field v-model.number="selectedMinNumCase" min="0" max="100" solo type="number" hide-details></v-text-field>
@@ -50,7 +50,7 @@
                  <h3 style="color: white; background-color: red">NO COUNTRY TO ANALYZE PLEASE CHANGE LINEAGE OR %</h3>
                </v-flex>
                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                  <v-select
+                  <v-autocomplete
                     v-model="selectedCountry"
                     :items="possibleCountry"
                     label="Country"
@@ -58,7 +58,7 @@
                     hide-details
                     multiple
                   >
-                  </v-select>
+                  </v-autocomplete>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 30px">
                  <h2>SELECT PROTEINS TO ANALYZE</h2>
@@ -68,7 +68,7 @@
                </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                    <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
-                      <v-select
+                      <v-autocomplete
                         v-model="selectedProtein"
                         :items="possibleProtein"
                         label="Protein"
@@ -76,7 +76,7 @@
                         hide-details
                         multiple
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-flex>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
@@ -409,10 +409,10 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
-                          <h5>SELECT PROTEIN:</h5>
+                          <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
                         <v-card-text style="margin-top: 30px">
-                          <v-select
+                          <v-autocomplete
                             v-model="selectedProteinForTable"
                             :items="possibleProteinForTable"
                             label="Protein"
@@ -420,7 +420,7 @@
                             clearable
                             hide-details
                           >
-                          </v-select>
+                          </v-autocomplete>
                         </v-card-text>
                      </v-card>
                    </v-flex>
@@ -512,17 +512,17 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
-                      <h5>SELECT PROTEIN:</h5>
+                      <h5>FILTER PROTEIN:</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
-                      <v-select
+                      <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
                         label="Protein"
                         solo
                         hide-details
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-card-text>
                  </v-card>
                </v-flex>
@@ -865,14 +865,12 @@ export default {
        this.selectedProteinForPValue = null;
        this.tableApplied = false;
        this.countryReceived = false;
-       this.selectedProtein = null;
        this.selectedProteinTable = null;
     },
     selectedCountry(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
-      this.selectedProtein = null;
       this.selectedProteinTable = null;
     },
     selectedProtein(){
@@ -1003,7 +1001,6 @@ export default {
        this.selectedProteinForPValue = null;
        this.tableApplied = false;
        this.countryReceived = false;
-       this.selectedProtein = null;
       if(this.selectedMinNumCase < 0){
         this.selectedMinNumCase = 0;
       }
