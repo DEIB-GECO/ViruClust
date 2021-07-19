@@ -41,6 +41,15 @@
                   field = 'province'>
                  </SelectorsQueryTime>
                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px;">
+                <h3>Select location to exclude from the one selected</h3>
+              </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; padding: 0; margin: 0;">
+                <SelectorQueryToExclude
+                  mode="time"
+                  :field="fieldToExclude">
+                  </SelectorQueryToExclude>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyChosenLineageCountry()"
@@ -495,91 +504,137 @@
                    </v-flex>
                  </v-layout>
                </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px" v-if="rowsAnalyzeTime.length !== 0">
+                 <ImportantMutation
+                 :importantMutation="importantMutation">
+                 </ImportantMutation>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsAnalyzeTime.length > 1">
                 <h2>HEATMAP</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsAnalyzeTime.length > 1">
+                <v-autocomplete
+                        v-model="selectedHeatmapMode"
+                        :items="possibleHeatmapMode"
+                        label="Heatmap mode"
+                        solo
+                        hide-details
+                      >
+                </v-autocomplete>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsAnalyzeTime.length > 1">
                  <HeatmapMultipleAnalysis
                  nameHeatmap = "multipleAnalysisHeatmap"
                  :contentHeatmap = "rowsAnalyzeTime"
-                 :fixedContent = "fixedRowAnalyzeTime">
+                 :fixedContent = "fixedRowAnalyzeTime"
+                 :heatmapMode = "selectedHeatmapMode"
+                 :maxOddsRatio = "totalMaxOddsRatio"
+                 :importantMutation = "importantMutation">
                  </HeatmapMultipleAnalysis>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
                  <h2>TABLE</h2><h2 v-if="rowsAnalyzeTime.length > 1">S</h2>
                </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="index">
-                <v-layout row wrap justify-space-around style="margin-top: 10px">
-                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <h5>INFO:</h5>
-                        </v-card-title>
-                        <v-card-text>
-                          <span>
-                            <b> - TARGET: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN TARGET: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_target']}}</span>
-                            <br>
-                          </span>
-                          <br>
-                          <span>
-                            <b> - BACKGROUND: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['denominator_background']}}</span>
-                            <br>
-                          </span>
-                        </v-card-text>
-                     </v-card>
-                   </v-flex>
-                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                    <v-data-table
-                          :headers="headerAnalyzeTime"
-                          :items="rowsAnalTime"
-                          class="data-table table_analyze_time"
-                          style="width: 90%; border: grey solid 1px"
-                          multi-sort
-                          :sort-by.sync="sortByAnalyzeTime"
-                          :sort-desc.sync="sortDescAnalyzeTime"
-                    >
-                        <template v-slot:item ="{ item }">
-                          <tr>
-                            <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerAnalyzeTime"
-                                :key="header.value" v-show="header.show">
-                                  <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
-                                  <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
-                                  <span v-else-if="header.value === 'odd_ratio'">
-                                    <span v-if="item['percentage_background'] === 0"> INF </span>
-                                    <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
-                                  </span>
-                                  <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
-                                  </span>
-                                  <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
-                                  </span>
-                                  <span v-else>{{item[header.value]}}</span>
-                            </td>
-                          </tr>
-                        </template>
-                    </v-data-table>
-                  </v-flex>
-                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <v-btn @click="downloadTable('analyze_mutation', rowsAnalTime)"
-                         class="white--text"
-                         small
-                         color="rgb(122, 139, 157)">
-                    Download Table</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+              <v-tabs v-model="selectedTabTable"
+              background-color="#800000"
+              dark
+              vertical
+              show-arrows
+              slider-color="orange"
+              slider-size="6">
+
+                <v-tab style="border-bottom: black solid 1px; width: 200px" v-for="(rows ,index) in rowsAnalyzeTime" v-bind:key="index">
+                  <span>{{ fixedRowAnalyzeTime[index][0]['target'].split('//')[0] }}<br>
+                    {{ fixedRowAnalyzeTime[index][0]['target'].split('//')[1] }}
+                  </span>
+                </v-tab>
+
+                <v-tabs-items v-model="selectedTabTable" style="background: #F0E68C;">
+                  <v-tab-item style="padding: 20px; background-color: #F0E68C" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="index">
+                    <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                         <v-card width="500px" color="#F0E68C" style="border: black solid 1px">
+                            <v-card-title class="justify-center">
+                              <h5>INFO:</h5>
+                            </v-card-title>
+                            <v-card-text>
+                              <span>
+                                <b> - TARGET: </b>
+                                <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
+                                <br>
+                              </span>
+                              <span>
+                                <b> - TOT NUM SEQ IN TARGET: </b>
+                                <span>{{fixedRowAnalyzeTime[index][0]['denominator_target']}}</span>
+                                <br>
+                              </span>
+                              <br>
+                              <span>
+                                <b> - BACKGROUND: </b>
+                                <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
+                                <br>
+                              </span>
+                              <span>
+                                <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                                <span>{{fixedRowAnalyzeTime[index][0]['denominator_background']}}</span>
+                                <br>
+                              </span>
+                            </v-card-text>
+                         </v-card>
+                       </v-flex>
+                      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                        <v-data-table
+                              :headers="headerAnalyzeTime"
+                              :items="rowsAnalTime"
+                              class="data-table table_analyze_time"
+                              style="width: 98%; border: grey solid 1px"
+                              multi-sort
+                              :sort-by.sync="sortByAnalyzeTime"
+                              :sort-desc.sync="sortDescAnalyzeTime"
+                        >
+                            <template v-slot:item ="{ item }">
+                              <tr>
+                                <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center; align-content: center" v-for="header in headerAnalyzeTime"
+                                    :key="header.value" v-show="header.show">
+                                      <span style="color: white; font-weight: 900; background-color: red; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                      <span style="color: white; font-weight: 900; background-color: orange; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                      <span v-else-if="header.value === 'mutation_position'">{{item['mutation']}}</span>
+                                      <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                      <span v-else-if="header.value === 'odd_ratio'">
+                                        <span v-if="item['percentage_background'] === 0"> INF </span>
+                                        <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                      </span>
+                                      <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                      </span>
+                                      <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                      </span>
+                                      <span v-else>{{item[header.value]}}</span>
+                                </td>
+                              </tr>
+                            </template>
+                        </v-data-table>
+                      </v-flex>
+                      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                      <v-btn @click="downloadTable('analyze_mutation', rowsAnalTime)"
+                             class="white--text"
+                             small
+                             color="rgb(122, 139, 157)">
+                        Download Table</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-tab-item>
+                </v-tabs-items>
+
+              </v-tabs>
+             </v-layout>
+           </v-card-text>
+        </v-card>
+      </v-row>
+      <v-row justify="center" align="center" v-if="tableApplied">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+           <v-card-text>
+             <v-layout row wrap justify-center style="padding: 30px;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
@@ -644,6 +699,54 @@
                     </v-card-text>
                  </v-card>
                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                 <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
+                        <h5>INCLUDE MUTATIONS:</h5>
+                    </v-card-title>
+                    <v-card-text style="padding-top: 0; margin-top: 0">
+                      <v-layout row wrap justify-space-around style="margin-top: 0; padding: 0">
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                          <h5 style="text-align: center;">Include the mutations that appear in a % of the sequences between the 2 values below</h5>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPercentageMutationPValue"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPercentageMutationPValue"
+                                            step = "1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPercentageMutationPValue"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPercentageMutationPValue"
+                                            max = "100"
+                                            step = "1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                 </v-card>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <v-btn
                          @click="applyFilterPValueChart()"
@@ -655,62 +758,110 @@
                  </v-btn>
                </v-flex>
                <div v-if="pValueBarChartApplied">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                   <v-card width="400px" color="#F0E68C">
+                      <v-card-title class="justify-center">
+                        <h5>HIGHLIGHTS DOMAIN:</h5>
+                      </v-card-title>
+                      <v-card-text style="margin-top: 30px">
+                        <v-autocomplete
+                          v-model="selectedDomainForPValue"
+                          :items="possibleDomainForPValue"
+                          label="Domain"
+                          solo
+                          hide-details
+                          :item-text="getFieldTextDomain"
+                          multiple
+                        >
+                        </v-autocomplete>
+                      </v-card-text>
+                   </v-card>
+                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-                 <v-card width="400px" color="#F0E68C">
-                    <v-card-title class="justify-center">
-                      <h5>HIGHLIGHTS DOMAIN:</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-autocomplete
-                        v-model="selectedDomainForPValue"
-                        :items="possibleDomainForPValue"
-                        label="Domain"
-                        solo
-                        :item-text="getFieldTextDomain"
-                        hide-details
-                      >
-                        <template slot="item" slot-scope="data">
-                            <span class="item-value-span">{{getFieldTextDomain(data.item)}}</span>
-                        </template>
-                      </v-autocomplete>
-                    </v-card-text>
-                 </v-card>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
+                      <v-card style="width: 400px;" :color="colorPValueInfoBox[idx%colorPValueInfoBox.length]" v-if="selectedDomainForPValue.length > 0">
+                        <v-card-title class="justify-center">
+                          <h5 style="text-align: center;">{{domain.toUpperCase()}}</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-layout row wrap justify-space-around style="padding-bottom: 30px; margin-top: 20px">
+                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
+                             padding: 0; position: relative;">
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <h5>BEGIN: </h5>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <v-text-field
+                                    :value = "begin_value_domain[idx]"
+                                    solo
+                                    readonly
+                                    hide-details
+                                    class = "centered-input"
+                                  ></v-text-field>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
+                             padding: 0; position: relative;">
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <h5>END: </h5>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <v-text-field
+                                    :value = "end_value_domain[idx]"
+                                    solo
+                                    readonly
+                                    hide-details
+                                    class = "centered-input"
+                                  ></v-text-field>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="'pValue' + index">
-                <v-layout row wrap justify-space-around style="margin-top: 10px">
-                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <h5>INFO:</h5>
-                        </v-card-title>
-                        <v-card-text>
+                <v-layout row wrap justify-space-around style="margin: 10px; padding: 10px">
+                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C" style="height: 250px">
+                        <v-card-text style="text-align: center; padding-top: 22%">
                           <span>
-                            <b> - TARGET: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
+                            <b> TARGET: </b>
                             <br>
                           </span>
                           <span>
-                            <b> - TOT NUM SEQ IN TARGET: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span> NUM SEQ:
                             <span>{{fixedRowAnalyzeTime[index][0]['denominator_target']}}</span>
                             <br>
                           </span>
                           <br>
                           <span>
-                            <b> - BACKGROUND: </b>
-                            <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
+                            <b> BACKGROUND: </b>
                             <br>
                           </span>
                           <span>
-                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                            <span>{{fixedRowAnalyzeTime[index][0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span> NUM SEQ:
                             <span>{{fixedRowAnalyzeTime[index][0]['denominator_background']}}</span>
                             <br>
                           </span>
                         </v-card-text>
                      </v-card>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
+                  <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
                      <PValueBarChart
                          :namePValue="pValueName[index]"
                          :pValueContent="pValueContent[index]"
@@ -782,10 +933,14 @@ import TimeDistributionChart from "./TimeDistributionChart";
 import SelectorsQueryTime from "./SelectorsQueryTime";
 import TimeDistributionChartWeekMonth from "./TimeDistributionChartWeekMonth";
 import HeatmapMultipleAnalysis from "./HeatmapMultipleAnalysis";
+import SelectorQueryToExclude from "./SelectorQueryToExclude";
+import ImportantMutation from "./ImportantMutation";
 
 export default {
   name: "AnalyzeTimeLinCou",
   components: {
+    ImportantMutation,
+    SelectorQueryToExclude,
     HeatmapMultipleAnalysis,
     TimeDistributionChartWeekMonth, SelectorsQueryTime, TimeDistributionChart, PValueBarChart},
   data() {
@@ -841,18 +996,45 @@ export default {
 
       selectedTabSelectTargetBackground: 0,
       startStopProtein: {},
-      selectedDomainForPValue: null,
+      selectedDomainForPValue: [],
       possibleDomainForPValue: [],
+
+      selectedHeatmapMode: '% Target',
+      possibleHeatmapMode: ['% Target', '% Target - % Background', 'Odds ratio'],
+
+      selectedMinPercentageMutationPValue: 0,
+      selectedMaxPercentageMutationPValue: 80,
+      begin_value_domain: [],
+      end_value_domain: [],
+
+      fieldToExclude: null,
+
+      selectedTabTable: 0,
+
+      importantMutation: {},
     }
   },
   computed: {
     ...mapState(['all_protein', 'timeRangesTargetAndBackground', 'queryTime', 'errorNumSeqQueryTime'
-                , 'includeUKTime', 'timeDivisionAcceptable']),
+                , 'toExcludeTime', 'timeDivisionAcceptable', 'colorPValueInfoBox']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations([]),
     ...mapActions(['setQueryTime']),
+    computeFieldToExclude(){
+      if (!this.queryTime['geo_group']) {
+        this.fieldToExclude = 'geo_group';
+      } else if (!this.queryTime['country']) {
+        this.fieldToExclude = 'country';
+      } else if (!this.queryTime['region']) {
+        this.fieldToExclude = 'region';
+      } else if (!this.queryTime['province']) {
+        this.fieldToExclude = 'province';
+      } else {
+        this.fieldToExclude = null;
+      }
+    },
     filter(){
       let arr_row_an_time = [];
       for(let i = 0; i < this.rowsAnalyzeTime.length; i = i + 1) {
@@ -1011,6 +1193,24 @@ export default {
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
       this.overlay = true;
 
+      this.importantMutation = {};
+      let queryTime = JSON.parse(JSON.stringify(this.queryTime));
+      let url_important_mutation = `/analyze/getImportantMutation`;
+      let lineage_to_send = null;
+      if(queryTime['lineage']){
+        lineage_to_send = queryTime['lineage'];
+      }
+      let to_send_important_mutation = {'lineage': lineage_to_send}
+
+      axios.post(url_important_mutation, to_send_important_mutation)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+          this.importantMutation = res;
+        })
+
+
       this.possibleProteinForTable = [];
       this.possibleProteinForPValue = [];
       this.headerAnalyzeTime = [];
@@ -1020,7 +1220,7 @@ export default {
       if(this.selectedTabSelectTargetBackground === 0) {
 
         let query = JSON.parse(JSON.stringify(this.queryTime));
-        query['includeUK'] = this.includeUKTime;
+        query['toExclude'] = this.toExcludeTime;
 
         let start_target_time = this.timeRangesTargetAndBackground['start_target_time'];
         let end_target_time = this.timeRangesTargetAndBackground['end_target_time'];
@@ -1080,7 +1280,13 @@ export default {
               this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
                 return o['odd_ratio'];
               })));
-              this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
+              let totalMaxOdds = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
+                return o['odd_ratio'];
+              })));
+              if (totalMaxOdds > this.totalMaxOddsRatio) {
+                this.totalMaxOddsRatio = totalMaxOdds;
+                this.selectedMaxOddsRatio = totalMaxOdds;
+              }
 
               this.tableApplied = true;
               this.overlay = false;
@@ -1105,7 +1311,7 @@ export default {
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
 
       let query = JSON.parse(JSON.stringify(this.queryTime));
-      query['includeUK'] = this.includeUKTime;
+      query['toExclude'] = this.toExcludeTime;
 
       let period_1 = this.timeDivisionAcceptable[i];
       let period_2 = this.timeDivisionAcceptable[i+1];
@@ -1207,18 +1413,23 @@ export default {
     },
     applyFilterPValueChart(){
       this.overlay = true;
-      this.selectedDomainForPValue = null;
+      this.selectedDomainForPValue = [];
+      this.pValueContent = [];
+      this.pValueName = [];
 
       for(let i = 0; i < this.rowsAnalyzeTime.length; i = i + 1) {
         let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime[i]));
         var that = this;
-        result = result.filter(function (i) {
+        result = result.filter(function (i){
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
+          let percentage = JSON.parse(JSON.stringify(i['percentage_target']));
           return (p_value >= that.selectedMinPValueBarChart
               && p_value <= that.selectedMaxPValueBarChart
+              && percentage <= that.selectedMaxPercentageMutationPValue
+              && percentage >= that.selectedMinPercentageMutationPValue
               && that.selectedProteinForPValue === product);
-        })
+      })
 
         let arrayToBarChart = [];
 
@@ -1277,7 +1488,7 @@ export default {
       this.overlay = true;
 
       let query = JSON.parse(JSON.stringify(this.queryTime));
-      query['includeUK'] = this.includeUKTime;
+      query['toExclude'] = this.toExcludeTime;
 
       let to_send = {'query': query};
 
@@ -1339,7 +1550,7 @@ export default {
         query['product'] = item['product'];
       }
 
-      query['includeUK'] = this.includeUKTime;
+      query['toExclude'] = this.toExcludeTime;
 
       let query_target = 'empty';
       let to_send = {'query': query, 'query_false': query_false, 'query_target': query_target};
@@ -1372,6 +1583,25 @@ export default {
     }
   },
   watch: {
+    selectedDomainForPValue(){
+      this.begin_value_domain = [];
+      this.end_value_domain = [];
+
+      for(let i = 0; i < this.selectedDomainForPValue.length; i = i + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValue.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValue[i];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValue[index]['Begin'];
+            max = this.possibleDomainForPValue[index]['End'];
+          }
+          this.begin_value_domain.push(min);
+          this.end_value_domain.push(max);
+      }
+    },
     'queryTime.geo_group': function (){
         this.setQueryTime({field: 'country', list: null});
         this.setQueryTime({field: 'region', list: null});
@@ -1388,44 +1618,51 @@ export default {
       this.possibleProtein = this.all_protein;
     },
     queryTime(){
+       this.computeFieldToExclude();
        this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
+       this.selectedProteinForTable = null;
        this.tableApplied = false;
        this.chosenApplied = false;
     },
-    includeUKTime(){
+    toExcludeTime(){
       this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
+       this.selectedProteinForTable = null;
        this.tableApplied = false;
        this.chosenApplied = false;
     },
     selectedProtein(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null;
       this.tableApplied = false;
     },
     timeRangesTargetAndBackground(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null;
       this.tableApplied = false;
     },
     selectedTabSelectTargetBackground(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null;
       this.tableApplied = false;
     },
     timeDivisionAcceptable(){
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null;
       this.tableApplied = false;
     },
     selectedProteinForPValue(){
+      this.pValueBarChartApplied = false;
+    },
+    selectedMinPercentageMutationPValue(){
+      this.pValueBarChartApplied = false;
+    },
+    selectedMaxPercentageMutationPValue(){
       this.pValueBarChartApplied = false;
     },
     selectedMinBackgroundFrequency(){
@@ -1547,6 +1784,7 @@ export default {
     }
   },
   mounted() {
+      this.computeFieldToExclude();
       this.possibleProtein = this.all_protein;
   }
 }

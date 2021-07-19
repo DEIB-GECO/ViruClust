@@ -1,63 +1,11 @@
 <template>
   <div>
-    <v-container fluid grid-list-xl style="justify-content: center; width: 1500px">
+    <v-container fluid grid-list-xl style="justify-content: center; width: 1300px">
       <v-row justify="center" align="center">
-        <div :id="namePValue" style="width: 1200px; height: 500px; user-select: none;
+        <div :id="namePValue" style="width: 1000px; height: 250px; user-select: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-         background-color: white; margin-top: 50px">
+         background-color: white;">
         </div>
-      </v-row>
-    </v-container>
-
-    <v-container fluid grid-list-xl style="justify-content: center;
-  background-color: white; width: 1200px" v-if="selectedDomainForPValue !== null && selectedDomainForPValue !== undefined && selectedDomainForPValue !== ''">
-      <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
-            <v-card-title class="justify-center">
-              <span style="text-align: center;">DOMAIN:<br> {{selectedDomainForPValue.toUpperCase()}}</span>
-            </v-card-title>
-            <v-card-text>
-              <v-layout row wrap justify-space-around style="padding-bottom: 30px; margin-top: 20px">
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
-                  <v-layout row wrap justify-space-around>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>BEGIN: </h3>
-                    </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <v-text-field
-                        :value = "begin_value_domain"
-                        solo
-                        readonly
-                        hide-details
-                        class = "centered-input"
-                      ></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
-                  <v-layout row wrap justify-space-around>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>END: </h3>
-                    </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <v-text-field
-                        :value = "end_value_domain"
-                        solo
-                        readonly
-                        hide-details
-                        class = "centered-input"
-                      ></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
       </v-row>
     </v-container>
 
@@ -146,7 +94,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['colorPValueChart']),
     ...mapGetters({}),
   },
   methods: {
@@ -204,6 +152,7 @@ export default {
         i = i + 1;
       }
 
+      this.barChart.series[0].markArea.data = [this.barChart.series[0].markArea.data[0]]
       this.barChart.series = [this.barChart.series[0]];
       this.barChart.series[0].markArea.data[0][0].xAxis = 0;
       this.barChart.series[0].markArea.data[0][1].xAxis = 0;
@@ -252,22 +201,39 @@ export default {
         }
       }
 
-      if(this.selectedDomainForPValue !== null){
-        let that = this;
-        let min = 0;
-        let max = 0;
-        let index = this.possibleDomainForPValue.findIndex(function(item){
-            return item['Description'] === that.selectedDomainForPValue;
+      if(this.selectedDomainForPValue.length > 0){
+        for(let k = 0; k < this.selectedDomainForPValue.length; k = k + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValue.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValue[k];
           });
-          if(index !== -1){
+          if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
             max = this.possibleDomainForPValue[index]['End'];
           }
 
-        this.begin_value_domain = min;
-        this.end_value_domain = max;
-        this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
-        this.barChart.series[0].markArea.data[0][1].xAxis = max - 1;
+          let num_color = k%this.colorPValueChart.length;
+
+          if(k === 0) {
+            this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
+            this.barChart.series[0].markArea.data[0][1].xAxis = max - 1;
+            this.barChart.series[0].markArea.data[0][0].itemStyle.color = this.colorPValueChart[num_color];
+          }
+          else{
+            let singleMarkArea = [{
+              xAxis: min,
+              itemStyle: {
+                color: this.colorPValueChart[num_color],
+              },
+            }, {
+              xAxis: max
+            }];
+
+            this.barChart.series[0].markArea.data.push(singleMarkArea);
+          }
+        }
       }
 
       this.barChart.xAxis.data = arrX;
@@ -289,7 +255,12 @@ export default {
     },
     selectedDomainForPValue(){
       let met =  JSON.parse(JSON.stringify(this.pValueContent));
-      this.renderGraph(met);
+      let delayInMilliseconds = 2000;
+
+      let that = this;
+      setTimeout(function() {
+        that.renderGraph(met);
+      }, delayInMilliseconds);
     }
   }
 }

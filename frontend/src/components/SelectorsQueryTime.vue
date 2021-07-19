@@ -13,7 +13,7 @@
                   :isLoading = "isLoading">
               </SelectorsPieChart>
             </v-flex>
-           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"  v-if="field !== 'lineage'">
             <v-autocomplete
               v-model="selected"
               :items="possibleValues"
@@ -31,19 +31,16 @@
               </template>
             </v-autocomplete>
            </v-flex>
+
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="field === 'lineage'">
+              <LineageTreeSelector
+              :isLoading = "isLoading"
+              :possibleValues = "possibleValues"
+              type = "time" style="width: 100%">
+              </LineageTreeSelector>
+           </v-flex>
+
          </v-layout>
-       </v-flex>
-    </v-layout>
-    <v-layout>
-      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;"
-        v-if="this.selected === 'Europe'">
-          <v-checkbox
-            v-model="includeUK"
-            hide-details
-            input-value="true"
-            label="Include UK"
-            style="background-color: white; border: grey solid 1px; padding: 10px">
-          </v-checkbox>
        </v-flex>
     </v-layout>
   </div>
@@ -53,10 +50,11 @@
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import SelectorsPieChart from "./SelectorsPieChart";
+import LineageTreeSelector from "./LineageTreeSelector";
 
 export default {
   name: "SelectorsQueryTime",
-  components: {SelectorsPieChart},
+  components: {LineageTreeSelector, SelectorsPieChart},
   props: {
     field: {required: true,},
   },
@@ -65,11 +63,10 @@ export default {
       possibleValues: [],
       isLoading: false,
       selectorDisabled: false,
-      includeUK: true,
     }
   },
   computed: {
-    ...mapState(['queryTime', 'includeUKTime']),
+    ...mapState(['queryTime', 'toExcludeTime']),
     ...mapGetters({}),
     selected: {
       get() {
@@ -81,7 +78,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['setIncludeUKTime']),
+    ...mapMutations([]),
     ...mapActions(['setQueryTime']),
     getFieldText(item){
       let name = '';
@@ -107,7 +104,7 @@ export default {
         } else if (this.field === 'region') {
           delete query['province'];
         }
-        query['includeUK'] = this.includeUKTime;
+        query['toExclude'] = [];
         to_send['field'] = this.field;
         to_send['query'] = query;
 
@@ -131,12 +128,6 @@ export default {
   },
   watch: {
     queryTime() {
-      this.loadData();
-    },
-    includeUK(){
-      this.setIncludeUKTime(this.includeUK);
-    },
-    includeUKTime(){
       this.loadData();
     },
   }

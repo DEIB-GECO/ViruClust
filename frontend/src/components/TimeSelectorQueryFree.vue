@@ -202,7 +202,7 @@ export default {
   },
   computed: {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'startDateQueryFreeTarget', 'stopDateQueryFreeTarget',
-                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground', 'includeUKFreeTarget', 'includeUKFreeBackground']),
+                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground', 'toExcludeFreeTarget', 'toExcludeFreeBackground']),
     ...mapGetters({}),
   },
   methods: {
@@ -300,11 +300,11 @@ export default {
       let query;
       if(this.type === 'target') {
         query = JSON.parse(JSON.stringify(this.queryFreeTarget));
-        query['includeUK'] = this.includeUKFreeTarget;
+        query['toExclude'] = this.toExcludeFreeTarget;
       }
       else if(this.type === 'background') {
         query = JSON.parse(JSON.stringify(this.queryFreeBackground));
-        query['includeUK'] = this.includeUKFreeBackground;
+        query['toExclude'] = this.toExcludeFreeBackground;
       }
 
       let to_send = {'query': query};
@@ -406,12 +406,12 @@ export default {
         this.loadData();
       }
     },
-    includeUKFreeTarget() {
+    toExcludeFreeTarget() {
       if(this.type === 'target') {
         this.loadData();
       }
     },
-    includeUKFreeBackground() {
+    toExcludeFreeBackground() {
       if(this.type === 'background') {
         this.loadData();
       }

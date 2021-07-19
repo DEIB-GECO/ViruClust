@@ -10,10 +10,11 @@
                   :field = "field"
                   nameQuery = 'geo'
                   :fieldContent= "possibleValues2"
-                  :isLoading = "isLoading">
+                  :isLoading = "isLoading"
+                  :pieChartBlocked = "pieChartBlocked">
               </SelectorsPieChart>
             </v-flex>
-           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="field !== 'lineage'">
             <v-autocomplete
               v-model="selected2"
               :items="possibleValues2"
@@ -23,7 +24,7 @@
               hide-details
               :item-text="getFieldText"
               :loading="isLoading"
-              :disabled="isLoading || possibleValues2.length === 0"
+              :disabled="isLoading || possibleValues2.length === 0 || pieChartBlocked"
               :multiple="checkMultiple()"
             >
               <template slot="item" slot-scope="data">
@@ -32,6 +33,15 @@
               </template>
             </v-autocomplete>
            </v-flex>
+
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="field === 'lineage'">
+              <LineageTreeSelector
+                :isLoading = "isLoading"
+                :possibleValues = "possibleValues2"
+                type = "geo" style="width: 100%">
+              </LineageTreeSelector>
+           </v-flex>
+
          </v-layout>
        </v-flex>
     </v-layout>
@@ -42,31 +52,34 @@
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import SelectorsPieChart from "./SelectorsPieChart";
+import LineageTreeSelector from "./LineageTreeSelector";
 
 export default {
   name: "SelectorsQueryGeo",
-  components: {SelectorsPieChart},
+  components: {LineageTreeSelector, SelectorsPieChart},
   props: {
     field: {required: true,},
   },
   data() {
     return {
+      selected2: null,
       possibleValues2: [],
       isLoading: false,
       selectorDisabled: false,
+      pieChartBlocked: false,
     }
   },
   computed: {
     ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo']),
     ...mapGetters({}),
-    selected2: {
-      get() {
-        return this.queryGeo[this.field]
-      },
-      set(value){
-        this.setQueryGeo({field: this.field, list: value})
-      }
-    },
+    // selected2: {
+    //   get() {
+    //     return this.queryGeo[this.field]
+    //   },
+    //   set(value){
+    //     this.setQueryGeo({field: this.field, list: value})
+    //   }
+    // },
   },
   methods: {
     ...mapMutations([]),
@@ -85,11 +98,18 @@ export default {
         let url = `/analyze/selectorQuery`;
         let query = JSON.parse(JSON.stringify(this.queryGeo));
 
-        // Object.keys(query).forEach(key => {
-        //   if(Array.isArray(query[key])){
-        //     query[key] = query[key][0];
-        //   }
-        // });
+        if(query['geo_group']){
+          query['geo_group'] = query['geo_group'][0];
+        }
+        if(query['country']){
+          query['country'] = query['country'][0];
+        }
+        if(query['region']){
+          query['region'] = query['region'][0];
+        }
+        if(query['province']){
+          query['province'] = query['province'][0];
+        }
 
         let to_send = {};
         if (this.field === 'geo_group') {
@@ -102,13 +122,13 @@ export default {
         } else if (this.field === 'region') {
           delete query['province'];
         }
-        if(this.startDateQueryGeo){
-          query['minDate'] = this.startDateQueryGeo;
-        }
-        if(this.stopDateQueryGeo){
-          query['maxDate'] = this.stopDateQueryGeo;
-        }
-        query['includeUK'] = true;
+        // if(this.startDateQueryGeo){
+        //   query['minDate'] = this.startDateQueryGeo;
+        // }
+        // if(this.stopDateQueryGeo){
+        //   query['maxDate'] = this.stopDateQueryGeo;
+        // }
+        query['toExclude'] = [];
         to_send['field'] = this.field;
         to_send['query'] = query;
 
@@ -127,11 +147,11 @@ export default {
       }
     },
     checkMultiple(){
-      // return (this.field === 'geo_group' && !this.queryGeo['country']) ||
-      //     (this.field === 'country' && !this.queryGeo['region']) ||
-      //     (this.field === 'region' && !this.queryGeo['province']) ||
-      //     (this.field === 'province');
-      return false;
+      return !(this.field === 'lineage');
+    },
+    clearToExcludeField(){
+      this.selected2 = [];
+      this.setQueryGeo({field: this.field, list: []});
     }
   },
   mounted() {
@@ -139,7 +159,66 @@ export default {
   },
   watch: {
     queryGeo() {
+      this.pieChartBlocked = false;
+      if( ( this.field === 'country' && ( (this.queryGeo['geo_group'] && this.queryGeo['geo_group'].length > 1 ) ) ) ||
+          ( this.field === 'region' && ( (this.queryGeo['country'] && this.queryGeo['country'].length > 1 ) || (this.queryGeo['geo_group'] && this.queryGeo['geo_group'].length > 1 ) ) ) ||
+          ( this.field === 'province' && ( (this.queryGeo['region'] && this.queryGeo['region'].length > 1 ) || (this.queryGeo['country'] && this.queryGeo['country'].length > 1 ) || (this.queryGeo['geo_group'] && this.queryGeo['geo_group'].length > 1 ) ) )){
+        this.pieChartBlocked = true;
+      }
+
       this.loadData();
+    },
+    selected2() {
+      if (this.selected2 !== null) {
+        if(this.field === 'lineage'){
+          this.setQueryGeo({field: this.field, list: null});
+          this.setQueryGeo({field: this.field, list: this.selected2});
+        }
+        else {
+          this.setQueryGeo({field: this.field, list: []});
+
+          let copy = JSON.parse(JSON.stringify(this.selected2));
+
+          // let that = this;
+          // copy.sort((a, b) => {
+          //   let index_a = that.possibleValues2.findIndex(function(item){
+          //     return item['value'] === a;
+          //   });
+          //   let index_b = that.possibleValues2.findIndex(function(item){
+          //     return item['value'] === b;
+          //   });
+          //
+          //   let num_a = this.possibleValues2[index_a]['count'];
+          //   let num_b = this.possibleValues2[index_b]['count'];
+          //
+          //   return num_a < num_b ? 1 : -1;
+          // });
+
+          this.setQueryGeo({field: this.field, list: copy});
+        }
+      } else {
+        this.clearToExcludeField();
+      }
+    },
+    'queryGeo.geo_group': function (){
+        if(this.field === 'geo_group' && (!this.queryGeo['geo_group'] || this.queryGeo['geo_group'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryGeo.country': function (){
+        if(this.field === 'country' && (!this.queryGeo['country'] || this.queryGeo['country'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryGeo.region': function (){
+        if(this.field === 'region' && (!this.queryGeo['region'] || this.queryGeo['region'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryGeo.province': function (){
+        if(this.field === 'province' && (!this.queryGeo['province'] || this.queryGeo['province'].length === 0 )) {
+          this.clearToExcludeField();
+        }
     },
   }
 }

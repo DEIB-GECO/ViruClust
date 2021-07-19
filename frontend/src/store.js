@@ -49,11 +49,19 @@ const state = {
     startDateDistributionLineageInGeo: null,
     stopDateDistributionLineageInGeo: null,
 
-    includeUKTime: true,
-    includeUKGeo: true,
-    includeUKFreeTarget: true,
-    includeUKFreeBackground: true,
+    toExcludeTime: {},
+    toExcludeGeo: {},
+    toExcludeFreeTarget: {},
+    toExcludeFreeBackground: {},
+
+    locationToExcludeMulti: [],
+
     timeDivisionAcceptable: [],
+
+    colorPValueChart: ['rgba(50, 255, 50, 0.5)', 'rgba(255, 0, 0, 0.5)',
+                       'rgba(0, 0, 255, 0.5)', 'rgba(230, 15, 250, 0.5)', 'rgba(9,192,217, 0.5)'],
+    colorPValueInfoBox: ['rgba(50, 255, 50, 1)', 'rgba(255, 0, 0, 1)',
+                         'rgba(0, 0, 255, 1)', 'rgba(230, 15, 250, 1)', 'rgba(9,192,217, 1)'],
 };
 
 const getters = {
@@ -229,18 +237,50 @@ const mutations = {
     setStopDateDistributionLineageInGeo: (state, value) => {
         state.stopDateDistributionLineageInGeo= value;
     },
-    setIncludeUKTime: (state, value) => {
-        state.includeUKTime = value;
+     setLocationToExcludeMulti: (state, value) => {
+        state.locationToExcludeMulti= value;
     },
-    setIncludeUKGeo: (state, value) => {
-        state.includeUKGeo = value;
+
+    setToExcludeTimeField: (state, payload) => {
+        state.toExcludeTime[payload.field] = payload.fieldQuery;
     },
-    setIncludeUKFreeTarget: (state, value) => {
-        state.includeUKFreeTarget = value;
+    resetToExcludeTimeField: (state, field) => {
+        delete state.toExcludeTime[field];
     },
-    setIncludeUKFreeBackground: (state, value) => {
-        state.includeUKFreeBackground = value;
+    reloadToExcludeTime: (state) => {
+        state.toExcludeTime = Object.assign({}, state.toExcludeTime);
     },
+
+    setToExcludeGeoField: (state, payload) => {
+        state.toExcludeGeo[payload.field] = payload.fieldQuery;
+    },
+    resetToExcludeGeoField: (state, field) => {
+        delete state.toExcludeGeo[field];
+    },
+    reloadToExcludeGeo: (state) => {
+        state.toExcludeGeo = Object.assign({}, state.toExcludeGeo);
+    },
+
+    setToExcludeFreeTargetField: (state, payload) => {
+        state.toExcludeFreeTarget[payload.field] = payload.fieldQuery;
+    },
+    resetToExcludeFreeTargetField: (state, field) => {
+        delete state.toExcludeFreeTarget[field];
+    },
+    reloadToExcludeFreeTarget: (state) => {
+        state.toExcludeFreeTarget = Object.assign({}, state.toExcludeFreeTarget);
+    },
+
+    setToExcludeFreeBackgroundField: (state, payload) => {
+        state.toExcludeFreeBackground[payload.field] = payload.fieldQuery;
+    },
+    resetToExcludeFreeBackgroundField: (state, field) => {
+        delete state.toExcludeFreeBackground[field];
+    },
+    reloadToExcludeFreeBackground: (state) => {
+        state.toExcludeFreeBackground = Object.assign({}, state.toExcludeFreeBackground);
+    },
+
     setTimeDivisionAcceptable: (state, value) => {
         state.timeDivisionAcceptable = value;
     },
@@ -354,6 +394,94 @@ const actions = {
                 commit('resetQueryFreeBackgroundField', field);
             }
             commit('reloadQueryFreeBackground');
+        }
+    },
+
+    setToExcludeTime({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.toExcludeTime[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setToExcludeTimeField', newPayload);
+            } else {
+                commit('resetToExcludeTimeField', field);
+            }
+            commit('reloadToExcludeTime');
+        }
+    },
+
+    setToExcludeGeo({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.toExcludeGeo[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setToExcludeGeoField', newPayload);
+            } else {
+                commit('resetToExcludeGeoField', field);
+            }
+            commit('reloadToExcludeGeo');
+        }
+    },
+
+    setToExcludeFreeTarget({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.toExcludeFreeTarget[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setToExcludeFreeTargetField', newPayload);
+            } else {
+                commit('resetToExcludeFreeTargetField', field);
+            }
+            commit('reloadToExcludeFreeTarget');
+        }
+    },
+
+    setToExcludeFreeBackground({commit, state}, payload) {
+        const field = payload.field;
+
+        let newList = payload.list;
+        if (!newList)
+            newList = [];
+
+        let previousList = state.toExcludeFreeBackground[field];
+        if (!previousList)
+            previousList = [];
+
+        if (!(JSON.stringify(previousList) === JSON.stringify(newList))) { //  || newList.length === 0
+            if (newList.length > 0) {
+                const newPayload = {field: field, fieldQuery: newList};
+                commit('setToExcludeFreeBackgroundField', newPayload);
+            } else {
+                commit('resetToExcludeFreeBackgroundField', field);
+            }
+            commit('reloadToExcludeFreeBackground');
         }
     },
 

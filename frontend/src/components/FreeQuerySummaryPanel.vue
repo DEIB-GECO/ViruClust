@@ -18,6 +18,17 @@
                   <span v-for="(info, key) in arrayQueryFreeTarget" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                  <h3>LOCATION EXCLUDED: </h3>
+                </v-flex>
+                <v-card color="white" width="60%" style="margin-bottom: 20px;">
+                  <v-card-text style="text-align: center; color: black">
+                    <span v-for="(info, key) in toExcludeFreeTarget" v-bind:key="key"><b>{{key.toUpperCase()}} :</b><br><br>
+                      <span v-for="(location, idx) in info" v-bind:key="idx">{{location}}<br>
+                      </span>
+                    </span>
+                  </v-card-text>
+                </v-card>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <h3>NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
@@ -45,6 +56,17 @@
                 </v-flex>
                 <v-card color="white" width="60%" style="margin-bottom: 20px; padding: 20px">
                   <span v-for="(info, key) in arrayQueryFreeBackground" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
+                </v-card>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                  <h3>LOCATION EXCLUDED: </h3>
+                </v-flex>
+                <v-card color="white" width="60%" style="margin-bottom: 20px;">
+                  <v-card-text style="text-align: center; color: black">
+                    <span v-for="(info, key) in toExcludeFreeBackground" v-bind:key="key"><b>{{key.toUpperCase()}} :</b><br><br>
+                      <span v-for="(location, idx) in info" v-bind:key="idx">{{location}}<br>
+                      </span>
+                    </span>
+                  </v-card-text>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <h3>NUM SEQUENCES: </h3>
@@ -79,7 +101,8 @@ export default {
   computed: {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'numSequencesQueryFreeBackground',
                  'numSequencesQueryFreeTarget', 'startDateQueryFreeTarget', 'stopDateQueryFreeTarget',
-                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground']),
+                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground',
+                 'toExcludeFreeTarget', 'toExcludeFreeBackground']),
     ...mapGetters({}),
     arrayQueryFreeTarget(){
       let array = {};

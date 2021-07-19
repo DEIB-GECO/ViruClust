@@ -108,14 +108,30 @@
             <v-card-title class="justify-center"><h3>Select type of analysis</h3></v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around>
-                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                   <v-select
                     v-model="selectedTypeOfAnalysis"
                     :items="possibleTypeOfAnalysis"
                     label="Protein"
                     solo
                     hide-details
-                  ></v-select>
+                    ></v-select>
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
+                  <h3>Select length of the period</h3>
+                </v-flex>
+                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
+                  <v-text-field
+                    v-model="selectedNumDaysAnalysis"
+                    label="Protein"
+                    solo
+                    min="0"
+                    max="365"
+                    hide-details
+                    type="number"
+                  ></v-text-field>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" >
                 </v-flex>
@@ -188,8 +204,10 @@ export default {
       wrong_last_start_date: false,
       wrong_last_stop_date: false,
 
-      selectedTypeOfAnalysis: "30 days",
-      possibleTypeOfAnalysis: ["30 days", "7 days"],
+      selectedTypeOfAnalysis: 'Analysis per specific num of days',
+      possibleTypeOfAnalysis: ['Analysis per specific num of days', 'Analysis per week', 'Analysis per month'],
+
+      selectedNumDaysAnalysis: 30,
       timeDivision: [],
       timeDivisionNumSeqAcceptable: [],
 
@@ -332,46 +350,177 @@ export default {
     },
     computeTimeDivision(){
       this.timeDivision = [];
-      let start = this.slider[0];
-      let stop = this.slider[1];
+      let start ;
+      let stop ;
       let num_days;
-      if(this.selectedTypeOfAnalysis === '30 days'){
-        num_days = 30;
-      }
-      else{
-        num_days = 7;
-      }
-      let while_condition = true;
-      let i = start;
       let arr_acceptable_time_division = [];
-      while (while_condition){
-        let single_period = [];
-        single_period[0] = this.translateIndexToDate(i);
+      if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[0]) {
+        start = this.slider[0];
+        stop = this.slider[1];
+        num_days = parseInt(this.selectedNumDaysAnalysis);
+        let while_condition = true;
+        let i = start;
+        while (while_condition) {
+          let single_period = [];
+          single_period[0] = this.translateIndexToDate(i);
 
-        if(i + num_days > stop){
-          single_period[1] = this.translateIndexToDate(stop);
-          while_condition = false;
+          if (i + num_days > stop) {
+            single_period[1] = this.translateIndexToDate(stop);
+            while_condition = false;
+          } else {
+            single_period[1] = this.translateIndexToDate(i + num_days - 1);
+          }
+
+          let j = i;
+          let num_seq = 0;
+          while (j < i + num_days) {
+            if (j <= stop) {
+              num_seq = num_seq + this.timeContent[j].value;
+            }
+            j = j + 1;
+          }
+          single_period[2] = num_seq;
+
+          if (num_seq > this.min_num_seq) {
+            arr_acceptable_time_division.push(single_period);
+          }
+
+          this.timeDivision.push(single_period);
+          i = i + num_days;
+        }
+      }
+      else if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[1]) { // WEEK
+        let startDate = new Date(this.translateIndexToDate(this.slider[0]));
+        let stopDate = new Date(this.translateIndexToDate(this.slider[1]));
+        let distanceFromFirstMonday;
+        let distanceFromLastSunday;
+        num_days = 7;
+        let firstMondayDate = startDate.getDay() || 7;
+        if( firstMondayDate !== 1 ) {
+          distanceFromFirstMonday = (firstMondayDate - 1);
+          startDate.setHours(-24 * (firstMondayDate - 1));
         }
         else{
-          single_period[1] = this.translateIndexToDate(i + num_days - 1);
+         distanceFromFirstMonday = (firstMondayDate - 1);
         }
+        let lastSundayDate = stopDate.getDay() || 7;
+        if( lastSundayDate !== 7 ) {
+          distanceFromLastSunday = (7 - lastSundayDate);
+          stopDate.setHours(24 * (7 - lastSundayDate));
+        }
+        else{
+         distanceFromLastSunday = (7 - lastSundayDate);
+        }
+        if(this.slider[0] - distanceFromFirstMonday >= 0){
+          start = this.slider[0] - distanceFromFirstMonday;
+        }
+        else{
+          start = this.slider[0];
+          num_days = (7 - distanceFromFirstMonday)
+        }
+        if(this.slider[1] + distanceFromLastSunday <= this.max_range){
+          stop = this.slider[1] + distanceFromLastSunday;
+        }
+        else{
+          stop = this.slider[1]; // - (7 - distanceFromLastSunday)
+        }
+        let while_condition = true;
+        let i = start;
+        while (while_condition) {
+          let single_period = [];
+          single_period[0] = this.translateIndexToDate(i);
 
-        let j = i;
-        let num_seq = 0;
-        while(j < i + num_days){
-          if(j <= stop) {
-            num_seq = num_seq + this.timeContent[j].value;
+          if (i + num_days > stop) {
+            single_period[1] = this.translateIndexToDate(stop);
+            while_condition = false;
+          } else {
+            single_period[1] = this.translateIndexToDate(i + num_days - 1);
           }
-          j = j + 1;
-        }
-        single_period[2] = num_seq;
 
-        if(num_seq > this.min_num_seq){
-          arr_acceptable_time_division.push(single_period);
-        }
+          let j = i;
+          let num_seq = 0;
+          while (j < i + num_days) {
+            if (j <= stop) {
+              num_seq = num_seq + this.timeContent[j].value;
+            }
+            j = j + 1;
+          }
+          single_period[2] = num_seq;
 
-        this.timeDivision.push(single_period);
-        i = i + num_days;
+          if (num_seq > this.min_num_seq) {
+            arr_acceptable_time_division.push(single_period);
+          }
+
+          this.timeDivision.push(single_period);
+          i = i + num_days;
+          num_days = 7;
+        }
+      }
+      else if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[2]) { // MONTH
+        let startDate = new Date(this.translateIndexToDate(this.slider[0]));
+        let stopDate = new Date(this.translateIndexToDate(this.slider[1]));
+        // let firstDay = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+        // let lastDay = new Date(stopDate.getFullYear(), stopDate.getMonth() + 1, 0);
+        let firstDayDate = new Date(startDate).toISOString().slice(0, 10).split('-');
+        let lastDayDate = new Date(stopDate).toISOString().slice(0, 10).split('-');
+        let distanceFromFirstDay = (firstDayDate[2] - 1);
+        let dayInMonthLastDay = this.dayInMoth(lastDayDate[1], lastDayDate[0]);
+        let distanceFromLastDay = (dayInMonthLastDay - lastDayDate[2]);
+        let daysFirstPeriod = 0;
+        if(this.slider[0] - distanceFromFirstDay >= 0){
+          start = this.slider[0] - distanceFromFirstDay;
+        }
+        else{
+          let dayInMonth = this.dayInMoth(firstDayDate[1], firstDayDate[0]);
+          start = this.slider[0];
+          daysFirstPeriod = (dayInMonth - distanceFromFirstDay);
+        }
+        if(this.slider[1] + distanceFromLastDay <= this.max_range){
+          stop = this.slider[1] + distanceFromLastDay;
+        }
+        else{
+          // let dayInMonth = this.dayInMoth(lastDayDate[1], lastDayDate[0]);
+          stop = this.slider[1]; // - (dayInMonth - distanceFromLastSunday)
+        }
+        let while_condition = true;
+        let i = start;
+        while (while_condition) {
+          let single_period = [];
+          single_period[0] = this.translateIndexToDate(i);
+          let dayDate = new Date(single_period[0]).toISOString().slice(0, 10).split('-');
+          let daysInMonth;
+          if(daysFirstPeriod !== 0){
+            daysInMonth = daysFirstPeriod;
+          }
+          else{
+            daysInMonth = this.dayInMoth(dayDate[1], dayDate[0]);
+          }
+
+          if (i + daysInMonth > stop) {
+            single_period[1] = this.translateIndexToDate(stop);
+            while_condition = false;
+          } else {
+            single_period[1] = this.translateIndexToDate(i + daysInMonth - 1);
+          }
+
+          let j = i;
+          let num_seq = 0;
+          while (j < i + daysInMonth) {
+            if (j <= stop) {
+              num_seq = num_seq + this.timeContent[j].value;
+            }
+            j = j + 1;
+          }
+          single_period[2] = num_seq;
+
+          if (num_seq > this.min_num_seq) {
+            arr_acceptable_time_division.push(single_period);
+          }
+
+          this.timeDivision.push(single_period);
+          i = i + daysInMonth;
+          daysFirstPeriod = 0;
+        }
       }
       this.timeDivisionNumSeqAcceptable = arr_acceptable_time_division;
 
@@ -404,6 +553,26 @@ export default {
       }
 
       this.setTimeDivisionAcceptable(arr_full_acceptable);
+    },
+    dayInMoth(monthStr, yearStr){
+      let numDays ;
+      let month = parseInt(monthStr);
+      let year = parseInt(yearStr);
+      if(month === 4 || month === 6 || month === 9 || month === 11){
+        numDays = 30;
+      }
+      else if (month === 2){
+        if ((!(year%4) && (year%100)) || !year%400){
+          numDays = 29;
+        }
+        else{
+          numDays = 28;
+        }
+      }
+      else{
+        numDays = 31;
+      }
+      return numDays;
     }
   },
   watch: {
@@ -438,9 +607,23 @@ export default {
       this.last_stop_date = this.translateIndexToDate(this.slider[1]);
       this.computeTimeDivision();
     },
-    selectedTypeOfAnalysis(){
-      this.computeTimeDivision();
+    selectedNumDaysAnalysis(){
+      if(this.selectedNumDaysAnalysis !== null
+          && this.selectedNumDaysAnalysis !== undefined
+          && this.selectedNumDaysAnalysis !== ''
+          && this.selectedNumDaysAnalysis !== ' ') {
+        this.computeTimeDivision();
+      }
     },
+    selectedTypeOfAnalysis(){
+      if(this.selectedTypeOfAnalysis !== this.possibleTypeOfAnalysis[0]
+        || (this.selectedNumDaysAnalysis !== null
+          && this.selectedNumDaysAnalysis !== undefined
+          && this.selectedNumDaysAnalysis !== ''
+          && this.selectedNumDaysAnalysis !== ' ')) {
+        this.computeTimeDivision();
+      }
+    }
   },
   mounted() {
       this.max_range = this.timeContent.length - 1;

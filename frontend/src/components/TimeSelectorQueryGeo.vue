@@ -34,16 +34,31 @@
             </v-range-slider>
           </div>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-         padding-top: 0; padding-bottom: 0">
-          <v-layout row wrap justify-center>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
+         padding-top: 10px; padding-bottom: 10px;  border: grey solid 1px;">
+          <v-layout row wrap justify-center style="">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+              <v-select
+                v-model="selectedTarget"
+                :items="possibleTarget"
+                label="Target"
+                solo
+                hide-details>
+             </v-select>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"></v-flex>
+        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
+         padding-top: 0; padding-bottom: 0;  border: grey solid 1px">
+          <v-layout row wrap justify-center style="">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                 <v-checkbox v-model="graphOnNumSequences"
                 label="NUM SEQUENCES"
                 input-value="true">
                 </v-checkbox>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                 <v-checkbox v-model="graphOnPercSequences"
                 label="% SEQUENCES"
                 input-value="true">
@@ -51,29 +66,30 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-         padding-top: 0; padding-bottom: 0">
-          <v-layout row wrap justify-center>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"></v-flex>
+        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
+         padding-top: 0; padding-bottom: 0;">
+          <v-layout row wrap justify-center style="border: grey solid 1px">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                 <v-checkbox v-model="viewTarget"
-                input-value="true">
+                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
                   <template v-slot:label>
                     <span>SHOW <span style="color: blue">TARGET</span></span>
                   </template>
                 </v-checkbox>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                 <v-checkbox v-model="viewBackground"
-                input-value="true">
+                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
                   <template v-slot:label>
                     <span>SHOW <span style="color: red">BACKGROUND</span></span>
                   </template>
                 </v-checkbox>
             </v-flex>
-             <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: start;">
+             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                 <v-checkbox v-model="viewBothTargetBackground"
                 label="SHOW BOTH"
-                input-value="true">
+                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
                   <template v-slot:label>
                     <span>SHOW <span style="color: blue">BO</span><span style="color: red">TH</span></span>
                   </template>
@@ -137,7 +153,7 @@
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
-                        :value = "num_sequences_target"
+                        :value = "num_sequences_target[targetIndex]"
                         solo
                         readonly
                         hide-details
@@ -154,7 +170,7 @@
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
-                        :value = "num_sequences_background"
+                        :value = "num_sequences_background[targetIndex]"
                         solo
                         readonly
                         hide-details
@@ -250,6 +266,13 @@ export default {
   },
   data(){
     return {
+      targetIndex: 0,
+      possibleTarget: [],
+      selectedTarget: null,
+
+      startDateMultiMinor: null,
+      locationToExclude: [],
+
       overlay: false,
       slider: [0, 1500],
       left_ranges_width:  10,
@@ -258,8 +281,8 @@ export default {
       timeContent: [],
       last_start_date: null,
       last_stop_date: null,
-      num_sequences_target: 0,
-      num_sequences_background: 0,
+      num_sequences_target: [],
+      num_sequences_background: [],
       wrong_last_start_date: false,
       wrong_last_stop_date: false,
 
@@ -364,12 +387,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'numLevelAboveBackground', 'includeUKGeo']),
+    ...mapState(['queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'numLevelAboveBackground', 'toExcludeGeo']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations(['setTimeRangesTargetAndBackground', 'setStartDateQueryGeo', 'setStopDateQueryGeo',
-     'setTrueErrorNumSeqQueryGeo', 'setFalseErrorNumSeqQueryGeo']),
+     'setTrueErrorNumSeqQueryGeo', 'setFalseErrorNumSeqQueryGeo', 'setLocationToExcludeMulti']),
     ...mapActions(['setQueryGeo']),
     getDaysArray(start, end) {
       for (var arr = [], dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
@@ -387,8 +410,8 @@ export default {
       return arr;
     },
     renderGraphFilterDate(){
-        let met =  JSON.parse(JSON.stringify(this.timeContent));
-        let met2 =  JSON.parse(JSON.stringify(this.timeContentBackground));
+        let met =  JSON.parse(JSON.stringify(this.timeContent[this.targetIndex]));
+        let met2 =  JSON.parse(JSON.stringify(this.timeContentBackground[this.targetIndex]));
         this.renderGraph(met, met2);
     },
     renderGraph(met, met2){
@@ -457,62 +480,325 @@ export default {
       this.barChart.series[1].markArea.data[0][0].xAxis = min;
       this.barChart.series[1].markArea.data[0][1].xAxis = max;
 
-      let lenXAxis = this.timeContent.length;
-      let i = 0;
-      this.num_sequences_target = 0;
-      this.num_sequences_background = 0;
+      // let lenXAxis = this.max_range;
 
-      while(i < lenXAxis){
-        if( i >= min && i <= max ){
-          this.num_sequences_target = this.num_sequences_target + this.timeContent[i].value;
-          this.num_sequences_background = this.num_sequences_background + this.timeContentBackground[i].value;
+      this.locationToExclude = [];
+      this.setLocationToExcludeMulti(this.locationToExclude);
+      this.num_sequences_target = [];
+      this.num_sequences_background = [];
+      this.setFalseErrorNumSeqQueryGeo();
+      for(let k = 0; k < this.timeContent.length; k = k + 1) {
+        let i = min;
+        this.num_sequences_target[k] = 0;
+        this.num_sequences_background[k] = 0;
+
+        while (i < max) {
+
+          this.num_sequences_target[k] = this.num_sequences_target[k] + this.timeContent[k][i].value;
+          this.num_sequences_background[k] = this.num_sequences_background[k] + this.timeContentBackground[k][i].value;
+          i = i + 1;
         }
-        i = i + 1;
+
+        if (this.num_sequences_target[k] < this.min_num_seq_target || this.num_sequences_background[k] < this.min_num_seq_background){
+
+          let query = JSON.parse(JSON.stringify(this.queryGeo));
+
+          if(!query['geo_group']){
+            console.log("");
+          }
+          else if(!query['country']){
+            this.locationToExclude.push(query['geo_group'][k]);
+          }
+          else if(!query['region']){
+            this.locationToExclude.push(query['country'][k]);
+          }
+          else if(!query['province']){
+            this.locationToExclude.push(query['region'][k]);
+          }
+          else{
+            this.locationToExclude.push(query['province'][k]);
+          }
+        }
       }
 
-      if (this.num_sequences_target < this.min_num_seq_target || this.num_sequences_background < this.min_num_seq_background){
+      if(this.locationToExclude.length === this.timeContent.length){
         this.setTrueErrorNumSeqQueryGeo();
       }
-      else{
-        this.setFalseErrorNumSeqQueryGeo();
-      }
+      this.setLocationToExcludeMulti(this.locationToExclude);
 
       this.renderGraphFilterDate();
     },
     translateIndexToDate(index){
-      if(this.timeContent[index]) {
-        return this.timeContent[index].name;
+      if(this.timeContent[this.targetIndex][index]) {
+        return this.timeContent[this.targetIndex][index].name;
       }
     },
     translateDateToIndex(date){
-      let index = this.timeContent.findIndex(function(item){
+      let index = this.timeContent[this.targetIndex].findIndex(function(item){
         return item.name === date;
       });
       return index;
     },
     loadData(){
-      let url = `/analyze/analyzeTimeDistributionCountryLineage`;
-      this.overlay = true;
 
       let query = JSON.parse(JSON.stringify(this.queryGeo));
+      let target = [];
+      let nameTarget = '';
+      if(!query['geo_group']){
+        target = [];
+        nameTarget = '';
+      }
+      else if(!query['country']){
+        target = query['geo_group'];
+        nameTarget = 'geo_group';
+      }
+      else if(!query['region']){
+        target = query['country'];
+        nameTarget = 'country';
+      }
+      else if(!query['province']){
+        target = query['region'];
+        nameTarget = 'region';
+      }
+      else{
+        target = query['province'];
+        nameTarget = 'province';
+      }
 
-      query['includeUK'] = true;
+      if(target.length > 0) {
+        this.possibleTarget = target;
+        this.selectedTarget = target[0];
+      }
+
+      if(!(target.length > 1)) {
+
+        let url = `/analyze/analyzeTimeDistributionCountryLineage`;
+        this.overlay = true;
+        if (query['geo_group']) {
+          query['geo_group'] = query['geo_group'][0];
+        }
+        if (query['country']) {
+          query['country'] = query['country'][0];
+        }
+        if (query['region']) {
+          query['region'] = query['region'][0];
+        }
+        if (query['province']) {
+          query['province'] = query['province'][0];
+        }
+
+        query['toExclude'] = [];
+        let to_send = {'query': query};
+
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              // this.chosenApplied = true;
+              // this.overlay = false;
+              let arrOfDates = [];
+              let dayList;
+              let first_date;
+              let last_date;
+              if (res.length !== 0) {
+
+                first_date = new Date(res[0]['name']);
+                last_date = new Date();
+                last_date.setDate(last_date.getDate() + 1)
+
+                dayList = this.getDaysArray(first_date, last_date);
+                dayList.forEach(day => {
+                  let idx = res.findIndex(item => item['name'] === day);
+                  if (idx === -1) {
+                    let single_element = {'name': day, 'value': 0};
+                    arrOfDates.push(single_element);
+                  } else {
+                    let single_element = {'name': day, 'value': res[idx]['value']};
+                    arrOfDates.push(single_element);
+                  }
+                })
+              }
+              this.timeContent[0] = arrOfDates;
+              this.max_range = this.timeContent[0].length - 1;
+
+              let that = this;
+              let index_start = this.timeContent[0].findIndex(function (item) {
+                return item.name === that.last_start_date
+              });
+              if (index_start === -1) {
+                index_start = 0;
+              }
+
+              let index_stop = this.timeContent[0].findIndex(function (item) {
+                return item.name === that.last_stop_date
+              });
+              if (index_stop === -1) {
+                index_stop = this.max_range;
+              }
+
+              let url = `/analyze/analyzeTimeDistributionBackgroundQueryGeo`;
+              let query = JSON.parse(JSON.stringify(this.queryGeo));
+              let query_false = '';
+              query['minDate'] = first_date.toISOString().slice(0, 10);
+              query['maxDate'] = last_date.toISOString().slice(0, 10);
+              query['toExclude'] = this.toExcludeGeo;
+
+              if (query['geo_group']) {
+                query['geo_group'] = query['geo_group'][0];
+              }
+              if (query['country']) {
+                query['country'] = query['country'][0];
+              }
+              if (query['region']) {
+                query['region'] = query['region'][0];
+              }
+              if (query['province']) {
+                query['province'] = query['province'][0];
+              }
+
+              if (!query['country']) {
+                query_false = 'geo_group'
+              } else if (!query['region']) {
+                let arr_geo = ['geo_group'];
+                let i = 0;
+                let len = arr_geo.length;
+                while (i < len && i < (this.numLevelAboveBackground - 1)) {
+                  delete query[arr_geo[i]];
+                  i = i + 1;
+                }
+                query_false = 'country'
+              } else if (!query['province']) {
+                let arr_geo = ['country', 'geo_group'];
+                let i = 0;
+                let len = arr_geo.length;
+                while (i < len && i < (this.numLevelAboveBackground - 1)) {
+                  delete query[arr_geo[i]];
+                  i = i + 1;
+                }
+                query_false = 'region'
+              } else {
+                let arr_geo = ['region', 'country', 'geo_group'];
+                let i = 0;
+                let len = arr_geo.length;
+                while (i < len && i < (this.numLevelAboveBackground - 1)) {
+                  delete query[arr_geo[i]];
+                  i = i + 1;
+                }
+                query_false = 'province'
+              }
+
+              let to_send = {'query': query, 'query_false': query_false};
+
+              axios.post(url, to_send)
+                  .then((res) => {
+                    return res.data;
+                  })
+                  .then((res) => {
+                    this.chosenApplied = true;
+                    this.overlay = false;
+
+                    let arrOfDatesBackground = [];
+                    dayList.forEach(day => {
+                      let idx = res.findIndex(item => item['name'] === day);
+                      if (idx === -1) {
+                        let single_element = {'name': day, 'value': 0};
+                        arrOfDatesBackground.push(single_element);
+                      } else {
+                        let single_element = {'name': day, 'value': res[idx]['value']};
+                        arrOfDatesBackground.push(single_element);
+                      }
+                    })
+
+                    this.timeContentBackground[0] = arrOfDatesBackground;
+                    this.targetIndex = 0;
+
+                    this.slider = [index_start, index_stop];
+                    this.last_start_date = this.translateIndexToDate(this.slider[0]);
+                    this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+                    this.changeMarkerAndRender(this.slider[0], this.slider[0]);
+                    this.setStartDateQueryGeo(this.last_start_date);
+                    this.setStopDateQueryGeo(this.last_stop_date);
+
+                  });
+            });
+      }
+      else{
+        let len = target.length;
+        let i = 0;
+        let startDate = null;
+        let indexStart = null;
+        let indexStop = null;
+        this.startDateMultiMinor = null;
+        this.targetIndex = 0;
+        if(i < len) {
+          this.loadDataMultipleTarget(i, len, nameTarget, startDate, indexStart, indexStop);
+        }
+      }
+    },
+    loadDataMultipleTarget(i, len, nameTarget, startDate, indexStart, indexStop){
+      let url = `/analyze/analyzeTimeDistributionCountryLineage`;
+      let query = JSON.parse(JSON.stringify(this.queryGeo));
+      this.overlay = true;
+
+      if (query['geo_group']) {
+        if(nameTarget === 'geo_group'){
+          query['geo_group'] = query['geo_group'][i];
+        }
+        else {
+          query['geo_group'] = query['geo_group'][0];
+        }
+      }
+      if (query['country']) {
+        if(nameTarget === 'country'){
+          query['country'] = query['country'][i];
+        }
+        else {
+          query['country'] = query['country'][0];
+        }
+      }
+      if (query['region']) {
+        if(nameTarget === 'region'){
+          query['region'] = query['region'][i];
+        }
+        else {
+          query['region'] = query['region'][0];
+        }
+      }
+      if (query['province']) {
+        if(nameTarget === 'province'){
+          query['province'] = query['province'][i];
+        }
+        else {
+          query['province'] = query['province'][0];
+        }
+      }
+
+      query['toExclude'] = [];
       let to_send = {'query': query};
 
       axios.post(url, to_send)
-        .then((res) => {
-          return res.data;
-        })
-        .then((res) => {
-            // this.chosenApplied = true;
-            // this.overlay = false;
+          .then((res) => {
+            return res.data;
+          })
+          .then((res) => {
             let arrOfDates = [];
             let dayList;
             let first_date;
             let last_date;
-            if( res.length !== 0) {
+            if (res.length !== 0) {
 
               first_date = new Date(res[0]['name']);
+              if(this.startDateMultiMinor === null || (this.startDateMultiMinor > first_date)){
+                this.startDateMultiMinor = first_date;
+              }
+              if(startDate !== null && first_date > startDate){
+                first_date = startDate;
+              }
+              else{
+                startDate = first_date;
+              }
+
               last_date = new Date();
               last_date.setDate(last_date.getDate() + 1)
 
@@ -528,59 +814,92 @@ export default {
                 }
               })
             }
-            this.timeContent = arrOfDates;
-            this.max_range = this.timeContent.length - 1;
+            this.timeContent[i] = arrOfDates;
 
-            let that = this;
-            let index_start = this.timeContent.findIndex(function(item){
-              return item.name === that.last_start_date
-            });
-            if (index_start === -1){
-              index_start = 0;
-            }
-
-            let index_stop = this.timeContent.findIndex(function(item){
-              return item.name === that.last_stop_date
-            });
-            if (index_stop === -1){
-              index_stop = this.max_range;
-            }
+            // if(this.max_range < this.timeContent[this.targetIndex].length - 1) {
+            //   this.max_range = this.timeContent[this.targetIndex].length - 1;
+            // }
+            //
+            // let that = this;
+            // let index_start = this.timeContent[this.targetIndex].findIndex(function (item) {
+            //   return item.name === that.last_start_date
+            // });
+            // if (index_start === -1) {
+            //   index_start = 0;
+            // }
+            //
+            // let index_stop = this.timeContent[this.targetIndex].findIndex(function (item) {
+            //   return item.name === that.last_stop_date
+            // });
+            // if (index_stop === -1) {
+            //   index_stop = this.max_range;
+            // }
 
             let url = `/analyze/analyzeTimeDistributionBackgroundQueryGeo`;
             let query = JSON.parse(JSON.stringify(this.queryGeo));
             let query_false = '';
             query['minDate'] = first_date.toISOString().slice(0, 10);
             query['maxDate'] = last_date.toISOString().slice(0, 10);
-            query['includeUK'] = this.includeUKGeo;
+            query['toExclude'] = this.toExcludeGeo;
 
-            if(!query['country']){
-              query_false = 'geo_group'
+            if (query['geo_group']) {
+              if(nameTarget === 'geo_group'){
+                query['geo_group'] = query['geo_group'][i];
+              }
+              else {
+                query['geo_group'] = query['geo_group'][0];
+              }
             }
-            else if(!query['region']){
+            if (query['country']) {
+              if(nameTarget === 'country'){
+                query['country'] = query['country'][i];
+              }
+              else {
+                query['country'] = query['country'][0];
+              }
+            }
+            if (query['region']) {
+              if(nameTarget === 'region'){
+                query['region'] = query['region'][i];
+              }
+              else {
+                query['region'] = query['region'][0];
+              }
+            }
+            if (query['province']) {
+              if(nameTarget === 'province'){
+                query['province'] = query['province'][i];
+              }
+              else {
+                query['province'] = query['province'][0];
+              }
+            }
+
+            if (!query['country']) {
+              query_false = 'geo_group'
+            } else if (!query['region']) {
               let arr_geo = ['geo_group'];
               let i = 0;
               let len = arr_geo.length;
-              while (i<len && i<(this.numLevelAboveBackground-1)){
+              while (i < len && i < (this.numLevelAboveBackground - 1)) {
                 delete query[arr_geo[i]];
                 i = i + 1;
               }
               query_false = 'country'
-            }
-            else if(!query['province']){
+            } else if (!query['province']) {
               let arr_geo = ['country', 'geo_group'];
               let i = 0;
               let len = arr_geo.length;
-              while (i<len && i<(this.numLevelAboveBackground-1)){
+              while (i < len && i < (this.numLevelAboveBackground - 1)) {
                 delete query[arr_geo[i]];
                 i = i + 1;
               }
               query_false = 'region'
-            }
-            else{
+            } else {
               let arr_geo = ['region', 'country', 'geo_group'];
               let i = 0;
               let len = arr_geo.length;
-              while (i<len && i<(this.numLevelAboveBackground-1)){
+              while (i < len && i < (this.numLevelAboveBackground - 1)) {
                 delete query[arr_geo[i]];
                 i = i + 1;
               }
@@ -590,36 +909,107 @@ export default {
             let to_send = {'query': query, 'query_false': query_false};
 
             axios.post(url, to_send)
-              .then((res) => {
-                return res.data;
-              })
-              .then((res) => {
-                this.chosenApplied = true;
-                this.overlay = false;
+                .then((res) => {
+                  return res.data;
+                })
+                .then((res) => {
 
-                let arrOfDatesBackground = [];
-                dayList.forEach(day => {
-                let idx = res.findIndex(item => item['name'] === day);
-                if (idx === -1) {
-                  let single_element = {'name': day, 'value': 0};
-                  arrOfDatesBackground.push(single_element);
-                } else {
-                  let single_element = {'name': day, 'value': res[idx]['value']};
-                  arrOfDatesBackground.push(single_element);
-                }
-              })
+                  let arrOfDatesBackground = [];
+                  dayList.forEach(day => {
+                    let idx = res.findIndex(item => item['name'] === day);
+                    if (idx === -1) {
+                      let single_element = {'name': day, 'value': 0};
+                      arrOfDatesBackground.push(single_element);
+                    } else {
+                      let single_element = {'name': day, 'value': res[idx]['value']};
+                      arrOfDatesBackground.push(single_element);
+                    }
+                  })
 
-                this.timeContentBackground = arrOfDatesBackground;
+                  this.timeContentBackground[i] = arrOfDatesBackground;
 
-                this.slider = [index_start, index_stop];
-                this.last_start_date = this.translateIndexToDate(this.slider[0]);
-                this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-                this.changeMarkerAndRender(this.slider[0], this.slider[0]);
-                this.setStartDateQueryGeo(this.last_start_date);
-                this.setStopDateQueryGeo(this.last_stop_date);
+                  // this.targetIndex = 0;
+                  //
+                  // this.slider = [index_start, index_stop];
+                  // this.last_start_date = this.translateIndexToDate(this.slider[0]);
+                  // this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+                  // this.changeMarkerAndRender(this.slider[0], this.slider[0]);
+                  // this.setStartDateQueryGeo(this.last_start_date);
+                  // this.setStopDateQueryGeo(this.last_stop_date);
 
-              });
-        });
+                  i = i + 1;
+                  if (i < len) {
+                    this.loadDataMultipleTarget(i, len, nameTarget, startDate, indexStart, indexStop);
+                  } else {
+
+                    for(let k = 0; k < this.timeContent.length; k = k + 1){
+                      first_date = new Date(this.timeContent[k][0]['name']);
+                      if(this.startDateMultiMinor < first_date){
+
+                        last_date = new Date();
+                        last_date.setDate(last_date.getDate() + 1)
+
+                        let arrOfDates= [];
+                        dayList = this.getDaysArray(this.startDateMultiMinor, last_date);
+                        dayList.forEach(day => {
+                          let idx = this.timeContent[k].findIndex(item => item['name'] === day);
+                          if (idx === -1) {
+                            let single_element = {'name': day, 'value': 0};
+                            arrOfDates.push(single_element);
+                          } else {
+                            let single_element = {'name': day, 'value': this.timeContent[k][idx]['value']};
+                            arrOfDates.push(single_element);
+                          }
+                        })
+                        this.timeContent[k] = arrOfDates;
+
+                         let arrOfDatesBackground = [];
+                        dayList.forEach(day => {
+                          let idx = this.timeContentBackground[k].findIndex(item => item['name'] === day);
+                          if (idx === -1) {
+                            let single_element = {'name': day, 'value': 0};
+                            arrOfDatesBackground.push(single_element);
+                          } else {
+                            let single_element = {'name': day, 'value': this.timeContentBackground[k][idx]['value']};
+                            arrOfDatesBackground.push(single_element);
+                          }
+                        })
+                        this.timeContentBackground[k] = arrOfDatesBackground;
+                      }
+                    }
+
+                    if(this.max_range < this.timeContent[this.targetIndex].length - 1) {
+                      this.max_range = this.timeContent[this.targetIndex].length - 1;
+                    }
+
+                    let that = this;
+                    let index_start = this.timeContent[this.targetIndex].findIndex(function (item) {
+                      return item.name === that.last_start_date
+                    });
+                    if (index_start === -1) {
+                      index_start = 0;
+                    }
+
+                    let index_stop = this.timeContent[this.targetIndex].findIndex(function (item) {
+                      return item.name === that.last_stop_date
+                    });
+                    if (index_stop === -1) {
+                      index_stop = this.max_range;
+                    }
+
+                    this.slider = [index_start, index_stop];
+                    this.last_start_date = this.translateIndexToDate(this.slider[0]);
+                    this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+                    this.changeMarkerAndRender(this.slider[0], this.slider[0]);
+                    this.setStartDateQueryGeo(this.last_start_date);
+                    this.setStopDateQueryGeo(this.last_stop_date);
+
+                    this.chosenApplied = true;
+                    this.overlay = false;
+                  }
+
+                });
+          });
     },
     setTargetBackgroundName(){
       let query = JSON.parse(JSON.stringify(this.queryGeo));
@@ -629,12 +1019,12 @@ export default {
         this.background_name = 'World';
       }
       else if(!query['country']){
-        this.target_name = query['geo_group'];
+        this.target_name = query['geo_group'][this.targetIndex];
         this.background_name = 'World';
       }
       else if(!query['region']){
         let arr_geo = ['geo_group'];
-        this.target_name = query['country'];
+        this.target_name = query['country'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
           this.background_name = 'World';
@@ -645,7 +1035,7 @@ export default {
       }
       else if(!query['province']){
         let arr_geo = ['country', 'geo_group'];
-        this.target_name = query['region'];
+        this.target_name = query['region'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
           this.background_name = 'World';
@@ -656,7 +1046,7 @@ export default {
       }
       else{
         let arr_geo = ['region', 'country', 'geo_group'];
-        this.target_name = query['province'];
+        this.target_name = query['province'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
           this.background_name = 'World';
@@ -668,6 +1058,26 @@ export default {
     }
   },
   watch: {
+    selectedTarget(){
+      let that = this;
+      let index = this.possibleTarget.findIndex(function (item) {
+        return item === that.selectedTarget;
+      });
+      if (index !== -1) {
+        this.targetIndex = index;
+      }
+      else{
+        this.targetIndex = 0;
+        this.selectedTarget = this.possibleTarget[0];
+      }
+    },
+    targetIndex(){
+      this.renderGraphFilterDate();
+      this.setTargetBackgroundName();
+      let min = this.slider[0];
+      let max = this.slider[1];
+      this.changeMarkerAndRender(min, max);
+    },
     numLevelAboveBackground() {
       this.setTargetBackgroundName();
       this.loadData();
@@ -705,14 +1115,16 @@ export default {
       this.loadData();
     },
     slider(){
-      let min = this.slider[0];
-      let max = this.slider[1];
-      this.changeMarkerAndRender(min, max);
+      if(!this.overlay) {
+        let min = this.slider[0];
+        let max = this.slider[1];
+        this.changeMarkerAndRender(min, max);
 
-      this.last_start_date = this.translateIndexToDate(this.slider[0]);
-      this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-      this.setStartDateQueryGeo(this.last_start_date);
-      this.setStopDateQueryGeo(this.last_stop_date);
+        this.last_start_date = this.translateIndexToDate(this.slider[0]);
+        this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+        this.setStartDateQueryGeo(this.last_start_date);
+        this.setStopDateQueryGeo(this.last_stop_date);
+      }
     },
     viewBackground(){
       if(this.viewBackground=== true) {
@@ -743,7 +1155,7 @@ export default {
       this.graphOnNumSequences = (this.graphOnPercSequences !== true);
       this.renderGraphFilterDate();
     },
-    includeUKGeo(){
+    toExcludeGeo(){
       this.loadData();
     }
   },

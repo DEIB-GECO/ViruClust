@@ -7,6 +7,7 @@ import pandas as pd
 from scipy.stats import binom
 from flask_restplus import Namespace, Resource
 
+from backend.apis.downloadLineagesInfo import dict_lineage_mutation
 
 api = Namespace('analyze', description='analyze')
 
@@ -803,8 +804,6 @@ class FieldList(Resource):
 
         res = {'start': min_pos, 'stop': max_pos}
 
-        annotations = pd.read_csv("apis/protein_annotations.csv",
-                                  delimiter=',')
         return res
 
 
@@ -825,3 +824,105 @@ class FieldList(Resource):
         ann2 = ann[['Description', 'Begin', 'End']]
         ann3 = ann2.to_json(orient="records")
         return json.loads(ann3)
+
+
+@api.route('/getImportantMutation')
+class FieldList(Resource):
+    @api.doc('get_important_mutation')
+    def post(self):
+
+        payload = api.payload
+        name_lineage = payload['lineage']
+
+        result = {'mutation': [], 'additional_mutation': []}
+
+        if name_lineage in dict_lineage_mutation:
+            lineage_json = dict_lineage_mutation[name_lineage]
+            result['mutation'] = lineage_json['mutation']
+            result['additional_mutation'] = lineage_json['additional_mutation']
+        else:
+            all_mutation = []
+            all_additional_mutation = []
+            for lineage in dict_lineage_mutation:
+                row = dict_lineage_mutation[lineage]
+                for mutation in row['mutation']:
+                    if mutation not in all_mutation:
+                        all_mutation.append(mutation)
+                    if mutation in all_additional_mutation:
+                        all_additional_mutation.remove(mutation)
+                for additional_mutation in row['additional_mutation']:
+                    if additional_mutation not in all_additional_mutation and additional_mutation not in all_mutation:
+                        all_additional_mutation.append(additional_mutation)
+            result['mutation'] = all_mutation
+            result['additional_mutation'] = all_additional_mutation
+
+        return result
+
+
+@api.route('/getLineageTree')
+class FieldList(Resource):
+    @api.doc('get_lineage_tree')
+    def post(self):
+
+        payload = api.payload
+        possible_lineages = payload['possibleLineages']
+
+        dict_copy = dict_lineage_mutation
+
+        arr_lineages = []
+        dict_lineages = {}
+        for item in possible_lineages:
+            single_line = item
+            dict_lineages[item['value']] = single_line
+            arr_lineages.append(item['value'])
+
+        dict_copy2 = dict(sorted(dict_copy.items(), key=lambda k_v: k_v[1]['alias']))
+
+        items = []
+        idx = 1
+
+        for lineage in dict_copy2:
+            children = False
+            alias = dict_copy2[lineage]['alias']
+            if lineage in arr_lineages:
+                for itm in items:
+                    possible_parent_alias = str(itm['alias']) + '.'
+                    possible_children_alias = str(alias)
+                    if possible_parent_alias in possible_children_alias:
+                        children = True
+                        recursive_children_lineage(itm, lineage, alias, dict_copy2, dict_lineages)
+                        break
+                    else:
+                        children = False
+                if not children:
+                    name_complete = lineage
+                    if dict_copy2[lineage]['WHO label'] != '':
+                        name_complete = lineage + ' (' + dict_copy2[lineage]['WHO label'] + ') '
+                    single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage,
+                                      'who': dict_copy2[lineage]['WHO label'], 'children': [],
+                                      'count': dict_lineages[lineage]['count']}
+                    items.append(single_lineage)
+                    idx = idx + 1
+
+        return items
+
+
+def recursive_children_lineage(parent, lineage, alias, dict_copy2, dict_lineages):
+    children = False
+    idx = str(parent['id']) + '_' + str(len(parent['children']))
+    for itm in parent['children']:
+        possible_parent_alias = str(itm['alias']) + '.'
+        possible_children_alias = str(alias)
+        if possible_parent_alias in possible_children_alias:
+            children = True
+            recursive_children_lineage(itm, lineage, alias, dict_copy2, dict_lineages)
+            break
+        else:
+            children = False
+    if not children:
+        name_complete = lineage
+        if dict_copy2[lineage]['WHO label'] != '':
+            name_complete = lineage + ' (' + dict_copy2[lineage]['WHO label'] + ') '
+        single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage, 'who': dict_copy2[lineage]['WHO label'],
+                          'children': [], 'count': dict_lineages[lineage]['count']}
+        parent['children'].append(single_lineage)

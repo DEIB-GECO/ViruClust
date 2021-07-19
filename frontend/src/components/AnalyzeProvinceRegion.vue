@@ -40,36 +40,40 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                  <h3>Select "granularity" distance between target and background</h3>
+               <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                      <h3>Select "granularity" distance between target and background</h3>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0">
+                     <v-select
+                        v-model="selectedNumLevelAboveBackground"
+                        :items="possibleNumLevelAboveBackground"
+                        label="Background"
+                        solo
+                        :item-text="getFieldText"
+                        hide-details
+                        :disabled="possibleNumLevelAboveBackground.length === 0">
+                       <template slot="item" slot-scope="data">
+                            <span class="item-value-span">{{data.item.background}}</span>
+                        </template>
+                     </v-select>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center; padding: 0">
-                 <v-select
-                    v-model="selectedNumLevelAboveBackground"
-                    :items="possibleNumLevelAboveBackground"
-                    label="Background"
-                    solo
-                    :item-text="getFieldText"
-                    hide-details
-                    :disabled="possibleNumLevelAboveBackground.length === 0">
-                   <template slot="item" slot-scope="data">
-                        <span class="item-value-span">{{data.item.background}}</span>
-                    </template>
-                 </v-select>
+               <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                      <h3>Select location to exclude from the background</h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0">
+                      <SelectorQueryToExclude
+                      mode="geo"
+                      :field="fieldToExclude">
+                      </SelectorQueryToExclude>
+                    </v-flex>
+                 </v-layout>
                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;"
-                  v-if="this.queryGeo['geo_group'] === 'Europe'">
-                  <!--(this.selectedNumLevelAboveBackground === 1 && this.queryGeo['country'] && !this.queryGeo['region']
-                        || this.selectedNumLevelAboveBackground === 2 && this.queryGeo['region'] && !this.queryGeo['province']
-                        || this.selectedNumLevelAboveBackground === 3 && this.queryGeo['province'])-->
-                    <v-checkbox
-                      v-model="includeUK"
-                      hide-details
-                      input-value="true"
-                      label="Include UK in Background"
-                      style="background-color: white; border: grey solid 1px; padding: 10px">
-                    </v-checkbox>
-                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <TimeSelectorQueryGeo
                     timeName="timeDistributionGeo"
@@ -96,9 +100,27 @@
                     </v-autocomplete>
                   </v-flex>
                </v-flex>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px"
-             v-if="errorNumSeqQueryGeo">
-               <span style="color: red"> number of sequences selected is too low (minimum 10)</span>
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px"
+             v-if="locationToExcludeMulti.length > 0">
+               <v-card width="400px" color="#F0E68C">
+                 <v-card-title class="justify-center" style="padding-bottom: 0; margin-bottom: 0">
+                   <span style="color: red; text-align: center"> LOCATION EXCLUDED: </span>
+                 </v-card-title>
+                 <v-card-text style="text-align: center; padding-top: 0; margin-top: 0;">
+                   <span>
+                      <span style="color: red; text-align: center"> (number of sequences selected is too low in the target or background) </span><br><br>
+                      <span style="color: black; text-align: center" v-for="location in locationToExcludeMulti" v-bind:key="location"> {{location}}<br> </span>
+                   </span>
+                 </v-card-text>
+               </v-card>
+             </v-flex>
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px"
+             v-if="locationToExcludeMulti.length > 0 && errorNumSeqQueryGeo">
+               <span style="color: red"> number of sequences selected is too low in all the targets or backgrounds (minimum 10)</span>
+             </v-flex>
+             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px"
+             v-else-if="errorNumSeqQueryGeo">
+               <span style="color: red"> number of sequences selected is too low in the target or background (minimum 10)</span>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <v-btn
@@ -405,41 +427,8 @@
                       APPLY FILTERS
                   </v-btn>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
-                 <h2>TABLE</h2>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsTableProvReg.length !== 0">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length !== 0">
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <h5>INFO:</h5>
-                        </v-card-title>
-                        <v-card-text>
-                          <span>
-                            <b> - TARGET: </b>
-                            <span>{{rowsTableProvReg[0]['target']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN TARGET: </b>
-                            <span>{{rowsTableProvReg[0]['denominator_target']}}</span>
-                            <br>
-                          </span>
-                          <br>
-                          <span>
-                            <b> - BACKGROUND: </b>
-                            <span>{{rowsTableProvReg[0]['background']}}</span>
-                            <br>
-                          </span>
-                          <span>
-                            <b> - TOT NUM SEQ IN BACKGROUND: </b>
-                            <span>{{rowsTableProvReg[0]['denominator_background']}}</span>
-                            <br>
-                          </span>
-                        </v-card-text>
-                     </v-card>
-                   </v-flex>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
@@ -460,76 +449,166 @@
                    </v-flex>
                  </v-layout>
                </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                  <v-data-table
-                        :headers="headerTableProvReg"
-                        :items="rowsTableProvReg"
-                        class="data-table table_prov_reg"
-                        style="width: 90%; border: grey solid 1px"
-                        multi-sort
-                        :sort-by.sync="sortByTableProvReg"
-                        :sort-desc.sync="sortDescTableProvReg"
-                  >
-                      <template v-slot:item ="{ item }">
-                        <tr>
-                          <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerTableProvReg"
-                              :key="header.value" v-show="header.show">
-                                <span v-if="header.value === 'lineage'">
-                                  <v-dialog width="800" scrollable>
-                                    <template v-slot:activator="{ on }">
-                                      <v-btn
-                                        v-on="on"
-                                        slot="activator"
-                                        color="rgb(122, 139, 157)"
-                                        small
-                                        class="white--text">
-                                        <span>
-                                          Lineages
-                                        </span>
-                                      </v-btn>
-                                    </template>
-                                    <v-card>
-                                      <v-card-title
-                                              style="background-color: #DAA520 ; color: white;"
-                                              class="justify-center"
-                                      >
-                                        <span>
-                                          Lineages
-                                        </span>
-                                      </v-card-title>
-                                      <v-card-text style="margin-top: 20px;">
-                                        <span v-for="lineage in item[header.value]" v-bind:key="lineage">
-                                            <span>{{lineage}}</span>
-                                            <br>
-                                        </span>
-                                      </v-card-text>
-                                    </v-card>
-                                  </v-dialog>
-                                </span>
-                                <span v-if="header.value === 'mutation_position'"> {{item['mutation']}}</span>
-                                <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
-                                <span v-else-if="header.value === 'odd_ratio'">
-                                  <span v-if="item['percentage_background'] === 0"> INF </span>
-                                  <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
-                                </span>
-                                <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
-                                </span>
-                                <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
-                                </span>
-                                <span v-else>{{item[header.value]}}</span>
-                          </td>
-                        </tr>
-                      </template>
-                  </v-data-table>
-              </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <v-btn @click="downloadTable('table_prov_reg')"
-                         class="white--text"
-                         small
-                         color="rgb(122, 139, 157)">
-                    Download Table</v-btn>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px" v-if="rowsTableProvReg.length !== 0">
+                 <ImportantMutation
+                 :importantMutation="importantMutation">
+                 </ImportantMutation>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length > 1">
+                <h2>HEATMAP</h2>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length > 1">
+                <v-autocomplete
+                        v-model="selectedHeatmapMode"
+                        :items="possibleHeatmapMode"
+                        label="Heatmap mode"
+                        solo
+                        hide-details
+                      >
+                </v-autocomplete>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTableProvReg.length > 1">
+                 <HeatmapMultipleAnalysis
+                 nameHeatmap = "multipleAnalysisHeatmap"
+                 :contentHeatmap = "rowsTableProvReg"
+                 :fixedContent = "fixedRowsTableProvReg"
+                 :heatmapMode = "selectedHeatmapMode"
+                 :maxOddsRatio = "totalMaxOddsRatio"
+                 :importantMutation = "importantMutation">
+                 </HeatmapMultipleAnalysis>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
+                 <h2>TABLE</h2><h2 v-if="rowsTableProvReg.length > 1">S</h2>
+               </v-flex>
+              <v-tabs v-model="selectedTabTable"
+              background-color="#800000"
+              dark
+              vertical
+              show-arrows
+              slider-color="orange"
+              slider-size="6">
+
+                <v-tab style="border-bottom: black solid 1px; width: 200px" v-for="(rows ,index) in rowsTableProvReg" v-bind:key="index">
+                  <span>{{ fixedRowsTableProvReg[index][0]['target']}}</span>
+                </v-tab>
+
+                <v-tabs-items v-model="selectedTabTable" style="background: #F0E68C;">
+                  <v-tab-item style="padding: 20px; background-color: #F0E68C" v-for="(rows ,index) in rowsTableProvReg" v-bind:key="index">
+                     <v-layout row wrap justify-space-around style="margin-top: 10px">
+                         <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                           <v-card width="500px" color="#F0E68C" style="border: black solid 1px">
+                              <v-card-title class="justify-center">
+                                <h5>INFO:</h5>
+                              </v-card-title>
+                              <v-card-text>
+                                <span>
+                                  <b> - TARGET: </b>
+                                  <span>{{fixedRowsTableProvReg[index][0]['target']}}</span>
+                                  <br>
+                                </span>
+                                <span>
+                                  <b> - TOT NUM SEQ IN TARGET: </b>
+                                  <span>{{fixedRowsTableProvReg[index][0]['denominator_target']}}</span>
+                                  <br>
+                                </span>
+                                <br>
+                                <span>
+                                  <b> - BACKGROUND: </b>
+                                  <span>{{fixedRowsTableProvReg[index][0]['background']}}</span>
+                                  <br>
+                                </span>
+                                <span>
+                                  <b> - TOT NUM SEQ IN BACKGROUND: </b>
+                                  <span>{{fixedRowsTableProvReg[index][0]['denominator_background']}}</span>
+                                  <br>
+                                </span>
+                              </v-card-text>
+                           </v-card>
+                         </v-flex>
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                            <v-data-table
+                                  :headers="headerTableProvReg"
+                                  :items="rows"
+                                  class="data-table table_prov_reg"
+                                  style="width: 98%; border: grey solid 1px"
+                                  multi-sort
+                                  :sort-by.sync="sortByTableProvReg"
+                                  :sort-desc.sync="sortDescTableProvReg"
+                            >
+                                <template v-slot:item ="{ item }">
+                                  <tr>
+                                    <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center" v-for="header in headerTableProvReg"
+                                        :key="header.value" v-show="header.show">
+                                          <span v-if="header.value === 'lineage'">
+                                            <v-dialog width="800" scrollable>
+                                              <template v-slot:activator="{ on }">
+                                                <v-btn
+                                                  v-on="on"
+                                                  slot="activator"
+                                                  color="rgb(122, 139, 157)"
+                                                  small
+                                                  class="white--text">
+                                                  <span>
+                                                    Lineages
+                                                  </span>
+                                                </v-btn>
+                                              </template>
+                                              <v-card>
+                                                <v-card-title
+                                                        style="background-color: #DAA520 ; color: white;"
+                                                        class="justify-center"
+                                                >
+                                                  <span>
+                                                    Lineages
+                                                  </span>
+                                                </v-card-title>
+                                                <v-card-text style="margin-top: 20px;">
+                                                  <span v-for="lineage in item[header.value]" v-bind:key="lineage">
+                                                      <span>{{lineage}}</span>
+                                                      <br>
+                                                  </span>
+                                                </v-card-text>
+                                              </v-card>
+                                            </v-dialog>
+                                          </span>
+                                          <span style="color: white; font-weight: 900; background-color: red; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                          <span style="color: white; font-weight: 900; background-color: orange; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                          <span v-else-if="header.value === 'mutation_position'">{{item['mutation']}}</span>
+                                          <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                          <span v-else-if="header.value === 'odd_ratio'">
+                                            <span v-if="item['percentage_background'] === 0"> INF </span>
+                                            <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
+                                          </span>
+                                          <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                          </span>
+                                          <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                          </span>
+                                          <span v-else>{{item[header.value]}}</span>
+                                    </td>
+                                  </tr>
+                                </template>
+                            </v-data-table>
+                        </v-flex>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                            <v-btn @click="downloadTable('table_prov_reg', rows)"
+                                   class="white--text"
+                                   small
+                                   color="rgb(122, 139, 157)">
+                              Download Table</v-btn>
+                         </v-flex>
+                      </v-layout>
+                  </v-tab-item>
+                </v-tabs-items>
+              </v-tabs>
+             </v-layout>
+           </v-card-text>
+        </v-card>
+      </v-row>
+      <v-row justify="center" align="center" v-if="tableApplied">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+           <v-card-text>
+             <v-layout row wrap justify-center style="padding: 30px;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
@@ -594,6 +673,54 @@
                     </v-card-text>
                  </v-card>
                </v-flex>
+               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                 <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
+                        <h5>INCLUDE MUTATIONS:</h5>
+                    </v-card-title>
+                    <v-card-text style="padding-top: 0; margin-top: 0">
+                      <v-layout row wrap justify-space-around style="margin-top: 0; padding: 0">
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                          <h5 style="text-align: center;">Include the mutations that appear in a % of the sequences between the 2 values below</h5>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinPercentageMutationPValue"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxPercentageMutationPValue"
+                                            step = "1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxPercentageMutationPValue"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinPercentageMutationPValue"
+                                            max = "100"
+                                            step = "1"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                 </v-card>
+               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <v-btn
                          @click="applyFilterPValueChart()"
@@ -605,38 +732,120 @@
                  </v-btn>
                </v-flex>
                <div v-if="pValueBarChartApplied">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                   <v-card width="400px" color="#F0E68C">
+                      <v-card-title class="justify-center">
+                        <h5>HIGHLIGHTS DOMAIN:</h5>
+                      </v-card-title>
+                      <v-card-text style="margin-top: 30px">
+                        <v-autocomplete
+                          v-model="selectedDomainForPValue"
+                          :items="possibleDomainForPValue"
+                          label="Domain"
+                          solo
+                          hide-details
+                          :item-text="getFieldTextDomain"
+                          multiple
+                        >
+                        </v-autocomplete>
+                      </v-card-text>
+                   </v-card>
+                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-                 <v-card width="400px" color="#F0E68C">
-                    <v-card-title class="justify-center">
-                      <h5>HIGHLIGHTS DOMAIN:</h5>
-                    </v-card-title>
-                    <v-card-text style="margin-top: 30px">
-                      <v-autocomplete
-                        v-model="selectedDomainForPValue"
-                        :items="possibleDomainForPValue"
-                        label="Domain"
-                        solo
-                        :item-text="getFieldTextDomain"
-                        hide-details
-                      >
-                        <template slot="item" slot-scope="data">
-                            <span class="item-value-span">{{getFieldTextDomain(data.item)}}</span>
-                        </template>
-                      </v-autocomplete>
-                    </v-card-text>
-                 </v-card>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
+                      <v-card style="width: 400px;" :color="colorPValueInfoBox[idx%colorPValueInfoBox.length]" v-if="selectedDomainForPValue.length > 0">
+                        <v-card-title class="justify-center">
+                          <h5 style="text-align: center;">{{domain.toUpperCase()}}</h5>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-layout row wrap justify-space-around style="padding-bottom: 30px; margin-top: 20px">
+                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
+                             padding: 0; position: relative;">
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <h5>BEGIN: </h5>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <v-text-field
+                                    :value = "begin_value_domain[idx]"
+                                    solo
+                                    readonly
+                                    hide-details
+                                    class = "centered-input"
+                                  ></v-text-field>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
+                             padding: 0; position: relative;">
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <h5>END: </h5>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                                  <v-text-field
+                                    :value = "end_value_domain[idx]"
+                                    solo
+                                    readonly
+                                    hide-details
+                                    class = "centered-input"
+                                  ></v-text-field>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                   </v-flex>
+                 </v-layout>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                 <PValueBarChart
-                     :namePValue="pValueName"
-                     :pValueContent="pValueContent"
-                     :totalMaxOddsRatio="totalMaxOddsRatio"
-                     :startStopProtein="startStopProtein"
-                     :selectedDomainForPValue="selectedDomainForPValue"
-                     :possibleDomainForPValue="possibleDomainForPValue">
-                 </PValueBarChart>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rows ,index) in rowsTableProvReg" v-bind:key="'pValue' + index">
+                <v-layout row wrap justify-space-around style="margin: 10px; padding: 10px">
+                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center">
+                     <v-card width="500px" color="#F0E68C" style="height: 250px">
+                        <v-card-text style="text-align: center; padding-top: 22%">
+                          <span>
+                            <b> TARGET: </b>
+                            <br>
+                          </span>
+                          <span>
+                            <span>{{fixedRowsTableProvReg[index][0]['target']}}</span>
+                            <br>
+                          </span>
+                          <span> NUM SEQ:
+                            <span>{{fixedRowsTableProvReg[index][0]['denominator_target']}}</span>
+                            <br>
+                          </span>
+                          <br>
+                          <span>
+                            <b> BACKGROUND: </b>
+                            <br>
+                          </span>
+                          <span>
+                            <span>{{fixedRowsTableProvReg[index][0]['background']}}</span>
+                            <br>
+                          </span>
+                          <span> NUM SEQ:
+                            <span>{{fixedRowsTableProvReg[index][0]['denominator_background']}}</span>
+                            <br>
+                          </span>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                  <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
+                     <PValueBarChart
+                         :namePValue="pValueName[index]"
+                         :pValueContent="pValueContent[index]"
+                         :totalMaxOddsRatio="totalMaxOddsRatio"
+                         :startStopProtein="startStopProtein"
+                         :selectedDomainForPValue="selectedDomainForPValue"
+                         :possibleDomainForPValue="possibleDomainForPValue">
+                     </PValueBarChart>
+                   </v-flex>
+                </v-layout>
                </v-flex>
                </div>
              </v-layout>
@@ -696,10 +905,15 @@ import axios from "axios";
 import PValueBarChart from "./PValueBarChart";
 import SelectorsQueryGeo from "./SelectorsQueryGeo";
 import TimeSelectorQueryGeo from "./TimeSelectorQueryGeo";
+import SelectorQueryToExclude from "./SelectorQueryToExclude";
+import HeatmapMultipleAnalysis from "./HeatmapMultipleAnalysis";
+import ImportantMutation from "./ImportantMutation";
 
 export default {
   name: "AnalyzeProvinceRegion",
-  components: {TimeSelectorQueryGeo, SelectorsQueryGeo, PValueBarChart},
+  components: {
+    ImportantMutation,
+    HeatmapMultipleAnalysis, SelectorQueryToExclude, TimeSelectorQueryGeo, SelectorsQueryGeo, PValueBarChart},
   data() {
     return {
       overlay: false,
@@ -719,7 +933,7 @@ export default {
       sortDescTableProvReg: [true],
       geoSelectedName: '',
       geoSelectedContent: [],
-      pValueName: 'p_value_province_region',
+      pValueName: [],
       pValueContent: [],
       tableApplied: false,
       pValueBarChartApplied: false,
@@ -756,15 +970,28 @@ export default {
       dialogAccessionIds: false,
 
       possibleNumLevelAboveBackground: [],
-      includeUK: true,
       startStopProtein: {},
-      selectedDomainForPValue: null,
+      selectedDomainForPValue: [],
       possibleDomainForPValue: [],
+
+      selectedHeatmapMode: '% Target',
+      possibleHeatmapMode: ['% Target', '% Target - % Background', 'Odds ratio'],
+
+      selectedMinPercentageMutationPValue: 0,
+      selectedMaxPercentageMutationPValue: 80,
+      begin_value_domain: [],
+      end_value_domain: [],
+
+      fieldToExclude: null,
+
+      selectedTabTable: 0,
+
+      importantMutation: {},
     }
   },
   computed: {
     ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'errorNumSeqQueryGeo',
-      'numLevelAboveBackground', 'includeUKGeo']),
+      'numLevelAboveBackground', 'toExcludeGeo', 'colorPValueInfoBox', 'locationToExcludeMulti']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -784,13 +1011,57 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setNumLevelAboveBackground', 'setIncludeUKGeo']),
+    ...mapMutations(['setNumLevelAboveBackground', 'setToExcludeGeo']),
     ...mapActions(['setQueryGeo']),
+    computeFieldToExclude() {
+      let level = this.selectedNumLevelAboveBackground;
+
+      if (this.queryGeo['province']) {
+        if(level === 1){
+          this.fieldToExclude = 'province';
+        }
+        else if(level === 2){
+          this.fieldToExclude = 'region';
+        }
+        else if(level === 3){
+          this.fieldToExclude = 'country';
+        }
+        else if(level === 4){
+          this.fieldToExclude = 'geo_group';
+        }
+      } else if (this.queryGeo['region']) {
+        if(level === 1){
+          this.fieldToExclude = 'region';
+        }
+        else if(level === 2){
+          this.fieldToExclude = 'country';
+        }
+        else if(level === 3){
+          this.fieldToExclude = 'geo_group';
+        }
+      } else if (this.queryGeo['country']) {
+        if(level === 1){
+          this.fieldToExclude = 'country';
+        }
+        else if(level === 2){
+          this.fieldToExclude = 'geo_group';
+        }
+      } else if (this.queryGeo['geo_group']) {
+        if(level === 1){
+          this.fieldToExclude = 'geo_group';
+        }
+      }
+      else {
+        this.fieldToExclude = null;
+      }
+    },
     filter(){
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
-      if(this.selectedProteinForTable !== null) {
-        let that = this;
-        result = result.filter(function (i){
+      let arr_row_an_time = [];
+      for(let i = 0; i < this.rowsTableProvReg.length; i = i + 1) {
+        let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg[i]));
+        if (this.selectedProteinForTable !== null) {
+          let that = this;
+          result = result.filter(function (i) {
             let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
             let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
             let p_value = JSON.parse(JSON.stringify(i['p_value']));
@@ -810,45 +1081,46 @@ export default {
                 && target_numerator <= that.selectedMaxTargetNumerator
                 &&
                 ((odds_ratio >= that.selectedMinOddsRatio
-                  && odds_ratio <= that.selectedMaxOddsRatio) ||
-                     (that.isInfinite
-                  && odds_ratio > that.totalMaxOddsRatio)
+                        && odds_ratio <= that.selectedMaxOddsRatio) ||
+                    (that.isInfinite
+                        && odds_ratio > that.totalMaxOddsRatio)
                 )
                 && product === that.selectedProteinForTable);
           })
+        } else {
+          var that = this;
+          result = result.filter(function (i) {
+            let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+            let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+            let p_value = JSON.parse(JSON.stringify(i['p_value']));
+            let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+            let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+            let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+            return (background_frequency >= that.selectedMinBackgroundFrequency
+                && background_frequency <= that.selectedMaxBackgroundFrequency
+                && target_frequency >= that.selectedMinTargetFrequency
+                && target_frequency <= that.selectedMaxTargetFrequency
+                && p_value >= that.selectedMinPValue
+                && p_value <= that.selectedMaxPValue
+                && background_numerator >= that.selectedMinBackgroundNumerator
+                && background_numerator <= that.selectedMaxBackgroundNumerator
+                && target_numerator >= that.selectedMinTargetNumerator
+                && target_numerator <= that.selectedMaxTargetNumerator
+                &&
+                ((odds_ratio >= that.selectedMinOddsRatio
+                        && odds_ratio <= that.selectedMaxOddsRatio) ||
+                    (that.isInfinite
+                        && odds_ratio > that.totalMaxOddsRatio)
+                ));
+          })
+        }
+        arr_row_an_time[i] = result;
       }
-      else{
-        var that = this;
-        result = result.filter(function (i){
-          let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
-          let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
-          let p_value = JSON.parse(JSON.stringify(i['p_value']));
-          let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
-          let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
-          let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
-          return (background_frequency >= that.selectedMinBackgroundFrequency
-              && background_frequency <= that.selectedMaxBackgroundFrequency
-              && target_frequency >= that.selectedMinTargetFrequency
-              && target_frequency <= that.selectedMaxTargetFrequency
-              && p_value >= that.selectedMinPValue
-              && p_value <= that.selectedMaxPValue
-              && background_numerator >= that.selectedMinBackgroundNumerator
-              && background_numerator <= that.selectedMaxBackgroundNumerator
-              && target_numerator >= that.selectedMinTargetNumerator
-              && target_numerator <= that.selectedMaxTargetNumerator
-              &&
-                 ((odds_ratio >= that.selectedMinOddsRatio
-              && odds_ratio <= that.selectedMaxOddsRatio) ||
-                 (that.isInfinite
-              && odds_ratio > that.totalMaxOddsRatio)
-              ));
-        })
-      }
-      this.rowsTableProvReg = result;
+      this.rowsTableProvReg = arr_row_an_time;
     },
-    downloadTable(table){
+    downloadTable(table, rows){
       let text = "";
-      let result_sorted = this.sortResults(table);
+      let result_sorted = this.sortResults(table, rows);
       if(table === 'table_prov_reg'){
         text = this.json2csv(result_sorted, this.headerTableProvReg);
       }
@@ -888,7 +1160,7 @@ export default {
         csv.unshift(fields.join(','));
         return csv.join('\r\n')
     },
-    sortResults(table){
+    sortResults(table, rows){
       let len;
       let sortBy;
       let sortDesc;
@@ -897,7 +1169,7 @@ export default {
         len = this.sortByTableProvReg.length;
         sortBy = this.sortByTableProvReg;
         sortDesc = this.sortDescTableProvReg;
-        results = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+        results = JSON.parse(JSON.stringify(rows));
       }
       if(len > 0) {
          return results.sort(function(a1, b1) {
@@ -919,164 +1191,411 @@ export default {
     applyFilterOnTableProvReg(){
       this.filter();
 
-      let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-      this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
+      // let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
+      // this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
     },
     applyTableProvReg(){
-      let url = `/analyze/analyzeMutationProvinceRegion`;
-      this.overlay = true;
-      // let type_geo1;
-      // let type_geo2;
-      // let geo1;
-      // let geo2;
-      // this.overlay = true;
-      // if(this.selectedProvince_forProvReg !== null){
-      //   type_geo1 = 'region';
-      //   type_geo2 = 'province';
-      //   geo1 = this.selectedRegion_forProvReg;
-      //   geo2 = this.selectedProvince_forProvReg;
-      // }
-      // else{
-      //   type_geo1 = 'country';
-      //   type_geo2 = 'region';
-      //   geo1 = this.selectedCountry_forProvReg;
-      //   geo2 = this.selectedRegion_forProvReg;
-      // }
-      let array_protein = [];
-      if(this.selectedProtein === null){
-        array_protein = [];
+      this.possibleProteinForPValue = [];
+      this.headerTable = [];
+      this.rowsTableProvReg = [];
+      this.fixedRowsTableProvReg = [];
+
+      this.importantMutation = {};
+      let queryGeo = JSON.parse(JSON.stringify(this.queryGeo));
+      let url_important_mutation = `/analyze/getImportantMutation`;
+      let lineage_to_send = null;
+      if(queryGeo['lineage']){
+        lineage_to_send = queryGeo['lineage'];
+      }
+      let to_send_important_mutation = {'lineage': lineage_to_send}
+
+      axios.post(url_important_mutation, to_send_important_mutation)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+          this.importantMutation = res;
+        })
+
+      let query = JSON.parse(JSON.stringify(this.queryGeo));
+      let target;
+      let nameTarget;
+      if(!query['country']){
+        target = query['geo_group'];
+        nameTarget = 'geo_group';
+      }
+      else if(!query['region']){
+        target = query['country'];
+        nameTarget = 'country';
+      }
+      else if(!query['province']){
+        target = query['region'];
+        nameTarget = 'region';
       }
       else{
+        target = query['province'];
+        nameTarget = 'province';
+      }
+
+      if(!(target.length > 1)) {
+
+        let url = `/analyze/analyzeMutationProvinceRegion`;
+        this.overlay = true;
+
+        let array_protein = [];
+        if (this.selectedProtein === null) {
+          array_protein = [];
+        } else {
+          array_protein = this.selectedProtein;
+        }
+
+        if (this.startDateQueryGeo !== null) {
+          query['minDate'] = this.startDateQueryGeo;
+        }
+        if (this.stopDateQueryGeo !== null) {
+          query['maxDate'] = this.stopDateQueryGeo;
+        }
+
+        if (query['geo_group']) {
+          query['geo_group'] = query['geo_group'][0];
+        }
+        if (query['country']) {
+          query['country'] = query['country'][0];
+        }
+        if (query['region']) {
+          query['region'] = query['region'][0];
+        }
+        if (query['province']) {
+          query['province'] = query['province'][0];
+        }
+
+        let query_false;
+        if (!query['country']) {
+          query_false = 'geo_group'
+        } else if (!query['region']) {
+          let arr_geo = ['geo_group'];
+          let i = 0;
+          let len = arr_geo.length;
+          while (i < len && i < (this.numLevelAboveBackground - 1)) {
+            delete query[arr_geo[i]];
+            i = i + 1;
+          }
+          query_false = 'country'
+        } else if (!query['province']) {
+          let arr_geo = ['country', 'geo_group'];
+          let i = 0;
+          let len = arr_geo.length;
+          while (i < len && i < (this.numLevelAboveBackground - 1)) {
+            delete query[arr_geo[i]];
+            i = i + 1;
+          }
+          query_false = 'region'
+        } else {
+          let arr_geo = ['region', 'country', 'geo_group'];
+          let i = 0;
+          let len = arr_geo.length;
+          while (i < len && i < (this.numLevelAboveBackground - 1)) {
+            delete query[arr_geo[i]];
+            i = i + 1;
+          }
+          query_false = 'province'
+        }
+
+        let to_send = {
+          'query': query,
+          'protein': array_protein,
+          'query_false': query_false,
+          'toExcludeBackground': this.toExcludeGeo
+        };
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              let headers = [
+                {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
+                {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
+                {
+                  'text': '%_background',
+                  'value': 'percentage_background',
+                  'show': true,
+                  'align': 'center',
+                  'width': '23vh'
+                },
+                //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+                //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
+              ];
+              this.headerTableProvReg = headers;
+              this.rowsTableProvReg[0] = res;
+              this.fixedRowsTableProvReg[0] = res;
+
+              let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg[0]));
+              this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+              this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
+
+              let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg[0]));
+              this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_target'];
+              }))
+              this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
+              this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_background'];
+              }))
+              this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
+              let rowTable2 = JSON.parse(JSON.stringify(this.rowsTableProvReg[0]));
+              rowTable2 = rowTable2.filter(function (i) {
+                    let perc = i['percentage_background'];
+                    return perc !== 0;
+                  }
+              );
+              let totalMaxOdds = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
+                return o['odd_ratio'];
+              })));
+              if (totalMaxOdds > this.totalMaxOddsRatio) {
+                this.totalMaxOddsRatio = totalMaxOdds;
+                this.selectedMaxOddsRatio = totalMaxOdds;
+              }
+
+              this.tableApplied = true;
+              this.overlay = false;
+            });
+      }
+      else{
+        let len = target.length;
+        let i = 0;
+        this.headerTableProvReg = [
+          {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
+          {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
+        ];
+        if(i < len) {
+          this.applyAnalysisMultipleTarget(i, len, nameTarget);
+        }
+      }
+    },
+    applyAnalysisMultipleTarget(i, len, nameTarget){
+      let query = JSON.parse(JSON.stringify(this.queryGeo));
+      let url = `/analyze/analyzeMutationProvinceRegion`;
+      this.overlay = true;
+
+      let array_protein = [];
+      if (this.selectedProtein === null) {
+        array_protein = [];
+      } else {
         array_protein = this.selectedProtein;
       }
 
-      let query = JSON.parse(JSON.stringify(this.queryGeo));
-      if(this.startDateQueryGeo !== null){
+      if (this.startDateQueryGeo !== null) {
         query['minDate'] = this.startDateQueryGeo;
       }
-      if(this.stopDateQueryGeo !== null){
+      if (this.stopDateQueryGeo !== null) {
         query['maxDate'] = this.stopDateQueryGeo;
       }
 
-      let query_false;
-      if(!query['country']){
-        query_false = 'geo_group'
+      let skipLocation = false;
+      if (query['geo_group']) {
+        if(nameTarget === 'geo_group'){
+          query['geo_group'] = query['geo_group'][i];
+          if(this.locationToExcludeMulti.includes(query['geo_group'])){
+            skipLocation = true;
+          }
+        }
+        else {
+          query['geo_group'] = query['geo_group'][0];
+        }
       }
-      else if(!query['region']){
+      if (query['country']) {
+        if(nameTarget === 'country'){
+          query['country'] = query['country'][i];
+          if(this.locationToExcludeMulti.includes(query['country'])){
+            skipLocation = true;
+          }
+        }
+        else {
+          query['country'] = query['country'][0];
+        }
+      }
+      if (query['region']) {
+        if(nameTarget === 'region'){
+          query['region'] = query['region'][i];
+          if(this.locationToExcludeMulti.includes(query['region'])){
+            skipLocation = true;
+          }
+        }
+        else {
+          query['region'] = query['region'][0];
+        }
+      }
+      if (query['province']) {
+        if(nameTarget === 'province'){
+          query['province'] = query['province'][i];
+          if(this.locationToExcludeMulti.includes(query['province'])){
+            skipLocation = true;
+          }
+        }
+        else {
+          query['province'] = query['province'][0];
+        }
+      }
+
+      let query_false;
+      if (!query['country']) {
+        query_false = 'geo_group'
+      } else if (!query['region']) {
         let arr_geo = ['geo_group'];
         let i = 0;
         let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
+        while (i < len && i < (this.numLevelAboveBackground - 1)) {
           delete query[arr_geo[i]];
           i = i + 1;
         }
         query_false = 'country'
-      }
-      else if(!query['province']){
+      } else if (!query['province']) {
         let arr_geo = ['country', 'geo_group'];
         let i = 0;
         let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
+        while (i < len && i < (this.numLevelAboveBackground - 1)) {
           delete query[arr_geo[i]];
           i = i + 1;
         }
         query_false = 'region'
-      }
-      else{
+      } else {
         let arr_geo = ['region', 'country', 'geo_group'];
         let i = 0;
         let len = arr_geo.length;
-        while (i<len && i<(this.numLevelAboveBackground-1)){
+        while (i < len && i < (this.numLevelAboveBackground - 1)) {
           delete query[arr_geo[i]];
           i = i + 1;
         }
         query_false = 'province'
       }
 
-      let to_send = {'query': query,
-                     'protein': array_protein,
-                    'query_false': query_false,
-                    'includeUKBackground': this.includeUKGeo};
-      axios.post(url, to_send)
-        .then((res) => {
-          return res.data;
-        })
-        .then((res) => {
-          let headers = [
-              {'text': 'mutation', 'value': 'mutation_position', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'target', 'value': 'target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'background', 'value': 'background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'p_value', 'value': 'p_value', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': 'odds_ratio', 'value': 'odd_ratio', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_target', 'value': 'percentage_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              {'text': '%_background', 'value': 'percentage_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_background', 'value': 'numerator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_background', 'value': 'denominator_background', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'numerator_target', 'value': 'numerator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-              //{'text': 'denominator_target', 'value': 'denominator_target', 'show': true, 'align': 'center', 'width': '23vh'},
-          ];
-          this.headerTableProvReg = headers;
-          this.rowsTableProvReg = res;
-          this.fixedRowsTableProvReg = res;
+      let to_send = {
+        'query': query,
+        'protein': array_protein,
+        'query_false': query_false,
+        'toExcludeBackground': this.toExcludeGeo
+      };
+      if(!skipLocation) {
+        axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              this.rowsTableProvReg.push(res);
+              this.fixedRowsTableProvReg.push(res);
 
-          let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-          this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
-          this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
+              let copy = JSON.parse(JSON.stringify(this.rowsTableProvReg[this.rowsTableProvReg.length - 1]));
+              this.possibleProteinForPValue = [...new Set(copy.map(elem => elem.product))];
+              this.possibleProteinForTable = [...new Set(copy.map(elem => elem.product))];
 
-          let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-          this.totalMaxTargetNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_target']; }))
-          this.selectedMaxTargetNumerator = this.totalMaxTargetNumerator;
-          this.totalMaxBackgroundNumerator = Math.max.apply(Math, rowTable.map(function(o) { return o['denominator_background']; }))
-          this.selectedMaxBackgroundNumerator = this.totalMaxBackgroundNumerator;
-          let rowTable2 = JSON.parse(JSON.stringify(this.rowsTableProvReg));
-          rowTable2 = rowTable2.filter(function (i){
-              let perc = i['percentage_background'];
-              return perc !== 0;
-            }
-          );
-          this.totalMaxOddsRatio = Math.ceil(Math.max.apply(Math, rowTable2.map(function(o) { return o['odd_ratio']; })));
-          this.selectedMaxOddsRatio = Math.ceil(this.totalMaxOddsRatio);
+              let rowTable = JSON.parse(JSON.stringify(this.rowsTableProvReg[this.rowsTableProvReg.length - 1]));
 
+              let totalMaxTargetNum = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_target'];
+              }))
+              if (totalMaxTargetNum > this.totalMaxTargetNumerator) {
+                this.totalMaxTargetNumerator = totalMaxTargetNum;
+                this.selectedMaxTargetNumerator = totalMaxTargetNum;
+              }
+
+              let totalMaxBackNum = Math.max.apply(Math, rowTable.map(function (o) {
+                return o['denominator_background'];
+              }))
+              if (totalMaxBackNum > this.totalMaxBackgroundNumerator) {
+                this.totalMaxBackgroundNumerator = totalMaxBackNum;
+                this.selectedMaxBackgroundNumerator = totalMaxBackNum;
+              }
+
+              let rowTable2 = JSON.parse(JSON.stringify(this.rowsTableProvReg[this.rowsTableProvReg.length - 1]));
+              rowTable2 = rowTable2.filter(function (i) {
+                    let perc = i['percentage_background'];
+                    return perc !== 0;
+                  }
+              );
+
+              let totalMaxOdds = Math.ceil(Math.max.apply(Math, rowTable2.map(function (o) {
+                return o['odd_ratio'];
+              })));
+              if (totalMaxOdds > this.totalMaxOddsRatio) {
+                this.totalMaxOddsRatio = totalMaxOdds;
+                this.selectedMaxOddsRatio = totalMaxOdds;
+              }
+
+              i = i + 1;
+              if (i < len) {
+                this.applyAnalysisMultipleTarget(i, len, nameTarget);
+              } else {
+                this.tableApplied = true;
+                this.overlay = false;
+              }
+            });
+      }
+      else{
+        i = i + 1;
+        if (i < len) {
+          this.applyAnalysisMultipleTarget(i, len, nameTarget);
+        } else {
           this.tableApplied = true;
           this.overlay = false;
-        });
+        }
+      }
+
     },
     applyFilterPValueChart(){
-      this.selectedDomainForPValue = null;
-      let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg));
-      var that = this;
-      result = result.filter(function (i){
+      this.selectedDomainForPValue = [];
+      this.pValueContent = [];
+      this.pValueName = [];
+
+      for(let i = 0; i < this.rowsTableProvReg.length; i = i + 1) {
+        let result = JSON.parse(JSON.stringify(this.fixedRowsTableProvReg[i]));
+        var that = this;
+        result = result.filter(function (i) {
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
+          let percentage = JSON.parse(JSON.stringify(i['percentage_target']));
           return (p_value >= that.selectedMinPValueBarChart
               && p_value <= that.selectedMaxPValueBarChart
+              && percentage <= that.selectedMaxPercentageMutationPValue
+              && percentage >= that.selectedMinPercentageMutationPValue
               && that.selectedProteinForPValue === product);
         })
 
-      let arrayToBarChart = [];
+        let arrayToBarChart = [];
 
-      result.forEach(elem => {
-        let mutation = elem['mutation'];
-        let mutation_position = elem['mutation_position'];
-        let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
-        if (idx === -1) {
-          let single_element = {'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position
-          , 'p_value': elem['p_value'], 'odds_ratio': elem['odd_ratio']};
-          arrayToBarChart.push(single_element);
-        } else {
-          arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
-        }
-      })
+        result.forEach(elem => {
+          let mutation = elem['mutation'];
+          let mutation_position = elem['mutation_position'];
+          let idx = arrayToBarChart.findIndex(item => item['name'] === mutation);
+          if (idx === -1) {
+            let single_element = {
+              'name': mutation, 'value': elem['numerator_target'], 'position': mutation_position
+              , 'p_value': elem['p_value'], 'odds_ratio': elem['odd_ratio']
+            };
+            arrayToBarChart.push(single_element);
+          } else {
+            arrayToBarChart[idx]['value'] = arrayToBarChart[idx]['value'] + elem['numerator_target'];
+          }
+        })
 
-      arrayToBarChart = arrayToBarChart.sort(function(a, b){
-        let mutation_position1 = a['position'];
-        let mutation_position2 = b['position'];
-         return mutation_position1 > mutation_position2 ? 1 : -1;
-      });
+        arrayToBarChart = arrayToBarChart.sort(function (a, b) {
+          let mutation_position1 = a['position'];
+          let mutation_position2 = b['position'];
+          return mutation_position1 > mutation_position2 ? 1 : -1;
+        });
 
-      this.pValueContent = arrayToBarChart;
-      this.pValueName = 'p_value_province_region';
+        this.pValueContent[i] = arrayToBarChart;
+        this.pValueName[i] = 'p_value_province_region' + i;
+      }
 
       let url = `/analyze/getProteinPosition`;
 
@@ -1118,7 +1637,20 @@ export default {
         query['minDateBackground'] = this.startDateQueryGeo;
         query['maxDateBackground'] = this.stopDateQueryGeo;
         query['product'] = item['product'];
-        query['includeUK'] = true;
+        query['toExclude'] = [];
+
+        if(!query['country']){
+          query['geo_group']  = item['target'];
+        }
+        else if(!query['region']){
+          query['country']  = item['target'];
+        }
+        else if(!query['province']){
+          query['region']  = item['target'];
+        }
+        else{
+          query['province']  = item['target'];
+        }
       }
       else if(type === 'background'){
         query['lineage'] = item['lineage'][0];
@@ -1128,7 +1660,7 @@ export default {
         query['minDateBackground'] = this.startDateQueryGeo;
         query['maxDateBackground'] = this.stopDateQueryGeo;
         query['product'] = item['product'];
-        query['includeUK'] = this.includeUKGeo;
+        query['toExclude'] = this.toExcludeGeo;
 
         if(!query['country']){
           query_false = 'geo_group'
@@ -1226,47 +1758,78 @@ export default {
     },
   },
   watch: {
-    includeUK(){
-      this.setIncludeUKGeo(this.includeUK);
+    selectedNumLevelAboveBackground(){
+      this.computeFieldToExclude();
     },
-    IncludeUKGeo(){
+    selectedDomainForPValue(){
+      this.begin_value_domain = [];
+      this.end_value_domain = [];
+
+      for(let i = 0; i < this.selectedDomainForPValue.length; i = i + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValue.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValue[i];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValue[index]['Begin'];
+            max = this.possibleDomainForPValue[index]['End'];
+          }
+          this.begin_value_domain.push(min);
+          this.end_value_domain.push(max);
+      }
+    },
+    selectedMinPercentageMutationPValue(){
+      this.pValueBarChartApplied = false;
+    },
+    selectedMaxPercentageMutationPValue(){
+      this.pValueBarChartApplied = false;
+    },
+    toExcludeGeo(){
        this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
+       this.selectedProteinForTable = null
        this.tableApplied = false;
     },
     numLevelAboveBackground(){
       this.pValueBarChartApplied = false;
      this.selectedProteinForPValue = null;
-     this.selectedProteinTable = null;
+     this.selectedProteinForTable = null
      this.tableApplied = false;
     },
     startDateQueryGeo(){
       this.pValueBarChartApplied = false;
      this.selectedProteinForPValue = null;
-     this.selectedProteinTable = null;
+     this.selectedProteinForTable = null
      this.tableApplied = false;
     },
     stopDateQueryGeo(){
       this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
+       this.selectedProteinForTable = null
        this.tableApplied = false;
     },
     'queryGeo.geo_group': function (){
         this.modifyPossibleBackground();
-        this.setQueryGeo({field: 'country', list: null});
-        this.setQueryGeo({field: 'region', list: null});
-        this.setQueryGeo({field: 'province', list: null});
+        if(!this.queryGeo['geo_group'] || this.queryGeo['geo_group'].length === 0 || this.queryGeo['geo_group'].length > 1) {
+          this.setQueryGeo({field: 'country', list: []});
+          this.setQueryGeo({field: 'region', list: []});
+          this.setQueryGeo({field: 'province', list: []});
+        }
     },
     'queryGeo.country': function (){
         this.modifyPossibleBackground();
-        this.setQueryGeo({field: 'region', list: null});
-        this.setQueryGeo({field: 'province', list: null});
+        if(!this.queryGeo['country'] || this.queryGeo['country'].length === 0 || this.queryGeo['country'].length > 1) {
+          this.setQueryGeo({field: 'region', list: []});
+          this.setQueryGeo({field: 'province', list: []});
+        }
     },
     'queryGeo.region': function (){
         this.modifyPossibleBackground();
-        this.setQueryGeo({field: 'province', list: null});
+        if(!this.queryGeo['region'] || this.queryGeo['region'].length === 0 || this.queryGeo['region'].length > 1) {
+          this.setQueryGeo({field: 'province', list: []});
+        }
     },
     'queryGeo.province': function (){
         this.modifyPossibleBackground();
@@ -1274,14 +1837,15 @@ export default {
     queryGeo(){
        this.pValueBarChartApplied = false;
        this.selectedProteinForPValue = null;
-       this.selectedProteinTable = null;
+       this.selectedProteinForTable = null
        this.tableApplied = false;
+       this.computeFieldToExclude();
     },
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
     selectedContinent_forProvReg(){
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -1314,7 +1878,7 @@ export default {
       }
     },
     selectedCountry_forProvReg(){
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -1371,7 +1935,7 @@ export default {
       }
     },
     selectedRegion_forProvReg(){
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -1426,7 +1990,7 @@ export default {
       }
     },
     selectedProvince_forProvReg(){
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -1460,7 +2024,7 @@ export default {
       this.possibleContinent_forProvReg = array_specific_geo;
     },
     selectedProtein(){
-      this.selectedProteinTable = null;
+      this.selectedProteinForTable = null;
       this.pValueBarChartApplied = false;
       this.selectedProteinForPValue = null;
       this.tableApplied = false;
@@ -1587,6 +2151,7 @@ export default {
     }
   },
   mounted() {
+    this.computeFieldToExclude();
     let array_specific_geo = [];
       this.all_geo.forEach(elem => {
         if(elem['geo_group'] !== null) {

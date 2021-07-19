@@ -13,7 +13,7 @@
                   :isLoading = "isLoading">
               </SelectorsPieChart>
             </v-flex>
-           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="field !== 'lineage'">
             <v-autocomplete
               v-model="selected"
               :items="possibleValues"
@@ -31,20 +31,17 @@
               </template>
             </v-autocomplete>
            </v-flex>
+
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="field === 'lineage'">
+              <LineageTreeSelector
+                :isLoading = "isLoading"
+                :possibleValues = "possibleValues"
+                :type = "type" style="width: 100%">
+              </LineageTreeSelector>
+           </v-flex>
+
          </v-layout>
        </v-flex>
-    </v-layout>
-    <v-layout>
-      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;"
-        v-if="this.selected === 'Europe'">
-          <v-checkbox
-            v-model="includeUK"
-            hide-details
-            input-value="true"
-            label="Include UK"
-            style="background-color: white; border: grey solid 1px; padding: 10px">
-          </v-checkbox>
-      </v-flex>
     </v-layout>
   </div>
 </template>
@@ -53,10 +50,11 @@
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import axios from "axios";
 import SelectorsPieChart from "./SelectorsPieChart";
+import LineageTreeSelector from "./LineageTreeSelector";
 
 export default {
   name: "SelectorsQueryFree",
-  components: {SelectorsPieChart},
+  components: {LineageTreeSelector, SelectorsPieChart},
   props: {
     field: {required: true,},
     type: {required: true,},
@@ -66,11 +64,10 @@ export default {
       possibleValues: [],
       isLoading: false,
       selectorDisabled: false,
-      includeUK: true,
     }
   },
   computed: {
-    ...mapState(['queryFreeTarget', 'queryFreeBackground', 'includeUKFreeTarget', 'includeUKFreeBackground']),
+    ...mapState(['queryFreeTarget', 'queryFreeBackground', 'toExcludeFreeTarget', 'toExcludeFreeBackground']),
     ...mapGetters({}),
     selected: {
       get() {
@@ -95,7 +92,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['setIncludeUKFreeTarget', 'setIncludeUKFreeBackground']),
+    ...mapMutations([]),
     ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
     getFieldText(item){
       let name = '';
@@ -130,10 +127,10 @@ export default {
         }
 
         if(this.type === 'target') {
-          query['includeUK'] = this.includeUKFreeTarget;
+          query['toExclude'] = [];
         }
         else if(this.type === 'background') {
-          query['includeUK'] = this.includeUKFreeBackground;
+          query['toExclude'] = [];
         }
         to_send['field'] = this.field;
         to_send['query'] = query;
@@ -166,24 +163,6 @@ export default {
       if(this.type === 'background') {
         this.loadData();
       }
-    },
-    includeUK(){
-      if(this.type === 'background') {
-        this.setIncludeUKFreeBackground(this.includeUK);
-      }
-      else if(this.type === 'target') {
-        this.setIncludeUKFreeTarget(this.includeUK);
-      }
-    },
-    includeUKFreeTarget(){
-      if(this.type === 'target') {
-         this.loadData();
-       }
-    },
-    includeUKFreeBackground(){
-       if(this.type === 'background') {
-         this.loadData();
-       }
     },
   }
 }

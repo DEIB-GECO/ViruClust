@@ -9,7 +9,17 @@
              background-color: white; margin-bottom: 30px; border: black solid 1px">
             </div>
 
-            <div v-if="isLoading" style="position: absolute; top: 100px; width: 200px; height: 200px">
+            <div v-if="chartBlocked" style="position: absolute; top: 100px; width: 200px; height: 200px">
+                <v-layout wrap justify-center style=" height: 100%">
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
+                    <h1 style="position: absolute; top: 80%; text-align: center">MULTI TARGET</h1>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
+                    <h3 style="position: absolute; top: 20%; text-align: center">A multiple target has already been selected</h3>
+                  </v-flex>
+                </v-layout>
+              </div>
+            <div v-else-if="isLoading" style="position: absolute; top: 100px; width: 200px; height: 200px">
                 <v-img
                     src="../images/loading.gif"
                     style="z-index: 1;"
@@ -50,9 +60,11 @@ export default {
     nameQuery: {required: true,},
     fieldContent: {required: true,},
     isLoading: {required: true,},
+    pieChartBlocked: {required: false},
   },
   data(){
     return {
+      chartBlocked: false,
       pieChart: {
         title: {
         },
@@ -85,15 +97,27 @@ export default {
     ...mapMutations([]),
     ...mapActions([]),
     renderGraph(met){
-      this.pieChart.series[0].data = met.sort(function(a, b){
-        let num1 = a['value'];
-        let num2 = b['value'];
-        return num1 - num2;
-      });
-      if(this.my_chart === null) {
-        this.my_chart = echarts.init(document.getElementById(this.nameField));
+
+      this.chartBlocked = !!this.pieChartBlocked;
+
+      if(!this.chartBlocked) {
+
+        this.pieChart.series[0].data = met.sort(function (a, b) {
+          let num1 = a['value'];
+          let num2 = b['value'];
+          return num1 - num2;
+        });
+        if (this.my_chart === null) {
+          this.my_chart = echarts.init(document.getElementById(this.nameField));
+        }
+        this.my_chart.setOption(this.pieChart, true);
       }
-      this.my_chart.setOption(this.pieChart, true);
+      else {
+        if (this.my_chart !== null) {
+          this.my_chart = echarts.dispose(document.getElementById(this.nameField));
+          this.my_chart = null;
+        }
+      }
     },
     checkNoDataOrSelectLevelAbove(){
       if(this.nameQuery === 'time'){
@@ -163,6 +187,9 @@ export default {
     }
   },
   watch: {
+    pieChartBlocked(){
+      this.chartBlocked = !!this.pieChartBlocked;
+    },
     fieldContent(){
       let contentGraph = [];
       let i = 0;

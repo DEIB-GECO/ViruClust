@@ -33,6 +33,9 @@ export default {
     nameHeatmap: {required: true,},
     contentHeatmap: {required: true,},
     fixedContent: {required: true,},
+    heatmapMode: {required: true,},
+    maxOddsRatio: {required: true,},
+    importantMutation: {required: true,}
   },
   data(){
     return {
@@ -85,15 +88,20 @@ export default {
           },
           axisLabel: {
             interval: '0',
+            formatter: (value, index)=> `{${index}|${value}}`,
+            rich: {},
           }
         },
         visualMap: {
           min: 0,
-          max: 80,
+          max: 100,
           calculable: true,
           orient: 'horizontal',
           left: 'center',
-          bottom: '0px'
+          bottom: '0px',
+          inRange: {
+              color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+          }
         },
         series: [{
           name: 'Distribution',
@@ -125,8 +133,9 @@ export default {
       this.y_axis = [];
       let rows = [];
       let stop = false;
+      let rich = {};
       for(let i = 0; i < this.contentHeatmap.length; i = i + 1){
-        this.x_axis.push(this.fixedContent[i][0]['target'].replace("//", '\n \n'));
+        this.x_axis.push(this.fixedContent[i][0]['target'].replace("//", ' // '));
         for(let k = 0; k < this.contentHeatmap[i].length; k = k + 1){
           if(this.contentHeatmap[i].length > 100){
             stop = true;
@@ -157,6 +166,15 @@ export default {
 
         for (let j = 0; j < rows.length; j = j + 1) {
           this.y_axis.push(rows[j]['mutation']);
+          if (this.importantMutation['mutation'].includes(rows[j]['mutation'])) {
+              rich[j] = {'backgroundColor': 'red', 'color': 'white', 'padding': 3};
+          }
+          else if (this.importantMutation['additional_mutation'].includes(rows[j]['mutation'])) {
+              rich[j] = {'backgroundColor': 'orange', 'color': 'white', 'padding': 3};
+          }
+          else {
+              rich[j] = {'backgroundColor': 'transparent', 'color': 'rgb(104,104,104)'};
+          }
         }
 
         this.data_inside_heatmap = [];
@@ -164,24 +182,57 @@ export default {
           for (let j = 0; j < this.y_axis.length; j = j + 1) {
             let mutation = this.y_axis[j];
             let content = this.contentHeatmap[i];
-            let value;
-            let percentage;
+            let target_info;
+            let heatmap_value;
             let index = content.findIndex(function (item) {
               return item['mutation'] === mutation;
             });
 
             if (index !== -1) {
-              value = this.contentHeatmap[i][index]['numerator_target'];
-              percentage = this.contentHeatmap[i][index]['percentage_target'];
+              if(this.heatmapMode === '% Target') {
+                target_info = this.contentHeatmap[i][index]['numerator_target'];
+                heatmap_value = this.contentHeatmap[i][index]['percentage_target'];
+                this.heatmap.visualMap.min = 0;
+                this.heatmap.visualMap.max = 100;
+                this.heatmap.tooltip.formatter = function formatter(params){
+                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                  return `${lineage}
+                          <b>${params.name}:</b> ${params.data[2]} (${params.data[4]}%)<br />`;
+                }
+              }
+              else if(this.heatmapMode === '% Target - % Background') {
+                target_info = this.contentHeatmap[i][index]['percentage_target'];
+                heatmap_value = this.contentHeatmap[i][index]['percentage_target'] - this.contentHeatmap[i][index]['percentage_background'];
+                this.heatmap.visualMap.min = -30;
+                this.heatmap.visualMap.max = 30;
+                this.heatmap.tooltip.formatter = function formatter(params){
+                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                  return `${lineage}
+                          <b>${params.name}:</b> ${params.data[4]}% (${params.data[2]}%)<br />`;
+                }
+              }
+              else if(this.heatmapMode === 'Odds ratio') {
+                target_info = this.contentHeatmap[i][index]['percentage_target'];
+                heatmap_value = this.contentHeatmap[i][index]['odd_ratio'];
+                this.heatmap.visualMap.min = 0;
+                this.heatmap.visualMap.max = this.maxOddsRatio;
+                this.heatmap.tooltip.formatter = function formatter(params){
+                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                  return `${lineage}
+                          <b>${params.name}:</b> ${params.data[4]} (${params.data[2]}%)<br />`;
+                }
+              }
             } else {
-              value = '-';
-              percentage = '-';
+              target_info = '-';
+              heatmap_value = '-';
             }
 
-            let single_cell = [i, j, value, mutation, percentage];
+            let single_cell = [i, j, target_info, mutation, heatmap_value];
             this.data_inside_heatmap.push(single_cell);
           }
         }
+
+        this.heatmap.yAxis.axisLabel.rich = rich;
 
         let elem = document.getElementById(this.nameHeatmap);
         let height = (this.y_axis.length * 20 + 300);
@@ -194,8 +245,6 @@ export default {
 
         if (this.my_chart === null) {
           this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height});
-          // this.my_chart = echarts.init(document.getElementById(this.nameHeatmap));
-
         }
         this.heatmap.grid.height = (this.y_axis.length * 20);
         this.my_chart.setOption(this.heatmap, true);
@@ -213,6 +262,9 @@ export default {
   },
   watch: {
     contentHeatmap(){
+      this.renderGraph();
+    },
+    heatmapMode(){
       this.renderGraph();
     }
   }

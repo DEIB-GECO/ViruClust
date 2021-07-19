@@ -18,6 +18,14 @@
           <span>Viru</span>
           <span class="font-weight-light">Clust</span>
       </v-toolbar-title>
+
+      <span style="font-size: 20px; white-space: nowrap; margin-left: 50px">enabled by data from
+          <a href="https://www.gisaid.org" target="_blank">
+              <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
+                   height="24px"/>
+          </a>
+      </span>
+
     </v-app-bar>
 
     <v-main>
