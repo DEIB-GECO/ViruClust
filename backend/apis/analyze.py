@@ -7,7 +7,7 @@ import pandas as pd
 from scipy.stats import binom
 from flask_restplus import Namespace, Resource
 
-from backend.apis.downloadLineagesInfo import dict_lineage_mutation
+from .downloadLineagesInfo import dict_lineage_mutation
 
 api = Namespace('analyze', description='analyze')
 
