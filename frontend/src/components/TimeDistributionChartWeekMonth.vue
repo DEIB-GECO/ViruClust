@@ -611,7 +611,8 @@ export default {
       if(this.selectedNumDaysAnalysis !== null
           && this.selectedNumDaysAnalysis !== undefined
           && this.selectedNumDaysAnalysis !== ''
-          && this.selectedNumDaysAnalysis !== ' ') {
+          && this.selectedNumDaysAnalysis !== ' '
+          && this.selectedNumDaysAnalysis > 0) {
         this.computeTimeDivision();
       }
     },
@@ -620,7 +621,8 @@ export default {
         || (this.selectedNumDaysAnalysis !== null
           && this.selectedNumDaysAnalysis !== undefined
           && this.selectedNumDaysAnalysis !== ''
-          && this.selectedNumDaysAnalysis !== ' ')) {
+          && this.selectedNumDaysAnalysis !== ' '
+          && this.selectedNumDaysAnalysis > 0)) {
         this.computeTimeDivision();
       }
     }

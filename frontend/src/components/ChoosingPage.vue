@@ -1,5 +1,6 @@
 <template>
   <div>
+    <HomePage id="homePage" v-if="this.page === 'homePage'"></HomePage>
     <EntryPage id="entryPage" v-if="this.page === 'entryPage'"></EntryPage>
     <AnalyzePage id="analyzePage" v-if="this.page === 'analyzePage'"></AnalyzePage>
     <LoadPage id="loadPage" v-if="this.page === 'loadPage'"></LoadPage>
@@ -15,10 +16,11 @@ import MetadataPage from "./MetadataPage";
 import StatisticsPage from "./StatisticsPage";
 import EntryPage from "./EntryPage";
 import AnalyzePage from "./AnalyzePage";
+import HomePage from "./HomePage";
 
 export default {
   name: "ChoosingPage",
-  components: {AnalyzePage, EntryPage, StatisticsPage, MetadataPage, LoadPage},
+  components: {HomePage, AnalyzePage, EntryPage, StatisticsPage, MetadataPage, LoadPage},
   computed: {
     ...mapState(['page']),
     ...mapGetters({}),

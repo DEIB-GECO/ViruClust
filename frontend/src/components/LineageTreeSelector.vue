@@ -105,7 +105,9 @@ export default {
     ...mapActions(['setQueryTime', 'setQueryGeo', 'setQueryFreeTarget', 'setQueryFreeBackground']),
     saveItem(item){
       this.showLineages = false;
-      document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+      if(document.getElementById('dropDownLineages' + this.type)) {
+        document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+      }
       this.search = null;
       this.labelLineage = item.name;
       this.selectedLineage = item.name.split(" ")[0];
@@ -128,13 +130,17 @@ export default {
     },
     clickOnTextField(){
       this.showLineages = true;
-      document.getElementById('dropDownLineages' + this.type).style.display = 'block';
+      if(document.getElementById('dropDownLineages' + this.type)) {
+        document.getElementById('dropDownLineages' + this.type).style.display = 'block';
+      }
     },
     onClickOutside(){
       this.showLineages = false;
       this.search = null;
       this.open = [];
-      document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+      if(document.getElementById('dropDownLineages' + this.type)) {
+        document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+      }
     },
     clearSearch(){
       this.search = null;

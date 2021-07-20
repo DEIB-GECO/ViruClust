@@ -25,6 +25,7 @@ export default {
     startStopProtein: {required: true,},
     selectedDomainForPValue: {required: true,},
     possibleDomainForPValue: {required: true,},
+    type: {required: true,},
   },
   data(){
     return {
@@ -86,7 +87,7 @@ export default {
         },
         dataZoom: [
             {
-                type: 'inside',
+                type: 'slider',
             },
           ],
       },
@@ -94,11 +95,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['colorPValueChart']),
+    ...mapState(['colorPValueChart', 'startValuePValueBarChartTime', 'endValuePValueBarChartTime',
+                 'startValuePValueBarChartGeo', 'endValuePValueBarChartGeo',
+                 'startValuePValueBarChartFree', 'endValuePValueBarChartFree']),
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['setStartValuePValueBarChartTime', 'setEndValuePValueBarChartTime',
+                     'setStartValuePValueBarChartGeo', 'setEndValuePValueBarChartGeo',
+                     'setStartValuePValueBarChartFree', 'setEndValuePValueBarChartFree']),
     ...mapActions([]),
     createArrayOfZeros(){
       let arrY = [];
@@ -238,10 +243,42 @@ export default {
 
       this.barChart.xAxis.data = arrX;
 
+      if(this.type === 'time'){
+        this.setStartValuePValueBarChartTime(0);
+        this.setEndValuePValueBarChartTime(arrX.length);
+      }
+      else if(this.type === 'geo'){
+        this.setStartValuePValueBarChartGeo(0);
+        this.setEndValuePValueBarChartGeo(arrX.length);
+      }
+      else if(this.type === 'free'){
+        this.setStartValuePValueBarChartFree(0);
+        this.setEndValuePValueBarChartFree(arrX.length);
+      }
+
+      this.barChart.dataZoom[0].startValue = 0;
+      this.barChart.dataZoom[0].endValue = arrX.length;
+
       if(this.my_chart === null) {
         this.my_chart = echarts.init(document.getElementById(this.namePValue));
       }
       this.my_chart.setOption(this.barChart, true);
+
+      let that = this;
+      this.my_chart.on('dataZoom', function (params) {
+        if(that.type === 'time') {
+          that.setStartValuePValueBarChartTime(params.start / 100 * arrX.length);
+          that.setEndValuePValueBarChartTime(params.end / 100 * arrX.length);
+        }
+        else if(that.type === 'geo') {
+          that.setStartValuePValueBarChartGeo(params.start / 100 * arrX.length);
+          that.setEndValuePValueBarChartGeo(params.end / 100 * arrX.length);
+        }
+        else if(that.type === 'free') {
+          that.setStartValuePValueBarChartFree(params.start / 100 * arrX.length);
+          that.setEndValuePValueBarChartFree(params.end / 100 * arrX.length);
+        }
+      });
     }
   },
   mounted() {
@@ -261,6 +298,90 @@ export default {
       setTimeout(function() {
         that.renderGraph(met);
       }, delayInMilliseconds);
+    },
+    startValuePValueBarChartTime(){
+      if(this.type === 'time') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartTime ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartTime) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartTime;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartTime;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
+    },
+    endValuePValueBarChartTime(){
+      if(this.type === 'time') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartTime ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartTime) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartTime;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartTime;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
+    },
+    startValuePValueBarChartGeo(){
+      if(this.type === 'geo') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartGeo ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartGeo) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartGeo;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartGeo;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
+    },
+    endValuePValueBarChartGeo(){
+      if(this.type === 'geo') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartGeo ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartGeo) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartGeo;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartGeo;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
+    },
+    startValuePValueBarChartFree(){
+      if(this.type === 'time') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartFree ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartFree) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartFree;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartFree;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
+    },
+    endValuePValueBarChartFree(){
+      if(this.type === 'time') {
+        if (this.barChart.dataZoom[0].startValue !== this.startValuePValueBarChartFree ||
+            this.barChart.dataZoom[0].endValue !== this.endValuePValueBarChartFree) {
+          this.barChart.dataZoom[0].startValue = this.startValuePValueBarChartFree;
+          this.barChart.dataZoom[0].endValue = this.endValuePValueBarChartFree;
+
+          if (this.my_chart === null) {
+            this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          }
+          this.my_chart.setOption(this.barChart, true);
+        }
+      }
     }
   }
 }

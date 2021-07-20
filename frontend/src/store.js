@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const state = {
-    page: 'entryPage',
+    page: 'homePage',
     sessionId: '',
     nameLoadedFileCSV: '',
     fileCSV: null,
@@ -62,6 +62,15 @@ const state = {
                        'rgba(0, 0, 255, 0.5)', 'rgba(230, 15, 250, 0.5)', 'rgba(9,192,217, 0.5)'],
     colorPValueInfoBox: ['rgba(50, 255, 50, 1)', 'rgba(255, 0, 0, 1)',
                          'rgba(0, 0, 255, 1)', 'rgba(230, 15, 250, 1)', 'rgba(9,192,217, 1)'],
+
+    startValuePValueBarChartTime: 0,
+    endValuePValueBarChartTime: 0,
+    startValuePValueBarChartGeo: 0,
+    endValuePValueBarChartGeo: 0,
+    startValuePValueBarChartFree: 0,
+    endValuePValueBarChartFree: 0,
+
+    selectedTabAnalyzeFromHome: 1,
 };
 
 const getters = {
@@ -71,6 +80,9 @@ const getters = {
 const mutations = {
     setSessionId: (state, value) => {
         state.sessionId = value;
+    },
+    setHomePage: (state) => {
+        state.page = "homePage";
     },
     setLoadPage: (state) => {
         state.page = "loadPage";
@@ -283,6 +295,29 @@ const mutations = {
 
     setTimeDivisionAcceptable: (state, value) => {
         state.timeDivisionAcceptable = value;
+    },
+
+    setStartValuePValueBarChartTime: (state, value) => {
+        state.startValuePValueBarChartTime = value;
+    },
+    setEndValuePValueBarChartTime: (state, value) => {
+        state.endValuePValueBarChartTime = value;
+    },
+    setStartValuePValueBarChartGeo: (state, value) => {
+        state.startValuePValueBarChartGeo = value;
+    },
+    setEndValuePValueBarChartGeo: (state, value) => {
+        state.endValuePValueBarChartGeo = value;
+    },
+    setStartValuePValueBarChartFree: (state, value) => {
+        state.startValuePValueBarChartFree = value;
+    },
+    setEndValuePValueBarChartFree: (state, value) => {
+        state.endValuePValueBarChartFree = value;
+    },
+
+    setSelectedTabAnalyzeFromHome: (state, value) => {
+        state.selectedTabAnalyzeFromHome = value;
     },
 };
 

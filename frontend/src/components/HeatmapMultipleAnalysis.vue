@@ -196,19 +196,23 @@ export default {
                 this.heatmap.visualMap.max = 100;
                 this.heatmap.tooltip.formatter = function formatter(params){
                   let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}
-                          <b>${params.name}:</b> ${params.data[2]} (${params.data[4]}%)<br />`;
+                  return `${lineage}<br>
+                          <b>${params.name}</b><br>
+                           <b>num sequences target:</b> ${params.data[2]}<br>
+                           <b>% target:</b> ${params.data[4]}%<br />`;
                 }
               }
               else if(this.heatmapMode === '% Target - % Background') {
                 target_info = this.contentHeatmap[i][index]['percentage_target'];
                 heatmap_value = this.contentHeatmap[i][index]['percentage_target'] - this.contentHeatmap[i][index]['percentage_background'];
-                this.heatmap.visualMap.min = -30;
-                this.heatmap.visualMap.max = 30;
+                this.heatmap.visualMap.min = -10;
+                this.heatmap.visualMap.max = 10;
                 this.heatmap.tooltip.formatter = function formatter(params){
                   let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}
-                          <b>${params.name}:</b> ${params.data[4]}% (${params.data[2]}%)<br />`;
+                  return `${lineage}<br>
+                          <b>${params.name}</b><br>
+                          <b>% target - % background:</b> ${params.data[4]}%<br>
+                          <b>% target:</b> ${params.data[2]}%<br />`;
                 }
               }
               else if(this.heatmapMode === 'Odds ratio') {
@@ -218,8 +222,10 @@ export default {
                 this.heatmap.visualMap.max = this.maxOddsRatio;
                 this.heatmap.tooltip.formatter = function formatter(params){
                   let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}
-                          <b>${params.name}:</b> ${params.data[4]} (${params.data[2]}%)<br />`;
+                  return `${lineage}<br>
+                          <b>${params.name}:</b><br>
+                          <b>odds ratio:</b> ${params.data[4]} <br>
+                          <b>% target:</b> ${params.data[2]}%<br />`;
                 }
               }
             } else {
@@ -265,6 +271,9 @@ export default {
       this.renderGraph();
     },
     heatmapMode(){
+      this.renderGraph();
+    },
+    importantMutation(){
       this.renderGraph();
     }
   }

@@ -439,10 +439,23 @@
                    </v-flex>
                  </v-layout>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 30px" v-if="rowsTable.length !== 0">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTable.length !== 0">
                  <ImportantMutation
-                 :importantMutation="importantMutation">
+                 :importantMutationECDC="importantMutationECDC"
+                 :importantMutation75Percentage="importantMutation75Percentage">
                  </ImportantMutation>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTable.length !== 0">
+                 <h3>Important Mutation Type:</h3>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 50px" v-if="rowsTable.length !== 0">
+                 <v-select
+                  v-model="selectedTypeImportantMutation"
+                  :items="possibleTypeImportantMutation"
+                  label="Type Important Mutation"
+                  solo
+                  hide-details>
+                 </v-select>
                </v-flex>
 
                <v-tabs v-model="selectedTabTable"
@@ -771,7 +784,8 @@
                              :totalMaxOddsRatio="totalMaxOddsRatio"
                              :startStopProtein="startStopProtein"
                              :selectedDomainForPValue="selectedDomainForPValue"
-                             :possibleDomainForPValue="possibleDomainForPValue">
+                             :possibleDomainForPValue="possibleDomainForPValue"
+                             type="free">
                          </PValueBarChart>
                        </v-flex>
                     </v-layout>
@@ -909,7 +923,12 @@ export default {
 
       selectedTabTable: 0,
 
+      importantMutationECDC: {},
+      importantMutation75Percentage: {},
       importantMutation: {},
+
+      selectedTypeImportantMutation: 'ECDC',
+      possibleTypeImportantMutation: ['ECDC', 'Present in 75%'],
     }
   },
   computed: {
@@ -1085,6 +1104,7 @@ export default {
       this.overlay = true;
 
       this.importantMutation = {};
+      this.importantMutationECDC = {};
       let queryFree = JSON.parse(JSON.stringify(this.queryFreeTarget));
       let url_important_mutation = `/analyze/getImportantMutation`;
       let lineage_to_send = null;
@@ -1098,7 +1118,35 @@ export default {
           return res.data;
         })
         .then((res) => {
-          this.importantMutation = res;
+          this.importantMutationECDC = res;
+          if(this.selectedTypeImportantMutation === 'ECDC'){
+            this.importantMutation = res;
+          }
+        })
+
+
+      let array_protein2 = [];
+      if(this.selectedProtein.length === 0){
+        array_protein2 = this.possibleProtein;
+      }
+      else{
+        array_protein2 = this.selectedProtein;
+      }
+
+      let to_send_all_important_mutation_per_lineage= {'lineage': lineage_to_send, 'proteins': array_protein2};
+      let url_all_important_mutation_per_lineage = `/analyze/getAllImportantMutationPerLineage`;
+      axios.post(url_all_important_mutation_per_lineage, to_send_all_important_mutation_per_lineage)
+        .then((res) => {
+          return res.data;
+        })
+        .then((res) => {
+          let json = {};
+          json['mutation'] = res;
+          json['additional_mutation'] = [];
+          this.importantMutation75Percentage = json;
+          if(this.selectedTypeImportantMutation === 'Present in 75%'){
+            this.importantMutation = json;
+          }
         })
 
       let array_protein = [];
@@ -1392,6 +1440,14 @@ export default {
     }
   },
   watch:{
+    selectedTypeImportantMutation(){
+      if(this.selectedTypeImportantMutation === 'ECDC'){
+        this.importantMutation = this.importantMutationECDC;
+      }
+      else if(this.selectedTypeImportantMutation === 'Present in 75%'){
+        this.importantMutation = this.importantMutation75Percentage;
+      }
+    },
     selectedDomainForPValue(){
       this.begin_value_domain = [];
       this.end_value_domain = [];

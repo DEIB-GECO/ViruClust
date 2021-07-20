@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card width="100%" color="white" style="padding: 50px">
+    <v-card width="100%" color="white" style="padding: 50px; min-height: 83.5vh">
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
           <v-card-title class="justify-center">

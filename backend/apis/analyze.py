@@ -907,6 +907,46 @@ class FieldList(Resource):
         return items
 
 
+@api.route('/getAllImportantMutationPerLineage')
+class FieldList(Resource):
+    @api.doc('get_important_mutation')
+    def post(self):
+
+        payload = api.payload
+        lineage = payload['lineage']
+        proteins = payload['proteins']
+
+        array_proteins = []
+
+        for protein in proteins:
+            protein_rewritten = protein.split(" ")[0]
+            array_proteins.append(protein_rewritten)
+
+        dict_copy = all_important_mutation_dict
+
+        array_important_mutation = []
+
+        if lineage is None:
+            for lineage_mutations in dict_copy:
+                single_lineage_mutation = dict_copy[lineage_mutations]
+                for mutation in single_lineage_mutation['common_changes']:
+                    if mutation not in array_important_mutation:
+                        protein = mutation.split("_")[0]
+                        if protein in array_proteins:
+                            array_important_mutation.append(mutation)
+                            array_important_mutation.sort()
+        else:
+            single_lineage_mutation = dict_copy[lineage]
+            for mutation in single_lineage_mutation['common_changes']:
+                if mutation not in array_important_mutation:
+                    protein = mutation.split("_")[0]
+                    if protein in array_proteins:
+                        array_important_mutation.append(mutation)
+                        array_important_mutation.sort()
+
+        return array_important_mutation
+
+
 def recursive_children_lineage(parent, lineage, alias, dict_copy2, dict_lineages):
     children = False
     idx = str(parent['id']) + '_' + str(len(parent['children']))
@@ -926,3 +966,25 @@ def recursive_children_lineage(parent, lineage, alias, dict_copy2, dict_lineages
         single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage, 'who': dict_copy2[lineage]['WHO label'],
                           'children': [], 'count': dict_lineages[lineage]['count']}
         parent['children'].append(single_lineage)
+
+
+all_important_mutation_dict = {}
+
+
+def get_all_important_mutation():
+    print("inizio request")
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
+
+    response = conn.getresponse()
+    all_important_mutation = response.read().decode()
+    all_important_mutation = json.loads(all_important_mutation)
+
+    for mutation_per_lineage in all_important_mutation:
+        lineage = mutation_per_lineage['lineage']
+        all_important_mutation_dict[lineage] = mutation_per_lineage
+
+    print("fine request")
+
+
+get_all_important_mutation()

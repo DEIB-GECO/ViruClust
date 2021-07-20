@@ -7,7 +7,14 @@
             show-arrows
             slider-color="orange"
             slider-size="6"
+            class="containTabs"
             height="60">
+
+      <v-tab id="tab4"  style="border-right: black solid 1px; width: 5%" @click="this.setHomePage">
+        <div>
+          <v-icon>mdi-home</v-icon>
+        </div>
+      </v-tab>
 
       <v-tab id="tab0" style="border-right: black solid 1px; width: 20%">
          ANALYZE DISTRIBUTION LINEAGE IN GEO
@@ -29,11 +36,14 @@
          FREE TARGET VS BACKGROUND
       </v-tab>
 
-      <v-tab-item>
+      <v-tab-item class="lol">
+      </v-tab-item>
+
+      <v-tab-item class="lol">
         <AnalyzeDistributionLineageInGeo></AnalyzeDistributionLineageInGeo>
       </v-tab-item>
 
-      <v-tab-item>
+      <v-tab-item class="lol">
         <AnalyzeTimeLinCou></AnalyzeTimeLinCou>
       </v-tab-item>
 
@@ -41,11 +51,11 @@
         <AnalyzeLineageAndCountry></AnalyzeLineageAndCountry>
       </v-tab-item>-->
 
-      <v-tab-item>
+      <v-tab-item class="lol">
          <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
       </v-tab-item>
 
-      <v-tab-item>
+      <v-tab-item class="lol">
         <FreeTargetVsBackground></FreeTargetVsBackground>
       </v-tab-item>
 
@@ -75,17 +85,17 @@ export default {
   components: {FreeTargetVsBackground, AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
   data() {
     return {
-      selectedTabAnalyze: 0,
+      selectedTabAnalyze: 1,
       overlay: true,
       finished_api: 0,
     }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['selectedTabAnalyzeFromHome']),
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo']),
+    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage']),
     ...mapActions([]),
   },
   watch:{
@@ -96,7 +106,7 @@ export default {
     },
     selectedTabAnalyze(){
       let i = 0;
-      while(i < 4){
+      while(i < 5){
         let id = 'tab' + i;
         if (i === this.selectedTabAnalyze){
           let elem = document.getElementById(id);
@@ -110,11 +120,15 @@ export default {
         }
         i = i + 1;
       }
+    },
+    selectedTabAnalyzeFromHome(){
+      this.selectedTabAnalyze = this.selectedTabAnalyzeFromHome;
     }
   },
   mounted() {
+    this.selectedTabAnalyze = this.selectedTabAnalyzeFromHome;
     let i = 0;
-    while(i < 3){
+    while(i < 5){
       let id = 'tab' + i;
       if (i === this.selectedTabAnalyze){
         let elem = document.getElementById(id);
@@ -166,5 +180,18 @@ export default {
 
 <style scoped>
 
+.lol {
+    height: 83.5vh;
+    width: 100%;
+    overflow-y:auto;
+		float:left;
+		position:relative;
+}
+
+.containTabs{
+  width: 100%;
+  float:left;
+  position:relative;
+}
 
 </style>

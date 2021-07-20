@@ -11,10 +11,15 @@
               solo
               clearable
               hide-details
+              :item-text="getFieldText"
               :loading="isLoading"
               multiple
               :disabled="isLoading || possibleValues.length === 0 || field === null"
             >
+              <template slot="item" slot-scope="data">
+                  <span class="item-value-span">{{getFieldText(data.item)}}</span>
+                  <span class="item-count-span">{{data.item.count}}</span>
+              </template>
             </v-autocomplete>
            </v-flex>
          </v-layout>
@@ -151,7 +156,7 @@ export default {
           .then((res) => {
             this.possibleValues = [];
             for(let i = 0; i < res.length; i = i +1){
-              this.possibleValues.push(res[i]['value']);
+              this.possibleValues.push(res[i]); // ['value']
             }
             this.isLoading = false;
           });
