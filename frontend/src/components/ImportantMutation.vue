@@ -219,7 +219,9 @@ export default {
             if (index !== -1) {
               if (this.checkAllMutations[mutation]) {
                 this.checkAllMutations[mutation] = this.checkAllMutations[mutation] + 1;
-                this.checkTargetsForAllMutations[mutation].push(this.rowsTable[i][index]['target']);
+                if(!this.checkTargetsForAllMutations[mutation].includes(this.rowsTable[i][index]['target'])) {
+                  this.checkTargetsForAllMutations[mutation].push(this.rowsTable[i][index]['target']);
+                }
               } else {
                 this.checkAllMutations[mutation] = 1;
                 this.checkTargetsForAllMutations[mutation] = [];
@@ -228,7 +230,9 @@ export default {
             } else {
               if (!this.checkAllMutations[mutation]) {
                 this.checkAllMutations[mutation] = 0;
-                this.checkTargetsForAllMutations[mutation] = [];
+                if(!this.checkTargetsForAllMutations[mutation].includes(this.rowsTable[i][index]['target'])) {
+                  this.checkTargetsForAllMutations[mutation] = [];
+                }
               }
             }
           }
