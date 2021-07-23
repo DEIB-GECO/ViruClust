@@ -1,12 +1,23 @@
 <template>
   <div>
     <v-container fluid grid-list-xl style="justify-content: center; width: 1300px">
-      <v-row justify="center" align="center">
-        <div :id="namePValue" style="width: 1000px; height: 250px; user-select: none;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-         background-color: white;">
-        </div>
-      </v-row>
+      <v-layout row wrap justify-center>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
+
+          <div :id="namePValue" style="width: 1000px; height: 250px; user-select: none;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
+           background-color: white;">
+          </div>
+        </v-flex>
+
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+          <v-btn @click="download"
+                 class="white--text"
+                     small
+                 color="rgb(122, 139, 157)">
+            Download As Image</v-btn>
+        </v-flex>
+      </v-layout>
     </v-container>
 
   </div>
@@ -105,6 +116,30 @@ export default {
                      'setStartValuePValueBarChartGeo', 'setEndValuePValueBarChartGeo',
                      'setStartValuePValueBarChartFree', 'setEndValuePValueBarChartFree']),
     ...mapActions([]),
+    download(){
+      let url = this.my_chart.getConnectedDataURL({
+          pixelRatio: 2,
+          backgroundColor: 'white'
+      });
+      let $a = document.createElement('a');
+      let type = 'png';
+      $a.download = 'graph.' + type;
+      $a.target = '_blank';
+      $a.href = url;
+      if (typeof MouseEvent === 'function') {
+        let evt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false
+        });
+        $a.dispatchEvent(evt);
+      }
+      else {
+        let html = '<body style="margin:0;">![](' + url + ')</body>';
+        let tab = window.open();
+        tab.document.write(html);
+      }
+    },
     createArrayOfZeros(){
       let arrY = [];
       for (let j = 1; j <= this.startStopProtein['stop']; j = j + 1){
@@ -179,6 +214,7 @@ export default {
                 radius: '50%',
                 data: arr_of_arrY[ii],
                 itemStyle: {color: color},
+                large: true,
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
@@ -222,18 +258,42 @@ export default {
           let num_color = k%this.colorPValueChart.length;
 
           if(k === 0) {
+
+          //   let arrY_sfondo = [];
+          //   for(let k = 0; k < arrY.length; k = k + 1) {
+          //     if(k >= min - 1 && k <= max - 1) {
+          //       arrY_sfondo.push(0);
+          //     }
+          //     else {
+          //       arrY_sfondo.push(0);
+          //     }
+          //   }
+          //
+          //   let series = {
+          //       type: 'bar',
+          //       data: arrY_sfondo,
+          //       barWidth: '100%',
+          //       showBackground: true,
+          //       backgroundStyle: {
+          //         color: 'grey',
+          //         borderColor: 'grey',
+          //       },
+          //   };
+          //   this.barChart.series.push(series);
+
+
             this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
             this.barChart.series[0].markArea.data[0][1].xAxis = max - 1;
             this.barChart.series[0].markArea.data[0][0].itemStyle.color = this.colorPValueChart[num_color];
           }
           else{
             let singleMarkArea = [{
-              xAxis: min,
+              xAxis: min - 1,
               itemStyle: {
                 color: this.colorPValueChart[num_color],
               },
             }, {
-              xAxis: max
+              xAxis: max - 1
             }];
 
             this.barChart.series[0].markArea.data.push(singleMarkArea);

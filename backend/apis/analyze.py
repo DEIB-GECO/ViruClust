@@ -3,13 +3,20 @@ from __future__ import print_function
 import http
 import json
 import pandas as pd
+import copy
 
 from scipy.stats import binom
 from flask_restplus import Namespace, Resource
 
+from pymongo import MongoClient
+
 from .downloadLineagesInfo import dict_lineage_mutation
 
 api = Namespace('analyze', description='analyze')
+
+uri = "mongodb://localhost:23456/gcm_gisaid"
+client = MongoClient(uri)
+db = client.gcm_gisaid
 
 ########################################################################################################
 
@@ -818,12 +825,37 @@ class FieldList(Resource):
         annotations = pd.read_csv("apis/protein_annotations.csv",
                                   delimiter=',')
 
-        ann = annotations[(annotations.Description.str.lower() != 'n/d')
-                           & (annotations.Protein.str.lower() == name_protein.lower())]
+        annotations1 = copy.deepcopy(annotations)
+        annotations2 = copy.deepcopy(annotations)
+        annotations3 = copy.deepcopy(annotations)
 
-        ann2 = ann[['Description', 'Begin', 'End']]
-        ann3 = ann2.to_json(orient="records")
-        return json.loads(ann3)
+        ann_mutagenesis = annotations[(annotations.Description.str.lower() != 'n/d')
+                                      & (annotations.Protein.str.lower() == name_protein.lower())
+                                      & (annotations.Category.str.lower() == 'mutagenesis')
+                                      ]
+        ann_mutagenesis2 = ann_mutagenesis[['Description', 'Begin', 'End']]
+        ann_mutagenesis3 = json.loads(ann_mutagenesis2.to_json(orient="records"))
+
+        ann_aa_modifications = annotations[(annotations.Description.str.lower() != 'n/d')
+                                      & (annotations.Protein.str.lower() == name_protein.lower())
+                                      & (annotations.Category.str.lower() == 'ptm')
+                                      & (annotations.Type.str.lower() == 'carbohyd')
+                                      ]
+        ann_aa_modifications2 = ann_aa_modifications[['Description', 'Begin', 'End']]
+        ann_aa_modifications3 = json.loads(ann_aa_modifications2.to_json(orient="records"))
+
+        ann_sites_family_dom = annotations[(annotations.Description.str.lower() != 'n/d')
+                                           & (annotations.Protein.str.lower() == name_protein.lower())
+                                           & ((annotations.Category.str.lower() == 'domains_and_sites') |
+                                              (annotations.Type.str.lower() == 'n/d'))
+                                           ]
+        ann_sites_family_dom2 = ann_sites_family_dom[['Description', 'Begin', 'End']]
+        ann_sites_family_dom3 = json.loads(ann_sites_family_dom2.to_json(orient="records"))
+
+        result = {'mutagenesis': ann_mutagenesis3, 'aa_modifications': ann_aa_modifications3,
+                  'sites_and_domains': ann_sites_family_dom3}
+
+        return result
 
 
 @api.route('/getImportantMutation')
@@ -882,19 +914,28 @@ class FieldList(Resource):
         idx = 1
 
         for lineage in dict_copy2:
+            already_done = False
             children = False
+            children_lineage = False
+            important_lineage = False
             alias = dict_copy2[lineage]['alias']
             if lineage in arr_lineages:
+                if dict_copy2[lineage]['WHO label'] != '':
+                    important_lineage = True
                 for itm in items:
                     possible_parent_alias = str(itm['alias']) + '.'
                     possible_children_alias = str(alias)
+                    possible_parent_lineage = str(itm['real_name']) + '.'
+                    possible_children_lineage = str(lineage)
                     if possible_parent_alias in possible_children_alias:
                         children = True
                         recursive_children_lineage(itm, lineage, alias, dict_copy2, dict_lineages)
-                        break
-                    else:
-                        children = False
+                    if possible_parent_lineage in possible_children_lineage:
+                        children_lineage = True
+                        if possible_children_lineage != possible_children_alias:
+                            recursive_children_lineage(itm, lineage, lineage, dict_copy2, dict_lineages)
                 if not children:
+                    already_done = True
                     name_complete = lineage
                     if dict_copy2[lineage]['WHO label'] != '':
                         name_complete = lineage + ' (' + dict_copy2[lineage]['WHO label'] + ') '
@@ -903,6 +944,25 @@ class FieldList(Resource):
                                       'count': dict_lineages[lineage]['count']}
                     items.append(single_lineage)
                     idx = idx + 1
+
+                if not children_lineage and not already_done:
+                    name_complete = lineage.split('.')[0]
+                    single_lineage = {'id': idx, 'alias': name_complete, 'name': name_complete, 'real_name': name_complete,
+                                      'who': '', 'children': [],
+                                      'count': 0}
+                    items.append(single_lineage)
+                    idx = idx + 1
+                    recursive_children_lineage(single_lineage, lineage, lineage, dict_copy2, dict_lineages)
+
+                # if important_lineage and not already_done:
+                #     name_complete = lineage
+                #     if dict_copy2[lineage]['WHO label'] != '':
+                #         name_complete = lineage + ' (' + dict_copy2[lineage]['WHO label'] + ') '
+                #     single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage,
+                #                       'who': dict_copy2[lineage]['WHO label'], 'children': [],
+                #                       'count': dict_lineages[lineage]['count']}
+                #     items.append(single_lineage)
+                #     idx = idx + 1
 
         return items
 
@@ -936,13 +996,14 @@ class FieldList(Resource):
                             array_important_mutation.append(mutation)
                             array_important_mutation.sort()
         else:
-            single_lineage_mutation = dict_copy[lineage]
-            for mutation in single_lineage_mutation['common_changes']:
-                if mutation not in array_important_mutation:
-                    protein = mutation.split("_")[0]
-                    if protein in array_proteins:
-                        array_important_mutation.append(mutation)
-                        array_important_mutation.sort()
+            if lineage in dict_copy:
+                single_lineage_mutation = dict_copy[lineage]
+                for mutation in single_lineage_mutation['common_changes']:
+                    if mutation not in array_important_mutation:
+                        protein = mutation.split("_")[0]
+                        if protein in array_proteins:
+                            array_important_mutation.append(mutation)
+                            array_important_mutation.sort()
 
         return array_important_mutation
 
@@ -973,18 +1034,56 @@ all_important_mutation_dict = {}
 
 def get_all_important_mutation():
     print("inizio request")
-    conn = http.client.HTTPConnection('geco.deib.polimi.it')
-    conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
-
-    response = conn.getresponse()
-    all_important_mutation = response.read().decode()
-    all_important_mutation = json.loads(all_important_mutation)
-
-    for mutation_per_lineage in all_important_mutation:
-        lineage = mutation_per_lineage['lineage']
-        all_important_mutation_dict[lineage] = mutation_per_lineage
+    # conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    # conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
+    #
+    # response = conn.getresponse()
+    # all_important_mutation = response.read().decode()
+    # all_important_mutation = json.loads(all_important_mutation)
+    #
+    # for mutation_per_lineage in all_important_mutation:
+    #     lineage = mutation_per_lineage['lineage']
+    #     all_important_mutation_dict[lineage] = mutation_per_lineage
 
     print("fine request")
 
 
+def prova_mongo_db():
+    print("prova Mongo")
+    seq = db.seq
+
+    pipeline = [
+        {
+            "$match": {
+                'covv_collection_date': {
+                    '$gte': "2019-01-01",
+                    '$lte': "2021-07-31",
+                    '$regex': "\d\d\d\d-\d\d-\d\d"
+                },
+                        'covv_location': {
+                            '$regex': "Italy"
+                         },
+            },
+        },
+        {"$unwind": "$muts"},
+        {"$group": {"_id": {'pr': "$muts.pr",
+                            'orig': "$muts.orig",
+                            'loc': "$muts.loc",
+                            'alt': "$muts.alt",
+                            }
+            , "count": {"$sum": 1}}},
+        #     { '$sort': { "_id.orig": -1 } }
+
+    ]
+    print("start")
+    results = seq.aggregate(pipeline, )
+    print("stop")
+    for i, x in enumerate(results):
+        if i < 1:
+            print("qui", x)
+            break
+    print("fine prova Mongo2")
+
+
 get_all_important_mutation()
+# prova_mongo_db()

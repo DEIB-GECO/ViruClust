@@ -81,6 +81,7 @@ export default {
 
       isLoadingLineage: false,
 
+      deactivate: false,
       activeLineage: [],
       items: [],
 
@@ -104,14 +105,21 @@ export default {
     ...mapMutations([]),
     ...mapActions(['setQueryTime', 'setQueryGeo', 'setQueryFreeTarget', 'setQueryFreeBackground']),
     saveItem(item){
-      this.showLineages = false;
-      if(document.getElementById('dropDownLineages' + this.type)) {
-        document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+      if(item.count === 0){
+        this.activeLineage = [];
+        this.deactivate = true;
       }
-      this.search = null;
-      this.labelLineage = item.name;
-      this.selectedLineage = item.name.split(" ")[0];
-      this.open = [];
+      else {
+        this.deactivate = false;
+        this.showLineages = false;
+        if (document.getElementById('dropDownLineages' + this.type)) {
+          document.getElementById('dropDownLineages' + this.type).style.display = 'none';
+        }
+        this.search = null;
+        this.labelLineage = item.name;
+        this.selectedLineage = item.name.split(" ")[0];
+        this.open = [];
+      }
     },
     computeLineageTree(){
       if(this.possibleValues && this.possibleValues.length > 0){
@@ -205,7 +213,7 @@ export default {
     },
     activeLineage: {
         handler(newVal, oldVal) {
-          if(newVal.length === 0 && this.selectedLineage !== null){
+          if(newVal.length === 0 && this.selectedLineage !== null && !this.deactivate){
             this.activeLineage[0] = oldVal[0];
           }
           else {

@@ -1,7 +1,6 @@
 Protein,Type,Category,Description,Begin,End,EvidenceUrls
 Spike (surface glycoprotein),N/D,N/D,signal peptide at N-terminus,1,13,[]
 Spike (surface glycoprotein),N/D,N/D,N-terminal domain (NTD),14,305,[]
-Spike (surface glycoprotein),N/D,N/D,Receptor binding domain (RBD),319,541,[]
 Spike (surface glycoprotein),N/D,N/D,Receptor binding motif (RBM),438,506,[]
 Spike (surface glycoprotein),N/D,N/D,fusion peptide (FP),788,806,[]
 Spike (surface glycoprotein),N/D,N/D,heptapeptide repeat sequence 1 (HR1),912,984,[]

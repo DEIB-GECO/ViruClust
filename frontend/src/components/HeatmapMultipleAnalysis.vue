@@ -18,6 +18,15 @@
           </v-layout>
         </div>
       </v-flex>
+
+      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+        <v-btn @click="download"
+               class="white--text"
+                   small
+               color="rgb(122, 139, 157)">
+          Download As Image</v-btn>
+      </v-flex>
+
     </v-layout>
 
   </v-container>
@@ -128,6 +137,30 @@ export default {
   methods: {
     ...mapMutations([]),
     ...mapActions([]),
+    download(){
+      let url = this.my_chart.getConnectedDataURL({
+          pixelRatio: 2,
+          backgroundColor: 'white'
+      });
+      let $a = document.createElement('a');
+      let type = 'png';
+      $a.download = 'graph.' + type;
+      $a.target = '_blank';
+      $a.href = url;
+      if (typeof MouseEvent === 'function') {
+        let evt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false
+        });
+        $a.dispatchEvent(evt);
+      }
+      else {
+        let html = '<body style="margin:0;">![](' + url + ')</body>';
+        let tab = window.open();
+        tab.document.write(html);
+      }
+    },
     renderGraph(){
       this.x_axis = [];
       this.y_axis = [];
@@ -137,7 +170,7 @@ export default {
       for(let i = 0; i < this.contentHeatmap.length; i = i + 1){
         this.x_axis.push(this.fixedContent[i][0]['target'].replace("//", ' // '));
         for(let k = 0; k < this.contentHeatmap[i].length; k = k + 1){
-          if(this.contentHeatmap[i].length > 100){
+          if(this.contentHeatmap[i].length > 500){
             stop = true;
             break;
           }
@@ -155,100 +188,153 @@ export default {
       this.my_chart = echarts.dispose(document.getElementById(this.nameHeatmap));
       this.my_chart = null;
 
-      if(!stop && rows.length < 100 && rows.length !== 0) {
-        this.errorShow = false;
+      this.errorShow = false;
 
-        rows = rows.sort(function (a, b) {
-          let pos_a = parseInt(a['mutation_position']);
-          let pos_b = parseInt(b['mutation_position']);
-          return pos_a > pos_b ? -1 : 1;
-        });
+      rows = rows.sort(function (a, b) {
+        let pos_a = parseInt(a['mutation_position']);
+        let pos_b = parseInt(b['mutation_position']);
+        return pos_a > pos_b ? -1 : 1;
+      });
 
-        for (let j = 0; j < rows.length; j = j + 1) {
-          this.y_axis.push(rows[j]['mutation']);
-          if (this.importantMutation['mutation'].includes(rows[j]['mutation'])) {
-              rich[j] = {'backgroundColor': 'red', 'color': 'white', 'padding': 3};
-          }
-          else if (this.importantMutation['additional_mutation'].includes(rows[j]['mutation'])) {
-              rich[j] = {'backgroundColor': 'orange', 'color': 'white', 'padding': 3};
-          }
-          else {
-              rich[j] = {'backgroundColor': 'transparent', 'color': 'rgb(104,104,104)'};
-          }
+      for (let j = 0; j < rows.length; j = j + 1) {
+        this.y_axis.push(rows[j]['mutation']);
+        if (this.importantMutation['mutation'].includes(rows[j]['mutation'])) {
+            rich[j] = {'backgroundColor': 'red', 'color': 'white', 'padding': 3};
         }
+        else if (this.importantMutation['additional_mutation'].includes(rows[j]['mutation'])) {
+            rich[j] = {'backgroundColor': 'orange', 'color': 'white', 'padding': 3};
+        }
+        else {
+            rich[j] = {'backgroundColor': 'transparent', 'color': 'rgb(104,104,104)'};
+        }
+      }
 
-        this.data_inside_heatmap = [];
-        for (let i = 0; i < this.contentHeatmap.length; i = i + 1) {
-          for (let j = 0; j < this.y_axis.length; j = j + 1) {
-            let mutation = this.y_axis[j];
-            let content = this.contentHeatmap[i];
-            let target_info;
-            let heatmap_value;
-            let index = content.findIndex(function (item) {
-              return item['mutation'] === mutation;
-            });
+      this.data_inside_heatmap = [];
+      for (let i = 0; i < this.contentHeatmap.length; i = i + 1) {
+        for (let j = 0; j < this.y_axis.length; j = j + 1) {
+          let mutation = this.y_axis[j];
+          let content = this.contentHeatmap[i];
+          let target_info;
+          let heatmap_value;
+          let index = content.findIndex(function (item) {
+            return item['mutation'] === mutation;
+          });
 
-            if (index !== -1) {
-              if(this.heatmapMode === '% Target') {
-                target_info = this.contentHeatmap[i][index]['numerator_target'];
-                heatmap_value = this.contentHeatmap[i][index]['percentage_target'];
-                this.heatmap.visualMap.min = 0;
-                this.heatmap.visualMap.max = 100;
-                this.heatmap.tooltip.formatter = function formatter(params){
-                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}<br>
-                          <b>${params.name}</b><br>
-                           <b>num sequences target:</b> ${params.data[2]}<br>
-                           <b>% target:</b> ${params.data[4]}%<br />`;
-                }
+          if (index !== -1) {
+            if(this.heatmapMode === '% Target') {
+              target_info = this.contentHeatmap[i][index]['numerator_target'];
+              heatmap_value = this.contentHeatmap[i][index]['percentage_target'];
+              this.heatmap.visualMap.min = 0;
+              this.heatmap.visualMap.max = 100;
+              this.heatmap.tooltip.formatter = function formatter(params){
+                let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                return `${lineage}<br>
+                        <b>${params.name}</b><br>
+                         <b>num sequences target:</b> ${params.data[2]}<br>
+                         <b>% target:</b> ${params.data[4]}%<br />`;
               }
-              else if(this.heatmapMode === '% Target - % Background') {
-                target_info = this.contentHeatmap[i][index]['percentage_target'];
-                heatmap_value = this.contentHeatmap[i][index]['percentage_target'] - this.contentHeatmap[i][index]['percentage_background'];
-                this.heatmap.visualMap.min = -10;
-                this.heatmap.visualMap.max = 10;
-                this.heatmap.tooltip.formatter = function formatter(params){
-                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}<br>
-                          <b>${params.name}</b><br>
-                          <b>% target - % background:</b> ${params.data[4]}%<br>
-                          <b>% target:</b> ${params.data[2]}%<br />`;
-                }
-              }
-              else if(this.heatmapMode === 'Odds ratio') {
-                target_info = this.contentHeatmap[i][index]['percentage_target'];
-                heatmap_value = this.contentHeatmap[i][index]['odd_ratio'];
-                this.heatmap.visualMap.min = 0;
-                this.heatmap.visualMap.max = this.maxOddsRatio;
-                this.heatmap.tooltip.formatter = function formatter(params){
-                  let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
-                  return `${lineage}<br>
-                          <b>${params.name}:</b><br>
-                          <b>odds ratio:</b> ${params.data[4]} <br>
-                          <b>% target:</b> ${params.data[2]}%<br />`;
-                }
-              }
-            } else {
-              target_info = '-';
-              heatmap_value = '-';
             }
-
-            let single_cell = [i, j, target_info, mutation, heatmap_value];
-            this.data_inside_heatmap.push(single_cell);
+            else if(this.heatmapMode === '% Target - % Background') {
+              target_info = this.contentHeatmap[i][index]['percentage_target'];
+              heatmap_value = this.contentHeatmap[i][index]['percentage_target'] - this.contentHeatmap[i][index]['percentage_background'];
+              this.heatmap.visualMap.min = -10;
+              this.heatmap.visualMap.max = 10;
+              this.heatmap.tooltip.formatter = function formatter(params){
+                let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                return `${lineage}<br>
+                        <b>${params.name}</b><br>
+                        <b>% target - % background:</b> ${params.data[4]}%<br>
+                        <b>% target:</b> ${params.data[2]}%<br />`;
+              }
+            }
+            else if(this.heatmapMode === 'Odds ratio') {
+              target_info = this.contentHeatmap[i][index]['percentage_target'];
+              heatmap_value = this.contentHeatmap[i][index]['odd_ratio'];
+              this.heatmap.visualMap.min = 0;
+              this.heatmap.visualMap.max = this.maxOddsRatio;
+              this.heatmap.tooltip.formatter = function formatter(params){
+                let lineage =  `<div style="text-align: center; padding: 0; margin: 0;"><b>${params.data[3]}</b></div>`
+                return `${lineage}<br>
+                        <b>${params.name}:</b><br>
+                        <b>odds ratio:</b> ${params.data[4]} <br>
+                        <b>% target:</b> ${params.data[2]}%<br />`;
+              }
+            }
+          } else {
+            target_info = '-';
+            heatmap_value = '-';
           }
+
+          let single_cell = [i, j, target_info, mutation, heatmap_value];
+          this.data_inside_heatmap.push(single_cell);
         }
+      }
 
-        this.heatmap.yAxis.axisLabel.rich = rich;
+      this.heatmap.yAxis.axisLabel.rich = rich;
 
-        let elem = document.getElementById(this.nameHeatmap);
-        let height = (this.y_axis.length * 20 + 300);
-        elem.style['height'] = (height + 100).toString() + 'px';
-        elem.style['width'] = '100%';
+      let elem = document.getElementById(this.nameHeatmap);
+      let height = (this.y_axis.length * 20 + 300);
+      elem.style['height'] = (height + 100).toString() + 'px';
+      elem.style['width'] = '100%';
 
-        this.heatmap.xAxis.data = this.x_axis;
-        this.heatmap.yAxis.data = this.y_axis;
-        this.heatmap.series[0].data = this.data_inside_heatmap;
+      this.heatmap.xAxis.data = this.x_axis;
+      this.heatmap.yAxis.data = this.y_axis;
+      this.heatmap.series[0].data = this.data_inside_heatmap;
 
+
+      // if(this.nameHeatmap === 'multipleAnalysisHeatmapTime') {
+      //   let array_to_exclude = [];
+      //   for (let i = 0; i < this.y_axis.length; i = i + 1) {
+      //     let exclude = true;
+      //     let count_exclude = 0;
+      //     for (let j = 0; j < this.x_axis.length; j = j + 1) {
+      //       if (j < this.x_axis.length - 1 && this.data_inside_heatmap[i + (j * (this.y_axis.length))][4] === '-') {
+      //         exclude = true;
+      //       }
+      //       else if (j < this.x_axis.length - 1 && this.data_inside_heatmap[i + (j * (this.y_axis.length))][4] !== '-') {
+      //         count_exclude = count_exclude + 1;
+      //         exclude = false;
+      //       }
+      //       else if (j >= this.x_axis.length - 1 && this.data_inside_heatmap[i + (j * (this.y_axis.length))][4] !== '-') {
+      //         exclude = false;
+      //       }
+      //     }
+      //
+      //     if (count_exclude <= 1 && exclude) {
+      //       array_to_exclude.push(i);
+      //     }
+      //   }
+      //
+      //   let array_inside_heatmap_to_exclude = [];
+      //
+      //   for (let i = array_to_exclude.length -1; i >= 0; i = i - 1) {
+      //     // this.y_axis.splice(array_to_exclude[i], 1);
+      //     for (let j = this.x_axis.length - 1; j >= 0; j = j - 1) {
+      //       array_inside_heatmap_to_exclude.push(array_to_exclude[i] + (j * (this.y_axis.length)));
+      //       // this.data_inside_heatmap.splice((array_to_exclude[i] + (j * (this.y_axis.length))), 1);
+      //     }
+      //   }
+      //
+      //   array_inside_heatmap_to_exclude.sort(function(a, b){
+      //     let num1 = parseInt(a);
+      //     let num2 = parseInt(b);
+      //     return num1 - num2;
+      //   });
+      //   // console.log("qui", array_inside_heatmap_to_exclude);
+      //
+      //   for (let j = array_inside_heatmap_to_exclude.length -1; j >= 0; j = j - 1) {
+      //     console.log("qui", this.data_inside_heatmap[array_inside_heatmap_to_exclude[j]]);
+      //     // this.data_inside_heatmap.splice(array_inside_heatmap_to_exclude[j], 1);
+      //   }
+      //
+      // }
+
+      if(this.y_axis.length > 150){
+        stop = true;
+      }
+
+
+      if(!stop && rows.length !== 0) {
         if (this.my_chart === null) {
           this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height});
         }

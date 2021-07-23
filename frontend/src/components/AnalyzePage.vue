@@ -10,17 +10,17 @@
             class="containTabs"
             height="60">
 
-      <v-tab id="tab4"  style="border-right: black solid 1px; width: 5%" @click="this.setHomePage">
+      <v-tab id="tab0"  style="border-right: black solid 1px; width: 5%" @click="this.setHomePage">
         <div>
           <v-icon>mdi-home</v-icon>
         </div>
       </v-tab>
 
-      <v-tab id="tab0" style="border-right: black solid 1px; width: 20%">
+      <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
          ANALYZE DISTRIBUTION LINEAGE IN GEO
       </v-tab>
 
-      <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
+      <v-tab id="tab2" style="border-right: black solid 1px; width: 20%">
          TEMPORAL ANALYSIS
       </v-tab>
 
@@ -28,11 +28,11 @@
          COUNTRY VS LINEAGE
       </v-tab>-->
 
-      <v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
+      <v-tab id="tab3"  style="border-right: black solid 1px; width: 20%">
          SPATIAL ANALYSIS
       </v-tab>
 
-      <v-tab id="tab3"  style="border-right: black solid 1px; width: 20%">
+      <v-tab id="tab4"  style="border-right: black solid 1px; width: 20%">
          FREE TARGET VS BACKGROUND
       </v-tab>
 

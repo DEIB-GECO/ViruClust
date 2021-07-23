@@ -34,6 +34,13 @@
             </v-range-slider>
           </div>
         </v-flex>
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; ">
+          <v-btn @click="download"
+                 class="white--text"
+                     small
+                 color="rgb(122, 139, 157)">
+            Download As Image</v-btn>
+        </v-flex>
       </v-row>
     </v-container>
     <v-container fluid grid-list-xl style="justify-content: center;
@@ -287,6 +294,30 @@ export default {
   methods: {
     ...mapMutations(['setTimeDivisionAcceptable']),
     ...mapActions([]),
+    download(){
+      let url = this.my_chart.getConnectedDataURL({
+          pixelRatio: 2,
+          backgroundColor: 'white'
+      });
+      let $a = document.createElement('a');
+      let type = 'png';
+      $a.download = 'graph.' + type;
+      $a.target = '_blank';
+      $a.href = url;
+      if (typeof MouseEvent === 'function') {
+        let evt = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: false
+        });
+        $a.dispatchEvent(evt);
+      }
+      else {
+        let html = '<body style="margin:0;">![](' + url + ')</body>';
+        let tab = window.open();
+        tab.document.write(html);
+      }
+    },
     renderGraphFilterDate(){
         let met =  JSON.parse(JSON.stringify(this.timeContent));
         this.renderGraph(met);

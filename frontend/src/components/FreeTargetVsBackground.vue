@@ -17,16 +17,16 @@
                         height="60"
                         centered>
 
-                  <v-tab style="border: black solid 1px; width: 10%; background-color: #800000">
-                     <v-icon id="tabFree0">mdi-home</v-icon>
+                  <v-tab style="border: black solid 1px; width: 20%; background-color: #800000">
+                     SUMMARY
                   </v-tab>
 
-                  <v-tab id="tabFree1" style="border: black solid 1px; border-left: 0!important; width: 45%; background-color: #800000">
-                     TARGET
+                  <v-tab id="tabFree1" style="border: black solid 1px; border-left: 0!important; width: 40%; background-color: #800000">
+                     DEFINE YOUR TARGET
                   </v-tab>
 
-                  <v-tab id="tabFree2" style="border: black solid 1px; border-left: 0!important; width: 45%; background-color: #800000">
-                     BACKGROUND
+                  <v-tab id="tabFree2" style="border: black solid 1px; border-left: 0!important; width: 40%; background-color: #800000">
+                     DEFINE YOUR BACKGROUND
                   </v-tab>
 
                   <v-tabs-items v-model="selectedTabFreeQuery" style="background: transparent;">
@@ -442,7 +442,8 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTable.length !== 0">
                  <ImportantMutation
                  :importantMutationECDC="importantMutationECDC"
-                 :importantMutation75Percentage="importantMutation75Percentage">
+                 :importantMutation75Percentage="importantMutation75Percentage"
+                 :rowsTable = "fixedRowsTable">
                  </ImportantMutation>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTable.length !== 0">
@@ -681,73 +682,33 @@
                </v-flex>
                <div v-if="pValueBarChartApplied">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                   <v-card width="400px" color="#F0E68C">
-                      <v-card-title class="justify-center">
-                        <h5>HIGHLIGHTS DOMAIN:</h5>
-                      </v-card-title>
-                      <v-card-text style="margin-top: 30px">
-                        <v-autocomplete
-                          v-model="selectedDomainForPValue"
-                          :items="possibleDomainForPValue"
-                          label="Domain"
-                          solo
-                          hide-details
-                          :item-text="getFieldTextDomain"
-                          multiple
-                        >
-                        </v-autocomplete>
-                      </v-card-text>
-                   </v-card>
-                 </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-                 <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
-                      <v-card style="width: 400px;" :color="colorPValueInfoBox[idx%colorPValueInfoBox.length]" v-if="selectedDomainForPValue.length > 0">
-                        <v-card-title class="justify-center">
-                          <h5 style="text-align: center;">{{domain.toUpperCase()}}</h5>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-layout row wrap justify-space-around style="padding-bottom: 30px; margin-top: 20px">
-                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                             padding: 0; position: relative;">
-                              <v-layout row wrap justify-space-around>
-                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                                  <h5>BEGIN: </h5>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                                  <v-text-field
-                                    :value = "begin_value_domain[idx]"
-                                    solo
-                                    readonly
-                                    hide-details
-                                    class = "centered-input"
-                                  ></v-text-field>
-                                </v-flex>
-                              </v-layout>
-                            </v-flex>
-                            <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                             padding: 0; position: relative;">
-                              <v-layout row wrap justify-space-around>
-                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                                  <h5>END: </h5>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                                  <v-text-field
-                                    :value = "end_value_domain[idx]"
-                                    solo
-                                    readonly
-                                    hide-details
-                                    class = "centered-input"
-                                  ></v-text-field>
-                                </v-flex>
-                              </v-layout>
-                            </v-flex>
-                          </v-layout>
-                        </v-card-text>
-                      </v-card>
-                   </v-flex>
-                 </v-layout>
-               </v-flex>
+                   <v-layout row wrap justify-center>
+                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                         <v-card width="400px" color="#F0E68C">
+                            <v-card-title class="justify-center">
+                              <h5>HIGHLIGHTS DOMAIN:</h5>
+                            </v-card-title>
+                            <v-card-text style="margin-top: 30px">
+                              <v-autocomplete
+                                v-model="selectedDomainForPValue"
+                                :items="possibleDomainForPValue"
+                                label="Domain"
+                                solo
+                                hide-details
+                                :item-text="getFieldTextDomain"
+                                multiple
+                              >
+                              </v-autocomplete>
+                            </v-card-text>
+                         </v-card>
+                       </v-flex>
+                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
+                          <v-card style="width: 400px;" :color="colorPValueInfoBox[idx%colorPValueInfoBox.length]" v-if="selectedDomainForPValue.length > 0">
+                              <h5 style="text-align: center; color: white ">{{domain.toUpperCase()}} ({{begin_value_domain[idx]}} , {{end_value_domain[idx]}}) </h5>
+                          </v-card>
+                       </v-flex>
+                   </v-layout>
+                  </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rows ,index) in rowsTable" v-bind:key="'pValue' + index">
@@ -1307,7 +1268,11 @@ export default {
                 return res.data;
               })
               .then((res) => {
-                  this.possibleDomainForPValue = res;
+                 this.possibleDomainForPValue = res['sites_and_domains'].sort(function(a, b){
+                    let value_a = a['Description'].toLowerCase();
+                    let value_b = b['Description'].toLowerCase();
+                    return value_a > value_b ? 1 : -1;
+                  });
                   this.overlay = false;
                   this.pValueBarChartApplied = true;
               });
