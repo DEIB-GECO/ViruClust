@@ -1034,16 +1034,16 @@ all_important_mutation_dict = {}
 
 def get_all_important_mutation():
     print("inizio request")
-    # conn = http.client.HTTPConnection('geco.deib.polimi.it')
-    # conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
-    #
-    # response = conn.getresponse()
-    # all_important_mutation = response.read().decode()
-    # all_important_mutation = json.loads(all_important_mutation)
-    #
-    # for mutation_per_lineage in all_important_mutation:
-    #     lineage = mutation_per_lineage['lineage']
-    #     all_important_mutation_dict[lineage] = mutation_per_lineage
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
+
+    response = conn.getresponse()
+    all_important_mutation = response.read().decode()
+    all_important_mutation = json.loads(all_important_mutation)
+
+    for mutation_per_lineage in all_important_mutation:
+        lineage = mutation_per_lineage['lineage']
+        all_important_mutation_dict[lineage] = mutation_per_lineage
 
     print("fine request")
 
