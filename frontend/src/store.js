@@ -71,6 +71,10 @@ const state = {
     endValuePValueBarChartFree: 0,
 
     selectedTabAnalyzeFromHome: 1,
+
+    color_1: [],
+    color_2: [],
+    color_3: [],
 };
 
 const getters = {
@@ -318,6 +322,16 @@ const mutations = {
 
     setSelectedTabAnalyzeFromHome: (state, value) => {
         state.selectedTabAnalyzeFromHome = value;
+    },
+
+    setColor1: (state, value) => {
+        state.color_1 = value;
+    },
+    setColor2: (state, value) => {
+        state.color_2 = value;
+    },
+    setColor3: (state, value) => {
+        state.color_3 = value;
     },
 };
 

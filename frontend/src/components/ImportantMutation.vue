@@ -52,11 +52,11 @@
                   None of the targets have the related mutation<br>
                 </span>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px; margin-bottom: 50px">
-                <h2>ECDC mutations (Spike): </h2>
-              </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                <v-layout row wrap justify-space-around>
+                <v-layout row wrap justify-space-around v-if="importantMutationECDC['mutation'].length > 0 || importantMutationECDC['additional_mutation'].length > 0">
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px; margin-bottom: 50px">
+                      <h2>ECDC mutations (Spike): </h2>
+                    </v-flex>
                    <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; " v-for="(category, key, index) in importantMutationECDC" v-bind:key="index">
                       <v-card width="100%" color="#F0E68C">
                         <v-card-title class="justify-center">
@@ -115,61 +115,65 @@
                    </v-flex>
                 </v-layout>
                </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 100px; margin-bottom: 50px">
-                <h2>Mutations present in 75% of sequences of the selected lineages: </h2>
-              </v-flex>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                <v-layout row wrap justify-space-around>
-                   <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; ">
-                      <v-card width="100%" color="#F0E68C">
-                        <v-card-title class="justify-center">
-                          <span style="padding: 5px; background-color: red; color: white">MUTATIONS</span>
-                        </v-card-title>
-                        <v-card-text style="text-align: center;">
-                          <span v-for="mutation in importantMutation75Percentage['mutation']" v-bind:key="mutation">
-                            <span>{{mutation}}</span>
-                            <span v-if="checkAllMutations[mutation] === totalTargets" style=" display:inline; margin-left: 5px;">
-                                  <v-icon
-                                      text icon
-                                      slot="activator"
-                                      color="green"
-                                      class="white--text info-button-green" >mdi-circle</v-icon>
-                            </span>
-                            <span v-else-if="checkAllMutations[mutation] === 0" style="display:inline; margin-left: 5px">
-                                  <v-icon
-                                      text icon
-                                      slot="activator"
-                                      color="red"
-                                      class="white--text info-button-green" >mdi-circle</v-icon>
-                            </span>
-                            <span v-else style="display:inline; margin-left: 5px">
-                                <v-dialog width="500">
-                                  <template v-slot:activator="{ on }">
-                                    <v-btn
-                                          v-on="on"
-                                          small
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                <v-layout row wrap justify-space-around v-if="importantMutation75Percentage['mutation'].length > 0 || importantMutation75Percentage['additional_mutation'].length > 0">
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 100px; margin-bottom: 50px">
+                    <h2>Mutations present in 75% of sequences of the selected lineages: </h2>
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                    <v-layout row wrap justify-space-around>
+                       <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; ">
+                          <v-card width="100%" color="#F0E68C">
+                            <v-card-title class="justify-center">
+                              <span style="padding: 5px; background-color: red; color: white">MUTATIONS</span>
+                            </v-card-title>
+                            <v-card-text style="text-align: center;">
+                              <span v-for="mutation in importantMutation75Percentage['mutation']" v-bind:key="mutation">
+                                <span>{{mutation}}</span>
+                                <span v-if="checkAllMutations[mutation] === totalTargets" style=" display:inline; margin-left: 5px;">
+                                      <v-icon
                                           text icon
                                           slot="activator"
-                                          color="orange"
-                                          class="white--text info-button"
-                                          >
-                                      <v-icon >mdi-circle</v-icon>
-                                     </v-btn>
-                                  </template>
-                                  <v-card width="500" >
-                                    <v-card-title  class="headline" style="background-color: #DAA520 ; color: white">TARGET WITH THE MUTATION: </v-card-title>
-                                    <v-card-text style="margin-top: 30px; text-align: center">
-                                      <span v-for="target in checkTargetsForAllMutations[mutation]" v-bind:key="target">
-                                         {{target}} <br><br>
-                                      </span>
-                                    </v-card-text>
-                                  </v-card>
-                              </v-dialog>
-                            </span>
-                            <br>
-                          </span>
-                        </v-card-text>
-                      </v-card>
+                                          color="green"
+                                          class="white--text info-button-green" >mdi-circle</v-icon>
+                                </span>
+                                <span v-else-if="checkAllMutations[mutation] === 0" style="display:inline; margin-left: 5px">
+                                      <v-icon
+                                          text icon
+                                          slot="activator"
+                                          color="red"
+                                          class="white--text info-button-green" >mdi-circle</v-icon>
+                                </span>
+                                <span v-else style="display:inline; margin-left: 5px">
+                                    <v-dialog width="500">
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn
+                                              v-on="on"
+                                              small
+                                              text icon
+                                              slot="activator"
+                                              color="orange"
+                                              class="white--text info-button"
+                                              >
+                                          <v-icon >mdi-circle</v-icon>
+                                         </v-btn>
+                                      </template>
+                                      <v-card width="500" >
+                                        <v-card-title  class="headline" style="background-color: #DAA520 ; color: white">TARGET WITH THE MUTATION: </v-card-title>
+                                        <v-card-text style="margin-top: 30px; text-align: center">
+                                          <span v-for="target in checkTargetsForAllMutations[mutation]" v-bind:key="target">
+                                             {{target}} <br><br>
+                                          </span>
+                                        </v-card-text>
+                                      </v-card>
+                                  </v-dialog>
+                                </span>
+                                <br>
+                              </span>
+                            </v-card-text>
+                          </v-card>
+                       </v-flex>
+                    </v-layout>
                    </v-flex>
                 </v-layout>
                </v-flex>
@@ -230,7 +234,7 @@ export default {
             } else {
               if (!this.checkAllMutations[mutation]) {
                 this.checkAllMutations[mutation] = 0;
-                if(!this.checkTargetsForAllMutations[mutation].includes(this.rowsTable[i][index]['target'])) {
+                if(!this.checkTargetsForAllMutations[mutation]) {
                   this.checkTargetsForAllMutations[mutation] = [];
                 }
               }

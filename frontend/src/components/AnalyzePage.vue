@@ -95,7 +95,7 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage']),
+    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage', 'setColor1', 'setColor2', 'setColor3']),
     ...mapActions([]),
   },
   watch:{
@@ -127,6 +127,34 @@ export default {
   },
   mounted() {
     this.selectedTabAnalyze = this.selectedTabAnalyzeFromHome;
+
+    let colormap = require('colormap')
+
+    let color_1 = colormap({
+        colormap: 'freesurface-red',
+        nshades: 9,
+        format: 'hex',
+        alpha: 1
+    })
+
+    let color_2 = colormap({
+        colormap: 'freesurface-blue',
+        nshades: 9,
+        format: 'hex',
+        alpha: 1
+    })
+
+    let color_3 = colormap({
+        colormap: 'chlorophyll',
+        nshades: 9,
+        format: 'hex',
+        alpha: 1
+                  })
+
+    this.setColor1(color_1);
+    this.setColor2(color_2);
+    this.setColor3(color_3);
+
     let i = 0;
     while(i < 5){
       let id = 'tab' + i;

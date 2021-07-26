@@ -746,34 +746,112 @@
                  </v-btn>
                </v-flex>
                <div v-if="pValueBarChartApplied">
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                   <v-layout row wrap justify-center>
-                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                         <v-card width="400px" color="#F0E68C">
-                            <v-card-title class="justify-center">
-                              <h5>HIGHLIGHTS DOMAIN:</h5>
-                            </v-card-title>
-                            <v-card-text style="margin-top: 30px">
-                              <v-autocomplete
-                                v-model="selectedDomainForPValue"
-                                :items="possibleDomainForPValue"
-                                label="Domain"
-                                solo
-                                hide-details
-                                :item-text="getFieldTextDomain"
-                                multiple
-                              >
-                              </v-autocomplete>
-                            </v-card-text>
-                         </v-card>
-                       </v-flex>
-                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
-                          <v-card style="width: 400px;" :color="colorPValueInfoBox[idx%colorPValueInfoBox.length]" v-if="selectedDomainForPValue.length > 0">
-                              <h5 style="text-align: center; color: white ">{{domain.toUpperCase()}} ({{begin_value_domain[idx]}} , {{end_value_domain[idx]}}) </h5>
-                          </v-card>
-                       </v-flex>
-                   </v-layout>
-                  </v-flex>
+               <v-layout row wrap justify-center style="margin-top: 30px">
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                           <v-card width="400px" color="#F0E68C">
+                              <v-card-title class="justify-center">
+                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                              </v-card-title>
+                              <v-card-text style="margin-top: 30px">
+                                <v-autocomplete
+                                  v-model="selectedDomainForPValue"
+                                  :items="possibleDomainForPValue"
+                                  label="Sites ,family and domains"
+                                  solo
+                                  hide-details
+                                  :item-text="getFieldTextDomain"
+                                  multiple
+                                >
+                                </v-autocomplete>
+                              </v-card-text>
+                           </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                           <v-card width="400px" color="#F0E68C">
+                              <v-card-title class="justify-center">
+                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                              </v-card-title>
+                              <v-card-text style="margin-top: 30px">
+                                <v-autocomplete
+                                  v-model="selectedDomainForPValueMutagenesis"
+                                  :items="possibleDomainForPValueMutagenesis"
+                                  label="Mutagenesis"
+                                  solo
+                                  hide-details
+                                  :item-text="getFieldTextDomain"
+                                  multiple
+                                >
+                                </v-autocomplete>
+                              </v-card-text>
+                           </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                           <v-card width="400px" color="#F0E68C">
+                              <v-card-title class="justify-center">
+                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                              </v-card-title>
+                              <v-card-text style="margin-top: 30px">
+                                <v-autocomplete
+                                  v-model="selectedDomainForPValueAaModifications"
+                                  :items="possibleDomainForPValueAaModifications"
+                                  label="Amino acid modifications"
+                                  solo
+                                  hide-details
+                                  :item-text="getFieldTextDomain"
+                                  multiple
+                                >
+                                </v-autocomplete>
+                              </v-card-text>
+                           </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                 </v-layout>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValue.length > 0">
+                              <v-card :color="color_1[idx%color_1.length] + 80" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain[idx]}} , {{end_value_domain[idx]}}) </h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueMutagenesis" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueMutagenesis.length > 0">
+                              <v-card :color="color_2[idx%color_2.length] + 80" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain_mutagenesis[idx]}} , {{end_value_domain_mutagenesis[idx]}}) </h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueAaModifications.length > 0">
+                              <v-card :color="color_3[idx%color_3.length] + 80" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain_aa_modifications[idx]}} , {{end_value_domain_aa_modifications[idx]}}) </h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                 </v-layout>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rows ,index) in rowsTableProvReg" v-bind:key="'pValue' + index">
@@ -817,6 +895,10 @@
                          :startStopProtein="startStopProtein"
                          :selectedDomainForPValue="selectedDomainForPValue"
                          :possibleDomainForPValue="possibleDomainForPValue"
+                         :selectedDomainForPValueMutagenesis="selectedDomainForPValueMutagenesis"
+                         :possibleDomainForPValueMutagenesis="possibleDomainForPValueMutagenesis"
+                         :selectedDomainForPValueAaModifications="selectedDomainForPValueAaModifications"
+                         :possibleDomainForPValueAaModifications="possibleDomainForPValueAaModifications"
                          type="geo">
                      </PValueBarChart>
                    </v-flex>
@@ -948,14 +1030,24 @@ export default {
       startStopProtein: {},
       selectedDomainForPValue: [],
       possibleDomainForPValue: [],
+      begin_value_domain: [],
+      end_value_domain: [],
+
+      selectedDomainForPValueMutagenesis: [],
+      possibleDomainForPValueMutagenesis: [],
+      begin_value_domain_mutagenesis: [],
+      end_value_domain_mutagenesis: [],
+
+      selectedDomainForPValueAaModifications: [],
+      possibleDomainForPValueAaModifications: [],
+      begin_value_domain_aa_modifications: [],
+      end_value_domain_aa_modifications: [],
 
       selectedHeatmapMode: '% Target',
       possibleHeatmapMode: ['% Target', '% Target - % Background', 'Odds ratio'],
 
       selectedMinPercentageMutationPValue: 0,
       selectedMaxPercentageMutationPValue: 80,
-      begin_value_domain: [],
-      end_value_domain: [],
 
       fieldToExclude: null,
 
@@ -971,7 +1063,8 @@ export default {
   },
   computed: {
     ...mapState(['all_geo', 'all_protein', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo', 'errorNumSeqQueryGeo',
-      'numLevelAboveBackground', 'toExcludeGeo', 'colorPValueInfoBox', 'locationToExcludeMulti']),
+      'numLevelAboveBackground', 'toExcludeGeo', 'colorPValueInfoBox', 'locationToExcludeMulti'
+      , 'color_1', 'color_2', 'color_3']),
     ...mapGetters({}),
     selectedCountryToLower(){
       if(this.selectedCountry_forProvReg !== null){
@@ -1630,6 +1723,17 @@ export default {
                     let value_b = b['Description'].toLowerCase();
                     return value_a > value_b ? 1 : -1;
                   });
+                  this.possibleDomainForPValueMutagenesis = res['mutagenesis'].sort(function(a, b){
+                    let value_a = a['Description'].toLowerCase();
+                    let value_b = b['Description'].toLowerCase();
+                    return value_a > value_b ? 1 : -1;
+                  });
+                  this.possibleDomainForPValueAaModifications = res['aa_modifications'].sort(function(a, b){
+                    let value_a = a['Description'].toLowerCase();
+                    let value_b = b['Description'].toLowerCase();
+                    return value_a > value_b ? 1 : -1;
+                  });
+
                   this.overlay = false;
                   this.pValueBarChartApplied = true;
               });
@@ -1799,6 +1903,44 @@ export default {
           }
           this.begin_value_domain.push(min);
           this.end_value_domain.push(max);
+      }
+    },
+    selectedDomainForPValueMutagenesis(){
+      this.begin_value_domain_mutagenesis = [];
+      this.end_value_domain_mutagenesis = [];
+
+      for(let i = 0; i < this.selectedDomainForPValueMutagenesis.length; i = i + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[i];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
+            max = this.possibleDomainForPValueMutagenesis[index]['End'];
+          }
+          this.begin_value_domain_mutagenesis.push(min);
+          this.end_value_domain_mutagenesis.push(max);
+      }
+    },
+    selectedDomainForPValueAaModifications(){
+      this.begin_value_domain_aa_modifications = [];
+      this.end_value_domain_aa_modifications = [];
+
+      for(let i = 0; i < this.selectedDomainForPValueAaModifications.length; i = i + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValueAaModifications.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueAaModifications[i];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValueAaModifications[index]['Begin'];
+            max = this.possibleDomainForPValueAaModifications[index]['End'];
+          }
+          this.begin_value_domain_aa_modifications.push(min);
+          this.end_value_domain_aa_modifications.push(max);
       }
     },
     selectedMinPercentageMutationPValue(){

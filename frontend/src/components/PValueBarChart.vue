@@ -36,6 +36,10 @@ export default {
     startStopProtein: {required: true,},
     selectedDomainForPValue: {required: true,},
     possibleDomainForPValue: {required: true,},
+    selectedDomainForPValueMutagenesis: {required: true,},
+    possibleDomainForPValueMutagenesis: {required: true,},
+    selectedDomainForPValueAaModifications: {required: true,},
+    possibleDomainForPValueAaModifications: {required: true,},
     type: {required: true,},
   },
   data(){
@@ -108,7 +112,8 @@ export default {
   computed: {
     ...mapState(['colorPValueChart', 'startValuePValueBarChartTime', 'endValuePValueBarChartTime',
                  'startValuePValueBarChartGeo', 'endValuePValueBarChartGeo',
-                 'startValuePValueBarChartFree', 'endValuePValueBarChartFree']),
+                 'startValuePValueBarChartFree', 'endValuePValueBarChartFree',
+                 'color_1', 'color_2', 'color_3']),
     ...mapGetters({}),
   },
   methods: {
@@ -255,49 +260,88 @@ export default {
             max = this.possibleDomainForPValue[index]['End'];
           }
 
-          let num_color = k%this.colorPValueChart.length;
+          let colors = this.color_1;
 
-          if(k === 0) {
+          let num_color = k%colors.length;
+          let color = colors[num_color];
+          color = color + '80'
 
-          //   let arrY_sfondo = [];
-          //   for(let k = 0; k < arrY.length; k = k + 1) {
-          //     if(k >= min - 1 && k <= max - 1) {
-          //       arrY_sfondo.push(0);
-          //     }
-          //     else {
-          //       arrY_sfondo.push(0);
-          //     }
-          //   }
-          //
-          //   let series = {
-          //       type: 'bar',
-          //       data: arrY_sfondo,
-          //       barWidth: '100%',
-          //       showBackground: true,
-          //       backgroundStyle: {
-          //         color: 'grey',
-          //         borderColor: 'grey',
-          //       },
-          //   };
-          //   this.barChart.series.push(series);
+          let singleMarkArea = [{
+            xAxis: min - 1,
+            itemStyle: {
+              color: color,
+            },
+          }, {
+            xAxis: max - 1
+          }];
 
+          this.barChart.series[0].markArea.data.push(singleMarkArea);
 
-            this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
-            this.barChart.series[0].markArea.data[0][1].xAxis = max - 1;
-            this.barChart.series[0].markArea.data[0][0].itemStyle.color = this.colorPValueChart[num_color];
+        }
+      }
+
+      if(this.selectedDomainForPValueMutagenesis.length > 0){
+        for(let k = 0; k < this.selectedDomainForPValueMutagenesis.length; k = k + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[k];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
+            max = this.possibleDomainForPValueMutagenesis[index]['End'];
           }
-          else{
-            let singleMarkArea = [{
-              xAxis: min - 1,
-              itemStyle: {
-                color: this.colorPValueChart[num_color],
-              },
-            }, {
-              xAxis: max - 1
-            }];
 
-            this.barChart.series[0].markArea.data.push(singleMarkArea);
+          let colors = this.color_2;
+
+          let num_color = k%colors.length;
+          let color = colors[num_color];
+          color = color + '80'
+
+          let singleMarkArea = [{
+            xAxis: min - 1,
+            itemStyle: {
+              color: color,
+            },
+          }, {
+            xAxis: max - 1
+          }];
+
+          this.barChart.series[0].markArea.data.push(singleMarkArea);
+        }
+      }
+
+      if(this.selectedDomainForPValueAaModifications.length > 0){
+        for(let k = 0; k < this.selectedDomainForPValueAaModifications.length; k = k + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValue.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueAaModifications[k];
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValueAaModifications[index]['Begin'];
+            max = this.possibleDomainForPValueAaModifications[index]['End'];
           }
+
+          let colors = this.color_3;
+
+          let num_color = k%colors.length;
+          let color = colors[num_color];
+          color = color + '80'
+
+          let singleMarkArea = [{
+            xAxis: min - 1,
+            itemStyle: {
+              color: color,
+            },
+          }, {
+            xAxis: max - 1
+          }];
+
+          this.barChart.series[0].markArea.data.push(singleMarkArea);
+
         }
       }
 
@@ -351,6 +395,24 @@ export default {
       this.renderGraph(met);
     },
     selectedDomainForPValue(){
+      let met =  JSON.parse(JSON.stringify(this.pValueContent));
+      let delayInMilliseconds = 2000;
+
+      let that = this;
+      setTimeout(function() {
+        that.renderGraph(met);
+      }, delayInMilliseconds);
+    },
+    selectedDomainForPValueMutagenesis(){
+      let met =  JSON.parse(JSON.stringify(this.pValueContent));
+      let delayInMilliseconds = 2000;
+
+      let that = this;
+      setTimeout(function() {
+        that.renderGraph(met);
+      }, delayInMilliseconds);
+    },
+    selectedDomainForPValueAaMutations(){
       let met =  JSON.parse(JSON.stringify(this.pValueContent));
       let delayInMilliseconds = 2000;
 
