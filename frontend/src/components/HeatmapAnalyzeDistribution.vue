@@ -1,18 +1,20 @@
 <template>
   <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 40px; margin-bottom: 20px">
+           <h2>HEATMAP</h2>
+           <v-btn @click="download" x-small icon
+              style="margin-left: 20px; margin-bottom: 5px">
+                <v-icon size="23">
+                  mdi-download-circle-outline
+                </v-icon>
+           </v-btn>
+        </v-flex>
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="nameHeatmap" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white; z-index: 1">
           </div>
         </v-row>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
-        </v-flex>
     </v-container>
 </template>
 
@@ -199,14 +201,30 @@ export default {
         }
         if (!isDesc) {
           if(count_a === count_b){
-            return a['lineage'] < b['lineage'] ? 1 : -1;
+            let a_lin = a['lineage'].toLowerCase();
+            let b_lin = b['lineage'].toLowerCase();
+            if(a_lin === "n/d"){
+              return -1;
+            }
+            if(b_lin === "n/d"){
+              return 1;
+            }
+            return a_lin < b_lin ? 1 : -1;
           }
           else {
             return  parseInt(count_a, 10) > parseInt(count_b, 10)  ? 1 : -1;
           }
         } else {
           if(count_a === count_b){
-            return a['lineage'] < b['lineage'] ? 1 : -1;
+            let a_lin = a['lineage'].toLowerCase();
+            let b_lin = b['lineage'].toLowerCase();
+            if(a_lin === "n/d"){
+              return -1;
+            }
+            if(b_lin === "n/d"){
+              return 1;
+            }
+            return a_lin < b_lin ? 1 : -1;
           }
           else {
             return  parseInt(count_a, 10) < parseInt(count_b, 10)  ? 1 : -1;

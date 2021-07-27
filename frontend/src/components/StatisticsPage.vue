@@ -15,7 +15,7 @@
               </v-btn>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#DAA520">
+              <v-card width="500px" color="#FFBA08">
                 <v-card-title>
                   <h5>Cluster counter (num of seq.):  (greater than)</h5>
                 </v-card-title>
@@ -35,7 +35,7 @@
               </v-card>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#DAA520">
+              <v-card width="500px" color="#FFBA08">
                 <v-card-title>
                   <h5>Select Protein:</h5>
                 </v-card-title>
@@ -51,7 +51,7 @@
               </v-card>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#DAA520">
+              <v-card width="500px" color="#FFBA08">
                 <v-card-title>
                   <h5>Lineage frequency: (less than)</h5>
                 </v-card-title>
@@ -74,7 +74,7 @@
           </v-layout>
           <v-layout row wrap justify-center style="margin-top: 50px">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#DAA520">
+              <v-card width="500px" color="#FFBA08">
                 <v-layout row wrap justify-center style="padding: 30px;">
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                     <h3>Filter graph on cluster and lineages:</h3>
@@ -159,7 +159,7 @@
             </v-flex>
           </v-layout>
 
-          <v-card color="#DAA520" style="padding-bottom: 50px">
+          <v-card color="#FFBA08" style="padding-bottom: 50px">
             <v-layout wrap align-center justify-center>
               <v-data-table
                       :headers="allResultTableHeaders"
@@ -197,7 +197,7 @@
                               </template>
                               <v-card>
                                   <v-card-title
-                                          style="background-color: #DAA520 ; color: white;"
+                                          style="background-color: #FFBA08 ; color: white;"
                                           class="justify-center"
                                   >
                                     <span v-if="header.value === 'pubs linear'">
@@ -253,7 +253,7 @@
                                 </template>
                                 <v-card>
                                   <v-card-title
-                                          style="background-color: #DAA520 ; color: white;"
+                                          style="background-color: #FFBA08 ; color: white;"
                                           class="justify-center"
                                   >
                                     <span>
@@ -357,7 +357,7 @@
     width="1500"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
         Input Statistics
         <v-spacer></v-spacer>
         <v-btn

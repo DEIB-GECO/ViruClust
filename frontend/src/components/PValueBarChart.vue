@@ -2,20 +2,17 @@
   <div>
     <v-container fluid grid-list-xl style="justify-content: center; width: 1300px">
       <v-layout row wrap justify-center>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
-
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0">
           <div :id="namePValue" style="width: 1000px; height: 250px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white;">
           </div>
-        </v-flex>
-
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
+           <v-btn @click="download" x-small icon v-if="my_chart !== null"
+            style="margin-left: 20px; margin-top: 110px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+          </v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -209,10 +206,10 @@ export default {
         else{
           let color ;
           if(ii %2 === 1){
-            color = 'red';
+            color = '#3C99DC';
           }
           else{
-            color = 'blue';
+            color = '#0F5298';
           }
           let series = {
                 type: 'bar',

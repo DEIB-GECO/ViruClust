@@ -1,6 +1,12 @@
 <template>
   <div style="position: relative;">
-    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
+        <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+         </v-btn></h2>
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
@@ -27,19 +33,12 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="green"
+                color="#F48C06"
                 track-color="grey"
                 height="2px"
               >
             </v-range-slider>
           </div>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; ">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
         </v-flex>
       </v-row>
     </v-container>
@@ -47,7 +46,7 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
+          <v-card style="width: 100%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
@@ -74,6 +73,9 @@
                             </v-icon>
                           </template>
                       </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -102,6 +104,9 @@
                         </template>
                       </v-text-field>
                     </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -124,12 +129,10 @@
                     hide-details
                     ></v-select>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
                   <h3>Select length of the period</h3>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
+                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin: 0; padding: 0" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
                   <v-text-field
                     v-model="selectedNumDaysAnalysis"
                     label="Protein"
@@ -140,12 +143,13 @@
                     type="number"
                   ></v-text-field>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" >
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px" >
+                  <span><b>(only bold squared periods are analyzed, as they contain enough sequences and can be compared with the adjacent periods)</b></span>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 md5 lg5 d-flex"
                         style="justify-content: center; margin-bottom: 5px"
                         v-for="(period, index) in timeDivision" v-bind:key="period[0]">
-                       <v-row justify-center style="width:  100%; border: green solid 7px;" v-if="timeDivisionAcceptable.includes(period)">
+                       <v-row justify-center style="width:  100%; border: #6A040F solid 7px;" v-if="timeDivisionAcceptable.includes(period)">
                           <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
                             <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
                           </v-flex>
@@ -156,7 +160,7 @@
                             <span style="text-align: center"><b>ORDER:</b><br> {{index + 1}}</span>
                           </v-flex>
                        </v-row>
-                       <v-row justify-center style="width:  100%; border: orange solid 7px;" v-else-if="timeDivisionNumSeqAcceptable.includes(period)">
+                       <v-row justify-center style="width:  100%; border: grey solid 1px;" v-else-if="timeDivisionNumSeqAcceptable.includes(period)">
                           <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
                             <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
                           </v-flex>
@@ -167,7 +171,7 @@
                             <span style="text-align: center"><b>ORDER:</b><br> {{index + 1}}</span>
                           </v-flex>
                        </v-row>
-                       <v-row justify-center style="width:  100%; border: red solid 7px;" v-else>
+                       <v-row justify-center style="width:  100%; border: grey solid 1px;" v-else>
                           <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
                             <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
                           </v-flex>
@@ -256,7 +260,7 @@ export default {
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: 'rgba(50, 255, 50, 0.5)',
+                            color: '#F48C0680',
                         },
                     }, {
                         xAxis: 0

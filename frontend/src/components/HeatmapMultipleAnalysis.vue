@@ -1,6 +1,26 @@
 <template>
-  <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+  <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px; position:relative;">
     <v-layout row wrap justify-center>
+      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
+      <h2>HEATMAP
+        <v-btn @click="download" x-small icon v-if="my_chart !== null"
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+         </v-btn>
+      </h2>
+     </v-flex>
+     <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+      <v-autocomplete
+              v-model="heatmapMode"
+              :items="possibleHeatmapMode"
+              label="Heatmap mode"
+              solo
+              hide-details
+            >
+      </v-autocomplete>
+     </v-flex>
       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="nameHeatmap" style="width: 100%; height: 500px; user-select: none;
@@ -17,15 +37,45 @@
             </v-flex>
           </v-layout>
         </div>
+
+      <div v-else-if="errorNoData" style="position: absolute; top: 50px; width: 500px; height: 200px">
+          <v-layout wrap justify-center style=" height: 100%">
+            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
+              <h1 style="position: absolute; top: 10%; text-align: center; z-index: 1">NO DATA</h1>
+              <h3 style="position: absolute; top:40%; text-align: center; z-index: 1">No data to show</h3>
+            </v-flex>
+          </v-layout>
+        </div>
       </v-flex>
 
-      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-        <v-btn @click="download"
-               class="white--text"
-                   small
-               color="rgb(122, 139, 157)">
-          Download As Image</v-btn>
-      </v-flex>
+      <v-flex v-if="!errorShow && !errorNoData && heatmapMode === 'Odds ratio'" class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: absolute; right: 40%; bottom: 90px; z-index: 1;">
+          <v-dialog width="500">
+            <template v-slot:activator="{ on }">
+              <v-btn
+                    v-on="on"
+                      slot="activator"
+                      class="info-button"
+                      x-small
+                      text icon color="grey"
+                      style="margin-bottom: 5px; margin-left: 20px">
+                  <v-icon class="info-icon">mdi-information</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+                <v-card-title
+                        class="headline grey lighten-2"
+                        primary-title
+                >
+                  {{heatmapMode}}
+                </v-card-title>
+                <v-card-text style="margin-top: 10px">
+                    <span v-if="heatmapMode === 'Odds ratio'">
+                        Minimum value is 0. Maximum value is the maximum number that the odds ratio reaches, before becoming infinite.
+                    </span>
+                </v-card-text>
+            </v-card>
+      </v-dialog>
+    </v-flex>
 
     </v-layout>
 
@@ -42,7 +92,6 @@ export default {
     nameHeatmap: {required: true,},
     contentHeatmap: {required: true,},
     fixedContent: {required: true,},
-    heatmapMode: {required: true,},
     maxOddsRatio: {required: true,},
     importantMutation: {required: true,}
   },
@@ -56,6 +105,10 @@ export default {
       row: [],
       header: [],
       errorShow: false,
+      errorNoData: false,
+
+      heatmapMode: '% Target',
+      possibleHeatmapMode: ['% Target', '% Target - % Background', 'Odds ratio'],
 
       options_slider: {
         enableCross: false
@@ -189,6 +242,7 @@ export default {
       this.my_chart = null;
 
       this.errorShow = false;
+      this.errorNoData = false;
 
       rows = rows.sort(function (a, b) {
         let pos_a = parseInt(a['mutation_position']);
@@ -341,11 +395,19 @@ export default {
         this.heatmap.grid.height = (this.y_axis.length * 20);
         this.my_chart.setOption(this.heatmap, true);
       }
+      else if(rows.length === 0){
+        let elem = document.getElementById(this.nameHeatmap);
+        elem.style['height'] = '200px';
+        elem.style['width'] = '500px';
+        this.errorShow = false;
+        this.errorNoData = true;
+      }
       else{
         let elem = document.getElementById(this.nameHeatmap);
         elem.style['height'] = '200px';
         elem.style['width'] = '500px';
         this.errorShow = true;
+        this.errorNoData = false;
       }
     },
   },

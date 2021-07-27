@@ -185,7 +185,7 @@
     width="1200"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
         ANALYSE MUTATION PER SEQUENCE
         <v-spacer></v-spacer>
         <v-btn
@@ -246,7 +246,7 @@
     width="1200"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
         ANALYSIS SEQUENCES / MUTATION
         <v-spacer></v-spacer>
         <v-btn

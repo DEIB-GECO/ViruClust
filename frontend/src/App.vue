@@ -1,6 +1,6 @@
 <template>
   <v-app>
-      <v-toolbar dark color="#DAA520" style="width: 100%">
+      <v-toolbar dark color="#FFBA08" style="width: 100%">
         <div class="d-flex align-center">
           <v-img
             class="shrink mt-1 hidden-sm-and-down"
@@ -24,15 +24,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-toolbar-items style="background-color: transparent">
-          <v-btn icon text href="http://geco.deib.polimi.it/episurf/" target="_blank"
-                 style="background-color: transparent; width: 100px">
-              <span>EpiSurf</span>
-          </v-btn>
-          <v-btn icon text href="http://geco.deib.polimi.it/episurf_gisaid/" target="_blank"
-                 style="background-color: transparent; width: 200px">
-              <span>EpiSurf GISAID</span>
-          </v-btn>
+        <v-toolbar-items style="background-color: transparent" class="hidden-lg-and-down">
           <v-btn icon text href="http://geco.deib.polimi.it/virusurf/" target="_blank"
                 style="background-color: transparent; width: 100px">
               <span>ViruSurf</span>
@@ -41,19 +33,83 @@
                 style="background-color: transparent; width: 200px">
               <span>ViruSurf GISAID</span>
           </v-btn>
-          <v-btn icon text href="http://geco.deib.polimi.it/genosurf/" target="_blank"
-              style="background-color: transparent; width: 100px">
-              <span>GenoSurf</span>
+          <v-btn icon text href="http://geco.deib.polimi.it/episurf/" target="_blank"
+                 style="background-color: transparent; width: 100px">
+              <span>EpiSurf</span>
+          </v-btn>
+          <v-btn icon text href="http://geco.deib.polimi.it/episurf_gisaid/" target="_blank"
+                 style="background-color: transparent; width: 200px">
+              <span>EpiSurf GISAID</span>
           </v-btn>
           <v-btn icon text href="" target="_blank"
                  style="background-color: transparent; width: 100px">
               <span>Wiki</span>
           </v-btn>
           <v-btn icon text href="" target="_blank"
-                style="background-color: transparent; width: 100px">
-                  <span>About</span>
-              </v-btn>
+            style="background-color: transparent; width: 100px">
+              <span>ACK</span>
+          </v-btn>
         </v-toolbar-items>
+
+        <div class="hidden-xl-only">
+        <v-menu>
+          <template v-slot:activator="{ on, attrs }">
+            <v-app-bar-nav-icon
+              v-bind="attrs"
+              v-on="on"
+            >
+            </v-app-bar-nav-icon>
+          </template>
+          <v-list-item style="background-color: white;">
+              <v-list-item-content>
+                <v-btn icon text href="http://geco.deib.polimi.it/virusurf/" target="_blank"
+                      style="background-color: transparent; width: 200px">
+                    <span>ViruSurf</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="http://geco.deib.polimi.it/virusurf_gisaid/" target="_blank"
+                      style="background-color: transparent; width: 200px">
+                    <span>ViruSurf GISAID</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="http://geco.deib.polimi.it/episurf/" target="_blank"
+                       style="background-color: transparent; width: 200px">
+                    <span>EpiSurf</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="http://geco.deib.polimi.it/episurf_gisaid/" target="_blank"
+                       style="background-color: transparent; width: 200px">
+                    <span>EpiSurf GISAID</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="" target="_blank"
+                       style="background-color: transparent; width: 200px">
+                    <span>Wiki</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="" target="_blank"
+                  style="background-color: transparent; width: 200px">
+                    <span>ACK</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+        </v-menu>
+        </div>
 
       </v-toolbar>
 

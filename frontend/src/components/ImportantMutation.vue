@@ -1,9 +1,6 @@
 <template>
   <div>
-    <v-btn @click="dialogImportantMutation = true"
-           class="white--text"
-           color="blue">
-      Important Mutation</v-btn>
+    <span>Check <a @click="dialogImportantMutation = true">here</a> the important changes.</span>
 
       <v-dialog
       persistent
@@ -11,8 +8,8 @@
       width="800"
       >
         <v-card>
-          <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
-            Important Mutation
+          <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+            Important Changes
             <v-spacer></v-spacer>
             <v-btn
                 style="background-color: rgb(122, 139, 157)"
@@ -37,34 +34,34 @@
                     slot="activator"
                     color="green"
                     class="white--text info-button-green" >mdi-circle</v-icon>
-                  All targets have the related mutation<br>
+                  All targets have the related change<br>
                   <v-icon
                     text icon
                     slot="activator"
                     color="orange"
                     class="white--text info-button-green" >mdi-circle</v-icon>
-                  Only some of the targets have the related mutation (click to see which ones)<br>
+                  Only some of the targets have the related change (click to see which ones)<br>
                   <v-icon
                     text icon
                     slot="activator"
                     color="red"
                     class="white--text info-button-green" >mdi-circle</v-icon>
-                  None of the targets have the related mutation<br>
+                  None of the targets have the related change<br>
                 </span>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                 <v-layout row wrap justify-space-around v-if="importantMutationECDC['mutation'].length > 0 || importantMutationECDC['additional_mutation'].length > 0">
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px; margin-bottom: 50px">
-                      <h2>ECDC mutations (Spike): </h2>
+                      <h2>ECDC changes (Spike): </h2>
                     </v-flex>
                    <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; " v-for="(category, key, index) in importantMutationECDC" v-bind:key="index">
                       <v-card width="100%" color="#F0E68C">
                         <v-card-title class="justify-center">
                           <span v-if="key.toLowerCase() === 'mutation'" style="padding: 5px; background-color: red; color: white">
-                            CORE MUTATIONS
+                            CORE CHANGES
                           </span>
                           <span v-else-if="key.toLowerCase() === 'additional_mutation'" style="padding: 5px; background-color: orange; color: white">
-                            ADDITIONAL MUTATIONS
+                            ADDITIONAL CHANGES
                           </span>
                         </v-card-title>
                         <v-card-text style="text-align: center;">
@@ -99,7 +96,7 @@
                                      </v-btn>
                                   </template>
                                   <v-card width="500" >
-                                    <v-card-title  class="headline" style="background-color: #DAA520 ; color: white">TARGET WITH THE MUTATION: </v-card-title>
+                                    <v-card-title  class="headline" style="background-color: #FFBA08 ; color: white">TARGET WITH THE CHANGE: </v-card-title>
                                     <v-card-text style="margin-top: 30px; text-align: center">
                                       <span v-for="target in checkTargetsForAllMutations[mutation]" v-bind:key="target">
                                          {{target}} <br><br>
@@ -117,15 +114,19 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                 <v-layout row wrap justify-space-around v-if="importantMutation75Percentage['mutation'].length > 0 || importantMutation75Percentage['additional_mutation'].length > 0">
-                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 100px; margin-bottom: 50px">
-                    <h2>Mutations present in 75% of sequences of the selected lineages: </h2>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" v-if="importantMutationECDC['mutation'].length > 0 || importantMutationECDC['additional_mutation'].length > 0" style="justify-content: center; margin-top: 100px;">
+                  </v-flex>
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; text-align: center; margin-bottom: 50px">
+                    <h2 v-if="rowsTable[0][0] && rowsTable[0][0]['lineage'] === 'empty'"> All lineages characteristic changes (present in 75% of sequences): </h2>
+                    <h2 v-else-if="rowsTable[0][0]"> Lineage {{rowsTable[0][0]['lineage']}} characteristic changes (present in 75% of lineage sequences): </h2>
+                    <h2 v-else>Changes present in 75% of sequences of the selected lineages: </h2>
                   </v-flex>
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                     <v-layout row wrap justify-space-around>
                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; ">
                           <v-card width="100%" color="#F0E68C">
                             <v-card-title class="justify-center">
-                              <span style="padding: 5px; background-color: red; color: white">MUTATIONS</span>
+                              <span style="padding: 5px; background-color: red; color: white">CHANGES</span>
                             </v-card-title>
                             <v-card-text style="text-align: center;">
                               <span v-for="mutation in importantMutation75Percentage['mutation']" v-bind:key="mutation">
@@ -159,7 +160,7 @@
                                          </v-btn>
                                       </template>
                                       <v-card width="500" >
-                                        <v-card-title  class="headline" style="background-color: #DAA520 ; color: white">TARGET WITH THE MUTATION: </v-card-title>
+                                        <v-card-title  class="headline" style="background-color: #FFBA08 ; color: white">TARGET WITH THE CHANGE: </v-card-title>
                                         <v-card-text style="margin-top: 30px; text-align: center">
                                           <span v-for="target in checkTargetsForAllMutations[mutation]" v-bind:key="target">
                                              {{target}} <br><br>
@@ -222,8 +223,8 @@ export default {
             });
             if (index !== -1) {
               if (this.checkAllMutations[mutation]) {
-                this.checkAllMutations[mutation] = this.checkAllMutations[mutation] + 1;
                 if(!this.checkTargetsForAllMutations[mutation].includes(this.rowsTable[i][index]['target'])) {
+                  this.checkAllMutations[mutation] = this.checkAllMutations[mutation] + 1;
                   this.checkTargetsForAllMutations[mutation].push(this.rowsTable[i][index]['target']);
                 }
               } else {

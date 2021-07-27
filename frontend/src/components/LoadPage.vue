@@ -80,7 +80,7 @@
     width="300"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
         Missing Files
         <v-spacer></v-spacer>
         <v-btn

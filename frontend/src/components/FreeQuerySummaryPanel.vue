@@ -5,7 +5,7 @@
           <h2>SUMMARY</h2>
         </v-flex>
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(0, 0, 255, 0.5)">
+          <v-card style="width: 80%; margin: 20px" color="#F48C06">
             <v-card-title class="justify-center">
               TARGET
             </v-card-title>
@@ -16,17 +16,6 @@
                 </v-flex>
                 <v-card color="white" width="60%" style="margin-bottom: 20px; padding: 20px">
                   <span v-for="(info, key) in arrayQueryFreeTarget" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
-                </v-card>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>LOCATION EXCLUDED: </h3>
-                </v-flex>
-                <v-card color="white" width="60%" style="margin-bottom: 20px;">
-                  <v-card-text style="text-align: center; color: black">
-                    <span v-for="(info, key) in toExcludeFreeTarget" v-bind:key="key"><b>{{key.toUpperCase()}} :</b><br><br>
-                      <span v-for="(location, idx) in info" v-bind:key="idx">{{location}}<br>
-                      </span>
-                    </span>
-                  </v-card-text>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <h3>NUM SEQUENCES: </h3>
@@ -45,7 +34,7 @@
           </v-card>
         </v-flex>
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(255, 0, 0, 0.5)">
+          <v-card style="width: 80%; margin: 20px" color="#DC2F02">
             <v-card-title class="justify-center">
               BACKGROUND
             </v-card-title>
@@ -56,17 +45,6 @@
                 </v-flex>
                 <v-card color="white" width="60%" style="margin-bottom: 20px; padding: 20px">
                   <span v-for="(info, key) in arrayQueryFreeBackground" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
-                </v-card>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>LOCATION EXCLUDED: </h3>
-                </v-flex>
-                <v-card color="white" width="60%" style="margin-bottom: 20px;">
-                  <v-card-text style="text-align: center; color: black">
-                    <span v-for="(info, key) in toExcludeFreeBackground" v-bind:key="key"><b>{{key.toUpperCase()}} :</b><br><br>
-                      <span v-for="(location, idx) in info" v-bind:key="idx">{{location}}<br>
-                      </span>
-                    </span>
-                  </v-card-text>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                   <h3>NUM SEQUENCES: </h3>
@@ -119,22 +97,37 @@ export default {
         if(this.queryFreeTarget[key]){
           array[key_to_use] = this.queryFreeTarget[key];
         }
-        else{
-          array[key_to_use] = 'N/D';
-        }
+        // else{
+        //   array[key_to_use] = 'N/D';
+        // }
+      }
+      if(Object.keys(this.toExcludeFreeTarget).length > 0){
+        let string = '';
+        Object.keys(this.toExcludeFreeTarget).forEach(elem =>{
+          string += '( ' + elem + ' : ';
+          for(let j = 0; j < this.toExcludeFreeTarget[elem].length; j = j + 1){
+            string += this.toExcludeFreeTarget[elem][j];
+            if(j < this.toExcludeFreeTarget[elem].length - 1){
+              string += ' , ';
+            }
+          }
+          string += ' )';
+        });
+
+        array['excluded'] = string
       }
       if(this.startDateQueryFreeTarget){
         array['start date'] = this.startDateQueryFreeTarget;
       }
-      else{
-         array['start date'] = 'N/D';
-      }
+      // else{
+      //    array['start date'] = 'N/D';
+      // }
       if(this.stopDateQueryFreeTarget){
         array['stop date'] = this.stopDateQueryFreeTarget;
       }
-      else{
-         array['stop date'] = 'N/D';
-      }
+      // else{
+      //    array['stop date'] = 'N/D';
+      // }
       return array;
     },
     arrayQueryFreeBackground(){
@@ -152,22 +145,37 @@ export default {
         if(this.queryFreeBackground[key]){
           array[key_to_use] = this.queryFreeBackground[key];
         }
-        else{
-          array[key_to_use] = 'N/D';
-        }
+        // else{
+        //   array[key_to_use] = 'N/D';
+        // }
+      }
+      if(Object.keys(this.toExcludeFreeBackground).length > 0){
+        let string = '';
+        Object.keys(this.toExcludeFreeBackground).forEach(elem =>{
+          string += '( ' + elem + ' : ';
+          for(let j = 0; j < this.toExcludeFreeBackground[elem].length; j = j + 1){
+            string += this.toExcludeFreeBackground[elem][j];
+            if(j < this.toExcludeFreeBackground[elem].length - 1){
+              string += ' , ';
+            }
+          }
+          string += ' )';
+        });
+
+        array['excluded'] = string
       }
       if(this.startDateQueryFreeBackground){
         array['start date'] = this.startDateQueryFreeBackground;
       }
-      else{
-         array['start date'] = 'N/D';
-      }
+      // else{
+      //    array['start date'] = 'N/D';
+      // }
       if(this.stopDateQueryFreeBackground){
         array['stop date'] = this.stopDateQueryFreeBackground;
       }
-      else{
-         array['stop date'] = 'N/D';
-      }
+      // else{
+      //    array['stop date'] = 'N/D';
+      // }
       return array;
     }
   },

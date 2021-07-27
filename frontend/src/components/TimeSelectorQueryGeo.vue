@@ -1,10 +1,45 @@
 <template>
   <div style="position: relative;">
-    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
-        <v-row justify="center" align="center" style="z-index: 1">
+    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
+        <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+         </v-btn></h2>
+        <v-layout row wrap justify-center style="background-color: white; margin-top: 30px; padding-top: 30px; padding-left: 15%; padding-right: 15%;">
+
+          <v-btn-toggle v-model="perc_or_absolute_num_exclusive" mandatory color="black">
+            <v-btn small>
+              <span>NUM SEQUENCES</span>
+            </v-btn>
+
+            <v-btn small>
+              <span>% SEQUENCES</span>
+            </v-btn>
+          </v-btn-toggle>
+
+          <v-spacer></v-spacer>
+
+          <v-btn-toggle v-model="view_exclusive" mandatory color="black">
+            <v-btn small>
+              <span>SHOW <span style="color: blue">TARGET</span></span>
+            </v-btn>
+
+            <v-btn small>
+              <span>SHOW <span style="color: red">BACKGROUND</span></span>
+            </v-btn>
+
+            <v-btn small>
+              <span>SHOW <span style="color: blue">BO</span><span style="color: red">TH</span></span>
+            </v-btn>
+          </v-btn-toggle>
+
+        </v-layout>
+        <v-row justify="center" align="center" style="z-index: 1; margin-top: 0">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-           background-color: white; margin-top: 100px; z-index: 1">
+           background-color: white; margin-top: 0; z-index: 1">
           </div>
         </v-row>
     </v-container>
@@ -27,22 +62,14 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="green"
+                color="#F48C06"
                 track-color="grey"
                 height="2px"
               >
             </v-range-slider>
           </div>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 10px">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
-         padding-top: 10px; padding-bottom: 10px;  border: grey solid 1px;">
+        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
           <v-layout row wrap justify-center style="">
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
               <v-select
@@ -55,69 +82,20 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"></v-flex>
-        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
-         padding-top: 0; padding-bottom: 0;  border: grey solid 1px">
-          <v-layout row wrap justify-center style="">
-            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-checkbox v-model="graphOnNumSequences"
-                label="NUM SEQUENCES"
-                input-value="true">
-                </v-checkbox>
-            </v-flex>
-            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-checkbox v-model="graphOnPercSequences"
-                label="% SEQUENCES"
-                input-value="true">
-                </v-checkbox>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"></v-flex>
-        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;
-         padding-top: 0; padding-bottom: 0;">
-          <v-layout row wrap justify-center style="border: grey solid 1px">
-            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-checkbox v-model="viewTarget"
-                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
-                  <template v-slot:label>
-                    <span>SHOW <span style="color: blue">TARGET</span></span>
-                  </template>
-                </v-checkbox>
-            </v-flex>
-            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-checkbox v-model="viewBackground"
-                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
-                  <template v-slot:label>
-                    <span>SHOW <span style="color: red">BACKGROUND</span></span>
-                  </template>
-                </v-checkbox>
-            </v-flex>
-             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                <v-checkbox v-model="viewBothTargetBackground"
-                label="SHOW BOTH"
-                input-value="true" hide-details style="padding: 0; padding-bottom: 10px !important;">
-                  <template v-slot:label>
-                    <span>SHOW <span style="color: blue">BO</span><span style="color: red">TH</span></span>
-                  </template>
-                </v-checkbox>
-            </v-flex>
-          </v-layout>
-        </v-flex>
       </v-row>
     </v-container>
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
+          <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
             <v-card-title class="justify-center">
               TIME FILTER
             </v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px;">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <h3>TARGET: </h3>
@@ -134,7 +112,7 @@
                   </v-layout>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <h3>BACKGROUND: </h3>
@@ -153,7 +131,7 @@
               </v-layout>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px;">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <h3>NUM SEQUENCES TARGET: </h3>
@@ -170,7 +148,7 @@
                   </v-layout>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative; margin-bottom: 30px; margin-top: 10px">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <h3>NUM SEQUENCES BACKGROUND: </h3>
@@ -189,7 +167,7 @@
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative;">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <h3>START: </h3>
@@ -213,10 +191,13 @@
                           </template>
                       </v-text-field>
                     </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
                   </v-layout>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative">
+                 padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <h3>END: </h3>
@@ -240,9 +221,16 @@
                         </template>
                       </v-text-field>
                     </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
                   </v-layout>
                 </v-flex>
               </v-layout>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
+                 padding: 0; margin: 0" v-if="listLocationExcluded.length > 0">
+                  * Location excluded from background : {{listLocationExcluded}}
+                </v-flex>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -277,8 +265,13 @@ export default {
       possibleTarget: [],
       selectedTarget: null,
 
+      view_exclusive: 2,
+      perc_or_absolute_num_exclusive: 0,
+
       startDateMultiMinor: null,
       locationToExclude: [],
+
+      listLocationExcluded: [],
 
       overlay: false,
       slider: [0, 1500],
@@ -299,9 +292,10 @@ export default {
       background_name: 'World',
 
       timeContentBackground: [],
+
       viewBackground: false,
-      viewTarget: true,
-      viewBothTargetBackground: false,
+      viewTarget: false,
+      viewBothTargetBackground: true,
 
       graphOnNumSequences: true,
       graphOnPercSequences: false,
@@ -356,7 +350,7 @@ export default {
                       data: [ [{
                           xAxis: 0,
                           itemStyle: {
-                              color: 'rgba(50, 255, 50, 0.5)',
+                              color: '#F48C0680',
                           },
                       }, {
                           xAxis: 0
@@ -1045,23 +1039,45 @@ export default {
     setTargetBackgroundName(){
       let query = JSON.parse(JSON.stringify(this.queryGeo));
 
+      this.listLocationExcluded = [];
+
+      let key = Object.keys(this.toExcludeGeo)[0];
+
       if(!query['geo_group']){
         this.target_name = 'World';
         this.background_name = 'World';
       }
       else if(!query['country']){
         this.target_name = query['geo_group'][this.targetIndex];
-        this.background_name = 'World';
+        if(this.toExcludeGeo['geo_group'] && this.toExcludeGeo['geo_group'].length > 0){
+          this.background_name = 'World *';
+          this.listLocationExcluded = this.toExcludeGeo['geo_group'];
+        }
+        else {
+          this.background_name = 'World';
+        }
       }
       else if(!query['region']){
         let arr_geo = ['geo_group'];
         this.target_name = query['country'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
-          this.background_name = 'World';
+          if(this.toExcludeGeo['geo_group'] && this.toExcludeGeo['geo_group'].length > 0){
+            this.background_name = 'World *';
+            this.listLocationExcluded = this.toExcludeGeo['geo_group'];
+          }
+          else {
+            this.background_name = 'World';
+          }
         }
         else{
-          this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          if(this.toExcludeGeo[key] && this.toExcludeGeo[key].length > 0){
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]] + ' *';
+            this.listLocationExcluded = this.toExcludeGeo[key];
+          }
+          else {
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          }
         }
       }
       else if(!query['province']){
@@ -1069,10 +1085,22 @@ export default {
         this.target_name = query['region'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
-          this.background_name = 'World';
+          if(this.toExcludeGeo['geo_group'] && this.toExcludeGeo['geo_group'].length > 0){
+            this.background_name = 'World *';
+            this.listLocationExcluded = this.toExcludeGeo['geo_group'];
+          }
+          else {
+            this.background_name = 'World';
+          }
         }
         else{
-          this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          if(this.toExcludeGeo[key] && this.toExcludeGeo[key].length > 0){
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]] + ' *';
+            this.listLocationExcluded = this.toExcludeGeo[key];
+          }
+          else {
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          }
         }
       }
       else{
@@ -1080,15 +1108,54 @@ export default {
         this.target_name = query['province'][this.targetIndex];
         let len = arr_geo.length;
         if (this.numLevelAboveBackground > len){
-          this.background_name = 'World';
+          if(this.toExcludeGeo['geo_group'] && this.toExcludeGeo['geo_group'].length > 0){
+            this.background_name = 'World *';
+            this.listLocationExcluded = this.toExcludeGeo['geo_group'];
+          }
+          else {
+            this.background_name = 'World';
+          }
         }
         else{
-          this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          if(this.toExcludeGeo[key] && this.toExcludeGeo[key].length > 0){
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]] + ' *';
+            this.listLocationExcluded = this.toExcludeGeo[key];
+          }
+          else {
+            this.background_name = query[arr_geo[this.numLevelAboveBackground - 1]];
+          }
         }
       }
     }
   },
   watch: {
+    view_exclusive(){
+      if(this.view_exclusive === 0){
+        this.viewTarget = true;
+        this.viewBackground = false;
+        this.viewBothTargetBackground = false;
+      }
+      else if(this.view_exclusive === 1){
+        this.viewTarget = false;
+        this.viewBackground = true;
+        this.viewBothTargetBackground = false;
+      }
+      else if(this.view_exclusive === 2){
+        this.viewTarget = false;
+        this.viewBackground = false;
+        this.viewBothTargetBackground = true;
+      }
+    },
+    perc_or_absolute_num_exclusive(){
+      if(this.perc_or_absolute_num_exclusive === 0){
+        this.graphOnNumSequences = true;
+        this.graphOnPercSequences = false;
+      }
+      else if(this.perc_or_absolute_num_exclusive === 1){
+        this.graphOnNumSequences = false;
+        this.graphOnPercSequences = true;
+      }
+    },
     selectedTarget(){
       let that = this;
       let index = this.possibleTarget.findIndex(function (item) {
@@ -1187,6 +1254,7 @@ export default {
       this.renderGraphFilterDate();
     },
     toExcludeGeo(){
+      this.setTargetBackgroundName();
       this.loadData();
     }
   },

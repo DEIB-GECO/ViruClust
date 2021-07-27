@@ -2,7 +2,7 @@
   <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px">
 
     <v-tabs v-model="selectedTabAnalyze"
-            background-color="#800000"
+            background-color="#6A040F"
             dark
             show-arrows
             slider-color="orange"
@@ -17,7 +17,7 @@
       </v-tab>
 
       <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
-         ANALYZE DISTRIBUTION LINEAGE IN GEO
+         GEO DISTRIBUTION OF LINEAGES
       </v-tab>
 
       <v-tab id="tab2" style="border-right: black solid 1px; width: 20%">

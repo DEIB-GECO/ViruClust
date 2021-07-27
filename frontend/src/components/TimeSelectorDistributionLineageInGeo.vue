@@ -1,5 +1,15 @@
 <template>
 <div style="position: relative;">
+    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
+     <h2>SELECTION OF COLLECTION-DATES TIME FRAME
+        <v-btn @click="download" x-small icon
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+        </v-btn>
+     </h2>
+    </v-flex>
     <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
@@ -27,19 +37,12 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="green"
+                color="#FFBA08"
                 track-color="grey"
                 height="2px"
               >
             </v-range-slider>
           </div>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
         </v-flex>
       </v-row>
     </v-container>
@@ -47,16 +50,15 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
+          <v-card style="width: 80%; margin: 20px" color="#FFBA08">
             <v-card-text>
-              <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-                 margin-bottom: 40px">
+              <v-layout row wrap justify-space-around style="padding-bottom: 5px; padding-top: 5px">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                     <h3>NUM SEQUENCES: </h3>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
                         :value = "num_sequences"
                         solo
@@ -67,13 +69,12 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative;">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; position: relative;">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <h3>START: </h3>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
                         v-model = "last_start_date"
                         solo
@@ -94,13 +95,12 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; position: relative">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <h3>END: </h3>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
                         v-model = "last_stop_date"
                         solo
@@ -168,14 +168,14 @@ name: "TimeSelectorDistributionLineageInGeo",
             trigger: 'item',
         },
         legend: {
-          data: ['Time distribution', 'AVG of previous 7 days'],
+          data: ['Collected sequences, per date', 'AVG of previous 7 days'],
           top: '20px',
           selectedMode: false,
           itemGap: 50,
         },
         series: [
             {
-                name: 'Time distribution',
+                name: 'Collected sequences, per date',
                 type: 'bar',
                 radius: '50%',
                 data: [],
@@ -194,7 +194,7 @@ name: "TimeSelectorDistributionLineageInGeo",
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: 'rgba(50, 255, 50, 0.5)',
+                            color: '#FFBA0880',
                         },
                     }, {
                         xAxis: 0

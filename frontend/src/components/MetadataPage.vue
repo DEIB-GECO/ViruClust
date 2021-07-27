@@ -5,7 +5,7 @@
       <v-card width="1800px" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F0E68C">
         <v-card-title class="justify-center"><h1>METADATA</h1></v-card-title>
         <v-card-text>
-           <v-card color="#DAA520" style="margin-top: 50px">
+           <v-card color="#FFBA08" style="margin-top: 50px">
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <h3>SELECTED FILTER</h3>
@@ -14,7 +14,7 @@
                <v-layout row wrap justify-center style="padding: 30px;">
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center"
                   v-for="(item, field, index) in selectedFilters" v-bind:key="index">
-                      <v-row align="center" justify="center" style="background-color:#800000; color: white; height: 60px; margin-bottom: 10px; padding-left: 20px">
+                      <v-row align="center" justify="center" style="background-color:#6A040F; color: white; height: 60px; margin-bottom: 10px; padding-left: 20px">
                         <span><pre><b>{{field.toUpperCase()}} :  </b></pre></span>
                         <span v-if="field !== 'date'">
                           <span v-for="(singleIt, index) in item" v-bind:key="singleIt">
@@ -52,7 +52,7 @@
            </v-card>
              <v-tabs v-model="selectedTab"
                   vertical style="margin-top: 50px;" dark
-                  background-color="#800000"
+                  background-color="#6A040F"
                   show-arrows>
                <v-tabs-slider color="" style="width: 500%"></v-tabs-slider>
 
@@ -64,7 +64,7 @@
               </v-tab>
 
                <v-tab-item>
-                 <v-card color="#DAA520" style="padding: 50px; border-radius: 0px" height="500">
+                 <v-card color="#FFBA08" style="padding: 50px; border-radius: 0px" height="500">
                    <v-container fluid grid-list-xl style="justify-content: center;">
                       <v-row justify="center" align="center">
                        <h2>SELECT ONE METADATA FROM LIST</h2>
@@ -74,7 +74,7 @@
                </v-tab-item>
 
               <v-tab-item v-for="v2 in allFields" v-bind:key="v2" style="background-color: red">
-                  <v-card color="#DAA520" style="border-radius: 0px; padding-bottom: 50px; padding-top: 50px">
+                  <v-card color="#FFBA08" style="border-radius: 0px; padding-bottom: 50px; padding-top: 50px">
                     <v-container fluid grid-list-xl style="justify-content: center;">
                       <v-row justify="center" align="center">
                        <h2>{{v2.toUpperCase()}}</h2>

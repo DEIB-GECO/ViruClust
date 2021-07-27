@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
           <v-card-title class="justify-center">
             <h1>SPATIAL ANALYSIS</h1>
           </v-card-title>
@@ -43,7 +43,7 @@
                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
                  <v-layout row wrap justify-center>
                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                      <h3>Select "granularity" distance between target and background</h3>
+                      <h3> Select the preferred comparison</h3>
                    </v-flex>
                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0">
                      <v-select
@@ -64,7 +64,7 @@
                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
                  <v-layout row wrap justify-center>
                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                      <h3>Select location to exclude from the background</h3>
+                      <h3>Select locations to exclude from the background</h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0">
                       <SelectorQueryToExclude
@@ -85,7 +85,7 @@
                <h2>SELECT PROTEINS TO ANALYZE</h2>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-               <h4>(no selection means "all protein")</h4>
+               <h4>(selecting none is equivalent to "all proteins")</h4>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                  <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
@@ -125,7 +125,7 @@
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <v-btn
                        @click="applyTableProvReg()"
-                       color="red"
+                       color="#D00000"
                        class="white--text"
                        style="margin-top: 20px"
                        :disabled="!(queryGeo['geo_group']) || errorNumSeqQueryGeo"
@@ -137,19 +137,19 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                 <h2>APPLY FILTERS TO TABLE</h2>
+                 <h2>APPLY FILTERS FOR TABLE ANALYSIS</h2>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
                       <h5>% BACKGROUND:</h5>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-layout row wrap justify-space-around>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -186,13 +186,56 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR BACKGROUND:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxBackgroundNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinBackgroundNumerator"
+                                            :max = "totalMaxBackgroundNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
                       <h5>% TARGET:</h5>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-layout row wrap justify-space-around>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -229,13 +272,80 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                  <v-card width="500px" color="#F0E68C">
+                    <v-card-title class="justify-center">
+                      <h5>NUMERATOR TARGET:</h5>
+                    </v-card-title>
+                    <v-card-text >
+                      <v-layout row wrap justify-space-around>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MIN</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMinTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            min="0"
+                                            :max="selectedMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                              <span>MAX</span>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                              <v-text-field v-model.number="selectedMaxTargetNumerator"
+                                            solo
+                                            class="centered-input"
+                                            :min = "selectedMinTargetNumerator"
+                                            :max = "totalMaxTargetNumerator"
+                                            type="number">
+                              </v-text-field>
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-text>
+                  </v-card>
+                </v-flex>
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                P-VALUE
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-layout row wrap justify-space-around>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -274,100 +384,38 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
-                    <v-card-title class="justify-center">
-                      <h5>NUMERATOR BACKGROUND:</h5>
-                    </v-card-title>
-                    <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
-                          <v-layout row wrap justify-center>
-                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                              <span>MIN</span>
-                            </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
-                              <v-text-field v-model.number="selectedMinBackgroundNumerator"
-                                            solo
-                                            class="centered-input"
-                                            min="0"
-                                            :max="selectedMaxBackgroundNumerator"
-                                            type="number">
-                              </v-text-field>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
-                          <v-layout row wrap justify-center>
-                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                              <span>MAX</span>
-                            </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
-                              <v-text-field v-model.number="selectedMaxBackgroundNumerator"
-                                            solo
-                                            class="centered-input"
-                                            :min = "selectedMinBackgroundNumerator"
-                                            :max = "totalMaxBackgroundNumerator"
-                                            type="number">
-                              </v-text-field>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
-                    <v-card-title class="justify-center">
-                      <h5>NUMERATOR TARGET:</h5>
-                    </v-card-title>
-                    <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
-                          <v-layout row wrap justify-center>
-                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                              <span>MIN</span>
-                            </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
-                              <v-text-field v-model.number="selectedMinTargetNumerator"
-                                            solo
-                                            class="centered-input"
-                                            min="0"
-                                            :max="selectedMaxTargetNumerator"
-                                            type="number">
-                              </v-text-field>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
-                          <v-layout row wrap justify-center>
-                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                              <span>MAX</span>
-                            </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
-                              <v-text-field v-model.number="selectedMaxTargetNumerator"
-                                            solo
-                                            class="centered-input"
-                                            :min = "selectedMinTargetNumerator"
-                                            :max = "totalMaxTargetNumerator"
-                                            type="number">
-                              </v-text-field>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
                       <h5>ODDS RATIO:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                ODDS RATIO
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
-                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                      <v-layout row wrap justify-space-around>
+                        <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                               <span>MIN</span>
@@ -378,21 +426,23 @@
                                             class="centered-input"
                                             min="0"
                                             :max="selectedMaxOddsRatio"
+                                            hide-details
                                             step = "0.1"
                                             type="number">
                               </v-text-field>
                             </v-flex>
                           </v-layout>
                         </v-flex>
-                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                        <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                               <span>MAX</span>
                             </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex-" style="justify-content: center; padding: 0">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                               <v-text-field v-model.number="selectedMaxOddsRatio"
                                             solo
                                             class="centered-input"
+                                            hide-details
                                             :min = "selectedMinOddsRatio"
                                             :max = "totalMaxOddsRatio"
                                             step = "0.1"
@@ -401,12 +451,12 @@
                             </v-flex>
                           </v-layout>
                         </v-flex>
-                        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+                        <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                                 <span>INF</span>
                             </v-flex>
-                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-bottom: 50px">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-bottom: 0">
                                 <v-checkbox v-model="isInfinite"
                                 hide-details
                                 input-value="true">
@@ -418,23 +468,12 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <v-btn
-                         @click="applyFilterOnTableProvReg()"
-                         color="red"
-                         class="white--text"
-                  >
-                      APPLY FILTERS
-                  </v-btn>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length !== 0">
-                 <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F0E68C">
                         <v-card-title class="justify-center">
                           <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
-                        <v-card-text style="margin-top: 30px">
+                        <v-card-text>
                           <v-autocomplete
                             v-model="selectedProteinForTable"
                             :items="possibleProteinForTable"
@@ -447,55 +486,52 @@
                         </v-card-text>
                      </v-card>
                    </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                 <v-btn
+                         @click="applyFilterOnTableProvReg()"
+                         color="#D00000"
+                         class="white--text"
+                  >
+                      APPLY
+                  </v-btn>
+               </v-flex>
+               <v-card width="1000px" color="#F0E68C" style="margin-top: 50px; padding: 10px">
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsTableProvReg.length !== 0">
+                     <h3>IMPORTANT CHANGES:</h3>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center" v-if="rowsTableProvReg.length !== 0">
+                     <v-select
+                      v-model="selectedTypeImportantMutation"
+                      :items="possibleTypeImportantMutation"
+                      label="Type Important Change"
+                      solo
+                      hide-details>
+                     </v-select>
+                   </v-flex>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsTableProvReg.length !== 0">
+                     <ImportantMutation
+                     :importantMutationECDC="importantMutationECDC"
+                     :importantMutation75Percentage="importantMutation75Percentage"
+                     :rowsTable = "fixedRowsTableProvReg">
+                     </ImportantMutation>
+                   </v-flex>
                  </v-layout>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px" v-if="rowsTableProvReg.length !== 0">
-                 <ImportantMutation
-                 :importantMutationECDC="importantMutationECDC"
-                 :importantMutation75Percentage="importantMutation75Percentage"
-                 :rowsTable = "fixedRowsTableProvReg">
-                 </ImportantMutation>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px" v-if="rowsTableProvReg.length !== 0">
-                 <h3>Important Mutation Type:</h3>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center" v-if="rowsTableProvReg.length !== 0">
-                 <v-select
-                  v-model="selectedTypeImportantMutation"
-                  :items="possibleTypeImportantMutation"
-                  label="Type Important Mutation"
-                  solo
-                  hide-details>
-                 </v-select>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length > 1">
-                <h2>HEATMAP</h2>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-top: 50px" v-if="rowsTableProvReg.length > 1">
-                <v-autocomplete
-                        v-model="selectedHeatmapMode"
-                        :items="possibleHeatmapMode"
-                        label="Heatmap mode"
-                        solo
-                        hide-details
-                      >
-                </v-autocomplete>
-               </v-flex>
+               </v-card>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="rowsTableProvReg.length > 1">
                  <HeatmapMultipleAnalysis
                  nameHeatmap = "multipleAnalysisHeatmapGeo"
                  :contentHeatmap = "rowsTableProvReg"
                  :fixedContent = "fixedRowsTableProvReg"
-                 :heatmapMode = "selectedHeatmapMode"
                  :maxOddsRatio = "totalMaxOddsRatio"
                  :importantMutation = "importantMutation">
                  </HeatmapMultipleAnalysis>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
-                 <h2>TABLE</h2><h2 v-if="rowsTableProvReg.length > 1">S</h2>
+                 <h2>CHANGES IN TARGET vs BACKGROUND LOCATION</h2><h2 v-if="rowsTableProvReg.length > 1">S</h2>
                </v-flex>
               <v-tabs v-model="selectedTabTable"
-              background-color="#800000"
+              background-color="#6A040F"
               dark
               vertical
               show-arrows
@@ -539,6 +575,15 @@
                               </v-card-text>
                            </v-card>
                          </v-flex>
+                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
+                          <h2>TABLE<v-btn @click="downloadTable('table_prov_reg', rows)" x-small icon
+                                  style="margin-left: 20px; margin-bottom: 5px">
+                                    <v-icon size="23">
+                                      mdi-download-circle-outline
+                                    </v-icon>
+                                </v-btn>
+                          </h2>
+                      </v-flex>
                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                             <v-data-table
                                   :headers="headerTableProvReg"
@@ -569,7 +614,7 @@
                                               </template>
                                               <v-card>
                                                 <v-card-title
-                                                        style="background-color: #DAA520 ; color: white;"
+                                                        style="background-color: #FFBA08 ; color: white;"
                                                         class="justify-center"
                                                 >
                                                   <span>
@@ -603,13 +648,6 @@
                                 </template>
                             </v-data-table>
                         </v-flex>
-                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                            <v-btn @click="downloadTable('table_prov_reg', rows)"
-                                   class="white--text"
-                                   small
-                                   color="rgb(122, 139, 157)">
-                              Download Table</v-btn>
-                         </v-flex>
                       </v-layout>
                   </v-tab-item>
                 </v-tabs-items>
@@ -619,11 +657,11 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <h2> BAR CHART based on P-VALUE</h2>
+                 <h2> TARGET SEQUENCES BAR CHART </h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
@@ -673,7 +711,7 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center">
-                      <h5>FILTER PROTEIN:</h5>
+                      <h5>SELECT PROTEIN (mandatory):</h5>
                     </v-card-title>
                     <v-card-text style="margin-top: 30px">
                       <v-autocomplete
@@ -690,12 +728,12 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                  <v-card width="500px" color="#F0E68C">
                     <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
-                        <h5>INCLUDE MUTATIONS:</h5>
+                        <h5>INCLUDE CHANGES:</h5>
                     </v-card-title>
                     <v-card-text style="padding-top: 0; margin-top: 0">
                       <v-layout row wrap justify-space-around style="margin-top: 0; padding: 0">
-                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                          <h5 style="text-align: center;">Include the mutations that appear in a % of the sequences between the 2 values below</h5>
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0">
+                          <h5 style="text-align: center;">Include the changes that appear in a % of the sequences between the 2 values below</h5>
                         </v-flex>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
@@ -738,7 +776,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <v-btn
                          @click="applyFilterPValueChart()"
-                         color="red"
+                         color="#D00000"
                          class="white--text"
                          :disabled="selectedProteinForPValue === null"
                   >
@@ -754,7 +792,7 @@
                               <v-card-title class="justify-center">
                                 <h5>HIGHLIGHTS DOMAIN:</h5>
                               </v-card-title>
-                              <v-card-text style="margin-top: 30px">
+                              <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValue"
                                   :items="possibleDomainForPValue"
@@ -775,13 +813,13 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F0E68C">
                               <v-card-title class="justify-center">
-                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                                <h5>HIGHLIGHT MUTAGENESIS SITES:</h5>
                               </v-card-title>
-                              <v-card-text style="margin-top: 30px">
+                              <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValueMutagenesis"
                                   :items="possibleDomainForPValueMutagenesis"
-                                  label="Mutagenesis"
+                                  label="Mutagenesis Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
@@ -798,13 +836,13 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F0E68C">
                               <v-card-title class="justify-center">
-                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                                <h5>HIGHLIGHT GLYCOSYLATION SITES:</h5>
                               </v-card-title>
-                              <v-card-text style="margin-top: 30px">
+                              <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValueAaModifications"
                                   :items="possibleDomainForPValueAaModifications"
-                                  label="Amino acid modifications"
+                                  label="Glycosylation Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
@@ -925,7 +963,7 @@
       width="700"
     >
       <v-card>
-        <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+        <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
           Accession IDs
           <v-spacer></v-spacer>
           <v-btn
@@ -1058,7 +1096,7 @@ export default {
       importantMutation: {},
 
       selectedTypeImportantMutation: 'ECDC',
-      possibleTypeImportantMutation: ['ECDC', 'Present in 75%'],
+      possibleTypeImportantMutation: ['ECDC', 'Present in 75% of the lineage (worldwide)'],
     }
   },
   computed: {
@@ -1314,7 +1352,7 @@ export default {
           json['mutation'] = res;
           json['additional_mutation'] = [];
           this.importantMutation75Percentage = json;
-          if(this.selectedTypeImportantMutation === 'Present in 75%'){
+          if(this.selectedTypeImportantMutation === 'Present in 75% of the lineage (worldwide)'){
             this.importantMutation = json;
           }
         })
@@ -1826,38 +1864,102 @@ export default {
       let arrayPossibleBackground = [];
       this.possibleNumLevelAboveBackground = [];
       if (this.queryGeo['province']) {
+
+        let location ;
+        if(this.queryGeo['province'].length > 1){
+          location = "( ";
+          for(let j = 0; j < this.queryGeo['province'].length; j = j + 1){
+            location = location + this.queryGeo['province'][j];
+            if(j < this.queryGeo['province'].length - 1){
+              location = location + ' , ';
+            }
+          }
+          location = location + ' )';
+        }
+        else{
+          location = this.queryGeo['province'];
+        }
+
         let possibleBackground1 = {'value': 1,
-          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['region'] }
+          'background': location + ' vs ' + this.queryGeo['region'] }
         let possibleBackground2 = {'value': 2,
-          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['country'] }
+          'background': location + ' vs ' + this.queryGeo['country'] }
         let possibleBackground3 = {'value': 3,
-          'background': this.queryGeo['province'] + ' vs ' + this.queryGeo['geo_group'] }
+          'background': location + ' vs ' + this.queryGeo['geo_group'] }
         let possibleBackground4 = {'value': 4,
-          'background': this.queryGeo['province'] + ' vs ' + 'World' }
+          'background': location + ' vs ' + 'World' }
         arrayPossibleBackground.push(possibleBackground1);
         arrayPossibleBackground.push(possibleBackground2);
         arrayPossibleBackground.push(possibleBackground3);
         arrayPossibleBackground.push(possibleBackground4);
       } else if (this.queryGeo['region']) {
+
+        let location ;
+        if(this.queryGeo['region'].length > 1){
+          location = "( ";
+          for(let j = 0; j < this.queryGeo['region'].length; j = j + 1){
+            location = location + this.queryGeo['region'][j];
+            if(j < this.queryGeo['region'].length - 1){
+              location = location + ' , ';
+            }
+          }
+          location = location + ' )';
+        }
+        else{
+          location = this.queryGeo['region'];
+        }
+
         let possibleBackground2 = {'value': 1,
-          'background': this.queryGeo['region'] + ' vs ' + this.queryGeo['country'] }
+          'background': location + ' vs ' + this.queryGeo['country'] }
         let possibleBackground3 = {'value': 2,
-          'background': this.queryGeo['region'] + ' vs ' + this.queryGeo['geo_group'] }
+          'background': location + ' vs ' + this.queryGeo['geo_group'] }
         let possibleBackground4 = {'value': 3,
-          'background': this.queryGeo['region'] + ' vs ' + 'World' }
+          'background': location + ' vs ' + 'World' }
         arrayPossibleBackground.push(possibleBackground2);
         arrayPossibleBackground.push(possibleBackground3);
         arrayPossibleBackground.push(possibleBackground4);
       } else if (this.queryGeo['country']) {
+
+        let location ;
+        if(this.queryGeo['country'].length > 1){
+          location = "( ";
+          for(let j = 0; j < this.queryGeo['country'].length; j = j + 1){
+            location = location + this.queryGeo['country'][j];
+            if(j < this.queryGeo['country'].length - 1){
+              location = location + ' , ';
+            }
+          }
+          location = location + ' )';
+        }
+        else{
+          location = this.queryGeo['country'];
+        }
+
         let possibleBackground3 = {'value': 1,
-          'background': this.queryGeo['country'] + ' vs ' + this.queryGeo['geo_group'] }
+          'background': location + ' vs ' + this.queryGeo['geo_group'] }
         let possibleBackground4 = {'value': 2,
-          'background': this.queryGeo['country'] + ' vs ' + 'World' }
+          'background': location + ' vs ' + 'World' }
         arrayPossibleBackground.push(possibleBackground3);
         arrayPossibleBackground.push(possibleBackground4);
       } else if (this.queryGeo['geo_group']) {
+
+        let location ;
+        if(this.queryGeo['geo_group'].length > 1){
+          location = "( ";
+          for(let j = 0; j < this.queryGeo['geo_group'].length; j = j + 1){
+            location = location + this.queryGeo['geo_group'][j];
+            if(j < this.queryGeo['geo_group'].length - 1){
+              location = location + ' , ';
+            }
+          }
+          location = location + ' )';
+        }
+        else{
+          location = this.queryGeo['geo_group'];
+        }
+
         let possibleBackground4 = {'value': 1,
-          'background': this.queryGeo['geo_group'] + ' vs ' + 'World' }
+          'background': location + ' vs ' + 'World' }
         arrayPossibleBackground.push(possibleBackground4);
       }
       else {
@@ -1879,7 +1981,7 @@ export default {
       if(this.selectedTypeImportantMutation === 'ECDC'){
         this.importantMutation = this.importantMutationECDC;
       }
-      else if(this.selectedTypeImportantMutation === 'Present in 75%'){
+      else if(this.selectedTypeImportantMutation === 'Present in 75% of the lineage (worldwide)'){
         this.importantMutation = this.importantMutation75Percentage;
       }
     },
@@ -2309,9 +2411,9 @@ export default {
         this.selectedMaxPValueBarChart = 1;
       }
     },
-    selectedProteinForTable(){
-      this.filter();
-    }
+    // selectedProteinForTable(){
+    //   this.filter();
+    // }
   },
   mounted() {
     this.computeFieldToExclude();

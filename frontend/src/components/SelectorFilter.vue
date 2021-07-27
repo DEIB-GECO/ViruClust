@@ -85,7 +85,7 @@
     width="300"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
+      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
         Select Proper Date
         <v-spacer></v-spacer>
         <v-btn

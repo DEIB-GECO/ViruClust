@@ -6,7 +6,7 @@
             <v-layout row wrap justify-center style="padding: 30px;">
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center"
               v-for="(item) in listRes" v-bind:key="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage">
-                <div :id="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage" style="width: 100%; background-color: #DAA520">
+                <div :id="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage" style="width: 100%; background-color: #FFBA08">
                   <v-card width="100%" color="transparent">
                     <v-card-title>
                       <h5>{{item.mutation[1]}}{{item.mutation[0]}}{{item.mutation[2]}}

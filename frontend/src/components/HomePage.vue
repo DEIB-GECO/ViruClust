@@ -6,27 +6,19 @@
            <v-layout row wrap justify-center>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <div style="border: grey solid 3px; border-radius: 50%; height: 300px; width: 70%;
-               background-color: #DAA520; text-align: center; padding-top: 130px">
+               background-color: #FFBA08; text-align: center; padding-top: 130px">
                   <span style="color: white; font-size: 10vw;">
                       <span class="font-weight-bold">Viru</span>
                       <span class="font-weight-light">Clust</span>
                   </span>
                </div>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-              <v-btn @click="changePageAnalyze()"
-                     x-large
-                     class="white--text"
-                     color="rgb(122, 139, 157)">
-                START THE ANALYSIS
-              </v-btn>
-            </v-flex>
            </v-layout>
          </v-card-text>
       </v-card>
 
       <v-card width="80%" style="margin-top:50px; padding: 10px;" color="#F0E68C">
-        <v-card-title class="justify-center" style="background-color: #DAA520; margin: 1% 20% 3%;">
+        <v-card-title class="justify-center" style="background-color: #FFBA08; margin: 1% 20% 3%;">
           <span style="font-size: 2vw;">HOW TO USE VIRUCLUST</span>
         </v-card-title>
          <v-card-text>
@@ -37,11 +29,11 @@
                 v-model="expansionPanels"
                 multiple>
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #DAA520;">
+                    <v-expansion-panel-header style="background-color: #FFBA08;">
                         <span style="width: 80%">ANALYZE DISTRIBUTION LINEAGE IN GEO</span>
                         <div>
-                          <v-btn @click="goToRelatedPart(1)" small class="white--text" color="red">
-                            GO TO RELATED PART
+                          <v-btn @click="goToRelatedPart(1)" small class="white--text" color="#D00000">
+                            START THIS ANALYSIS
                           </v-btn>
                         </div>
                     </v-expansion-panel-header>
@@ -51,11 +43,11 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #DAA520;">
+                    <v-expansion-panel-header style="background-color: #FFBA08;">
                       <span style="width: 80%">TEMPORAL ANALYSIS</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(2)" small class="white--text" color="red">
-                          GO TO RELATED PART
+                        <v-btn @click="goToRelatedPart(2)" small class="white--text" color="#D00000">
+                          START THIS ANALYSIS
                         </v-btn>
                       </div>
                     </v-expansion-panel-header>
@@ -65,11 +57,11 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #DAA520;">
+                    <v-expansion-panel-header style="background-color: #FFBA08;">
                       <span style="width: 80%">SPATIAL ANALYSIS</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(3)" small class="white--text" color="red">
-                          GO TO RELATED PART
+                        <v-btn @click="goToRelatedPart(3)" small class="white--text" color="#D00000">
+                          START THIS ANALYSIS
                         </v-btn>
                       </div>
                     </v-expansion-panel-header>
@@ -79,11 +71,11 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #DAA520;">
+                    <v-expansion-panel-header style="background-color: #FFBA08;">
                       <span style="width: 80%">FREE TARGET VS BACKGROUND</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(4)" small class="white--text" color="red">
-                          GO TO RELATED PART
+                        <v-btn @click="goToRelatedPart(4)" small class="white--text" color="#D00000">
+                          START THIS ANALYSIS
                         </v-btn>
                       </div>
                     </v-expansion-panel-header>

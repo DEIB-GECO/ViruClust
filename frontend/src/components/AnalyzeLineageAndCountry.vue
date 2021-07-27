@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
           <v-card-title class="justify-center">
             <h1>COUNTRY (TARGET) vs LINEAGE (BACKGROUND)</h1>
           </v-card-title>
@@ -94,7 +94,7 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">

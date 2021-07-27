@@ -1,10 +1,16 @@
 <template>
   <div>
-    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
+          <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+         </v-btn></h2>
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-           background-color: white; margin-top: 50px;  z-index: 1">
+           background-color: white; margin-top: 50px; z-index: 1">
           </div>
         </v-row>
     </v-container>
@@ -36,28 +42,30 @@
 <!--        </v-flex>-->
         <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center;
          padding-top: 0; padding-bottom: 0">
-          <div style="width: 100%; ; z-index: 3">
+          <div style="width: 100%; z-index: 3">
             <v-range-slider
                 v-model="background_slider"
                 min = "0"
                 :max = "max_range"
-                color="red"
+                color="#F48C06"
                 track-color="grey"
                 height="2px"
+                hide-details
               >
             </v-range-slider>
           </div>
         </v-flex>
         <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center;
-         padding-top: 0; padding-bottom: 0; margin-top: 20px">
-          <div style="width: 100%; ; z-index: 3;">
+         padding-top: 0; padding-bottom: 0; margin-top: 30px">
+          <div style="width: 100%; z-index: 3;">
             <v-range-slider
               v-model="target_slider"
               min = "0"
               :max = "max_range"
-              color="blue"
+              color="#DC2F02"
               track-color="grey"
               height="2px"
+              hide-details
             >
             </v-range-slider>
           </div>
@@ -65,173 +73,196 @@
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
          padding-top: 0; padding-bottom: 0">
         </v-flex>
-        <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin: 0; padding: 0">
             <v-checkbox v-model="isStartTargetStopBackground"
             label="Start Target = Stop Background + 1"
-            input-value="true">
+            input-value="true"
+            hide-details>
             </v-checkbox>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
         </v-flex>
       </v-row>
     </v-container>
     <v-container fluid grid-list-xl style="justify-content: center;
-  background-color: white; width: 100%">
+  background-color: white; width: 100%; padding-bottom: 50px;">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(255, 0, 0, 0.5)">
-            <v-card-title class="justify-center">
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+          <v-card style="width: 80%;" color="#F48C0680">
+            <v-card-title class="justify-center" style="padding-bottom: 5px">
               BACKGROUND
             </v-card-title>
             <v-card-text>
-              <v-layout row wrap justify-center style="padding: 30px;">
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>NUM SEQUENCES: </h3>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <v-text-field
-                    :value = "num_sequences_background"
-                    solo
-                    readonly
-                    hide-details
-                    class = "centered-input"
-                  ></v-text-field>
-                </v-flex>
-
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>START BACKGROUND: </h3>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-                 padding: 0; position: relative">
-                  <v-text-field
-                    v-model = "startBackgroundField"
-                    solo
-                    hide-details
-                    class = "centered-input"
-                  >
-                    <template v-slot:append>
-                      <v-icon v-if="wrongDateStartBackground"
-                              color="red">
-                        mdi-close-circle
-                      </v-icon>
-                      <v-icon v-else
-                              color="green">
-                        mdi-checkbox-marked-circle
-                      </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <span> (write correct date in correct format YYYY-MM-DD) </span>
+              <v-layout row wrap justify-center style="padding-bottom: 10px;">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px;">
+                      <h3>NUM SEQUENCES: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <v-text-field
+                        :value = "num_sequences_background"
+                        solo
+                        readonly
+                        hide-details
+                        class = "centered-input"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <div style="color: #F48C0680 "> . </div>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
 
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>END BACKGROUND: </h3>
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px">
+                      <h3>START BACKGROUND: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; position: relative">
+                      <v-text-field
+                        v-model = "startBackgroundField"
+                        solo
+                        hide-details
+                        class = "centered-input"
+                      >
+                        <template v-slot:append>
+                          <v-icon v-if="wrongDateStartBackground"
+                                  color="red">
+                            mdi-close-circle
+                          </v-icon>
+                          <v-icon v-else
+                                  color="green">
+                            mdi-checkbox-marked-circle
+                          </v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <v-text-field
-                    v-model = "stopBackgroundField"
-                    solo
-                    hide-details
-                    class = "centered-input"
-                  >
-                    <template v-slot:append>
-                      <v-icon v-if="wrongDateStopBackground"
-                              color="red">
-                        mdi-close-circle
-                      </v-icon>
-                      <v-icon v-else
-                              color="green">
-                        mdi-checkbox-marked-circle
-                      </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <span> (write correct date in correct format YYYY-MM-DD) </span>
+
+
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; padding: 0;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
+                      <h3>END BACKGROUND: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <v-text-field
+                        v-model = "stopBackgroundField"
+                        solo
+                        hide-details
+                        class = "centered-input"
+                      >
+                        <template v-slot:append>
+                          <v-icon v-if="wrongDateStopBackground"
+                                  color="red">
+                            mdi-close-circle
+                          </v-icon>
+                          <v-icon v-else
+                                  color="green">
+                            mdi-checkbox-marked-circle
+                          </v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
 
               </v-layout>
             </v-card-text>
           </v-card>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(0, 0, 255, 0.5)">
-            <v-card-title class="justify-center">
+        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+          <v-card style="width: 80%;" color="#DC2F0280">
+            <v-card-title class="justify-center" style="padding-bottom: 5px">
               TARGET
             </v-card-title>
             <v-card-text>
-                      <v-layout row wrap justify-center style="padding: 30px;">
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>NUM SEQUENCES: </h3>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <v-text-field
-                    :value = "num_sequences_target"
-                    solo
-                    readonly
-                    hide-details
-                    class = "centered-input"
-                  ></v-text-field>
-                </v-flex>
-
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>START TARGET: </h3>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <v-text-field
-                    v-model = "startTargetField"
-                    solo
-                    hide-details
-                    class = "centered-input"
-                  >
-                    <template v-slot:append>
-                      <v-icon v-if="wrongDateStartTarget"
-                              color="red">
-                        mdi-close-circle
-                      </v-icon>
-                      <v-icon v-else
-                              color="green">
-                        mdi-checkbox-marked-circle
-                      </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <span> (write correct date in correct format YYYY-MM-DD) </span>
+              <v-layout row wrap justify-center style="padding-bottom: 10px;">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px;">
+                      <h3>NUM SEQUENCES: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <v-text-field
+                        :value = "num_sequences_target"
+                        solo
+                        readonly
+                        hide-details
+                        class = "centered-input"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <div style="color: #DC2F0280 "> . </div>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
 
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-                  <h3>END TARGET: </h3>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <v-text-field
-                    v-model = "stopTargetField"
-                    solo
-                    hide-details
-                    class = "centered-input"
-                  >
-                    <template v-slot:append>
-                      <v-icon v-if="wrongDateStopTarget"
-                              color="red">
-                        mdi-close-circle
-                      </v-icon>
-                      <v-icon v-else
-                              color="green">
-                        mdi-checkbox-marked-circle
-                      </v-icon>
-                    </template>
-                  </v-text-field>
-                </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <span> (write correct date in correct format YYYY-MM-DD) </span>
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px">
+                      <h3>START TARGET: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <v-text-field
+                        v-model = "startTargetField"
+                        solo
+                        hide-details
+                        class = "centered-input"
+                      >
+                        <template v-slot:append>
+                          <v-icon v-if="wrongDateStartTarget"
+                                  color="red">
+                            mdi-close-circle
+                          </v-icon>
+                          <v-icon v-else
+                                  color="green">
+                            mdi-checkbox-marked-circle
+                          </v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
 
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                  <v-layout row wrap justify-center>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px">
+                      <h3>END TARGET: </h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <v-text-field
+                        v-model = "stopTargetField"
+                        solo
+                        hide-details
+                        class = "centered-input"
+                      >
+                        <template v-slot:append>
+                          <v-icon v-if="wrongDateStopTarget"
+                                  color="red">
+                            mdi-close-circle
+                          </v-icon>
+                          <v-icon v-else
+                                  color="green">
+                            mdi-checkbox-marked-circle
+                          </v-icon>
+                        </template>
+                      </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
               </v-layout>
 
             </v-card-text>
@@ -311,14 +342,14 @@ export default {
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: 'rgba(255, 0, 0, 0.5)',
+                            color: '#F48C0680',
                         },
                     }, {
                         xAxis: 0
                     }], [{
                         xAxis: 0,
                         itemStyle: {
-                            color: 'rgba(0, 0, 255, 0.5)'
+                            color: '#DC2F0280'
                         },
                     }, {
                         xAxis: 0

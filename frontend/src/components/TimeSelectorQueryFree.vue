@@ -1,10 +1,17 @@
 <template>
 <div style="position: relative;">
-    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
+        <h2>TIME DISTRIBUTION <v-btn @click="download" x-small icon
+            style="margin-left: 20px; margin-bottom: 5px">
+              <v-icon size="23">
+                mdi-download-circle-outline
+              </v-icon>
+         </v-btn></h2>
+
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
-           background-color: white; margin-top: 100px; z-index: 1">
+           background-color: white; margin-top: 50px; z-index: 1">
           </div>
         </v-row>
     </v-container>
@@ -27,19 +34,12 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="green"
+                color="#FFBA08"
                 track-color="grey"
                 height="2px"
               >
             </v-range-slider>
           </div>
-        </v-flex>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 10px">
-          <v-btn @click="download"
-                 class="white--text"
-                     small
-                 color="rgb(122, 139, 157)">
-            Download As Image</v-btn>
         </v-flex>
       </v-row>
     </v-container>
@@ -47,7 +47,7 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="rgba(50, 255, 50, 0.5)">
+          <v-card style="width: 100%; margin: 20px" color="#FFBA0880">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
@@ -75,6 +75,9 @@
                           </template>
                       </v-text-field>
                     </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
+                    </v-flex>
                   </v-layout>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
@@ -101,6 +104,9 @@
                             </v-icon>
                         </template>
                       </v-text-field>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
+                      <span> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -176,7 +182,7 @@ export default {
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: 'rgba(50, 255, 50, 0.5)',
+                            color: '#FFBA0880',
                         },
                     }, {
                         xAxis: 0

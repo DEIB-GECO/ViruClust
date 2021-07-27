@@ -75,6 +75,9 @@ const state = {
     color_1: [],
     color_2: [],
     color_3: [],
+
+    colorPalette: ['#6A040F', '#9D0208', '#D00000', '#DC2F02',
+                   '#E85D04', '#F48C06', '#FAA307', '#FFBA08'],
 };
 
 const getters = {

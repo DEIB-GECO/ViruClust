@@ -2,18 +2,18 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px; min-height: 83.5vh">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#DAA520">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
           <v-card-title class="justify-center">
-            <h1>DISTRIBUTION LINEAGE IN GEO</h1>
+            <h1>GEOGRAPHICAL DISTRIBUTION OF LINEAGES</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT GRANULARITY AND SPECIFIC GEO LOCALITY</h2>
+               <h2>SELECT GEO-GRANULARITY AND LOCATION</h2>
               </v-flex>
               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
-                  v-model="selectedGeo"
+                  v-model="selectedGeoToChange"
                   :items="possibleGeo"
                   label="Granularity"
                   solo
@@ -39,15 +39,12 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyChosen()"
-                         color="red"
+                         color="#D00000"
                          class="white--text"
                          :disabled="(selectedGeo !== 'world' && this.selectedSpecificGeo === null) || selectedGeo === null"
                   >
-                      CHOSEN
+                      APPLY
                   </v-btn>
-                </v-flex>
-                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px" v-if="chosenApplied">
-                 <h2>TIME FILTER</h2>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
                   <TimeSelectorDistributionLineageInGeo
@@ -64,12 +61,12 @@
                  with at least the min % of the total number of sequences fulfilling all filters will appear)</h4>
               </v-flex>
                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"  v-if="chosenApplied">
-                  <v-text-field v-model.number="selectedGeoCount" min="0" max="100" solo type="number" hide-details></v-text-field>
+                  <v-text-field v-model.number="selectedGeoCount" min="0" max="100" step = "0.1"  solo type="number" hide-details></v-text-field>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
                  <v-btn
                          @click="applyTableLineageCountry()"
-                         color="red"
+                         color="#D00000"
                          class="white--text"
                          :disabled="selectedGeo !== 'world' && (selectedGeo === null || selectedSpecificGeo === null)"
                   >
@@ -81,11 +78,17 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#DAA520">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <h2>TABLE</h2>
+                 <h2>LINEAGES AND THEIR PRESENCE IN THE SELECTED LOCATION</h2>
+                <v-btn @click="downloadTable('table_geo')" x-small icon
+                style="margin-left: 20px;">
+                  <v-icon size="23">
+                    mdi-download-circle-outline
+                  </v-icon>
+                </v-btn>
                </v-flex>
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-data-table
@@ -144,22 +147,6 @@
                   </v-data-table>
               </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <v-btn @click="downloadTable('table_geo')"
-                         class="white--text"
-                         small
-                         color="rgb(122, 139, 157)">
-                    Download Table</v-btn>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-                 <ModifyColumnsHeatmap
-                 :headerTable = "headerTableLineageCountry"
-                 :rowTable = "rowsTableLineageCountry"
-                 :denominators = "denominators"></ModifyColumnsHeatmap>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
-                 <h2>HEATMAP</h2>
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <HeatmapAnalyzeDistribution
                   nameHeatmap = "heatmap"
                   :headerTable = "headerTableLineageCountry"
@@ -170,6 +157,12 @@
                   :geoGranularity = "selectedGeo"
                   :denominators = "denominators">
                  </HeatmapAnalyzeDistribution>
+               </v-flex>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
+                 <ModifyColumnsHeatmap
+                 :headerTable = "headerTableLineageCountry"
+                 :rowTable = "rowsTableLineageCountry"
+                 :denominators = "denominators"></ModifyColumnsHeatmap>
                </v-flex>
              </v-layout>
            </v-card-text>
@@ -201,7 +194,8 @@ export default {
     return {
       overlay: false,
       selectedGeo: null,
-      possibleGeo: ['world', 'geo_group', 'country', 'region'],
+      selectedGeoToChange: null,
+      possibleGeo: ['World', 'Continent', 'Country', 'Region'],
       selectedSpecificGeo: null,
       possibleSpecificGeo: [],
       selectedGeoCount: 5,
@@ -380,6 +374,19 @@ export default {
           this.headerTableLineageCountry = headers;
           this.headerTableLineageCountryFixed = headers;
 
+
+          seq_mut_arr = seq_mut_arr.sort( function( a, b ) {
+            let a_lin = a['lineage'].toLowerCase();
+            let b_lin = b['lineage'].toLowerCase();
+            if(a_lin === "n/d"){
+              return 1;
+            }
+            if(b_lin === "n/d"){
+              return -1;
+            }
+            return a_lin < b_lin ? -1 : 1;
+          });
+
           this.rowsTableLineageCountry = seq_mut_arr;
           this.rowsTableLineageCountryFixed = seq_mut_arr;
 
@@ -543,14 +550,30 @@ export default {
         }
         if (!isDesc) {
           if(count_a === count_b){
-            return a['lineage'] > b['lineage'] ? 1 : -1;
+            let a_lin = a['lineage'].toLowerCase();
+            let b_lin = b['lineage'].toLowerCase();
+            if(a_lin === "n/d"){
+              return 1;
+            }
+            if(b_lin === "n/d"){
+              return -1;
+            }
+            return a_lin < b_lin ? -1 : 1;
           }
           else {
             return  parseInt(count_a, 10) < parseInt(count_b, 10)  ? 1 : -1;
           }
         } else {
           if(count_a === count_b){
-            return a['lineage'] > b['lineage'] ? 1 : -1;
+            let a_lin = a['lineage'].toLowerCase();
+            let b_lin = b['lineage'].toLowerCase();
+            if(a_lin === "n/d"){
+              return 1;
+            }
+            if(b_lin === "n/d"){
+              return -1;
+            }
+            return a_lin < b_lin ? -1 : 1;
           }
           else {
             return  parseInt(count_a, 10) > parseInt(count_b, 10)  ? 1 : -1;
@@ -578,6 +601,14 @@ export default {
         this.createPossibleSpecificGeoObject();
         this.chosenApplied = false;
         this.tableApplied = false;
+      }
+    },
+    selectedGeoToChange(){
+      if(this.selectedGeoToChange === 'Continent'){
+        this.selectedGeo = 'geo_group';
+      }
+      else{
+        this.selectedGeo = this.selectedGeoToChange.toLowerCase();
       }
     },
     selectedSpecificGeo() {

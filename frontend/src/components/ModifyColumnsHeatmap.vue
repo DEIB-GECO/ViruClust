@@ -3,7 +3,7 @@
       <v-btn @click="dialogModifyColumns = true"
            class="white--text"
            color="blue">
-      Modify columns</v-btn>
+      MERGE COLUMNS</v-btn>
 
       <v-dialog
       persistent
@@ -11,8 +11,8 @@
       width="1000"
       >
         <v-card>
-          <v-card-title class="headline" style="background-color: #DAA520 ; color: white">
-            Modify Columns
+          <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+            MERGE COLUMNS
             <v-spacer></v-spacer>
             <v-btn
                 style="background-color: rgb(122, 139, 157)"
