@@ -27,14 +27,14 @@
               </div>
               <div v-else-if="checkNoDataOrSelectLevelAbove()" style="position: absolute; top: 100px; width: 200px; height: 200px">
                 <v-layout wrap justify-center style=" height: 100%">
+<!--                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">-->
+<!--                    <h1 style="position: absolute; top: 80%; text-align: center">WAITING DATA</h1>-->
+<!--                  </v-flex>-->
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
-                    <h1 style="position: absolute; top: 80%; text-align: center">WAITING DATA</h1>
-                  </v-flex>
-                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
-                    <h3 style="position: absolute; top: 40%; text-align: center">Select a location at the previous level</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center">Select a location at the previous level</h3>
                   </v-flex>
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative" v-if="nameQuery === 'geo'">
-                    <h3 style="position: absolute; top: 20%; text-align: center">(multiple values may be selected here)</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center">(multiple values may be selected here)</h3>
                   </v-flex>
                 </v-layout>
               </div>

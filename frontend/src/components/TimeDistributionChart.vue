@@ -87,15 +87,12 @@
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
           <v-card style="width: 80%;" color="#F48C0680">
-            <v-card-title class="justify-center" style="padding-bottom: 5px">
-              BACKGROUND
-            </v-card-title>
             <v-card-text>
-              <v-layout row wrap justify-center style="padding-bottom: 10px;">
+              <v-layout row wrap justify-center>
                 <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                   <v-layout row wrap justify-center>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px;">
-                      <h3>NUM SEQUENCES: </h3>
+                      <h3>BACKGROUND NUM SEQUENCES: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -143,9 +140,9 @@
                 </v-flex>
 
 
-                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; padding: 0;">
+                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                   <v-layout row wrap justify-center>
-                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px">
                       <h3>END BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
@@ -179,15 +176,12 @@
         </v-flex>
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
           <v-card style="width: 80%;" color="#DC2F0280">
-            <v-card-title class="justify-center" style="padding-bottom: 5px">
-              TARGET
-            </v-card-title>
             <v-card-text>
-              <v-layout row wrap justify-center style="padding-bottom: 10px;">
+              <v-layout row wrap justify-center>
                 <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                   <v-layout row wrap justify-center>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0; margin-top: 10px;">
-                      <h3>NUM SEQUENCES: </h3>
+                      <h3>TARGET NUM SEQUENCES: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -327,12 +321,12 @@ export default {
                 type: 'bar',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: 'rgb(72,72,72)'},
+                itemStyle: {color: '#323F8B'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        shadowColor: '#323F8B'
                     }
                 },
                 markArea: {
@@ -360,7 +354,7 @@ export default {
                 name: 'AVG of previous 7 days',
                 type: 'line',
                 data: [],
-                color: 'rgba(0, 0, 0, 1)',
+                color: '#323F8B',
             },
         ],
         xAxis: {

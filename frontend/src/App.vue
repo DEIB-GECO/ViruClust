@@ -41,11 +41,11 @@
                  style="background-color: transparent; width: 200px">
               <span>EpiSurf GISAID</span>
           </v-btn>
-          <v-btn icon text href="" target="_blank"
+          <v-btn icon text href="https://github.com/DEIB-GECO/ViruClust/wiki" target="_blank"
                  style="background-color: transparent; width: 100px">
               <span>Wiki</span>
           </v-btn>
-          <v-btn icon text href="" target="_blank"
+          <v-btn icon text href="/UFL project/repo_static/about.html" target="_blank"
             style="background-color: transparent; width: 100px">
               <span>ACK</span>
           </v-btn>
@@ -94,7 +94,7 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="" target="_blank"
+                <v-btn icon text href="https://github.com/DEIB-GECO/ViruClust/wiki" target="_blank"
                        style="background-color: transparent; width: 200px">
                     <span>Wiki</span>
                 </v-btn>
@@ -102,7 +102,7 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="" target="_blank"
+                <v-btn icon text href="/UFL project/repo_static/about.html" target="_blank"
                   style="background-color: transparent; width: 200px">
                     <span>ACK</span>
                 </v-btn>

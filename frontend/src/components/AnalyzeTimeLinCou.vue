@@ -56,7 +56,7 @@
                          color="#D00000"
                          class="white--text"
                   >
-                      CHOSEN
+                      APPLY
                   </v-btn>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px;"
@@ -502,7 +502,7 @@
                       APPLY
                   </v-btn>
                </v-flex>
-               <v-card width="1000px" color="#F0E68C" style="margin-top: 50px; padding: 10px">
+               <v-card width="1000px" color="#F0E68C" style="margin-top: 50px; padding: 10px" v-if="queryTime['lineage']">
                  <v-layout row wrap justify-center>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
                      <h3>IMPORTANT CHANGES:</h3>
@@ -768,13 +768,13 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F0E68C">
                               <v-card-title class="justify-center">
-                                <h5>HIGHLIGHTS DOMAIN:</h5>
+                                <h5>HIGHLIGHT DOMAINS:</h5>
                               </v-card-title>
                               <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValue"
                                   :items="possibleDomainForPValue"
-                                  label="Sites ,family and domains"
+                                  label="Sites, family, and domains"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
@@ -839,7 +839,7 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValue.length > 0">
                               <v-card :color="color_1[idx%color_1.length] + 80" height="100%">
-                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain[idx]}} , {{end_value_domain[idx]}}) </h5>
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
                               </v-card>
                             </v-card>
                          </v-flex>
@@ -850,7 +850,7 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueMutagenesis" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueMutagenesis.length > 0">
                               <v-card :color="color_2[idx%color_2.length] + 80" height="100%">
-                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain_mutagenesis[idx]}} , {{end_value_domain_mutagenesis[idx]}}) </h5>
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
                               </v-card>
                             </v-card>
                          </v-flex>
@@ -861,7 +861,7 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueAaModifications.length > 0">
                               <v-card :color="color_3[idx%color_3.length] + 80" height="100%">
-                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}} ({{begin_value_domain_aa_modifications[idx]}} , {{end_value_domain_aa_modifications[idx]}}) </h5>
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
                               </v-card>
                             </v-card>
                          </v-flex>
@@ -1247,7 +1247,7 @@ export default {
       return `${item['lineage']}` //  ----- ${item['cnt']}
     },
     getFieldTextDomain(item){
-      return `${item['Description']}` //  ----- ${item['cnt']}
+      return `${item['Description']}` + ' /// (' + `${item['Begin']}` + ' , ' + `${item['End']}` + ' )';
     },
     applySingleLineageAnalysis(){
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
@@ -1270,7 +1270,12 @@ export default {
         .then((res) => {
           this.importantMutationECDC = res;
           if(this.selectedTypeImportantMutation === 'ECDC'){
-            this.importantMutation = res;
+            if(queryTime['lineage']) {
+              this.importantMutation = res;
+            }
+            else{
+              this.importantMutation = {'mutation': [], 'additional_mutation': []};
+            }
           }
         })
 
@@ -1629,7 +1634,9 @@ export default {
             this.timeContent = arrOfDates;
 
             let delayInMilliseconds = 500;
+            let that = this;
             setTimeout(function() {
+              that.selectedTabSelectTargetBackground = 0;
               let id1 = 'two_comparison';
               let id2 = 'n_comparison';
               let elem1 = document.getElementById(id1);
@@ -1717,7 +1724,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValue[i];
+            return item['Description'] === that.selectedDomainForPValue[i].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
@@ -1736,7 +1743,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueMutagenesis[i];
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[i].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
@@ -1755,7 +1762,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueAaModifications.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueAaModifications[i];
+            return item['Description'] === that.selectedDomainForPValueAaModifications[i].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueAaModifications[index]['Begin'];

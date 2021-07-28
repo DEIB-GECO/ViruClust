@@ -250,7 +250,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValue[k];
+            return item['Description'] === that.selectedDomainForPValue[k].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
@@ -283,7 +283,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueMutagenesis[k];
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[k].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
@@ -315,7 +315,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueAaModifications[k];
+            return item['Description'] === that.selectedDomainForPValueAaModifications[k].split(' /// ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueAaModifications[index]['Begin'];

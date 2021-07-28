@@ -23,15 +23,15 @@
 
           <v-btn-toggle v-model="view_exclusive" mandatory color="black">
             <v-btn small>
-              <span>SHOW <span style="color: blue">TARGET</span></span>
+              <span>SHOW <span style="color: #323F8B">TARGET</span></span>
             </v-btn>
 
             <v-btn small>
-              <span>SHOW <span style="color: red">BACKGROUND</span></span>
+              <span>SHOW <span style="color: #9F3255">BACKGROUND</span></span>
             </v-btn>
 
             <v-btn small>
-              <span>SHOW <span style="color: blue">BO</span><span style="color: red">TH</span></span>
+              <span>SHOW <span style="color: #323F8B">BO</span><span style="color: #9F3255">TH</span></span>
             </v-btn>
           </v-btn-toggle>
 
@@ -87,13 +87,10 @@
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
-            <v-card-title class="justify-center">
-              TIME FILTER
-            </v-card-title>
             <v-card-text>
-              <v-layout row wrap justify-space-around style="padding-bottom: 30px;">
+              <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
@@ -115,11 +112,11 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>BACKGROUND: </h3>
+                      <h3>NUM SEQUENCES TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
-                        :value = "background_name"
+                        :value = "num_sequences_target[targetIndex]"
                         solo
                         readonly
                         hide-details
@@ -129,16 +126,24 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-layout row wrap justify-space-around style="padding-bottom: 30px;">
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+
+        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+          <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
+            <v-card-text>
+              <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>NUM SEQUENCES TARGET: </h3>
+                      <h3>BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
-                        :value = "num_sequences_target[targetIndex]"
+                        :value = "background_name"
                         solo
                         readonly
                         hide-details
@@ -164,8 +169,22 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+              </v-layout>
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0" v-if="listLocationExcluded.length > 0">
+                  * Location excluded from background : {{listLocationExcluded}}
                 </v-flex>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+
+        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+          <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
+            <v-card-title class="justify-center" style="margin: 0; padding: 0; margin-top: 5px !important;">
+              TIME FILTER
+            </v-card-title>
+            <v-card-text>
+              <v-layout row wrap justify-space-around style="padding-bottom: 10px;">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
@@ -227,10 +246,6 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;
-                 padding: 0; margin: 0" v-if="listLocationExcluded.length > 0">
-                  * Location excluded from background : {{listLocationExcluded}}
-                </v-flex>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -321,12 +336,12 @@ export default {
                 name: 'Background',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: 'rgba(255, 0, 0, 1)'},
+                itemStyle: {color: '#9F3255'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(255, 0, 0, 1)'
+                        shadowColor: '#9F3255'
                     }
                 },
             },
@@ -335,12 +350,12 @@ export default {
                 name: 'Target',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: 'rgba(0, 0, 255, 1)'},
+                itemStyle: {color: '#323F8B'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 255, 1)'
+                        shadowColor: '#323F8B'
                     }
                 },
                 markArea: {
@@ -362,13 +377,13 @@ export default {
                 name: 'AVG of previous 7 days in target',
                 type: 'line',
                 data: [],
-                color: 'rgba(0, 0, 255, 1)',
+                color: '#323F8B',
             },
             {
                 name: 'AVG of previous 7 days in background',
                 type: 'line',
                 data: [],
-                color: 'rgba(255, 0, 0, 1)',
+                color: '#9F3255',
             }
         ],
         xAxis: {

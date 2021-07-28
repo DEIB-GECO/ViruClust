@@ -700,6 +700,8 @@ class FieldList(Resource):
             single_item['background'] = item['background']
 
             single_item['lineage'] = item['lineage']
+            single_item['lineage_target'] = item['lineage_target']
+            single_item['lineage_background'] = item['lineage_background']
             single_item['count_target'] = item['count_seq']
             single_item['percentage_background'] = item['fraction']
             single_item['numerator_background'] = item['numerator']
@@ -829,22 +831,23 @@ class FieldList(Resource):
         annotations2 = copy.deepcopy(annotations)
         annotations3 = copy.deepcopy(annotations)
 
-        ann_mutagenesis = annotations[(annotations.Description.str.lower() != 'n/d')
+        ann_mutagenesis = annotations1[(annotations.Description.str.lower() != 'n/d')
                                       & (annotations.Protein.str.lower() == name_protein.lower())
                                       & (annotations.Category.str.lower() == 'mutagenesis')
                                       ]
         ann_mutagenesis2 = ann_mutagenesis[['Description', 'Begin', 'End']]
         ann_mutagenesis3 = json.loads(ann_mutagenesis2.to_json(orient="records"))
 
-        ann_aa_modifications = annotations[(annotations.Description.str.lower() != 'n/d')
+        ann_aa_modifications = annotations2[(annotations.Description.str.lower() != 'n/d')
                                       & (annotations.Protein.str.lower() == name_protein.lower())
                                       & (annotations.Category.str.lower() == 'ptm')
                                       & (annotations.Type.str.lower() == 'carbohyd')
                                       ]
         ann_aa_modifications2 = ann_aa_modifications[['Description', 'Begin', 'End']]
         ann_aa_modifications3 = json.loads(ann_aa_modifications2.to_json(orient="records"))
+        print("ann", ann_aa_modifications3)
 
-        ann_sites_family_dom = annotations[(annotations.Description.str.lower() != 'n/d')
+        ann_sites_family_dom = annotations3[(annotations.Description.str.lower() != 'n/d')
                                            & (annotations.Protein.str.lower() == name_protein.lower())
                                            & ((annotations.Category.str.lower() == 'domains_and_sites') |
                                               (annotations.Type.str.lower() == 'n/d'))
@@ -1034,16 +1037,16 @@ all_important_mutation_dict = {}
 
 def get_all_important_mutation():
     print("inizio request")
-    conn = http.client.HTTPConnection('geco.deib.polimi.it')
-    conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
-
-    response = conn.getresponse()
-    all_important_mutation = response.read().decode()
-    all_important_mutation = json.loads(all_important_mutation)
-
-    for mutation_per_lineage in all_important_mutation:
-        lineage = mutation_per_lineage['lineage']
-        all_important_mutation_dict[lineage] = mutation_per_lineage
+    # conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    # conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
+    #
+    # response = conn.getresponse()
+    # all_important_mutation = response.read().decode()
+    # all_important_mutation = json.loads(all_important_mutation)
+    #
+    # for mutation_per_lineage in all_important_mutation:
+    #     lineage = mutation_per_lineage['lineage']
+    #     all_important_mutation_dict[lineage] = mutation_per_lineage
 
     print("fine request")
 

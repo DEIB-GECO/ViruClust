@@ -2,7 +2,7 @@
   <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px">
 
     <v-tabs v-model="selectedTabAnalyze"
-            background-color="#6A040F"
+            background-color="#9F3255"
             dark
             show-arrows
             slider-color="orange"

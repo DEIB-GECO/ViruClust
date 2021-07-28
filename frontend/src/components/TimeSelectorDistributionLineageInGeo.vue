@@ -179,12 +179,12 @@ name: "TimeSelectorDistributionLineageInGeo",
                 type: 'bar',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: 'rgba(0, 0, 0, 1)'},
+                itemStyle: {color: '#323F8B'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 1)'
+                        shadowColor: '#323F8B'
                     }
                 },
                 markArea: {
@@ -206,7 +206,7 @@ name: "TimeSelectorDistributionLineageInGeo",
                 name: 'AVG of previous 7 days',
                 type: 'line',
                 data: [],
-                color: 'rgba(0, 0, 0, 1)',
+                color: '#323F8B',
             },
         ],
         xAxis: {

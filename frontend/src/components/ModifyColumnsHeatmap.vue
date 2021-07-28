@@ -2,7 +2,7 @@
     <div>
       <v-btn @click="dialogModifyColumns = true"
            class="white--text"
-           color="blue">
+           color="#D00000">
       MERGE COLUMNS</v-btn>
 
       <v-dialog
