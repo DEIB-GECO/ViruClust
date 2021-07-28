@@ -13,5 +13,5 @@ module.exports = {
           },
       }
   },
-  baseUrl: '/viruclust_gisaid/',
+  baseUrl: '/viruclust/',
 }
