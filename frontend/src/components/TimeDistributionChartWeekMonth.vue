@@ -33,7 +33,7 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="#F48C06"
+                color="#F48C0680"
                 track-color="grey"
                 height="2px"
               >
@@ -64,11 +64,11 @@
                       >
                          <template v-slot:append>
                             <v-icon v-if="wrong_last_start_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                           </template>
@@ -94,11 +94,11 @@
                       >
                         <template v-slot:append>
                             <v-icon v-if="wrong_last_stop_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                         </template>
@@ -116,7 +116,7 @@
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
         </v-flex>
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
-          <v-card style="width: 80%; padding: 10px; background: linear-gradient(0deg, #F0E68C 50%, #F0E68C 50%)">
+          <v-card style="width: 80%; padding: 10px; background: linear-gradient(0deg, #F1FAEE 50%, #F1FAEE 50%)">
             <v-card-title class="justify-center"><h3>Select type of analysis</h3></v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around>
@@ -149,7 +149,7 @@
                 <v-flex class="no-horizontal-padding xs12 md5 lg5 d-flex"
                         style="justify-content: center; margin-bottom: 5px"
                         v-for="(period, index) in timeDivision" v-bind:key="period[0]">
-                       <v-row justify-center style="width:  100%; border: #6A040F solid 7px;" v-if="timeDivisionAcceptable.includes(period)">
+                       <v-row justify-center style="width:  100%; border: #1D3557 solid 7px;" v-if="timeDivisionAcceptable.includes(period)">
                           <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
                             <span style="text-align: center"><b>PERIOD: </b><br> {{period[0]}} - {{period[1]}}</span>
                           </v-flex>
@@ -296,7 +296,7 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setTimeDivisionAcceptable']),
+    ...mapMutations(['setTimeDivisionAcceptable', 'setTrueErrorNumSeqQueryTime', 'setFalseErrorNumSeqQueryTime']),
     ...mapActions([]),
     download(){
       let url = this.my_chart.getConnectedDataURL({
@@ -587,6 +587,12 @@ export default {
         // }
       }
 
+      if(arr_full_acceptable.length < 2){
+        this.setTrueErrorNumSeqQueryTime();
+      }
+      else{
+        this.setFalseErrorNumSeqQueryTime();
+      }
       this.setTimeDivisionAcceptable(arr_full_acceptable);
     },
     dayInMoth(monthStr, yearStr){
@@ -663,6 +669,7 @@ export default {
     }
   },
   mounted() {
+      this.setFalseErrorNumSeqQueryTime();
       this.max_range = this.timeContent.length - 1;
       this.slider = [0, this.max_range];
       this.changeMarkerAndRender(0, this.max_range);

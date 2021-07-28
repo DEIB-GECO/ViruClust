@@ -1,12 +1,12 @@
 <template>
   <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
-        <v-card width="95%" style="margin-top:50px" color="#F0E68C">
+        <v-card width="95%" style="margin-top:50px" color="#F1FAEE">
           <v-card-text>
             <v-layout row wrap justify-center style="padding: 30px;">
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center"
               v-for="(item) in listRes" v-bind:key="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage">
-                <div :id="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage" style="width: 100%; background-color: #FFBA08">
+                <div :id="item.cluster + item.mutation[0] + item.mutation[1] + item.mutation[2] + item.lineage" style="width: 100%; background-color: #A8DADC">
                   <v-card width="100%" color="transparent">
                     <v-card-title>
                       <h5>{{item.mutation[1]}}{{item.mutation[0]}}{{item.mutation[2]}}

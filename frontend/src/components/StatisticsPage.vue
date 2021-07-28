@@ -2,8 +2,8 @@
   <div>
     <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
-      <v-card width="95%" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F0E68C">
-        <v-btn color="red" class="white--text" @click="setMetadataPage()">
+      <v-card width="95%" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F1FAEE">
+        <v-btn color="#E63946" class="white--text" @click="setMetadataPage()">
           <v-icon style="margin-right: 5px">mdi-arrow-left-bold-outline</v-icon>CHANGE POPULATION / CHANGE METADATA
         </v-btn>
         <v-card-title class="justify-center"><h1>STATISTICS</h1></v-card-title>
@@ -15,7 +15,7 @@
               </v-btn>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#FFBA08">
+              <v-card width="500px" color="#A8DADC">
                 <v-card-title>
                   <h5>Cluster counter (num of seq.):  (greater than)</h5>
                 </v-card-title>
@@ -35,7 +35,7 @@
               </v-card>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#FFBA08">
+              <v-card width="500px" color="#A8DADC">
                 <v-card-title>
                   <h5>Select Protein:</h5>
                 </v-card-title>
@@ -51,7 +51,7 @@
               </v-card>
             </v-flex>
             <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#FFBA08">
+              <v-card width="500px" color="#A8DADC">
                 <v-card-title>
                   <h5>Lineage frequency: (less than)</h5>
                 </v-card-title>
@@ -74,7 +74,7 @@
           </v-layout>
           <v-layout row wrap justify-center style="margin-top: 50px">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-              <v-card width="500px" color="#FFBA08">
+              <v-card width="500px" color="#A8DADC">
                 <v-layout row wrap justify-center style="padding: 30px;">
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                     <h3>Filter graph on cluster and lineages:</h3>
@@ -122,7 +122,7 @@
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                     <v-btn
                            @click="removeClusterLineageFilter()"
-                           color="red"
+                           color="#E63946"
                            class="white--text"
                            small
                            :disabled="selectedClusters.length === 0 && selectedLineages.length === 0"
@@ -138,7 +138,7 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
               <v-btn
                      @click="apply(); $vuetify.goTo(1200, {duration: 1000, offset: 0, easing: 'easeInOutQuart'})"
-                     color="red"
+                     color="#E63946"
                      class="white--text"
               >
                   APPLY
@@ -148,7 +148,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card width="95%" style="margin-top:50px; padding: 50px" color="#F0E68C" v-if="applied">
+      <v-card width="95%" style="margin-top:50px; padding: 50px" color="#F1FAEE" v-if="applied">
         <v-card-text>
 
           <v-layout row wrap justify-center style="padding: 30px; margin-bottom: 50px">
@@ -159,7 +159,7 @@
             </v-flex>
           </v-layout>
 
-          <v-card color="#FFBA08" style="padding-bottom: 50px">
+          <v-card color="#A8DADC" style="padding-bottom: 50px">
             <v-layout wrap align-center justify-center>
               <v-data-table
                       :headers="allResultTableHeaders"
@@ -197,7 +197,7 @@
                               </template>
                               <v-card>
                                   <v-card-title
-                                          style="background-color: #FFBA08 ; color: white;"
+                                          style="background-color: #A8DADC ; color: white;"
                                           class="justify-center"
                                   >
                                     <span v-if="header.value === 'pubs linear'">
@@ -253,7 +253,7 @@
                                 </template>
                                 <v-card>
                                   <v-card-title
-                                          style="background-color: #FFBA08 ; color: white;"
+                                          style="background-color: #A8DADC ; color: white;"
                                           class="justify-center"
                                   >
                                     <span>
@@ -357,7 +357,7 @@
     width="1500"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+      <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
         Input Statistics
         <v-spacer></v-spacer>
         <v-btn

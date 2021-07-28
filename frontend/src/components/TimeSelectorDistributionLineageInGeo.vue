@@ -37,7 +37,7 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="#FFBA08"
+                color="#F48C0680"
                 track-color="grey"
                 height="2px"
               >
@@ -50,7 +50,7 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="#FFBA08">
+          <v-card style="width: 80%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 5px; padding-top: 5px">
                 <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
@@ -83,11 +83,11 @@
                       >
                          <template v-slot:append>
                             <v-icon v-if="wrong_last_start_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                           </template>
@@ -109,11 +109,11 @@
                       >
                         <template v-slot:append>
                             <v-icon v-if="wrong_last_stop_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                         </template>
@@ -179,12 +179,12 @@ name: "TimeSelectorDistributionLineageInGeo",
                 type: 'bar',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: '#323F8B'},
+                itemStyle: {color: '#1D3557'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: '#323F8B'
+                        shadowColor: '#1D3557'
                     }
                 },
                 markArea: {
@@ -194,7 +194,7 @@ name: "TimeSelectorDistributionLineageInGeo",
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: '#FFBA0880',
+                            color: '#F48C0680',
                         },
                     }, {
                         xAxis: 0
@@ -206,7 +206,7 @@ name: "TimeSelectorDistributionLineageInGeo",
                 name: 'AVG of previous 7 days',
                 type: 'line',
                 data: [],
-                color: '#323F8B',
+                color: '#1D3557',
             },
         ],
         xAxis: {

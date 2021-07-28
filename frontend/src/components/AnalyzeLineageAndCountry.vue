@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
             <h1>COUNTRY (TARGET) vs LINEAGE (BACKGROUND)</h1>
           </v-card-title>
@@ -32,7 +32,7 @@
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyLoadCountry()"
-                         color="red"
+                         color="#E63946"
                          class="white--text"
                          :disabled="selectedLineage === null"
                   >
@@ -83,7 +83,7 @@
                   <v-btn
                         :disabled="possibleCountry.length === 0"
                          @click="applySingleLineageAnalysis()"
-                         color="red"
+                         color="#E63946"
                          class="white--text"
                   >
                       APPLY
@@ -94,14 +94,14 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#A8DADC">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <h2>APPLY FILTERS TO TABLE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% BACKGROUND:</h5>
                     </v-card-title>
@@ -144,7 +144,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% TARGET:</h5>
                     </v-card-title>
@@ -187,7 +187,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
                     </v-card-title>
@@ -232,7 +232,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>NUMERATOR BACKGROUND:</h5>
                     </v-card-title>
@@ -275,7 +275,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>NUMERATOR TARGET:</h5>
                     </v-card-title>
@@ -318,7 +318,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>ODDS RATIO:</h5>
                     </v-card-title>
@@ -365,7 +365,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
                          @click="applyFilterOnTable()"
-                         color="red"
+                         color="#E63946"
                          class="white--text"
                   >
                       APPLY FILTERS
@@ -377,7 +377,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center" v-if="rowsAnalyzeMutation.length !== 0">
                  <v-layout row wrap justify-center>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
+                     <v-card width="500px" color="#F1FAEE">
                         <v-card-title class="justify-center">
                           <h5>INFO:</h5>
                         </v-card-title>
@@ -407,7 +407,7 @@
                      </v-card>
                    </v-flex>
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
+                     <v-card width="500px" color="#F1FAEE">
                         <v-card-title class="justify-center">
                           <h5>FILTER PROTEIN:</h5>
                         </v-card-title>
@@ -465,7 +465,7 @@
                  <h2> BAR CHART based on P-VALUE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#F0E68C">
+                 <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
                     </v-card-title>
@@ -510,7 +510,7 @@
                  </v-card>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#F0E68C">
+                 <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>FILTER PROTEIN:</h5>
                     </v-card-title>
@@ -529,7 +529,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <v-btn
                          @click="applyFilterPValueChart()"
-                         color="red"
+                         color="#E63946"
                          class="white--text"
                          :disabled="selectedProteinForPValue === null"
                   >

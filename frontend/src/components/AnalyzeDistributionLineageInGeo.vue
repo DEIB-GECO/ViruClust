@@ -2,9 +2,9 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px; min-height: 83.5vh">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
-            <h1>GEOGRAPHICAL DISTRIBUTION OF LINEAGES</h1>
+            <h1>LINEAGE ANALYSIS</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
@@ -39,7 +39,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyChosen()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                          :disabled="(selectedGeo !== 'world' && this.selectedSpecificGeo === null) || selectedGeo === null"
                   >
@@ -66,7 +66,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
                  <v-btn
                          @click="applyTableLineageCountry()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                          :disabled="selectedGeo !== 'world' && (selectedGeo === null || selectedSpecificGeo === null)"
                   >
@@ -78,7 +78,7 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#A8DADC">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">

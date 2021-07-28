@@ -4,21 +4,22 @@
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
           <h2>SUMMARY</h2>
         </v-flex>
+        <v-layout row wrap justify-center style="padding: 20px;">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="#F48C06">
-            <v-card-title class="justify-center">
+          <v-card style="width: 80%; margin: 20px" color="#457B9D">
+            <v-card-title class="justify-center" style="color: white">
               TARGET
             </v-card-title>
             <v-card-text>
               <v-layout row wrap justify-center style="padding: 20px;">
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>INFO: </h3>
+                  <h3 style="color: white">INFO: </h3>
                 </v-flex>
                 <v-card color="white" width="60%" style="margin-bottom: 20px; padding: 20px">
                   <span v-for="(info, key) in arrayQueryFreeTarget" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>NUM SEQUENCES: </h3>
+                  <h3 style="color: white">NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -34,20 +35,20 @@
           </v-card>
         </v-flex>
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 80%; margin: 20px" color="#DC2F02">
-            <v-card-title class="justify-center">
+          <v-card style="width: 80%; margin: 20px" color="#1D3557">
+            <v-card-title class="justify-center" style="color: white">
               BACKGROUND
             </v-card-title>
             <v-card-text>
               <v-layout row wrap justify-center style="padding: 20px;">
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>INFO: </h3>
+                  <h3 style="color: white">INFO: </h3>
                 </v-flex>
                 <v-card color="white" width="60%" style="margin-bottom: 20px; padding: 20px">
                   <span v-for="(info, key) in arrayQueryFreeBackground" v-bind:key="key"><b>- {{key}} :</b> {{info}}<br></span>
                 </v-card>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                  <h3>NUM SEQUENCES: </h3>
+                  <h3 style="color: white">NUM SEQUENCES: </h3>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; padding: 0;">
                   <v-text-field
@@ -62,6 +63,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
+        </v-layout>
       </v-row>
   </div>
 </template>

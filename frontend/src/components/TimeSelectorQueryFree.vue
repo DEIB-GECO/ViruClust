@@ -34,7 +34,7 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="#FFBA08"
+                color="#F48C0680"
                 track-color="grey"
                 height="2px"
               >
@@ -47,7 +47,7 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-          <v-card style="width: 100%; margin: 20px" color="#FFBA0880">
+          <v-card style="width: 100%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
@@ -65,11 +65,11 @@
                       >
                          <template v-slot:append>
                             <v-icon v-if="wrong_last_start_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                           </template>
@@ -95,11 +95,11 @@
                       >
                         <template v-slot:append>
                             <v-icon v-if="wrong_last_stop_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                         </template>
@@ -182,7 +182,7 @@ export default {
                     data: [ [{
                         xAxis: 0,
                         itemStyle: {
-                            color: '#FFBA0880',
+                            color: '#F48C0680',
                         },
                     }, {
                         xAxis: 0

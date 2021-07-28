@@ -33,7 +33,7 @@
           <v-layout wrap justify-center style=" height: 100%">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
               <h1 style="position: absolute; top: 10%; text-align: center; z-index: 1">TOO MANY DATA</h1>
-              <h3 style="position: absolute; top:40%; text-align: center; z-index: 1">Please select some filter to reduce the number of rows</h3>
+              <h3 style="position: absolute; top:40%; text-align: center; z-index: 1">Please select some filters of amino acid changes to reduce the number of rows</h3>
             </v-flex>
           </v-layout>
         </div>
@@ -253,10 +253,10 @@ export default {
       for (let j = 0; j < rows.length; j = j + 1) {
         this.y_axis.push(rows[j]['mutation']);
         if (this.importantMutation['mutation'].includes(rows[j]['mutation'])) {
-            rich[j] = {'backgroundColor': 'red', 'color': 'white', 'padding': 3};
+            rich[j] = {'backgroundColor': '#1D3557', 'color': 'white', 'padding': 3};
         }
         else if (this.importantMutation['additional_mutation'].includes(rows[j]['mutation'])) {
-            rich[j] = {'backgroundColor': 'orange', 'color': 'white', 'padding': 3};
+            rich[j] = {'backgroundColor': '#457B9D', 'color': 'white', 'padding': 3};
         }
         else {
             rich[j] = {'backgroundColor': 'transparent', 'color': 'rgb(104,104,104)'};

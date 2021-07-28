@@ -2,10 +2,10 @@
   <div>
     <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
-      <v-card width="1800px" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F0E68C">
+      <v-card width="1800px" style="margin-top:50px; margin-bottom: 50px; padding: 50px" color="#F1FAEE">
         <v-card-title class="justify-center"><h1>METADATA</h1></v-card-title>
         <v-card-text>
-           <v-card color="#FFBA08" style="margin-top: 50px">
+           <v-card color="#A8DADC" style="margin-top: 50px">
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <h3>SELECTED FILTER</h3>
@@ -42,7 +42,7 @@
                   <v-btn
                        @click="apply()"
                        class="white--text"
-                       color="red"
+                       color="#E63946"
                        :disabled="disableMetadata"
                   >
                       APPLY
@@ -64,7 +64,7 @@
               </v-tab>
 
                <v-tab-item>
-                 <v-card color="#FFBA08" style="padding: 50px; border-radius: 0px" height="500">
+                 <v-card color="#A8DADC" style="padding: 50px; border-radius: 0px" height="500">
                    <v-container fluid grid-list-xl style="justify-content: center;">
                       <v-row justify="center" align="center">
                        <h2>SELECT ONE METADATA FROM LIST</h2>
@@ -74,7 +74,7 @@
                </v-tab-item>
 
               <v-tab-item v-for="v2 in allFields" v-bind:key="v2" style="background-color: red">
-                  <v-card color="#FFBA08" style="border-radius: 0px; padding-bottom: 50px; padding-top: 50px">
+                  <v-card color="#A8DADC" style="border-radius: 0px; padding-bottom: 50px; padding-top: 50px">
                     <v-container fluid grid-list-xl style="justify-content: center;">
                       <v-row justify="center" align="center">
                        <h2>{{v2.toUpperCase()}}</h2>
@@ -84,7 +84,7 @@
                                  style="justify-content: center;"
                                  v-if="(allMetadata !== null && allMetadata.length === 0) && v2 === 'date'">
                       <v-row justify="center" align="center">
-                        <span style="background-color: #F0E68C;
+                        <span style="background-color: #F1FAEE;
                                  width: 1420px; height: 620px; position: absolute; top: 235px; z-index: 3; border-radius: 10%; border: darkred solid 10px">
                           <v-layout row wrap justify-center style="padding: 70px;">
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
@@ -105,7 +105,7 @@
                                  style="justify-content: center;"
                                  v-if="(allMetadata !== null && allMetadata.length === 0)  && v2 !== 'date'">
                       <v-row justify="center" align="center">
-                        <span style="background-color: #F0E68C;
+                        <span style="background-color: #F1FAEE;
                                  width: 1400px; height: 620px; position: absolute; top: 100px; z-index: 3; border-radius: 10%; border: darkred solid 10px">
                           <v-layout row wrap justify-center style="padding: 70px;">
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">

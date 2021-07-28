@@ -33,7 +33,7 @@
 <!--                style="margin-bottom: 20px; margin-left: 50px"-->
 <!--                class="white&#45;&#45;text"-->
 <!--                x-small-->
-<!--                color="red"-->
+<!--                color="#E63946"-->
 <!--                :disabled="background_slider[0] === 0"-->
 <!--                @click="addSubSliders('background_slider', 'minus')"-->
 <!--            >-->
@@ -47,7 +47,7 @@
                 v-model="background_slider"
                 min = "0"
                 :max = "max_range"
-                color="#F48C06"
+                color="#F48C0680"
                 track-color="grey"
                 height="2px"
                 hide-details
@@ -62,7 +62,7 @@
               v-model="target_slider"
               min = "0"
               :max = "max_range"
-              color="#DC2F02"
+              color="#DC2F0280"
               track-color="grey"
               height="2px"
               hide-details
@@ -123,11 +123,11 @@
                       >
                         <template v-slot:append>
                           <v-icon v-if="wrongDateStartBackground"
-                                  color="red">
+                                  color="#E63946">
                             mdi-close-circle
                           </v-icon>
                           <v-icon v-else
-                                  color="green">
+                                  color="#1D3557">
                             mdi-checkbox-marked-circle
                           </v-icon>
                         </template>
@@ -154,11 +154,11 @@
                       >
                         <template v-slot:append>
                           <v-icon v-if="wrongDateStopBackground"
-                                  color="red">
+                                  color="#E63946">
                             mdi-close-circle
                           </v-icon>
                           <v-icon v-else
-                                  color="green">
+                                  color="#1D3557">
                             mdi-checkbox-marked-circle
                           </v-icon>
                         </template>
@@ -212,11 +212,11 @@
                       >
                         <template v-slot:append>
                           <v-icon v-if="wrongDateStartTarget"
-                                  color="red">
+                                  color="#E63946">
                             mdi-close-circle
                           </v-icon>
                           <v-icon v-else
-                                  color="green">
+                                  color="#1D3557">
                             mdi-checkbox-marked-circle
                           </v-icon>
                         </template>
@@ -242,11 +242,11 @@
                       >
                         <template v-slot:append>
                           <v-icon v-if="wrongDateStopTarget"
-                                  color="red">
+                                  color="#E63946">
                             mdi-close-circle
                           </v-icon>
                           <v-icon v-else
-                                  color="green">
+                                  color="#1D3557">
                             mdi-checkbox-marked-circle
                           </v-icon>
                         </template>
@@ -321,12 +321,12 @@ export default {
                 type: 'bar',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: '#323F8B'},
+                itemStyle: {color: '#1D3557'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: '#323F8B'
+                        shadowColor: '#1D3557'
                     }
                 },
                 markArea: {
@@ -354,7 +354,7 @@ export default {
                 name: 'AVG of previous 7 days',
                 type: 'line',
                 data: [],
-                color: '#323F8B',
+                color: '#1D3557',
             },
         ],
         xAxis: {
@@ -646,7 +646,7 @@ export default {
     }
   },
   mounted() {
-
+      this.setFalseErrorNumSeqQueryTime();
       this.max_range = this.timeContent.length - 1;
 
       let val = "2021-03-31"

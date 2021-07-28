@@ -1,15 +1,15 @@
 <template>
   <div>
-    <v-container fluid grid-list-xl style="justify-content: center; width: 1300px">
+    <v-container fluid grid-list-xl style="justify-content: center; width: 1500px">
       <v-layout row wrap justify-center>
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0">
-          <div :id="namePValue" style="width: 1000px; height: 250px; user-select: none;
+          <div :id="namePValue" style="width: 1200px; height: 250px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white;">
           </div>
-           <v-btn @click="download" x-small icon v-if="my_chart !== null"
+           <v-btn @click="download" small icon v-if="my_chart !== null"
             style="margin-left: 20px; margin-top: 110px">
-              <v-icon size="23">
+              <v-icon size="32">
                 mdi-download-circle-outline
               </v-icon>
           </v-btn>
@@ -65,12 +65,12 @@ export default {
                 type: 'bar',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: 'blue'},
+                itemStyle: {color: '#457B9D'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        shadowColor: '#457B9D'
                     }
                 },
                 stack: 'one',
@@ -206,10 +206,10 @@ export default {
         else{
           let color ;
           if(ii %2 === 1){
-            color = '#3C99DC';
+            color = '#A8DADC';
           }
           else{
-            color = '#0F5298';
+            color = '#457B9D';
           }
           let series = {
                 type: 'bar',
@@ -250,7 +250,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValue[k].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValue[k].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
@@ -283,7 +283,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueMutagenesis[k].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[k].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
@@ -315,7 +315,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueAaModifications[k].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValueAaModifications[k].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueAaModifications[index]['Begin'];

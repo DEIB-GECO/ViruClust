@@ -1,18 +1,10 @@
 <template>
   <v-app>
-      <v-toolbar dark color="#FFBA08" style="width: 100%">
-        <div class="d-flex align-center">
-          <v-img
-            class="shrink mt-1 hidden-sm-and-down"
-            max-height="50"
-            src="./images/work_in_progress.png"
-            width="100"
-            style="margin-left: 30px"
-          />
-        </div>
+      <v-toolbar dark color="#1D3557" style="width: 100%;">
+        <v-img :src="require('./images/virusurf_logo.png')" contain max-width="39px" max-height="39px"></v-img>
         <v-toolbar-title class="headline" style="font-size: 32px !important; margin-left: 20px">
             <span>Viru</span>
-            <span class="font-weight-light">Clust</span>
+            <span class="font-weight-light">Clust GISAID</span>
         </v-toolbar-title>
 
         <span style="font-size: 20px; white-space: nowrap; margin-left: 50px">enabled by data from
@@ -45,9 +37,9 @@
                  style="background-color: transparent; width: 100px">
               <span>Wiki</span>
           </v-btn>
-          <v-btn icon text href="/viruclust/repo_static/about_viruclust.html" target="_blank"
+          <v-btn icon text href="/viruclust/repo_static/about_viruclust2.html" target="_blank"
             style="background-color: transparent; width: 100px">
-              <span>ACK</span>
+              <span>ABOUT</span>
           </v-btn>
         </v-toolbar-items>
 
@@ -102,9 +94,9 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="/viruclust/repo_static/about_viruclust.html" target="_blank"
+                <v-btn icon text href="/viruclust/repo_static/about_viruclust2.html" target="_blank"
                   style="background-color: transparent; width: 200px">
-                    <span>ACK</span>
+                    <span>ABOUT</span>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>

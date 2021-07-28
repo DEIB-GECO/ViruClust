@@ -2,7 +2,7 @@
 <div>
   <v-container fluid grid-list-xl style="justify-content: center;">
     <v-row justify="center" align="center">
-      <v-card width="600px" style="margin-top:50px; padding: 50px" color="#F0E68C">
+      <v-card width="600px" style="margin-top:50px; padding: 50px" color="#F1FAEE">
         <v-card-title class="justify-center"><h1>UPLOAD</h1></v-card-title>
         <v-card-text>
           <v-layout wrap justify-center style="padding: 30px; margin-top: 20px">
@@ -62,7 +62,7 @@
               <v-btn
                      @click="apply()"
                      class="white--text"
-                     color="red"
+                     color="#E63946"
               >
                   PREPARE YOUR DATA
               </v-btn>
@@ -80,7 +80,7 @@
     width="300"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+      <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
         Missing Files
         <v-spacer></v-spacer>
         <v-btn

@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#FFBA08">
+        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
             <h1>TEMPORAL ANALYSIS</h1>
           </v-card-title>
@@ -53,7 +53,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applyChosenLineageCountry()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                   >
                       APPLY
@@ -67,8 +67,8 @@
                 <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
                   <v-layout row wrap justify-center>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                      <v-btn id="two_comparison" large color="#6A040F" @click="selectedTabSelectTargetBackground = 0" style="margin-right: 10px; width: 400px; height: 70px;"> TWO-PERIOD COMPARISON </v-btn>
-                      <v-btn id="n_comparison" large color="#6A040F" @click="selectedTabSelectTargetBackground = 1" style="margin-left: 10px; width: 400px; height: 70px;"> N-PERIOD ANALYSIS </v-btn>
+                      <v-btn id="two_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 0" style="margin-right: 10px; width: 400px; height: 70px;"> TWO-PERIOD COMPARISON </v-btn>
+                      <v-btn id="n_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 1" style="margin-left: 10px; width: 400px; height: 70px;"> N-PERIOD ANALYSIS </v-btn>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                       <div v-if="selectedTabSelectTargetBackground === 0">
@@ -119,7 +119,7 @@
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
                          @click="applySingleLineageAnalysis()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                          :disabled="errorNumSeqQueryTime"
                   >
@@ -130,7 +130,7 @@
 
              <v-layout row wrap justify-center v-if="chosenApplied && timeContent.length === 0">
                <v-row justify="center" align="center">
-                <span style="background-color: #F0E68C;
+                <span style="background-color: #F1FAEE;
                          width: 60%; height: 100px; border-radius: 10%; border: darkred solid 10px">
                   <v-layout row wrap justify-center>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
@@ -144,16 +144,40 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#A8DADC">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                 <h2>APPLY FILTERS FOR TABLE ANALYSIS</h2>
+                  <h2>APPLY FILTERS FOR SELECTING THE CHANGES IN THE TABLE<span v-if="fixedRowAnalyzeTime.length > 1">S AND HEATMAP</span><span>  BELOW</span></h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% BACKGROUND:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                % BACKGROUND
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
                       <v-layout row wrap justify-space-around>
@@ -194,9 +218,33 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
-                      <h5>NUMERATOR BACKGROUND:</h5>
+                      <h5># SEQUENCES IN BACKGROUND:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                # SEQUENCES IN BACKGROUND
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
                       <v-layout row wrap justify-space-around>
@@ -237,9 +285,33 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% TARGET:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                % TARGET
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
                       <v-layout row wrap justify-space-around>
@@ -280,9 +352,33 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
-                      <h5>NUMERATOR TARGET:</h5>
+                      <h5># SEQUENCES IN TARGET:</h5>
+                      <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                # SEQUENCES IN TARGET
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                     </v-card-title>
                     <v-card-text >
                       <v-layout row wrap justify-space-around>
@@ -323,7 +419,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
                       <v-dialog width="500">
@@ -392,7 +488,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>ODDS RATIO:</h5>
                       <v-dialog width="500">
@@ -476,9 +572,33 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
-                     <v-card width="500px" color="#F0E68C">
+                     <v-card width="500px" color="#F1FAEE">
                         <v-card-title class="justify-center">
                           <h5>FILTER PROTEIN:</h5>
+                          <v-dialog width="500">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                                v-on="on"
+                                  slot="activator"
+                                  class="info-button"
+                                  x-small
+                                  text icon color="grey"
+                                  style="margin-bottom: 5px; margin-left: 20px">
+                              <v-icon class="info-icon">mdi-information</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title
+                                    class="headline grey lighten-2"
+                                    primary-title
+                            >
+                                FILTER PROTEIN
+                            </v-card-title>
+                            <v-card-text>
+                             ...
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                         </v-card-title>
                         <v-card-text>
                           <v-autocomplete
@@ -496,18 +616,18 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <v-btn
                          @click="applyFilterOnTable()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                   >
                       APPLY
                   </v-btn>
                </v-flex>
-               <v-card width="1000px" color="#F0E68C" style="margin-top: 50px; padding: 10px" v-if="queryTime['lineage']">
+               <v-card width="1000px" color="#F1FAEE" style="margin-top: 50px; padding: 10px" v-if="queryTime['lineage']">
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
-                     <h3>IMPORTANT CHANGES:</h3>
+                   <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
+                     <h3>IMPORTANT CHANGES OF TARGET LINEAGE:</h3>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
+                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
                      <v-select
                       v-model="selectedTypeImportantMutation"
                       :items="possibleTypeImportantMutation"
@@ -516,7 +636,7 @@
                       hide-details>
                      </v-select>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
+                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
                      <ImportantMutation
                      :importantMutationECDC="importantMutationECDC"
                      :importantMutation75Percentage="importantMutation75Percentage"
@@ -538,24 +658,24 @@
                  <h2>CHANGES IN TARGET vs BACKGROUND PERIOD</h2><h2 v-if="rowsAnalyzeTime.length > 1">S</h2>
                </v-flex>
               <v-tabs v-model="selectedTabTable"
-              background-color="#6A040F"
+              background-color="#457B9D"
               dark
               vertical
               show-arrows
-              slider-color="orange"
+              slider-color="#E63946"
               slider-size="6">
 
                 <v-tab style="border-bottom: black solid 1px; width: 200px" v-for="(rows ,index) in rowsAnalyzeTime" v-bind:key="index">
-                  <span>{{ fixedRowAnalyzeTime[index][0]['target'].split('//')[0] }}<br>
-                    {{ fixedRowAnalyzeTime[index][0]['target'].split('//')[1] }}
+                  <span>{{ fixedRowAnalyzeTime[index][0]['target'].split(' / ')[0] }}<br>
+                    {{ fixedRowAnalyzeTime[index][0]['target'].split(' / ')[1] }}
                   </span>
                 </v-tab>
 
-                <v-tabs-items v-model="selectedTabTable" style="background: #F0E68C;">
-                  <v-tab-item style="padding: 20px; background-color: #F0E68C" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="index">
+                <v-tabs-items v-model="selectedTabTable" style="background: #F1FAEE;">
+                  <v-tab-item style="padding: 20px; background-color: #F1FAEE" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="index">
                     <v-layout row wrap justify-space-around style="margin-top: 10px">
                       <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                         <v-card width="500px" color="#F0E68C" style="border: black solid 1px">
+                         <v-card width="500px" color="#F1FAEE" style="border: black solid 1px">
                             <v-card-title class="justify-center">
                               <h5>INFO:</h5>
                             </v-card-title>
@@ -607,8 +727,8 @@
                               <tr>
                                 <td style="white-space:pre-wrap; word-wrap:break-word; text-align: center; align-content: center" v-for="header in headerAnalyzeTime"
                                     :key="header.value" v-show="header.show">
-                                      <span style="color: white; font-weight: 900; background-color: red; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
-                                      <span style="color: white; font-weight: 900; background-color: orange; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                      <span style="color: white; font-weight: 900; background-color: #1D3557; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                      <span style="color: white; font-weight: 900; background-color: #457B9D; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
                                       <span v-else-if="header.value === 'mutation_position'">{{item['mutation']}}</span>
                                       <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
                                       <span v-else-if="header.value === 'odd_ratio'">
@@ -635,14 +755,14 @@
         </v-card>
       </v-row>
       <v-row justify="center" align="center" v-if="tableApplied">
-        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#FFBA08">
+        <v-card width="1600px" style="margin-bottom: 50px; margin-top:50px; padding: 50px" color="#A8DADC">
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  <h2>TARGET SEQUENCES BAR CHART</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                  <v-card width="500px" color="#F0E68C">
+                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
                     </v-card-title>
@@ -687,7 +807,7 @@
                   </v-card>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                 <v-card width="500px" color="#F0E68C">
+                 <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>SELECT PROTEIN (mandatory):</h5>
                     </v-card-title>
@@ -704,7 +824,7 @@
                  </v-card>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                 <v-card width="500px" color="#F0E68C">
+                 <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
                         <h5>INCLUDE CHANGES:</h5>
                     </v-card-title>
@@ -754,7 +874,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                  <v-btn
                          @click="applyFilterPValueChart()"
-                         color="#D00000"
+                         color="#E63946"
                          class="white--text"
                          :disabled="selectedProteinForPValue === null"
                   >
@@ -766,7 +886,7 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                           <v-card width="400px" color="#F0E68C">
+                           <v-card width="400px" color="#F1FAEE">
                               <v-card-title class="justify-center">
                                 <h5>HIGHLIGHT DOMAINS:</h5>
                               </v-card-title>
@@ -789,7 +909,7 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                           <v-card width="400px" color="#F0E68C">
+                           <v-card width="400px" color="#F1FAEE">
                               <v-card-title class="justify-center">
                                 <h5>HIGHLIGHT MUTAGENESIS SITES:</h5>
                               </v-card-title>
@@ -812,7 +932,7 @@
                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                           <v-card width="400px" color="#F0E68C">
+                           <v-card width="400px" color="#F1FAEE">
                               <v-card-title class="justify-center">
                                 <h5>HIGHLIGHT GLYCOSYLATION SITES:</h5>
                               </v-card-title>
@@ -871,9 +991,9 @@
                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                  </v-flex>
                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-for="(rowsAnalTime ,index) in rowsAnalyzeTime" v-bind:key="'pValue' + index">
-                  <v-layout row wrap justify-space-around style="margin: 10px; padding: 10px">
-                    <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center">
-                       <v-card width="500px" color="#F0E68C" style="height: 250px">
+                  <v-layout row wrap justify-space-between>
+                    <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: left;">
+                       <v-card width="500px" color="#F1FAEE" style="height: 250px">
                           <v-card-text style="text-align: center; padding-top: 22%">
                             <span>
                               <b> TARGET: </b>
@@ -903,7 +1023,7 @@
                           </v-card-text>
                        </v-card>
                      </v-flex>
-                    <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center;">
                        <PValueBarChart
                            :namePValue="pValueName[index]"
                            :pValueContent="pValueContent[index]"
@@ -941,7 +1061,7 @@
       width="700"
     >
       <v-card>
-        <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+        <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
           Accession IDs
           <v-spacer></v-spacer>
           <v-btn
@@ -1247,7 +1367,7 @@ export default {
       return `${item['lineage']}` //  ----- ${item['cnt']}
     },
     getFieldTextDomain(item){
-      return `${item['Description']}` + ' /// (' + `${item['Begin']}` + ' , ' + `${item['End']}` + ' )';
+      return `${item['Description']}` + ' / (' + `${item['Begin']}` + ' , ' + `${item['End']}` + ')';
     },
     applySingleLineageAnalysis(){
       let url = `/analyze/analyzeMutationCountryLineageInTime`;
@@ -1643,7 +1763,7 @@ export default {
               elem1.style['color'] = 'white';
               elem1.style['font-weight'] = 'bold';
               let elem2 = document.getElementById(id2);
-              elem2.style['color'] = 'grey';
+              elem2.style['color'] = '#FFFFFF80';
               elem2.style['font-weight'] = 'normal';
             }, delayInMilliseconds);
         });
@@ -1724,7 +1844,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValue[i].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValue[i].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
@@ -1743,7 +1863,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueMutagenesis[i].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[i].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
@@ -1762,7 +1882,7 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueAaModifications.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueAaModifications[i].split(' /// ')[0];
+            return item['Description'] === that.selectedDomainForPValueAaModifications[i].split(' / ')[0];
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueAaModifications[index]['Begin'];
@@ -1822,14 +1942,14 @@ export default {
         elem1.style['color'] = 'white';
         elem1.style['font-weight'] = 'bold';
         let elem2 = document.getElementById(id2);
-        elem2.style['color'] = 'grey';
+        elem2.style['color'] = '#FFFFFF80';
         elem2.style['font-weight'] = 'normal';
       }
       else{
         let id1 = 'two_comparison';
         let id2 = 'n_comparison';
         let elem1 = document.getElementById(id1);
-        elem1.style['color'] = 'grey';
+        elem1.style['color'] = '#FFFFFF80';
         elem1.style['font-weight'] = 'normal';
         let elem2 = document.getElementById(id2);
         elem2.style['color'] = 'white';

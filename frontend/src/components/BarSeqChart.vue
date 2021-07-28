@@ -1,5 +1,5 @@
 <template>
-  <v-card color="#FFBA08">
+  <v-card color="#A8DADC">
     <v-container fluid grid-list-xl style="justify-content: center;">
       <v-row justify="center" align="center">
         <div @click="filterPoint()" id="chart2" style="width: 1200px; height: 500px; user-select: none;

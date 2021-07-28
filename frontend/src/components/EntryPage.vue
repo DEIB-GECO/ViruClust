@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-xl style="justify-content: center;">
     <v-row justify="center" align="center">
-      <v-card width="600px" style="margin-top:50px; padding: 50px" color="#F0E68C">
+      <v-card width="600px" style="margin-top:50px; padding: 50px" color="#F1FAEE">
          <v-card-text>
            <v-layout row wrap justify-center style="padding: 30px;">
             <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">

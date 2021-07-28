@@ -185,7 +185,7 @@
     width="1200"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+      <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
         ANALYSE MUTATION PER SEQUENCE
         <v-spacer></v-spacer>
         <v-btn
@@ -204,7 +204,7 @@
           <span v-for="(v,k) in analyzedMutPerSeqInstance" v-bind:key="k">
             <span v-if="k === 'infos'">
               <v-layout row wrap justify-center style="padding: 30px;">
-                <v-card color="#F0E68C" width="500px" class="justify-center">
+                <v-card color="#F1FAEE" width="500px" class="justify-center">
                   <v-card-title class="justify-center">
                       INFOS:
                   </v-card-title>
@@ -218,7 +218,7 @@
             </span>
             <span v-else-if="k === 'sequences'">
               <v-layout row wrap justify-center style="padding: 30px;">
-                <v-card color="#F0E68C" width="1000px" class="justify-center">
+                <v-card color="#F1FAEE" width="1000px" class="justify-center">
                   <v-card-title class="justify-center">
                       SEQUENCES:
                   </v-card-title>
@@ -246,7 +246,7 @@
     width="1200"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+      <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
         ANALYSIS SEQUENCES / MUTATION
         <v-spacer></v-spacer>
         <v-btn
@@ -265,7 +265,7 @@
           <span v-for="(v,k) in selectedSequencesOrMutation" v-bind:key="k">
             <span v-if="k === 'infos'">
               <v-layout row wrap justify-center style="padding: 30px;">
-                <v-card color="#F0E68C" width="500px" class="justify-center">
+                <v-card color="#F1FAEE" width="500px" class="justify-center">
                   <v-card-title class="justify-center">
                       INFOS:
                   </v-card-title>
@@ -279,7 +279,7 @@
             </span>
             <span v-else-if="k === 'sequences' || k === 'mutations'" >
               <v-layout row wrap justify-center style="padding: 30px;">
-                <v-card color="#F0E68C" width="1000px" class="justify-center">
+                <v-card color="#F1FAEE" width="1000px" class="justify-center">
                   <v-card-title class="justify-center">
                       {{k.toUpperCase()}}:
                   </v-card-title>
@@ -625,7 +625,7 @@ export default {
     });
 
 
-    //// PER TABELLA ANALISI SEQ MUT ARRAY
+    // PER TABELLA ANALISI SEQ MUT ARRAY
 
     // let seq_mut_arr = JSON.parse(JSON.stringify(this.statisticsInput['sequence_mutation_arr']));
     //
@@ -649,7 +649,7 @@ export default {
     // this.rowsLineage = seq_mut_arr;
 
 
-    //// PER TABELLA LINEAGE COUNTRY
+    // PER TABELLA LINEAGE COUNTRY
 
     // let seq_mut_arr = JSON.parse(JSON.stringify(this.statisticsInput['lineage_country_arr']));
     //

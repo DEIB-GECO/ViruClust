@@ -1,8 +1,8 @@
 <template>
-  <div style="border: black solid 1px; margin-bottom: 100px">
+  <div style="margin-bottom: 100px">
     <v-layout row wrap justify-center style="padding: 30px;">
        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-         <h2>SELECT</h2>
+         <h2>SELECT LINEAGE & LOCATION</h2>
        </v-flex>
        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree

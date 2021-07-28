@@ -23,15 +23,15 @@
 
           <v-btn-toggle v-model="view_exclusive" mandatory color="black">
             <v-btn small>
-              <span>SHOW <span style="color: #323F8B">TARGET</span></span>
+              <span>SHOW <span style="color: #457B9D">TARGET</span></span>
             </v-btn>
 
             <v-btn small>
-              <span>SHOW <span style="color: #9F3255">BACKGROUND</span></span>
+              <span>SHOW <span style="color: #1D3557">BACKGROUND</span></span>
             </v-btn>
 
             <v-btn small>
-              <span>SHOW <span style="color: #323F8B">BO</span><span style="color: #9F3255">TH</span></span>
+              <span>SHOW BOTH</span>
             </v-btn>
           </v-btn-toggle>
 
@@ -62,7 +62,7 @@
                 v-model="slider"
                 min = "0"
                 :max = "max_range"
-                color="#F48C06"
+                color="#F48C0680"
                 track-color="grey"
                 height="2px"
               >
@@ -88,14 +88,14 @@
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
-          <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
+          <v-card style="width: 100%; margin-bottom: 20px" color="#457B9D">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>TARGET: </h3>
+                      <h3 style="color: white">TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -112,7 +112,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>NUM SEQUENCES TARGET: </h3>
+                      <h3 style="color: white">NUM SEQUENCES TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -132,14 +132,14 @@
 
 
         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
-          <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
+          <v-card style="width: 100%; margin-bottom: 20px" color="#1D3557">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
                 <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>BACKGROUND: </h3>
+                      <h3 style="color: white">BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -156,7 +156,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3>NUM SEQUENCES BACKGROUND: </h3>
+                      <h3 style="color: white">NUM SEQUENCES BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -170,7 +170,7 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0" v-if="listLocationExcluded.length > 0">
+              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0; color: white" v-if="listLocationExcluded.length > 0">
                   * Location excluded from background : {{listLocationExcluded}}
                 </v-flex>
             </v-card-text>
@@ -200,11 +200,11 @@
                       >
                          <template v-slot:append>
                             <v-icon v-if="wrong_last_start_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                           </template>
@@ -230,11 +230,11 @@
                       >
                         <template v-slot:append>
                             <v-icon v-if="wrong_last_stop_date"
-                                    color="red">
+                                    color="#E63946">
                               mdi-close-circle
                             </v-icon>
                             <v-icon v-else
-                                    color="green">
+                                    color="#1D3557">
                               mdi-checkbox-marked-circle
                             </v-icon>
                         </template>
@@ -336,12 +336,12 @@ export default {
                 name: 'Background',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: '#9F3255'},
+                itemStyle: {color: '#1D3557'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: '#9F3255'
+                        shadowColor: '#1D3557'
                     }
                 },
             },
@@ -350,12 +350,12 @@ export default {
                 name: 'Target',
                 radius: '50%',
                 data: [],
-                itemStyle: {color: '#323F8B'},
+                itemStyle: {color: '#457B9D'},
                 emphasis: {
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: '#323F8B'
+                        shadowColor: '#457B9D'
                     }
                 },
                 markArea: {
@@ -377,13 +377,13 @@ export default {
                 name: 'AVG of previous 7 days in target',
                 type: 'line',
                 data: [],
-                color: '#323F8B',
+                color: '#457B9D',
             },
             {
                 name: 'AVG of previous 7 days in background',
                 type: 'line',
                 data: [],
-                color: '#9F3255',
+                color: '#1D3557',
             }
         ],
         xAxis: {

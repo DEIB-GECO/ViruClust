@@ -2,7 +2,7 @@
     <div>
       <v-btn @click="dialogModifyColumns = true"
            class="white--text"
-           color="#D00000">
+           color="#E63946">
       MERGE COLUMNS</v-btn>
 
       <v-dialog
@@ -11,7 +11,7 @@
       width="1000"
       >
         <v-card>
-          <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+          <v-card-title class="headline" style="background-color: #A8DADC ;">
             MERGE COLUMNS
             <v-spacer></v-spacer>
             <v-btn
@@ -53,7 +53,7 @@
                 <v-btn @click="unionHeader()"
                      class="white--text"
                      small
-                     color="rgb(122, 139, 157)"
+                     color="#E63946"
                        :disabled="newNameColumn === null || selectedHeader.length === 0"
                       style="margin-top: 20px">
                 UNION</v-btn>
@@ -63,7 +63,7 @@
                         v-if="arrayOfUnions.length > 0">
                  <v-layout row wrap justify-center align-center>
                    <v-flex class="no-horizontal-padding xs12 d-flex" style="margin: 20px" v-for="(singleUnion, idx) in arrayOfUnions" v-bind:key="idx">
-                    <v-card color="#F0E68C" style="width: 100%; padding: 10px">
+                    <v-card color="#F1FAEE" style="width: 100%; padding: 10px">
                       <v-card-text>
                         <v-layout row wrap justify-center align-center>
                          <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">

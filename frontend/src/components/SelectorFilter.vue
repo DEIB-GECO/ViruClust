@@ -53,7 +53,7 @@
                   <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
               </v-btn>
               <v-btn
-                      color="red"
+                      color="#E63946"
                       text
                       outlined
                       @click="deleteDate">
@@ -70,7 +70,7 @@
           <v-btn
                @click="addFilter()"
                class="white--text"
-               color="red"
+               color="#E63946"
                :disabled="disableMetadata"
           >
               APPLY
@@ -85,7 +85,7 @@
     width="300"
   >
     <v-card>
-      <v-card-title class="headline" style="background-color: #FFBA08 ; color: white">
+      <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
         Select Proper Date
         <v-spacer></v-spacer>
         <v-btn

@@ -2,22 +2,22 @@
   <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px">
 
     <v-tabs v-model="selectedTabAnalyze"
-            background-color="#9F3255"
+            background-color="#457B9D"
             dark
             show-arrows
-            slider-color="orange"
+            slider-color="#E63946"
             slider-size="6"
             class="containTabs"
             height="60">
 
-      <v-tab id="tab0"  style="border-right: black solid 1px; width: 5%" @click="this.setHomePage">
+      <v-tab id="tab0"  style="border-right: black solid 1px; width: 5%" @click="setSelectedTabAnalyzeFromHome(0);">
         <div>
           <v-icon>mdi-home</v-icon>
         </div>
       </v-tab>
 
       <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
-         GEO DISTRIBUTION OF LINEAGES
+         LINEAGE ANALYSIS
       </v-tab>
 
       <v-tab id="tab2" style="border-right: black solid 1px; width: 20%">
@@ -33,10 +33,11 @@
       </v-tab>
 
       <v-tab id="tab4"  style="border-right: black solid 1px; width: 20%">
-         FREE TARGET VS BACKGROUND
+         OPEN ANALYSIS
       </v-tab>
 
       <v-tab-item class="lol">
+        <HomePage></HomePage>
       </v-tab-item>
 
       <v-tab-item class="lol">
@@ -79,13 +80,16 @@ import AnalyzeTimeLinCou from "./AnalyzeTimeLinCou";
 import axios from "axios";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import FreeTargetVsBackground from "./FreeTargetVsBackground";
+import HomePage from "./HomePage";
 
 export default {
   name: "AnalyzePage",
-  components: {FreeTargetVsBackground, AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
+  components: {
+    HomePage,
+    FreeTargetVsBackground, AnalyzeTimeLinCou, AnalyzeProvinceRegion, AnalyzeDistributionLineageInGeo},
   data() {
     return {
-      selectedTabAnalyze: 1,
+      selectedTabAnalyze: 0,
       overlay: true,
       finished_api: 0,
     }
@@ -95,7 +99,7 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage', 'setColor1', 'setColor2', 'setColor3']),
+    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage', 'setColor1', 'setColor2', 'setColor3', 'setSelectedTabAnalyzeFromHome']),
     ...mapActions([]),
   },
   watch:{

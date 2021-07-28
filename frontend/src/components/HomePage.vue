@@ -1,25 +1,22 @@
 <template>
   <v-container fluid grid-list-xl style="justify-content: center;">
     <v-row justify="center" align="center">
-      <v-card width="80%" style="margin-top:50px; padding: 10px" color="#E2C178">
+      <v-card width="80%" style="margin-top:50px" color="#A8DADC">
          <v-card-text>
-           <v-layout row wrap justify-center>
-             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               <div style="border: grey solid 3px; border-radius: 50%; height: 300px; width: 70%;
-               background-color: #C42F3E; text-align: center; padding-top: 130px">
-                  <span style="color: white; font-size: 10vw;">
-                      <span class="font-weight-bold">Viru</span>
-                      <span class="font-weight-light">Clust</span>
-                  </span>
-               </div>
-            </v-flex>
-           </v-layout>
+                  <h2 style=" text-align: center">
+                     <b>Viru</b>Clust is a web application developed at Politecnico di Milano by the group of Prof. Stefano Ceri.
+                     <br>
+                      Users can freely select GISAID-provided metadata (lineages, locations, collection dates) to drive their analyses on SARS-CoV-2
+                      <br>
+                      We support four modes: (1) Lineage analysis; (2) Temporal analysis; (3) Spatial analysis; (4) Open analysis.
+                      Modes (2), (3) and (4) allow to compare two different sub-populations, respectively referenced as target and background.
+                  </h2>
          </v-card-text>
       </v-card>
 
-      <v-card width="80%" style="margin-top:50px; padding: 10px;" color="#E2C178">
-        <v-card-title class="justify-center" style="background-color: #C42F3E; color: white; margin: 1% 20% 3%;">
-          <span style="font-size: 2vw;">HOW TO USE VIRUCLUST</span>
+      <v-card width="80%" style="margin-top:50px; padding: 10px;" color="#A8DADC">
+        <v-card-title class="justify-center" style=" margin: 1% 20% 3%;">
+          <span style="font-size: 1.2vw;">HOW TO USE <b>VIRU</b>CLUST</span>
         </v-card-title>
          <v-card-text>
            <v-layout row wrap justify-center style="margin-right: 10%; margin-left: 10%; margin-top: 1%">
@@ -30,10 +27,10 @@
                 dark
                 multiple>
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #C42F3E;">
-                        <span style="width: 80%; color: white;">ANALYZE DISTRIBUTION LINEAGE IN GEO</span>
+                    <v-expansion-panel-header style="background-color: #457B9D;">
+                        <span style="width: 80%; color: white;">LINEAGE ANALYSIS</span>
                         <div>
-                          <v-btn @click="goToRelatedPart(1)" small class="white--text" color="#323F8B">
+                          <v-btn @click="goToRelatedPart(1)" small class="white--text" color="#1D3557">
                             START THIS ANALYSIS
                           </v-btn>
                         </div>
@@ -44,10 +41,10 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #C42F3E;">
+                    <v-expansion-panel-header style="background-color: #457B9D;">
                       <span style="width: 80%; color: white;">TEMPORAL ANALYSIS</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(2)" small class="white--text" color="#323F8B">
+                        <v-btn @click="goToRelatedPart(2)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
                         </v-btn>
                       </div>
@@ -58,10 +55,10 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #C42F3E;">
+                    <v-expansion-panel-header style="background-color: #457B9D;">
                       <span style="width: 80%; color: white;">SPATIAL ANALYSIS</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(3)" small class="white--text" color="#323F8B">
+                        <v-btn @click="goToRelatedPart(3)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
                         </v-btn>
                       </div>
@@ -72,10 +69,10 @@
                   </v-expansion-panel>
 
                   <v-expansion-panel style="margin-bottom: 10px">
-                    <v-expansion-panel-header style="background-color: #C42F3E;">
-                      <span style="width: 80%; color: white;">FREE TARGET VS BACKGROUND</span>
+                    <v-expansion-panel-header style="background-color: #457B9D;">
+                      <span style="width: 80%; color: white;">OPEN ANALYSIS</span>
                       <div>
-                        <v-btn @click="goToRelatedPart(4)" small class="white--text" color="#323F8B">
+                        <v-btn @click="goToRelatedPart(4)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
                         </v-btn>
                       </div>
@@ -117,11 +114,9 @@ export default {
     },
     changePageAnalyze(){
       this.setSelectedTabAnalyzeFromHome(1);
-      this.setAnalyzePage();
     },
     goToRelatedPart(num_part){
       this.setSelectedTabAnalyzeFromHome(num_part);
-      this.setAnalyzePage();
     }
   },
   mounted() {

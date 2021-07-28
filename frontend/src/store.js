@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const state = {
-    page: 'homePage',
+    page: 'analyzePage',
     sessionId: '',
     nameLoadedFileCSV: '',
     fileCSV: null,
@@ -70,13 +70,13 @@ const state = {
     startValuePValueBarChartFree: 0,
     endValuePValueBarChartFree: 0,
 
-    selectedTabAnalyzeFromHome: 1,
+    selectedTabAnalyzeFromHome: 0,
 
     color_1: [],
     color_2: [],
     color_3: [],
 
-    colorPalette: ['#6A040F', '#9D0208', '#D00000', '#DC2F02',
+    colorPalette: ['#6A040F', '#9D0208', '#E63946', '#DC2F02',
                    '#E85D04', '#F48C06', '#FAA307', '#FFBA08'],
 };
 
