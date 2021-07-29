@@ -306,8 +306,20 @@ name: "TimeSelectorDistributionLineageInGeo",
       this.my_chart.setOption(this.barChart, true);
     },
     changeMarkerAndRender(min, max){
-      this.barChart.series[0].markArea.data[0][0].xAxis = min;
-      this.barChart.series[0].markArea.data[0][1].xAxis = max;
+      if(min === max){
+        if(max < this.max_range) {
+          this.barChart.series[0].markArea.data[0][0].xAxis = min;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max + 1;
+        }
+        else{
+          this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max;
+        }
+      }
+      else{
+        this.barChart.series[0].markArea.data[0][0].xAxis = min;
+        this.barChart.series[0].markArea.data[0][1].xAxis = max;
+      }
 
       let lenXAxis = this.timeContent.length;
       let i = 0;

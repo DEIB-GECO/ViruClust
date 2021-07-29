@@ -91,11 +91,24 @@ export default {
             }
         ],
         xAxis: {
-            type: 'category',
-            data: []
+            type: 'value',
+            splitLine: {
+               show: false
+            },
+            max: 0,
+            minInterval: 1,
+            // data: [],
+            // splitArea: {
+            //       interval: 0,
+            //       show: true,
+            //       areaStyle: {
+            //           color: []
+            //       }
+            //   }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            // max: 0,
         },
         dataZoom: [
             {
@@ -149,6 +162,18 @@ export default {
       }
       return arrY;
     },
+    createArrayOfColor(toColor){
+      let arrColor = [];
+      for (let j = 1; j <= this.startStopProtein['stop']; j = j + 1){
+        if(toColor[j]){
+          arrColor.push(toColor[j]);
+        }
+        else {
+          arrColor.push('transparent');
+        }
+      }
+      return arrColor;
+    },
     renderGraph(met){
 
       let len = met.length;
@@ -165,13 +190,21 @@ export default {
       this.begin_value_domain = 0;
       this.end_value_domain = 0;
 
+      let maxY = 0;
+
       while (i < len) {
         let single_line = met[i];
         // arrX.push(single_line['name']);
         let single_cell;
         if (single_line['odds_ratio'] > this.totalMaxOddsRatio) {
+          if(single_line['value'] > maxY){
+            maxY = single_line['value'];
+          }
           single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], 'INF', single_line['name']];
         } else {
+          if(single_line['value'] > maxY){
+            maxY = single_line['value'];
+          }
           single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], single_line['odds_ratio'], single_line['name']];
         }
         let while_condition = true;
@@ -194,6 +227,7 @@ export default {
         i = i + 1;
       }
 
+      let toColor = {};
       this.barChart.series[0].markArea.data = [this.barChart.series[0].markArea.data[0]]
       this.barChart.series = [this.barChart.series[0]];
       this.barChart.series[0].markArea.data[0][0].xAxis = 0;
@@ -263,13 +297,18 @@ export default {
           let color = colors[num_color];
           color = color + '80'
 
+          if(min !== 0 && max !== 0){
+            toColor[min-1] = color;
+            toColor[max-1] = color;
+          }
+
           let singleMarkArea = [{
-            xAxis: min - 1,
+            xAxis: min - 0.5,
             itemStyle: {
               color: color,
             },
           }, {
-            xAxis: max - 1
+            xAxis: max + 0.5
           }];
 
           this.barChart.series[0].markArea.data.push(singleMarkArea);
@@ -296,13 +335,18 @@ export default {
           let color = colors[num_color];
           color = color + '80'
 
+          if(min !== 0 && max !== 0){
+            toColor[min-1] = color;
+            toColor[max-1] = color;
+          }
+
           let singleMarkArea = [{
-            xAxis: min - 1,
+            xAxis: min - 0.5,
             itemStyle: {
               color: color,
             },
           }, {
-            xAxis: max - 1
+            xAxis: max + 0.5
           }];
 
           this.barChart.series[0].markArea.data.push(singleMarkArea);
@@ -314,8 +358,11 @@ export default {
           let that = this;
           let min = 0;
           let max = 0;
-          let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueAaModifications[k].split(' / ')[0];
+          let index = this.possibleDomainForPValueAaModifications.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueAaModifications[k].split(' / ')[0]
+                    && item['Begin'] === parseInt(that.selectedDomainForPValueAaModifications[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[0])
+                    && item['End'] === parseInt(that.selectedDomainForPValueAaModifications[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[1]);
+
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueAaModifications[index]['Begin'];
@@ -328,13 +375,18 @@ export default {
           let color = colors[num_color];
           color = color + '80'
 
+          if(min !== 0 && max !== 0){
+            toColor[min-1] = color;
+            toColor[max-1] = color;
+          }
+
           let singleMarkArea = [{
-            xAxis: min - 1,
+            xAxis: min - 0.5,
             itemStyle: {
               color: color,
             },
           }, {
-            xAxis: max - 1
+            xAxis: max + 0.5
           }];
 
           this.barChart.series[0].markArea.data.push(singleMarkArea);
@@ -342,7 +394,10 @@ export default {
         }
       }
 
-      this.barChart.xAxis.data = arrX;
+      // this.barChart.yAxis.max = maxY * 1.5;
+      this.barChart.xAxis.max = this.startStopProtein['stop'];
+      // this.barChart.xAxis.data = arrX;
+      // this.barChart.xAxis.splitArea.areaStyle.color = this.createArrayOfColor(toColor);
 
       if(this.type === 'time'){
         this.setStartValuePValueBarChartTime(0);
@@ -409,7 +464,7 @@ export default {
         that.renderGraph(met);
       }, delayInMilliseconds);
     },
-    selectedDomainForPValueAaMutations(){
+    selectedDomainForPValueAaModifications(){
       let met =  JSON.parse(JSON.stringify(this.pValueContent));
       let delayInMilliseconds = 2000;
 

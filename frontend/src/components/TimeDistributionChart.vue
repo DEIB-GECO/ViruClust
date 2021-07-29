@@ -504,10 +504,36 @@ export default {
       this.my_chart.setOption(this.barChart, true);
     },
     changeMarkerAndRender(min1, max1, min2, max2){
-      this.barChart.series[0].markArea.data[0][0].xAxis = min1;
-      this.barChart.series[0].markArea.data[0][1].xAxis = max1;
-      this.barChart.series[0].markArea.data[1][0].xAxis = min2;
-      this.barChart.series[0].markArea.data[1][1].xAxis = max2;
+
+      if(min1 === max1 || max1 === min2 - 1){
+        if(max1 < this.max_range) {
+          this.barChart.series[0].markArea.data[0][0].xAxis = min1;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max1 + 1;
+        }
+        else{
+          this.barChart.series[0].markArea.data[0][0].xAxis = min1 - 1;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max1;
+        }
+      }
+      else{
+        this.barChart.series[0].markArea.data[0][0].xAxis = min1;
+        this.barChart.series[0].markArea.data[0][1].xAxis = max1;
+      }
+
+      if(min2 === max2){
+        if(max2 < this.max_range) {
+          this.barChart.series[0].markArea.data[1][0].xAxis = min2;
+          this.barChart.series[0].markArea.data[1][1].xAxis = max2 + 1;
+        }
+        else{
+          this.barChart.series[0].markArea.data[1][0].xAxis = min2 - 1;
+          this.barChart.series[0].markArea.data[1][1].xAxis = max2;
+        }
+      }
+      else{
+        this.barChart.series[0].markArea.data[1][0].xAxis = min2;
+        this.barChart.series[0].markArea.data[1][1].xAxis = max2;
+      }
 
       this.startBackgroundField = this.translateIndexToDate(min1);
       this.stopBackgroundField = this.translateIndexToDate(max1);

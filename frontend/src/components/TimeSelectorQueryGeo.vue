@@ -344,20 +344,6 @@ export default {
                         shadowColor: '#1D3557'
                     }
                 },
-            },
-            {
-                type: 'bar',
-                name: 'Target',
-                radius: '50%',
-                data: [],
-                itemStyle: {color: '#457B9D'},
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: '#457B9D'
-                    }
-                },
                 markArea: {
                       tooltip: {
                           show: false,
@@ -372,6 +358,20 @@ export default {
                       }]
                       ]
                   }
+            },
+            {
+                type: 'bar',
+                name: 'Target',
+                radius: '50%',
+                data: [],
+                itemStyle: {color: '#457B9D'},
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#457B9D'
+                    }
+                },
             },
             {
                 name: 'AVG of previous 7 days in target',
@@ -517,10 +517,20 @@ export default {
       this.my_chart.setOption(this.barChart, true);
     },
     changeMarkerAndRender(min, max){
-      this.barChart.series[1].markArea.data[0][0].xAxis = min;
-      this.barChart.series[1].markArea.data[0][1].xAxis = max;
-
-      // let lenXAxis = this.max_range;
+      if(min === max){
+        if(max < this.max_range) {
+          this.barChart.series[0].markArea.data[0][0].xAxis = min;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max + 1;
+        }
+        else{
+          this.barChart.series[0].markArea.data[0][0].xAxis = min - 1;
+          this.barChart.series[0].markArea.data[0][1].xAxis = max;
+        }
+      }
+      else{
+        this.barChart.series[0].markArea.data[0][0].xAxis = min;
+        this.barChart.series[0].markArea.data[0][1].xAxis = max;
+      }
 
       this.locationToExclude = [];
       this.setLocationToExcludeMulti(this.locationToExclude);
@@ -532,7 +542,7 @@ export default {
         this.num_sequences_target[k] = 0;
         this.num_sequences_background[k] = 0;
 
-        while (i < max) {
+        while (i <= max) {
 
           this.num_sequences_target[k] = this.num_sequences_target[k] + this.timeContent[k][i].value;
           this.num_sequences_background[k] = this.num_sequences_background[k] + this.timeContentBackground[k][i].value;

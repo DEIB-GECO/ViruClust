@@ -39,10 +39,11 @@
                 </v-layout>
               </div>
               <div v-else-if="fieldContent.length === 0" style="position: absolute; top: 100px; width: 200px; height: 200px">
-                <v-img
-                    src="../images/no_data.png"
-                    style="z-index: 1;"
-                />
+                <v-layout wrap justify-center style=" height: 100%">
+                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
+                    <h3 style="position: absolute; top: 50%; text-align: center">No other options to select</h3>
+                  </v-flex>
+                </v-layout>
               </div>
 
           </v-flex>
