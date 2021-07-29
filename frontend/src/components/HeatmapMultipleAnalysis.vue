@@ -253,10 +253,10 @@ export default {
       for (let j = 0; j < rows.length; j = j + 1) {
         this.y_axis.push(rows[j]['mutation']);
         if (this.importantMutation['mutation'].includes(rows[j]['mutation'])) {
-            rich[j] = {'backgroundColor': '#1D3557', 'color': 'white', 'padding': 3};
+            rich[j] = {'backgroundColor': 'red', 'color': 'white', 'padding': 3};
         }
         else if (this.importantMutation['additional_mutation'].includes(rows[j]['mutation'])) {
-            rich[j] = {'backgroundColor': '#457B9D', 'color': 'white', 'padding': 3};
+            rich[j] = {'backgroundColor': 'orange', 'color': 'white', 'padding': 3};
         }
         else {
             rich[j] = {'backgroundColor': 'transparent', 'color': 'rgb(104,104,104)'};

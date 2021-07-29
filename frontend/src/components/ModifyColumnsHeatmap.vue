@@ -216,6 +216,16 @@ export default {
       let single_union = {'nameUnion': this.newNameColumn, 'valueUnion': newName, 'columns': selectedColumnWithValue};
       this.arrayOfUnions.push(single_union);
 
+
+      //// LOCAL STORAGE
+      // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+      // if(!JSON.stringify(mergeColumnStorage).includes(JSON.stringify(single_union))){
+      //   mergeColumnStorage.push(single_union);
+      // }
+      // localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
+      //// LOCAL STORAGE
+
+
       this.selectedHeader = [];
       this.newNameColumn = null;
 
@@ -284,8 +294,27 @@ export default {
 
       this.arrayOfUnions.splice(idx, 1);
 
+
+      //// LOCAL STORAGE
+      // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+      // let index4 = mergeColumnStorage.findIndex(function(item){
+      //   return JSON.stringify(item) === JSON.stringify(singleUnion);
+      // });
+      // if(index4 !== -1){
+      //   mergeColumnStorage.splice(index4, 1);
+      // }
+      // localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
+      //// LOCAL STORAGE
+
       this.selectedHeader = [];
-    }
+    },
+    mergeSavedColumn(mergeColumnStorage){
+      if(mergeColumnStorage !== null){
+        for(let i = 0; i < mergeColumnStorage.length; i = i + 1){
+          console.log("qui",  mergeColumnStorage[i]);
+        }
+      }
+    },
   },
   watch: {
     headerTable(){
@@ -293,6 +322,12 @@ export default {
     }
   },
   mounted() {
+    //// LOCAL STORAGE
+    // localStorage.setItem('mergeColumns', []);
+    // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+    // this.mergeSavedColumn(mergeColumnStorage);
+    //// LOCAL STORAGE
+
     this.calculatePossibleHeaders();
   }
 }

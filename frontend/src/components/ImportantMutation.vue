@@ -57,10 +57,10 @@
                    <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center; " v-for="(category, key, index) in importantMutationECDC" v-bind:key="index">
                       <v-card width="100%" color="#F1FAEE">
                         <v-card-title class="justify-center">
-                          <span v-if="key.toLowerCase() === 'mutation'" style="padding: 5px; background-color: #1D3557; color: white">
+                          <span v-if="key.toLowerCase() === 'mutation'" style="padding: 5px; background-color: red; color: white">
                             CORE CHANGES
                           </span>
-                          <span v-else-if="key.toLowerCase() === 'additional_mutation'" style="padding: 5px; background-color: #457B9D; color: white">
+                          <span v-else-if="key.toLowerCase() === 'additional_mutation'" style="padding: 5px; background-color: orange; color: white">
                             ADDITIONAL CHANGES
                           </span>
                         </v-card-title>

@@ -696,8 +696,8 @@
                                             </v-card>
                                           </v-dialog>
                                         </span>
-                                        <span style="color: white; font-weight: 900; background-color: #1D3557; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
-                                        <span style="color: white; font-weight: 900; background-color: #457B9D; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                        <span style="color: white; font-weight: 900; background-color: red; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
+                                        <span style="color: white; font-weight: 900; background-color: orange; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
                                         <span v-else-if="header.value === 'mutation_position'">{{item['mutation']}}</span>
                                         <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
                                         <span v-else-if="header.value === 'odd_ratio'">
