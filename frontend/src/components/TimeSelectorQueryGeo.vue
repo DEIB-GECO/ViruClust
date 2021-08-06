@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative;">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
-        <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+        <h2 style="margin-top: 50px;"># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
                 mdi-download-circle-outline
@@ -181,7 +181,7 @@
         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
             <v-card-title class="justify-center" style="margin: 0; padding: 0; margin-top: 5px !important;">
-              TIME FILTER
+              TIME INTERVAL
             </v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 10px;">
@@ -417,7 +417,17 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = 'spatial_analysis_timeDistribution';
+      if(this.queryGeo['lineage']){
+        filename += '_' + this.queryGeo['lineage'];
+      }
+      if(this.selectedTarget === null || this.selectedTarget === undefined){
+        filename += '_World';
+      }
+      else{
+        filename += '_' + this.selectedTarget;
+      }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {
@@ -542,8 +552,7 @@ export default {
         this.num_sequences_target[k] = 0;
         this.num_sequences_background[k] = 0;
 
-        while (i <= max) {
-
+        while (i <= max && this.timeContent[k][i] !== undefined && this.timeContent[k][i] !== null) {
           this.num_sequences_target[k] = this.num_sequences_target[k] + this.timeContent[k][i].value;
           this.num_sequences_background[k] = this.num_sequences_background[k] + this.timeContentBackground[k][i].value;
           i = i + 1;
@@ -618,6 +627,10 @@ export default {
       if(target.length > 0) {
         this.possibleTarget = target;
         this.selectedTarget = target[0];
+      }
+      else{
+        this.possibleTarget = [];
+        this.selectedTarget = null;
       }
 
       if(!(target.length > 1)) {

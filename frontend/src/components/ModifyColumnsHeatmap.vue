@@ -11,7 +11,7 @@
       width="1000"
       >
         <v-card>
-          <v-card-title class="headline" style="background-color: #A8DADC ;">
+          <v-card-title class="headline" style="background-color: #A8DADC;">
             MERGE COLUMNS
             <v-spacer></v-spacer>
             <v-btn
@@ -54,7 +54,7 @@
                      class="white--text"
                      small
                      color="#E63946"
-                       :disabled="newNameColumn === null || selectedHeader.length === 0"
+                       :disabled="newNameColumn === null || selectedHeader.length === 0 || (possibleHeader.includes(newNameColumn) && !selectedHeader.includes(newNameColumn))"
                       style="margin-top: 20px">
                 UNION</v-btn>
                </v-flex>
@@ -218,11 +218,11 @@ export default {
 
 
       //// LOCAL STORAGE
-      // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
-      // if(!JSON.stringify(mergeColumnStorage).includes(JSON.stringify(single_union))){
-      //   mergeColumnStorage.push(single_union);
-      // }
-      // localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
+      let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+      if(!JSON.stringify(mergeColumnStorage).includes(JSON.stringify(single_union))){
+        mergeColumnStorage.push(single_union);
+      }
+      localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
       //// LOCAL STORAGE
 
 
@@ -296,14 +296,14 @@ export default {
 
 
       //// LOCAL STORAGE
-      // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
-      // let index4 = mergeColumnStorage.findIndex(function(item){
-      //   return JSON.stringify(item) === JSON.stringify(singleUnion);
-      // });
-      // if(index4 !== -1){
-      //   mergeColumnStorage.splice(index4, 1);
-      // }
-      // localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
+      let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+      let index4 = mergeColumnStorage.findIndex(function(item){
+        return JSON.stringify(item) === JSON.stringify(singleUnion);
+      });
+      if(index4 !== -1){
+        mergeColumnStorage.splice(index4, 1);
+      }
+      localStorage.setItem('mergeColumns', JSON.stringify(mergeColumnStorage));
       //// LOCAL STORAGE
 
       this.selectedHeader = [];
@@ -311,10 +311,89 @@ export default {
     mergeSavedColumn(mergeColumnStorage){
       if(mergeColumnStorage !== null){
         for(let i = 0; i < mergeColumnStorage.length; i = i + 1){
-          console.log("qui",  mergeColumnStorage[i]);
+          let applicable = true;
+          for(let j = 0; j < mergeColumnStorage[i]['columns'].length; j = j + 1){
+            let column = mergeColumnStorage[i]['columns'][j][0];
+            let index = this.headerTable.findIndex(function(item){
+              return item.text === column;
+            });
+            if(index === -1){
+              applicable = false;
+            }
+          }
+          if(applicable){
+            this.unionFromStorage(mergeColumnStorage[i]);
+          }
         }
       }
     },
+    unionFromStorage(singleMergeColumn){
+      let nameUnion = singleMergeColumn['nameUnion'];
+      let valueUnion = singleMergeColumn['valueUnion'];
+      let columns = singleMergeColumn['columns'];
+
+      let selectedColumnWithValue = [];
+
+      for(let j= 0; j < this.rowTable.length; j=j+1){
+        let total = 0;
+        for(let k=0; k < columns.length; k=k+1){
+          if(this.rowTable[j][columns[k][0]]){
+            let index = this.headerTable.findIndex(function(item){
+              return item.text === columns[k][0];
+            });
+            if(index !== -1) {
+              this.allCombinedColumns.push(this.headerTable[index]['value']);
+              let singleSelectedWithValue = [columns[k][0], this.headerTable[index]['value']];
+              selectedColumnWithValue.push(singleSelectedWithValue);
+              this.headerTable.splice(index, 1);
+            }
+            total = total + parseInt(this.rowTable[j][columns[k][0]]);
+            // delete this.rowTable[j][this.selectedHeader[k]];
+          }
+        }
+
+        this.rowTable[j][valueUnion] = total;
+      }
+
+      let total_denominator = 0;
+      for(let k=0; k < columns.length; k=k+1){
+            total_denominator = total_denominator +  parseInt(this.denominators[columns[k][0]]);
+            // delete this.denominators[this.selectedHeader[k]];
+      }
+      this.denominators[valueUnion] = total_denominator;
+
+      let index2 = this.headerTable.findIndex(function(item){
+        return item.text === 'lineage';
+      });
+      this.headerTable.splice(index2, 1);
+
+      let index3 = this.headerTable.findIndex(function(item){
+        return item.text === 'N/D';
+      });
+      if(index3 !== -1) {
+        this.headerTable.splice(index3, 1);
+      }
+
+       let newHeader = {'text': nameUnion, 'value': valueUnion, 'show': true, 'align': 'center', 'width': '20vh'};
+       this.headerTable.push(newHeader);
+       this.headerTable.sort( function( a, b ) {
+          a = a.value.toLowerCase();
+          b = b.value.toLowerCase();
+          return a < b ? -1 : a > b ? 1 : 0;
+      });
+
+      let ND_header = {'text': 'N/D', 'value': 'N/D', 'show': true, 'align': 'center', 'width': '20vh'};
+      let lineage_header = {'text': 'lineage', 'value': 'lineage', 'show': true, 'align': 'center', 'width': '20vh'};
+
+      if(index3 !== -1){
+        this.headerTable.unshift(ND_header);
+      }
+      this.headerTable.unshift(lineage_header);
+
+      let single_union = {'nameUnion': nameUnion, 'valueUnion': valueUnion, 'columns': selectedColumnWithValue};
+      this.arrayOfUnions.push(single_union);
+
+    }
   },
   watch: {
     headerTable(){
@@ -323,9 +402,10 @@ export default {
   },
   mounted() {
     //// LOCAL STORAGE
-    // localStorage.setItem('mergeColumns', []);
-    // let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
-    // this.mergeSavedColumn(mergeColumnStorage);
+    // let array = [];
+    // localStorage.setItem('mergeColumns', JSON.stringify(array));
+    let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+    this.mergeSavedColumn(mergeColumnStorage);
     //// LOCAL STORAGE
 
     this.calculatePossibleHeaders();

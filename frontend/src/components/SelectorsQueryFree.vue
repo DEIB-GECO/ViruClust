@@ -23,6 +23,7 @@
               hide-details
               :item-text="getFieldText"
               :loading="isLoading"
+              :multiple="checkMultiple()"
               :disabled="isLoading || possibleValues.length === 0"
             >
               <template slot="item" slot-scope="data">
@@ -64,32 +65,34 @@ export default {
       possibleValues: [],
       isLoading: false,
       selectorDisabled: false,
+      isMultiple: false,
+      selected: [],
     }
   },
   computed: {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'toExcludeFreeTarget', 'toExcludeFreeBackground']),
     ...mapGetters({}),
-    selected: {
-      get() {
-        if(this.type === 'target'){
-          return this.queryFreeTarget[this.field];
-        }
-        else if (this.type === 'background'){
-          return this.queryFreeBackground[this.field];
-        }
-        else {
-          return 0;
-        }
-      },
-      set(value){
-        if(this.type === 'target'){
-          this.setQueryFreeTarget({field: this.field, list: value});
-        }
-        else if (this.type === 'background'){
-          this.setQueryFreeBackground({field: this.field, list: value});
-        }
-      }
-    },
+    // selected: {
+    //   get() {
+    //     if(this.type === 'target'){
+    //       return this.queryFreeTarget[this.field];
+    //     }
+    //     else if (this.type === 'background'){
+    //       return this.queryFreeBackground[this.field];
+    //     }
+    //     else {
+    //       return 0;
+    //     }
+    //   },
+    //   set(value){
+    //     if(this.type === 'target'){
+    //       this.setQueryFreeTarget({field: this.field, list: value});
+    //     }
+    //     else if (this.type === 'background'){
+    //       this.setQueryFreeBackground({field: this.field, list: value});
+    //     }
+    //   }
+    // },
   },
   methods: {
     ...mapMutations([]),
@@ -148,6 +151,18 @@ export default {
         this.possibleValues = [];
         this.isLoading = false;
       }
+    },
+    checkMultiple(){
+      return !(this.field === 'lineage');
+    },
+    clearToExcludeField(){
+      this.selected = [];
+      if(this.type === 'target'){
+        this.setQueryFreeTarget({field: this.field, list: []});
+      }
+      else if(this.type === 'background'){
+        this.setQueryFreeBackground({field: this.field, list: []});
+      }
     }
   },
   mounted() {
@@ -163,6 +178,74 @@ export default {
       if(this.type === 'background') {
         this.loadData();
       }
+    },
+    selected() {
+      if (this.selected !== null) {
+        if(this.field === 'lineage'){
+          if(this.type === 'target'){
+            this.setQueryFreeTarget({field: this.field, list: null});
+            this.setQueryFreeTarget({field: this.field, list: this.selected});
+          }
+          else if(this.type === 'background'){
+            this.setQueryFreeBackground({field: this.field, list: null});
+            this.setQueryFreeBackground({field: this.field, list: this.selected});
+          }
+        }
+        else {
+          if(this.type === 'target'){
+            this.setQueryFreeTarget({field: this.field, list: []});
+            let copy = JSON.parse(JSON.stringify(this.selected));
+            this.setQueryFreeTarget({field: this.field, list: copy});
+          }
+          else if(this.type === 'background'){
+            this.setQueryFreeBackground({field: this.field, list: []});
+            let copy = JSON.parse(JSON.stringify(this.selected));
+            this.setQueryFreeBackground({field: this.field, list: copy});
+          }
+        }
+      } else {
+        this.clearToExcludeField();
+      }
+    },
+    'queryFreeTarget.geo_group': function (){
+        if(this.field === 'geo_group' && (!this.queryFreeTarget['geo_group'] || this.queryFreeTarget['geo_group'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeTarget.country': function (){
+        if(this.field === 'country' && (!this.queryFreeTarget['country'] || this.queryFreeTarget['country'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeTarget.region': function (){
+        if(this.field === 'region' && (!this.queryFreeTarget['region'] || this.queryFreeTarget['region'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeTarget.province': function (){
+        if(this.field === 'province' && (!this.queryFreeTarget['province'] || this.queryFreeTarget['province'].length === 0 )) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeBackground.geo_group': function (){
+        if(this.field === 'geo_group' && (!this.queryFreeBackground['geo_group'] || this.queryFreeBackground['geo_group'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeBackground.country': function (){
+        if(this.field === 'country' && (!this.queryFreeBackground['country'] || this.queryFreeBackground['country'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeBackground.region': function (){
+        if(this.field === 'region' && (!this.queryFreeBackground['region'] || this.queryFreeBackground['region'].length === 0)) {
+          this.clearToExcludeField();
+        }
+    },
+    'queryFreeBackground.province': function (){
+        if(this.field === 'province' && (!this.queryFreeBackground['province'] || this.queryFreeBackground['province'].length === 0 )) {
+          this.clearToExcludeField();
+        }
     },
   }
 }

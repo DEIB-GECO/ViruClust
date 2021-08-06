@@ -2,7 +2,7 @@
   <div style="margin-bottom: 100px">
     <v-layout row wrap justify-center style="padding: 30px;">
        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-         <h2>SELECT LINEAGE & LOCATION</h2>
+         <h2>PICK LINEAGE AND PLACE</h2>
        </v-flex>
        <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
@@ -37,7 +37,7 @@
          </SelectorsQueryFree>
        </v-flex>
       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px;">
-        <h3>Select location to exclude from the one selected</h3>
+        <h3>Exclude one or more places</h3>
       </v-flex>
       <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
           <SelectorQueryToExclude

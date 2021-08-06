@@ -26,7 +26,11 @@
               :loading="isLoading"
               :disabled="isLoading || possibleValues2.length === 0 || pieChartBlocked"
               :multiple="checkMultiple()"
+              style="position: relative"
             >
+              <span slot="prepend-item" class="firstElement">
+                Select multiple locations for separated analysis
+              </span>
               <template slot="item" slot-scope="data">
                   <span class="item-value-span">{{getFieldText(data.item)}}</span>
                   <span class="item-count-span">{{data.item.count}}</span>
@@ -234,6 +238,19 @@ export default {
       /*float:right;*/
       position: absolute;
       right: 0.5em;
+  }
+
+  .firstElement{
+    padding: 5px;
+    margin: 0;
+    color: grey;
+    text-align: center;
+    border-bottom: grey solid 1px;
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0;
+    z-index: 1;
+    background: white;
   }
 
 </style>

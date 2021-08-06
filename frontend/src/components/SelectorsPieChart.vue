@@ -31,7 +31,10 @@
 <!--                    <h1 style="position: absolute; top: 80%; text-align: center">WAITING DATA</h1>-->
 <!--                  </v-flex>-->
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
-                    <h3 style="position: absolute; top: 50%; text-align: center">Select a location at the previous level</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center" v-if="field === 'geo_group'">Please select a continent</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center" v-else-if="field === 'country'">Please select a continent to pick a country</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center" v-else-if="field === 'region'">Please select a country to pick a region</h3>
+                    <h3 style="position: absolute; top: 50%; text-align: center" v-else-if="field === 'province'">Please select a region to pick a province</h3>
                   </v-flex>
                   <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative" v-if="nameQuery === 'geo'">
                     <h3 style="position: absolute; top: 50%; text-align: center">(multiple values may be selected here)</h3>

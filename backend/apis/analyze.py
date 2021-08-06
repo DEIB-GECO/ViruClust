@@ -8,6 +8,9 @@ import copy
 from scipy.stats import binom
 from flask_restplus import Namespace, Resource
 
+from datetime import datetime, timedelta
+from threading import Timer
+
 from pymongo import MongoClient
 
 from .downloadLineagesInfo import dict_lineage_mutation
@@ -301,14 +304,7 @@ sars_cov_2_products = {
 class FieldList(Resource):
     @api.doc('all_geo')
     def get(self):
-
-        conn = http.client.HTTPConnection('geco.deib.polimi.it')
-        conn.request('GET', '/virusurf_epitope/api/epitope/allGeo')
-
-        response = conn.getresponse()
-        all_geo = response.read().decode()
-        all_geo = json.loads(all_geo)
-
+        all_geo = all_geo_dict['all_geo']
         return all_geo
 
 
@@ -316,34 +312,15 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('all_lineages')
     def get(self):
-
-        conn = http.client.HTTPConnection('geco.deib.polimi.it')
-        conn.request('GET', '/virusurf_epitope/api/epitope/allLineages')
-
-        response = conn.getresponse()
-        all_lin = response.read().decode()
-        all_lin = json.loads(all_lin)
-
+        all_lin = all_lineage_dict['all_lineage']
         return all_lin
 
 
 @api.route('/allProtein')
 class FieldList(Resource):
     @api.doc('all_protein')
-    def post(self):
-
-        to_send = api.payload
-
-        conn = http.client.HTTPConnection('geco.deib.polimi.it')
-        headers = {'Content-type': 'application/json'}
-        send = to_send
-        json_data = json.dumps(send)
-        conn.request('POST', '/virusurf_epitope/api/epitope/allProtein', json_data, headers)
-
-        response = conn.getresponse()
-        all_protein = response.read().decode()
-        all_protein = json.loads(all_protein)
-
+    def get(self):
+        all_protein = all_protein_dict['all_protein']
         return all_protein
 
 
@@ -1036,7 +1013,7 @@ all_important_mutation_dict = {}
 
 
 def get_all_important_mutation():
-    print("inizio request")
+    print("inizio request important mutation")
     conn = http.client.HTTPConnection('geco.deib.polimi.it')
     conn.request('GET', '/virusurf_epitope/api/epitope/allImportantMutations')
 
@@ -1047,12 +1024,98 @@ def get_all_important_mutation():
     for mutation_per_lineage in all_important_mutation:
         lineage = mutation_per_lineage['lineage']
         all_important_mutation_dict[lineage] = mutation_per_lineage
+    print("fine request important mutation")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t1 = Timer(secs, get_all_important_mutation)
+    t1.start()
 
-    print("fine request")
+
+all_protein_dict = {}
+
+
+def get_all_protein():
+    print("inizio request protein")
+    to_send = {'gcm': {'taxon_name':["severe acute respiratory syndrome coronavirus 2"]}}
+
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    headers = {'Content-type': 'application/json'}
+    send = to_send
+    json_data = json.dumps(send)
+    conn.request('POST', '/virusurf_epitope/api/epitope/allProtein', json_data, headers)
+
+    response = conn.getresponse()
+    all_protein = response.read().decode()
+    all_protein = json.loads(all_protein)
+    all_protein_dict['all_protein'] = all_protein
+    print("fine request protein")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t2 = Timer(secs, get_all_protein)
+    t2.start()
+
+
+all_lineage_dict = {}
+
+
+def get_all_lineage():
+    print("inizio request lineage")
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    conn.request('GET', '/virusurf_epitope/api/epitope/allLineages')
+
+    response = conn.getresponse()
+    all_lin = response.read().decode()
+    all_lin = json.loads(all_lin)
+    all_lineage_dict['all_lineage'] = all_lin
+    print("fine request lineage")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t3 = Timer(secs, get_all_lineage)
+    t3.start()
+
+
+all_geo_dict = {}
+
+
+def get_all_geo():
+    print("inizio request geo")
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    conn.request('GET', '/virusurf_epitope/api/epitope/allGeo')
+
+    response = conn.getresponse()
+    all_geo = response.read().decode()
+    all_geo = json.loads(all_geo)
+    all_geo_dict['all_geo'] = all_geo
+    print("fine request geo")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t4 = Timer(secs, get_all_geo)
+    t4.start()
 
 
 def prova_mongo_db():
     print("prova Mongo")
+    # results = db.seq.aggregate([
+    #     {
+    #         "$group": {
+    #             "fullname": {
+    #                 "$covv_accession_id"
+    #             }
+    #         }
+    #     }]
+    # )
+    # print("qui", results)
+    # for i, x in enumerate(results):
+    #     print("qui2", x)
+
     seq = db.seq
 
     pipeline = [
@@ -1089,4 +1152,7 @@ def prova_mongo_db():
 
 
 get_all_important_mutation()
+get_all_geo()
+get_all_protein()
+get_all_lineage()
 # prova_mongo_db()

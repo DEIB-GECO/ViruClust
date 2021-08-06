@@ -1,7 +1,7 @@
 <template>
 <div style="position: relative;">
     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
-     <h2>SELECTION OF COLLECTION-DATES TIME FRAME
+     <h2># GENOMES BY COLLECTION DATE
         <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
@@ -239,7 +239,7 @@ name: "TimeSelectorDistributionLineageInGeo",
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      $a.download = 'lineage_analysis_timeDistribution_' + this.geoSpecific + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {

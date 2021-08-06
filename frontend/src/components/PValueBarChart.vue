@@ -37,7 +37,15 @@ export default {
     possibleDomainForPValueMutagenesis: {required: true,},
     selectedDomainForPValueAaModifications: {required: true,},
     possibleDomainForPValueAaModifications: {required: true,},
+    selectedDomainForPValueUploaded: {required: true,},
+    possibleDomainForPValueUploaded: {required: true,},
     type: {required: true,},
+    rowsAnalTime: {required: true,},
+    protein: {required: true,},
+    nameFileAccIdsTarget: {required: false,},
+    nameFileAccIdsBackground: {required: false,},
+    listAccIdsTargetInserted: {required: false,},
+    listAccIdsBackgroundInserted: {required: false,},
   },
   data(){
     return {
@@ -123,7 +131,11 @@ export default {
     ...mapState(['colorPValueChart', 'startValuePValueBarChartTime', 'endValuePValueBarChartTime',
                  'startValuePValueBarChartGeo', 'endValuePValueBarChartGeo',
                  'startValuePValueBarChartFree', 'endValuePValueBarChartFree',
-                 'color_1', 'color_2', 'color_3']),
+                 'color_1', 'color_2', 'color_3',
+                 'queryTime', 'startDateQueryGeo', 'stopDateQueryGeo',
+                 'startDateQueryFreeTarget', 'stopDateQueryFreeTarget',
+                 'startDateQueryFreeBackground', 'stopDateQueryFreeBackground',
+                 'queryFreeTarget', 'queryFreeBackground', 'queryGeo']),
     ...mapGetters({}),
   },
   methods: {
@@ -138,7 +150,140 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = 'noResult';
+      if(this.rowsAnalTime.length > 0) {
+        if(this.type === 'time' || this.type === 'geo') {
+          if(this.type === 'time') {
+            filename = 'temporal_analysis_AaChanges_';
+            if(this.queryTime['lineage']){
+              filename += this.queryTime['lineage'] + '_';
+            }
+            filename += '(' + this.rowsAnalTime[0]['target'] + ')' + '_vs_' + '(' + this.rowsAnalTime[0]['background'] + ')';
+            if (!this.queryTime['geo_group']) {
+              filename += '_World.csv';
+            } else if (!this.queryTime['country']) {
+              filename += '_' + this.queryTime['geo_group'];
+            } else if (!this.queryTime['region']) {
+              filename += '_' + this.queryTime['country'];
+            } else if (!this.queryTime['province']) {
+              filename += '_' + this.queryTime['region'];
+            } else {
+              filename += '_' + this.queryTime['province'];
+            }
+          }
+          else{
+            filename = 'spatial_analysis_AaChanges_';
+            if(this.queryGeo['lineage']){
+              filename += this.queryGeo['lineage']  + '_';
+            }
+            filename += '(' + this.rowsAnalTime[0]['target'] + ')' + '_vs_' + '(' + this.rowsAnalTime[0]['background'] + ')';
+            filename += '_' + this.startDateQueryGeo + '_' + this.stopDateQueryGeo;
+          }
+        }
+        else{
+          filename = 'open_analysis_AaChanges_' + '(';
+          if(this.nameFileAccIdsTarget === null && this.listAccIdsTargetInserted.length === 0) {
+            if (this.queryFreeTarget['lineage']) {
+              filename += this.queryFreeTarget['lineage'] + '_';
+            }
+            if (!this.queryFreeTarget['geo_group']) {
+              filename += 'World';
+            } else if (!this.queryFreeTarget['country']) {
+              if(this.queryFreeTarget['geo_group'].length > 2){
+                filename += this.queryFreeTarget['geo_group'][0] + '_etc';
+              }
+              else {
+                filename += this.queryFreeTarget['geo_group'];
+              }
+            } else if (!this.queryFreeTarget['region']) {
+              if(this.queryFreeTarget['country'].length > 2){
+                filename += this.queryFreeTarget['country'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeTarget['country'];
+              }
+            } else if (!this.queryFreeTarget['province']) {
+              if(this.queryFreeTarget['region'].length > 2){
+                filename += this.queryFreeTarget['region'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeTarget['region'];
+              }
+            } else {
+              if(this.queryFreeTarget['province'].length > 2){
+                filename += this.queryFreeTarget['province'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeTarget['province'];
+              }
+            }
+            filename += '_' + this.startDateQueryFreeTarget + '_' + this.stopDateQueryFreeTarget;
+          }
+          else{
+            if(this.nameFileAccIdsTarget !== null) {
+              filename += this.nameFileAccIdsTarget.split('.txt')[0];
+            }
+            if(this.listAccIdsTargetInserted.length > 0){
+              if(this.nameFileAccIdsTarget !== null) {
+                filename += '_';
+              }
+              filename += 'userSelectedIds';
+            }
+          }
+          filename += ')' + '_vs_(';
+          if(this.nameFileAccIdsBackground === null && this.listAccIdsBackgroundInserted.length === 0 ) {
+            if (this.queryFreeBackground['lineage']) {
+              filename += this.queryFreeBackground['lineage'] + '_';
+            }
+            if (!this.queryFreeBackground['geo_group']) {
+              filename += 'World';
+            } else if (!this.queryFreeBackground['country']) {
+              if(this.queryFreeBackground['geo_group'].length > 2){
+                filename += this.queryFreeBackground['geo_group'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeBackground['geo_group'];
+              }
+            } else if (!this.queryFreeBackground['region']) {
+              if(this.queryFreeBackground['country'].length > 2){
+                filename += this.queryFreeBackground['country'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeBackground['country'];
+              }
+            } else if (!this.queryFreeBackground['province']) {
+              if(this.queryFreeBackground['region'].length > 2){
+                filename += this.queryFreeBackground['region'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeBackground['region'];
+              }
+            } else {
+              if(this.queryFreeBackground['province'].length > 2){
+                filename += this.queryFreeBackground['province'][0] + '_etc';
+              }
+              else{
+                filename += this.queryFreeBackground['province'];
+              }
+            }
+            filename += '_' + this.startDateQueryFreeBackground + '_' + this.stopDateQueryFreeBackground;
+          }
+          else{
+            if(this.nameFileAccIdsBackground !== null) {
+              filename += this.nameFileAccIdsBackground.split('.txt')[0];
+            }
+            if(this.listAccIdsBackgroundInserted.length > 0){
+              if(this.nameFileAccIdsBackground !== null) {
+                filename += '_';
+              }
+              filename += 'userSelectedIds';
+            }
+          }
+          filename += ')';
+        }
+        filename += '_' + this.protein;
+      }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {
@@ -284,7 +429,11 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValue.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValue[k].split(' / ')[0];
+            return item['Description'] === that.selectedDomainForPValue[k].split(' / ')[0]
+                   && item['Begin'] === parseInt(that.selectedDomainForPValue[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[0])
+                  && item['End'] === parseInt(that.selectedDomainForPValue[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[1]);
+
+
           });
           if (index !== -1) {
             min = this.possibleDomainForPValue[index]['Begin'];
@@ -322,7 +471,11 @@ export default {
           let min = 0;
           let max = 0;
           let index = this.possibleDomainForPValueMutagenesis.findIndex(function (item) {
-            return item['Description'] === that.selectedDomainForPValueMutagenesis[k].split(' / ')[0];
+            return item['Description'] === that.selectedDomainForPValueMutagenesis[k].split(' / ')[0]
+                   && item['Begin'] === parseInt(that.selectedDomainForPValueMutagenesis[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[0])
+                   && item['End'] === parseInt(that.selectedDomainForPValueMutagenesis[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[1]);
+
+
           });
           if (index !== -1) {
             min = this.possibleDomainForPValueMutagenesis[index]['Begin'];
@@ -369,11 +522,52 @@ export default {
             max = this.possibleDomainForPValueAaModifications[index]['End'];
           }
 
+          // let colors = this.color_3;
+          //
+          // let num_color = k%colors.length;
+          // let color = colors[num_color];
+          let color = '#FFA50080'
+
+          if(min !== 0 && max !== 0){
+            toColor[min-1] = color;
+            toColor[max-1] = color;
+          }
+
+          let singleMarkArea = [{
+            xAxis: min - 0.5,
+            itemStyle: {
+              color: color,
+            },
+          }, {
+            xAxis: max + 0.5
+          }];
+
+          this.barChart.series[0].markArea.data.push(singleMarkArea);
+
+        }
+      }
+
+      if(this.selectedDomainForPValueUploaded.length > 0){
+        for(let k = 0; k < this.selectedDomainForPValueUploaded.length; k = k + 1) {
+          let that = this;
+          let min = 0;
+          let max = 0;
+          let index = this.possibleDomainForPValueUploaded.findIndex(function (item) {
+            return item['Description'] === that.selectedDomainForPValueUploaded[k].split(' / ')[0]
+                    && item['Begin'] === parseInt(that.selectedDomainForPValueUploaded[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[0])
+                    && item['End'] === parseInt(that.selectedDomainForPValueUploaded[k].split(' / ')[1].replace('(', '').replace(')', '').split(',')[1]);
+
+          });
+          if (index !== -1) {
+            min = this.possibleDomainForPValueUploaded[index]['Begin'];
+            max = this.possibleDomainForPValueUploaded[index]['End'];
+          }
+
           let colors = this.color_3;
 
           let num_color = k%colors.length;
           let color = colors[num_color];
-          color = color + '80'
+          color = color + '80';
 
           if(min !== 0 && max !== 0){
             toColor[min-1] = color;
@@ -465,6 +659,15 @@ export default {
       }, delayInMilliseconds);
     },
     selectedDomainForPValueAaModifications(){
+      let met =  JSON.parse(JSON.stringify(this.pValueContent));
+      let delayInMilliseconds = 2000;
+
+      let that = this;
+      setTimeout(function() {
+        that.renderGraph(met);
+      }, delayInMilliseconds);
+    },
+    selectedDomainForPValueUploaded(){
       let met =  JSON.parse(JSON.stringify(this.pValueContent));
       let delayInMilliseconds = 2000;
 

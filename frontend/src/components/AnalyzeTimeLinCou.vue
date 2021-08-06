@@ -9,7 +9,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-                 <h2>SELECT LINEAGE AND LOCATION OF INTEREST</h2>
+                 <h2>PICK LINEAGE AND PLACE OF INTEREST</h2>
                </v-flex>
                <!--<v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(both fields can be empty, meaning that all lineages/countries are interesting)</h4>
@@ -42,7 +42,7 @@
                  </SelectorsQueryTime>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px;">
-                <h3>Select location to exclude from the one selected</h3>
+                <h3>Exclude one or more places</h3>
               </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; padding: 0; margin: 0;">
                 <SelectorQueryToExclude
@@ -67,8 +67,8 @@
                 <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
                   <v-layout row wrap justify-center>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                      <v-btn id="two_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 0" style="margin-right: 10px; width: 400px; height: 70px;"> TWO-PERIOD COMPARISON </v-btn>
-                      <v-btn id="n_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 1" style="margin-left: 10px; width: 400px; height: 70px;"> N-PERIOD ANALYSIS </v-btn>
+                      <v-btn id="two_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 0" style="margin-right: 10px; width: 400px; height: 70px;"> COMPARE TWO INTERVALS </v-btn>
+                      <v-btn id="n_comparison" large color="#457B9D" @click="selectedTabSelectTargetBackground = 1" style="margin-left: 10px; width: 400px; height: 70px;"> TIME SERIES ANALYSIS </v-btn>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                       <div v-if="selectedTabSelectTargetBackground === 0">
@@ -94,7 +94,7 @@
 
              <v-layout row wrap justify-center style="padding: 30px;" v-if="chosenApplied && timeContent.length !== 0">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                 <h2>SELECT PROTEINS TO ANALYZE</h2>
+                 <h2>SELECT THE PROTEINS TO COMPARE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(selecting none is equivalent to "all proteins")</h4>
@@ -114,7 +114,7 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqQueryTime">
-                 <span style="color: red"> number of sequences selected is too low (minimum 10 for both target and background)</span>
+                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span>
                </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn
@@ -148,7 +148,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <h2>APPLY FILTERS FOR SELECTING THE CHANGES IN THE TABLE<span v-if="fixedRowAnalyzeTime.length > 1">S AND HEATMAP</span><span>  BELOW</span></h2>
+                  <h2>ADVANCED FILTERS</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
@@ -624,10 +624,10 @@
                </v-flex>
                <v-card width="1000px" color="#F1FAEE" style="margin-top: 50px; padding: 10px" v-if="queryTime['lineage']">
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
-                     <h3>IMPORTANT CHANGES OF TARGET LINEAGE:</h3>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
+                     <h3>CHANGES TO HIGHLIGHT:</h3>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center" v-if="rowsAnalyzeTime.length !== 0">
                      <v-select
                       v-model="selectedTypeImportantMutation"
                       :items="possibleTypeImportantMutation"
@@ -636,7 +636,7 @@
                       hide-details>
                      </v-select>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="rowsAnalyzeTime.length !== 0">
                      <ImportantMutation
                      :importantMutationECDC="importantMutationECDC"
                      :importantMutation75Percentage="importantMutation75Percentage"
@@ -651,7 +651,8 @@
                  :contentHeatmap = "rowsAnalyzeTime"
                  :fixedContent = "fixedRowAnalyzeTime"
                  :maxOddsRatio = "totalMaxOddsRatio"
-                 :importantMutation = "importantMutation">
+                 :importantMutation = "importantMutation"
+                 type = "time">
                  </HeatmapMultipleAnalysis>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
@@ -767,7 +768,7 @@
                       <h5>P-VALUE:</h5>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-layout row wrap justify-space-around>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -811,7 +812,7 @@
                     <v-card-title class="justify-center">
                       <h5>SELECT PROTEIN (mandatory):</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
+                    <v-card-text style="margin-top: 10px">
                       <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
@@ -826,13 +827,10 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
-                        <h5>INCLUDE CHANGES:</h5>
+                        <h5>PREVALENCE RANGE OF AA CHANGES:</h5>
                     </v-card-title>
                     <v-card-text style="padding-top: 0; margin-top: 0">
                       <v-layout row wrap justify-space-around style="margin-top: 0; padding: 0">
-                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0">
-                          <h5 style="text-align: center;">Include the changes that appear in a % of the sequences between the 2 values below</h5>
-                        </v-flex>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -911,13 +909,13 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F1FAEE">
                               <v-card-title class="justify-center">
-                                <h5>HIGHLIGHT MUTAGENESIS SITES:</h5>
+                                <h5>HIGHLIGHT FUNCTIONALLY CHARACTERISED<br> SITES:</h5>
                               </v-card-title>
                               <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValueMutagenesis"
                                   :items="possibleDomainForPValueMutagenesis"
-                                  label="Mutagenesis Sites"
+                                  label="Functionally Characterised Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
@@ -938,15 +936,23 @@
                               </v-card-title>
                               <v-card-text>
                                 <v-autocomplete
-                                  v-model="selectedDomainForPValueAaModifications"
+                                  v-model="selectedDomainForPValueAaModificationsFake"
                                   :items="possibleDomainForPValueAaModifications"
                                   label="Glycosylation Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
-                                  multiple
                                 >
                                 </v-autocomplete>
+                                <v-layout row wrap justify-center style="padding: 0; margin: 0">
+                                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0">
+                                    <v-checkbox v-model="selectedAllAaModifications"
+                                    label="Select All"
+                                    input-value="true"
+                                    hide-details>
+                                    </v-checkbox>
+                                  </v-flex>
+                                </v-layout>
                               </v-card-text>
                            </v-card>
                          </v-flex>
@@ -980,6 +986,97 @@
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueAaModifications.length > 0">
+                              <v-card color="#FFA50080" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                 </v-layout>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                     <v-card width="400px" color="#F1FAEE">
+                        <v-card-title class="justify-center">
+                          <h5>UPLOAD YOUR REGIONS:</h5>
+                          <v-dialog width="500">
+                              <template v-slot:activator="{ on }">
+                                <v-btn
+                                      v-on="on"
+                                        slot="activator"
+                                        class="info-button"
+                                        x-small
+                                        text icon color="grey"
+                                        style="margin-bottom: 5px; margin-left: 20px">
+                                    <v-icon class="info-icon">mdi-information</v-icon>
+                                </v-btn>
+                              </template>
+                              <v-card>
+                                  <v-card-title
+                                          class="headline grey lighten-2"
+                                          primary-title
+                                  >
+                                      UPLOAD YOUR REGIONS:
+                                  </v-card-title>
+                                  <v-card-text style="text-align: center;">
+                                   <span><br>... infos ...
+                                    <br><br>
+                                   </span>
+                                    <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleCSV()" x-small icon
+                                      style="margin-left: 20px;">
+                                        <v-icon size="18">
+                                          mdi-download-circle-outline
+                                        </v-icon>
+                                    </v-btn></span>
+                                  </v-card-text>
+                              </v-card>
+                          </v-dialog>
+                        </v-card-title>
+                        <v-card-text>
+                           <v-layout wrap justify-space-around>
+                              <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                <input id="inputDomainCSVTime" type="file" style="display:none"
+                                             v-on:change="loadDomainCSV()" accept=".csv"
+                                             onclick="document.getElementById('inputDomainCSVTime').value = ''"
+                                      />
+                                <v-btn
+                                       onclick="document.getElementById('inputDomainCSVTime').click()"
+                                       class="white--text"
+                                       small
+                                       color="#E63946"
+                                       style="margin-top: 10px"
+                                >
+                                    Upload CSV
+                                </v-btn>
+                              </v-flex>
+                             <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
+                               <v-text-field
+                                :value = this.nameFileDomainCSV
+                                solo
+                                readonly
+                                hide-details
+                                style="margin-right: 10px"
+                              ></v-text-field>
+                               <v-btn
+                                  style="background-color: red; margin-top: 10px;"
+                                  icon
+                                  x-small
+                                color="white"
+                                  @click="deleteDomainCSV()"
+                              >
+                                <v-icon size="18">mdi-close</v-icon>
+                              </v-btn>
+                             </v-flex>
+                           </v-layout>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                 </v-layout>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueUploaded" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueUploaded.length > 0">
                               <v-card :color="color_3[idx%color_3.length] + 80" height="100%">
                                 <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
                               </v-card>
@@ -1035,7 +1132,11 @@
                            :possibleDomainForPValueMutagenesis="possibleDomainForPValueMutagenesis"
                            :selectedDomainForPValueAaModifications="selectedDomainForPValueAaModifications"
                            :possibleDomainForPValueAaModifications="possibleDomainForPValueAaModifications"
-                           type="time">
+                           :selectedDomainForPValueUploaded="selectedDomainForPValueUploaded"
+                           :possibleDomainForPValueUploaded="possibleDomainForPValueUploaded"
+                           type="time"
+                           :rowsAnalTime = rowsAnalTime
+                           :protein = selectedProteinForPValue>
                        </PValueBarChart>
                      </v-flex>
                   </v-layout>
@@ -1061,12 +1162,11 @@
       width="700"
     >
       <v-card>
-        <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
+        <v-card-title class="headline" style="background-color: #A8DADC ;">
           Accession IDs
           <v-spacer></v-spacer>
           <v-btn
             color="rgb(122, 139, 157)"
-            style="color:white;"
             text
             @click="downloadAccessionIds()"
           >
@@ -1074,7 +1174,6 @@
           </v-btn>
           <v-btn
             color="rgb(122, 139, 157)"
-            style="color:white;"
             text
             @click="dialogAccessionIds = !dialogAccessionIds"
           >
@@ -1173,10 +1272,15 @@ export default {
       begin_value_domain_mutagenesis: [],
       end_value_domain_mutagenesis: [],
 
+      selectedAllAaModifications: false,
+      selectedDomainForPValueAaModificationsFake: [],
       selectedDomainForPValueAaModifications: [],
       possibleDomainForPValueAaModifications: [],
       begin_value_domain_aa_modifications: [],
       end_value_domain_aa_modifications: [],
+
+      possibleDomainForPValueUploaded: [],
+      selectedDomainForPValueUploaded: [],
 
       selectedMinPercentageMutationPValue: 0,
       selectedMaxPercentageMutationPValue: 80,
@@ -1191,6 +1295,12 @@ export default {
 
       selectedTypeImportantMutation: 'ECDC',
       possibleTypeImportantMutation: ['ECDC', 'Present in 75% of the lineage (worldwide)'],
+
+      fileDomainCSV: null,
+      nameFileDomainCSV: null,
+
+      accessionIdsTargetOrBackground: null,
+      accessionIdsSingleMutation: null,
     }
   },
   computed: {
@@ -1202,6 +1312,126 @@ export default {
   methods: {
     ...mapMutations([]),
     ...mapActions(['setQueryTime']),
+    loadDomainCSV(){
+      this.fileDomainCSV = null;
+      this.nameFileDomainCSV = null;
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      let reader = new FileReader();
+      let selectedFile = document.getElementById ('inputDomainCSVTime'). files[0];
+      this.nameFileDomainCSV = selectedFile.name;
+      let that = this;
+      reader.onload = function() {
+        let fileDomain = reader.result.replaceAll('"', '');
+        let jsonTranslate = that.CSVToJson(fileDomain);
+        localStorage.setItem('uploadedDomainsTime', jsonTranslate);
+        localStorage.setItem('uploadedFileNameTime', that.nameFileDomainCSV);
+        that.calculateUploadedDomains();
+      }
+      reader.readAsText(selectedFile);
+    },
+    CSVToJson(file){
+      let lines= file.split("\r\n");
+      let result = [];
+      let headers = lines[0].split(",");
+
+      for(let i=1;i<lines.length;i++){
+          let obj = {};
+          let currentline=lines[i].split(",");
+          for(let j=0;j<headers.length;j++){
+              if(headers[j] === 'Begin' || headers[j] === 'End'){
+                obj[headers[j]] = parseInt(currentline[j]);
+              }
+              else{
+                obj[headers[j]] = currentline[j];
+              }
+          }
+          result.push(obj);
+      }
+      return JSON.stringify(result);
+    },
+    deleteDomainCSV(){
+      this.fileDomainCSV = null;
+      this.nameFileDomainCSV = null;
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      localStorage.setItem('uploadedDomainsTime', JSON.stringify([]));
+      localStorage.setItem('uploadedFileNameTime', null);
+      this.calculateUploadedDomains();
+    },
+    calculateUploadedDomains() {
+      let name = localStorage.getItem('uploadedFileNameTime');
+      if( name === null || name === 'null'){
+        this.fileDomainCSV = null;
+        this.nameFileDomainCSV = null;
+      }
+      else{
+        this.fileDomainCSV = JSON.parse(localStorage.getItem('uploadedDomainsTime'));
+        this.nameFileDomainCSV = localStorage.getItem('uploadedFileNameTime');
+        if(this.pValueBarChartApplied){
+          this.calculatePossibleAndSelectedUploadedDomain();
+        }
+      }
+    },
+    calculatePossibleAndSelectedUploadedDomain(){
+      let that = this;
+      this.possibleDomainForPValueUploaded = this.fileDomainCSV.filter(function (dom){
+        return dom['Protein'] === that.selectedProteinForPValue;
+      })
+
+      for(let i = 0; i < this.possibleDomainForPValueUploaded.length; i = i + 1){
+         let single_domain = this.possibleDomainForPValueUploaded[i]['Description'] + ' / (' +
+                             this.possibleDomainForPValueUploaded[i]['Begin'] + ' , ' +
+                             this.possibleDomainForPValueUploaded[i]['End'] + ')';
+         this.selectedDomainForPValueUploaded.push(single_domain);
+      }
+    },
+    downloadExampleCSV(){
+      let text = "";
+      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-1', 'Begin': 10, 'End': 20},
+                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-2', 'Begin': 501, 'End': 501},
+                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'E (envelope protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF10 protein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP3', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP4', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP11', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP13 (helicase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP6', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP7', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP8', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP9', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP10', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF1a polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP2', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+      ];
+      let headers = [{'text': 'Protein', 'value': 'Protein'},
+                     {'text': 'Description', 'value': 'Description'},
+                     {'text': 'Begin', 'value': 'Begin'},
+                     {'text': 'End', 'value': 'End'}];
+      text = this.json2csvDomains(result_sorted, headers);
+      let filename = 'exampleDomain.csv';
+      let element = document.createElement('a');
+      element.setAttribute('download', filename);
+      var data = new Blob([text]);
+      element.href = URL.createObjectURL(data);
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
     computeFieldToExclude(){
       if (!this.queryTime['geo_group']) {
         this.fieldToExclude = 'geo_group';
@@ -1299,7 +1529,25 @@ export default {
       if(table === 'analyze_mutation'){
         text = this.json2csv(result_sorted, this.headerAnalyzeTime);
       }
-      let filename = 'result.csv';
+      let filename = 'noResult.csv';
+      if(rowAnalyzeTime.length > 0) {
+        filename = 'temporal_analysis_table_';
+        if(this.queryTime['lineage']){
+          filename += this.queryTime['lineage'] + '_';
+        }
+        filename += '(' + rowAnalyzeTime[0]['target'] + ')' +  '_vs_' + '(' + rowAnalyzeTime[0]['background'] + ')';
+        if (!this.queryTime['geo_group']) {
+          filename += '_World.csv';
+        } else if (!this.queryTime['country']) {
+          filename += '_' + this.queryTime['geo_group'] + '.csv';
+        } else if (!this.queryTime['region']) {
+          filename += '_' + this.queryTime['country'] + '.csv';
+        } else if (!this.queryTime['province']) {
+          filename += '_' + this.queryTime['region'] + '.csv';
+        } else {
+          filename += '_' + this.queryTime['province'] + '.csv';
+        }
+      }
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);
@@ -1307,6 +1555,37 @@ export default {
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);
+    },
+    json2csvDomains(input, selected_headers) {
+        var json = input;
+        var fields = [];
+        var fields2 = [];
+        selected_headers.forEach(function (el) {
+            fields.push(el.text);
+        });
+        selected_headers.forEach(function (el) {
+            fields2.push(el.value);
+        });
+        var csv = json.map(function (row) {
+            return fields2.map(function (fieldName) {
+                let string_val;
+                if (fieldName === 'mutation_position'){
+                  string_val = row['mutation'];
+                  if(typeof string_val === 'string' || string_val instanceof String) {
+                    string_val = string_val.replaceAll("\n", " ");
+                  }
+                }
+                else {
+                  string_val = row[fieldName];
+                  if(typeof string_val === 'string' || string_val instanceof String) {
+                    string_val = string_val.replaceAll("\n", " ");
+                  }
+                }
+                return string_val;
+            }).join(',')
+        });
+        csv.unshift(fields.join(','));
+        return csv.join('\r\n')
     },
     json2csv(input, selected_headers) {
         var json = input;
@@ -1629,6 +1908,9 @@ export default {
       this.selectedDomainForPValue = [];
       this.selectedDomainForPValueMutagenesis = [];
       this.selectedDomainForPValueAaModifications = [];
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      this.selectedAllAaModifications = false;
       this.pValueContent = [];
       this.pValueName = [];
 
@@ -1703,10 +1985,26 @@ export default {
                     return value_a > value_b ? 1 : -1;
                   });
                   this.possibleDomainForPValueAaModifications = res['aa_modifications'].sort(function(a, b){
+                    a['disabled'] = true;
+                    b['disabled'] = true;
                     let value_a = a['Description'].toLowerCase();
                     let value_b = b['Description'].toLowerCase();
                     return value_a > value_b ? 1 : -1;
                   });
+
+                  if(this.fileDomainCSV !== null) {
+                    let that = this;
+                    this.possibleDomainForPValueUploaded = this.fileDomainCSV.filter(function (dom) {
+                      return dom['Protein'] === that.selectedProteinForPValue;
+                    })
+
+                    for (let i = 0; i < this.possibleDomainForPValueUploaded.length; i = i + 1) {
+                      let single_domain = this.possibleDomainForPValueUploaded[i]['Description'] + ' / (' +
+                          this.possibleDomainForPValueUploaded[i]['Begin'] + ' , ' +
+                          this.possibleDomainForPValueUploaded[i]['End'] + ')';
+                      this.selectedDomainForPValueUploaded.push(single_domain);
+                    }
+                  }
 
                   this.overlay = false;
                   this.pValueBarChartApplied = true;
@@ -1776,6 +2074,8 @@ export default {
       let query = JSON.parse(JSON.stringify(this.queryTime));
       let query_false = '';
       if(type === 'target'){
+        this.accessionIdsTargetOrBackground = type;
+        this.accessionIdsSingleMutation = '(' + item['product'] + '_' + item['sequence_aa_original'] + item['start_aa_original'] + item['sequence_aa_alternative'] + ')';
         query['lineage'] = item['lineage'];
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
@@ -1785,6 +2085,8 @@ export default {
         query['product'] = item['product'];
       }
       else if(type === 'background'){
+        this.accessionIdsTargetOrBackground = type;
+        this.accessionIdsSingleMutation = '(' + item['product'] + '_' + item['sequence_aa_original'] + item['start_aa_original'] + item['sequence_aa_alternative'] + ')';
         query['lineage'] = item['lineage'];
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
@@ -1816,7 +2118,31 @@ export default {
       for (let i=0; i<this.listAccessionIds.length; i=i+1){
         text = text + this.listAccessionIds[i] + ';  ';
       }
-      let filename = 'accession_ids.txt';
+      let filename = 'noResult.csv';
+      if(this.rowsAnalyzeTime[this.selectedTabTable].length > 0) {
+        filename = 'temporal_analysis_' + this.accessionIdsSingleMutation + '_';
+        if(this.queryTime['lineage']){
+          filename += this.queryTime['lineage'] + '_';
+        }
+        if(this.accessionIdsTargetOrBackground === 'target'){
+          filename += this.rowsAnalyzeTime[this.selectedTabTable][0]['target'];
+        }
+        else{
+          filename += this.rowsAnalyzeTime[this.selectedTabTable][0]['background'];
+        }
+        if (!this.queryTime['geo_group']) {
+          filename += '_World.csv';
+        } else if (!this.queryTime['country']) {
+          filename += '_' + this.queryTime['geo_group'];
+        } else if (!this.queryTime['region']) {
+          filename += '_' + this.queryTime['country'];
+        } else if (!this.queryTime['province']) {
+          filename += '_' + this.queryTime['region'];
+        } else {
+          filename += '_' + this.queryTime['province'];
+        }
+      }
+      filename += '.txt'
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);
@@ -1827,6 +2153,17 @@ export default {
     }
   },
   watch: {
+    selectedAllAaModifications(){
+      this.selectedDomainForPValueAaModifications = [];
+      if(this.selectedAllAaModifications){
+        for(let i = 0; i < this.possibleDomainForPValueAaModifications.length; i = i + 1){
+          let selected = this.possibleDomainForPValueAaModifications[i]['Description']  + ' / (' +
+                         this.possibleDomainForPValueAaModifications[i]['Begin'] + ' , ' +
+                         this.possibleDomainForPValueAaModifications[i]['End'] + ')';
+          this.selectedDomainForPValueAaModifications.push(selected);
+        }
+      }
+    },
     selectedTypeImportantMutation(){
       if(this.selectedTypeImportantMutation === 'ECDC'){
         this.importantMutation = this.importantMutationECDC;
@@ -2094,6 +2431,7 @@ export default {
     // }
   },
   mounted() {
+      this.calculateUploadedDomains();
       this.computeFieldToExclude();
       this.possibleProtein = this.all_protein;
   }

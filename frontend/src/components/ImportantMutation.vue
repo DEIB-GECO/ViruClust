@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span>Check <a @click="dialogImportantMutation = true">here</a> the important changes.</span>
+    <span>See <a @click="dialogImportantMutation = true">here</a> for a more detailed explanation.</span>
 
       <v-dialog
       persistent
@@ -9,7 +9,7 @@
       >
         <v-card>
           <v-card-title class="headline" style="background-color: #A8DADC;">
-            Important Changes Of Target Lineage
+            Changes to Highlight
             <v-spacer></v-spacer>
             <v-btn
                 style="background-color: rgb(122, 139, 157)"

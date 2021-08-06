@@ -61,7 +61,7 @@
                   </v-autocomplete>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 30px">
-                 <h2>SELECT PROTEINS TO ANALYZE</h2>
+                 <h2>SELECT THE PROTEINS TO COMPARE</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(no selection means "all protein")</h4>
@@ -98,7 +98,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                 <h2>APPLY FILTERS TO TABLE</h2>
+                 <h2>ADVANCED FILTERS</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
@@ -368,7 +368,7 @@
                          color="#E63946"
                          class="white--text"
                   >
-                      APPLY FILTERS
+                      APPLY
                   </v-btn>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">

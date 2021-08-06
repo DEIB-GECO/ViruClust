@@ -1,7 +1,7 @@
 <template>
 <div style="position: relative;">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
-        <h2>TIME DISTRIBUTION <v-btn @click="download" x-small icon
+        <h2># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
                 mdi-download-circle-outline
@@ -229,7 +229,104 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = '';
+      if(this.type === 'target') {
+        filename = 'open_analysis_target_timeDistribution';
+        if (this.queryFreeTarget['lineage']) {
+          filename += '_' + this.queryFreeTarget['lineage'];
+        }
+        if (!this.queryFreeTarget['geo_group']) {
+          filename += '_World';
+        } else if (!this.queryFreeTarget['country']) {
+          if(this.queryFreeTarget['geo_group'].length > 2){
+            filename += '_' +  this.queryFreeTarget['geo_group'][0] + '_etc';
+          }
+          else {
+            filename += '_' +  this.queryFreeTarget['geo_group'];
+          }
+        } else if (!this.queryFreeTarget['region']) {
+          if(this.queryFreeTarget['country'].length > 2){
+            filename += '_' +  this.queryFreeTarget['country'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeTarget['country'];
+          }
+        } else if (!this.queryFreeTarget['province']) {
+          if(this.queryFreeTarget['region'].length > 2){
+            filename += '_' +  this.queryFreeTarget['region'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeTarget['region'];
+          }
+        } else {
+          if(this.queryFreeTarget['province'].length > 2){
+            filename += '_' +  this.queryFreeTarget['province'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeTarget['province'];
+          }
+        }
+        // if (!this.queryFreeTarget['geo_group']) {
+        //   filename += '_World';
+        // } else if (!this.queryFreeTarget['country']) {
+        //   filename += '_' + this.queryFreeTarget['geo_group'];
+        // } else if (!this.queryFreeTarget['region']) {
+        //   filename += '_' + this.queryFreeTarget['country'];
+        // } else if (!this.queryFreeTarget['province']) {
+        //   filename += '_' + this.queryFreeTarget['region'];
+        // } else {
+        //   filename += '_' + this.queryFreeTarget['province'];
+        // }
+      }
+      else{
+        filename = 'open_analysis_background_timeDistribution';
+        if (this.queryFreeBackground['lineage']) {
+          filename += '_' + this.queryFreeBackground['lineage'];
+        }
+        if (!this.queryFreeBackground['geo_group']) {
+          filename += '_World';
+        } else if (!this.queryFreeBackground['country']) {
+          if(this.queryFreeBackground['geo_group'].length > 2){
+            filename += '_' +  this.queryFreeBackground['geo_group'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeBackground['geo_group'];
+          }
+        } else if (!this.queryFreeBackground['region']) {
+          if(this.queryFreeBackground['country'].length > 2){
+            filename += '_' +  this.queryFreeBackground['country'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeBackground['country'];
+          }
+        } else if (!this.queryFreeBackground['province']) {
+          if(this.queryFreeBackground['region'].length > 2){
+            filename += '_' +  this.queryFreeBackground['region'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeBackground['region'];
+          }
+        } else {
+          if(this.queryFreeBackground['province'].length > 2){
+            filename += '_' +  this.queryFreeBackground['province'][0] + '_etc';
+          }
+          else{
+            filename += '_' +  this.queryFreeBackground['province'];
+          }
+        }
+        // if (!this.queryFreeBackground['geo_group']) {
+        //   filename += '_World';
+        // } else if (!this.queryFreeBackground['country']) {
+        //   filename += '_' + this.queryFreeBackground['geo_group'];
+        // } else if (!this.queryFreeBackground['region']) {
+        //   filename += '_' + this.queryFreeBackground['country'];
+        // } else if (!this.queryFreeBackground['province']) {
+        //   filename += '_' + this.queryFreeBackground['region'];
+        // } else {
+        //   filename += '_' + this.queryFreeBackground['province'];
+        // }
+      }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {

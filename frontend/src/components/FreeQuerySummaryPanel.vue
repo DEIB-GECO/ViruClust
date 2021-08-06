@@ -86,7 +86,7 @@ export default {
     ...mapGetters({}),
     arrayQueryFreeTarget(){
       let array = {};
-      let array_keys = ['lineage', 'geo_group', 'country', 'region', 'province'];
+      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province'];
       for(let i = 0; i < array_keys.length; i = i + 1){
         let key = array_keys[i];
         let key_to_use;
@@ -134,7 +134,7 @@ export default {
     },
     arrayQueryFreeBackground(){
       let array = {};
-      let array_keys = ['lineage', 'geo_group', 'country', 'region', 'province'];
+      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province'];
       for(let i = 0; i < array_keys.length; i = i + 1){
         let key = array_keys[i];
         let key_to_use;

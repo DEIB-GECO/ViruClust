@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
-          <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+          <h2 style="margin-top: 50px;"># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
                 mdi-download-circle-outline
@@ -374,7 +374,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['queryTime']),
     ...mapGetters({}),
   },
   methods: {
@@ -387,7 +387,22 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = 'temporal_analysis_timeDistribution2Periods';
+        if(this.queryTime['lineage']){
+          filename += '_' + this.queryTime['lineage'];
+        }
+        if (!this.queryTime['geo_group']) {
+          filename += '_World';
+        } else if (!this.queryTime['country']) {
+          filename += '_' + this.queryTime['geo_group'];
+        } else if (!this.queryTime['region']) {
+          filename += '_' + this.queryTime['country'];
+        } else if (!this.queryTime['province']) {
+          filename += '_' + this.queryTime['region'];
+        } else {
+          filename += '_' + this.queryTime['province'];
+        }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {

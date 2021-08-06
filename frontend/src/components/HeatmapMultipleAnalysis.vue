@@ -32,8 +32,8 @@
         <div v-if="errorShow" style="position: absolute; top: 50px; width: 500px; height: 200px">
           <v-layout wrap justify-center style=" height: 100%">
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
-              <h1 style="position: absolute; top: 10%; text-align: center; z-index: 1">TOO MANY DATA</h1>
-              <h3 style="position: absolute; top:40%; text-align: center; z-index: 1">Please select some filters of amino acid changes to reduce the number of rows</h3>
+              <h1 style="position: absolute; top: 10%; text-align: center; z-index: 1; color: #E63946">TOO MANY ROWS</h1>
+              <h3 style="position: absolute; top:40%; text-align: center; z-index: 1; color: #E63946">Please select some filters of amino acid changes to reduce the number of rows</h3>
             </v-flex>
           </v-layout>
         </div>
@@ -93,7 +93,8 @@ export default {
     contentHeatmap: {required: true,},
     fixedContent: {required: true,},
     maxOddsRatio: {required: true,},
-    importantMutation: {required: true,}
+    importantMutation: {required: true,},
+    type: {required: true,}
   },
   data(){
     return {
@@ -184,7 +185,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([]),
+    ...mapState(['queryTime', 'queryGeo', 'startDateQueryGeo', 'stopDateQueryGeo']),
     ...mapGetters({}),
   },
   methods: {
@@ -197,7 +198,56 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = '';
+      if(this.type === 'time'){
+        if(this.contentHeatmap.length > 0) {
+          filename = 'temporal_analysis_heatmap_' + this.heatmapMode + '_';
+          if(this.queryTime['lineage']){
+            filename += this.queryTime['lineage'] + '_';
+          }
+          filename += '(' + this.contentHeatmap[0][0]['target'] + ')' + '_';
+          if(this.contentHeatmap.length > 2){
+            filename += 'etc_';
+          }
+          filename +=  '(' + this.contentHeatmap[this.contentHeatmap.length - 1][0]['target'] + ')_' ;
+          // for(let i = 0; i < this.contentHeatmap.length; i = i + 1) {
+          //   if(this.contentHeatmap[i].length > 0) {
+          //     filename += '(' + this.contentHeatmap[i][0]['target'] + ')' + '_';
+          //   }
+          // }
+          if (!this.queryTime['geo_group']) {
+            filename += 'World';
+          } else if (!this.queryTime['country']) {
+            filename += this.queryTime['geo_group'];
+          } else if (!this.queryTime['region']) {
+            filename += this.queryTime['country'];
+          } else if (!this.queryTime['province']) {
+            filename += this.queryTime['region'];
+          } else {
+            filename += this.queryTime['province'];
+          }
+        }
+      }
+      else if (this.type === 'geo'){
+        if(this.contentHeatmap.length > 0) {
+          filename = 'spatial_analysis_heatmap_' + this.heatmapMode + '_';
+          if(this.queryTime['lineage']){
+            filename += this.queryTime['lineage'] + '_';
+          }
+          filename += '(' + this.contentHeatmap[0][0]['target'] + ')' + '_';
+          if(this.contentHeatmap.length > 2){
+            filename += 'etc_';
+          }
+          filename +=  '(' + this.contentHeatmap[this.contentHeatmap.length - 1][0]['target'] + ')_' ;
+          // for(let i = 0; i < this.contentHeatmap.length; i = i + 1) {
+          //   if(this.contentHeatmap[i].length > 0) {
+          //     filename += '(' + this.contentHeatmap[i][0]['target'] + ')' + '_';
+          //   }
+          // }
+          filename += this.startDateQueryGeo + '_' + this.stopDateQueryGeo;
+        }
+      }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {
@@ -374,10 +424,8 @@ export default {
       //     let num2 = parseInt(b);
       //     return num1 - num2;
       //   });
-      //   // console.log("qui", array_inside_heatmap_to_exclude);
       //
       //   for (let j = array_inside_heatmap_to_exclude.length -1; j >= 0; j = j - 1) {
-      //     console.log("qui", this.data_inside_heatmap[array_inside_heatmap_to_exclude[j]]);
       //     // this.data_inside_heatmap.splice(array_inside_heatmap_to_exclude[j], 1);
       //   }
       //

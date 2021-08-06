@@ -176,8 +176,7 @@ export default {
     }
 
     let url = `/analyze/allProtein`;
-    let to_send = {'gcm': {'taxon_name':["severe acute respiratory syndrome coronavirus 2"]}};
-    axios.post(url, to_send)
+    axios.get(url)
     .then((res) => {
       return res.data;
     })

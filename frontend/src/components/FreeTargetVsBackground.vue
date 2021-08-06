@@ -32,15 +32,329 @@
                   <v-tabs-items v-model="selectedTabFreeQuery" style="background: transparent;">
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
-                      <FreeQuery
-                        type="target">
-                      </FreeQuery>
+                      <v-layout row wrap justify-center>
+                        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                          <v-card color="#F1FAEE" width="100%" style="padding: 11px">
+                            <v-card-title class="justify-center">
+                              <h5>ADD ACCESSION IDs:</h5>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-layout row wrap justify-center>
+                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                  <v-text-field
+                                    v-model = "accession_id_target"
+                                    solo
+                                    hide-details
+                                    style="margin-right: 10px"
+                                  ></v-text-field>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-btn
+                                      class="white--text"
+                                       small
+                                       color="#E63946"
+                                       style="margin-top: 10px"
+                                      @click="addAccessionIdTarget()"
+                                  >
+                                    ADD
+                                  </v-btn>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-dialog width="500" v-model="dialogAccIdsTargetInserted">
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn
+                                            v-on="on"
+                                            slot="activator"
+                                            class="white--text"
+                                             small
+                                             color="#1D3557"
+                                             style="margin-top: 10px"
+                                            :disabled="!(listAccIdsTargetInserted.length > 0)"
+                                        >
+                                          SHOW LIST ({{listAccIdsTargetInserted.length}})
+                                        </v-btn>
+                                      </template>
+                                      <v-card>
+                                          <v-card-title
+                                                  class="headline"
+                                                  style="background-color: #A8DADC"
+                                          >
+                                              ACCESSION IDs ADDED:
+                                            <v-spacer></v-spacer>
+                                            <v-btn
+                                              color="black"
+                                              text
+                                              @click="deleteAllAccIdsTargetInserted();"
+                                            >
+                                              DELETE ALL
+                                            </v-btn>
+                                          </v-card-title>
+                                          <v-card-text style="text-align: center;">
+                                            <span><br>
+                                              <span v-for="(acc_id, index) in listAccIdsTargetInserted" v-bind:key="acc_id">
+                                                {{acc_id}}
+                                                <v-btn
+                                                      style="background-color: red; margin-left: 20px"
+                                                      icon
+                                                      width="15px"
+                                                      height="15px"
+                                                    color="white"
+                                                      @click="deleteAccIdsTargetInserted(index)"
+                                                  >
+                                                    <v-icon size="12">mdi-close</v-icon>
+                                                  </v-btn>
+                                                <br>
+                                              </span>
+                                            </span>
+                                          </v-card-text>
+                                      </v-card>
+                                  </v-dialog>
+                                </v-flex>
+                              </v-layout>
+                            </v-card-text>
+                            <v-card-title class="justify-center">
+                              <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
+                              <v-dialog width="500">
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                          v-on="on"
+                                            slot="activator"
+                                            class="info-button"
+                                            x-small
+                                            text icon color="grey"
+                                            style="margin-bottom: 5px; margin-left: 20px">
+                                        <v-icon class="info-icon">mdi-information</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <v-card>
+                                      <v-card-title
+                                              class="headline grey lighten-2"
+                                              primary-title
+                                      >
+                                          UPLOAD LIST OF ACCESSION IDs:
+                                      </v-card-title>
+                                      <v-card-text style="text-align: center;">
+                                       <span><br>... infos ...
+                                        <br><br>
+                                       </span>
+                                        <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                          style="margin-left: 20px;">
+                                            <v-icon size="18">
+                                              mdi-download-circle-outline
+                                            </v-icon>
+                                        </v-btn></span>
+                                      </v-card-text>
+                                  </v-card>
+                              </v-dialog>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                  <input id="inputAccIdsTarget" type="file" style="display:none"
+                                               v-on:change="loadAccIdsTarget()" accept=".txt"
+                                               onclick="document.getElementById('inputAccIdsTarget').value = ''"
+                                        />
+                                  <v-btn
+                                         onclick="document.getElementById('inputAccIdsTarget').click()"
+                                         class="white--text"
+                                         small
+                                         color="#E63946"
+                                         style="margin-top: 10px"
+                                  >
+                                      Upload Target Accession IDs
+                                  </v-btn>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                 <v-text-field
+                                  :value = this.nameFileAccIdsTarget
+                                  solo
+                                  readonly
+                                  hide-details
+                                  style="margin-right: 10px"
+                                ></v-text-field>
+                                 <v-btn
+                                    style="background-color: red; margin-top: 10px;"
+                                    icon
+                                    x-small
+                                  color="white"
+                                    @click="deleteAccIdsTarget()"
+                                >
+                                  <v-icon size="18">mdi-close</v-icon>
+                                </v-btn>
+                               </v-flex>
+                              </v-layout>
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsTarget.length > 0)">
+                        <FreeQuery
+                          type="target">
+                        </FreeQuery>
+                       </v-flex>
+                      </v-layout>
                     </v-tab-item>
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
-                      <FreeQuery
-                        type="background">
-                      </FreeQuery>
+                      <v-layout row wrap justify-center>
+                        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                          <v-card color="#F1FAEE" width="100%" style="padding: 11px">
+                            <v-card-title class="justify-center">
+                              <h5>ADD ACCESSION IDs:</h5>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-layout row wrap justify-center>
+                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                  <v-text-field
+                                    v-model = "accession_id_background"
+                                    solo
+                                    hide-details
+                                    style="margin-right: 10px"
+                                  ></v-text-field>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-btn
+                                      class="white--text"
+                                       small
+                                       color="#E63946"
+                                       style="margin-top: 10px"
+                                      @click="addAccessionIdBackground()"
+                                  >
+                                    ADD
+                                  </v-btn>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-dialog width="500"  v-model="dialogAccIdsBackgroundInserted">
+                                      <template v-slot:activator="{ on }">
+                                        <v-btn
+                                            v-on="on"
+                                            slot="activator"
+                                            class="white--text"
+                                             small
+                                             color="#1D3557"
+                                             style="margin-top: 10px"
+                                            :disabled="!(listAccIdsBackgroundInserted.length > 0)"
+                                        >
+                                          SHOW LIST ({{listAccIdsBackgroundInserted.length}})
+                                        </v-btn>
+                                      </template>
+                                      <v-card>
+                                          <v-card-title
+                                                  class="headline"
+                                                  style="background-color: #A8DADC"
+                                          >
+                                              ACCESSION IDs ADDED:
+                                            <v-spacer></v-spacer>
+                                            <v-btn
+                                              color="black"
+                                              text
+                                              @click="deleteAllAccIdsBackgroundInserted();"
+                                            >
+                                              DELETE ALL
+                                            </v-btn>
+                                          </v-card-title>
+                                          <v-card-text style="text-align: center;">
+                                            <span><br>
+                                              <span v-for="(acc_id, index) in listAccIdsBackgroundInserted" v-bind:key="acc_id">
+                                                {{acc_id}}
+                                                <v-btn
+                                                      style="background-color: red; margin-left: 20px"
+                                                      icon
+                                                      width="15px"
+                                                      height="15px"
+                                                    color="white"
+                                                      @click="deleteAccIdsBackgroundInserted(index)"
+                                                  >
+                                                    <v-icon size="12">mdi-close</v-icon>
+                                                  </v-btn>
+                                                <br>
+                                              </span>
+                                            </span>
+                                          </v-card-text>
+                                      </v-card>
+                                  </v-dialog>
+                                </v-flex>
+                              </v-layout>
+                            </v-card-text>
+                            <v-card-title class="justify-center">
+                              <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
+                              <v-dialog width="500">
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                          v-on="on"
+                                            slot="activator"
+                                            class="info-button"
+                                            x-small
+                                            text icon color="grey"
+                                            style="margin-bottom: 5px; margin-left: 20px">
+                                        <v-icon class="info-icon">mdi-information</v-icon>
+                                    </v-btn>
+                                  </template>
+                                  <v-card>
+                                      <v-card-title
+                                              class="headline grey lighten-2"
+                                              primary-title
+                                      >
+                                          UPLOAD LIST OF ACCESSION IDs:
+                                      </v-card-title>
+                                      <v-card-text style="text-align: center;">
+                                       <span><br>... infos ...
+                                        <br><br>
+                                       </span>
+                                        <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                          style="margin-left: 20px;">
+                                            <v-icon size="18">
+                                              mdi-download-circle-outline
+                                            </v-icon>
+                                        </v-btn></span>
+                                      </v-card-text>
+                                  </v-card>
+                              </v-dialog>
+                            </v-card-title>
+                            <v-card-text>
+                              <v-layout row wrap justify-space-around>
+                                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                  <input id="inputAccIdsBackground" type="file" style="display:none"
+                                               v-on:change="loadAccIdsBackground()" accept=".txt"
+                                               onclick="document.getElementById('inputAccIdsBackground').value = ''"
+                                        />
+                                  <v-btn
+                                         onclick="document.getElementById('inputAccIdsBackground').click()"
+                                         class="white--text"
+                                         small
+                                         color="#E63946"
+                                         style="margin-top: 10px"
+                                  >
+                                      Upload Background Accession IDs
+                                  </v-btn>
+                                </v-flex>
+                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                 <v-text-field
+                                  :value = this.nameFileAccIdsBackground
+                                  solo
+                                  readonly
+                                  hide-details
+                                  style="margin-right: 10px"
+                                ></v-text-field>
+                                 <v-btn
+                                    style="background-color: red; margin-top: 10px;"
+                                    icon
+                                    x-small
+                                  color="white"
+                                    @click="deleteAccIdsBackground()"
+                                >
+                                  <v-icon size="18">mdi-close</v-icon>
+                                </v-btn>
+                               </v-flex>
+                              </v-layout>
+                            </v-card-text>
+                          </v-card>
+                        </v-flex>
+                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsBackground.length > 0)">
+                        <FreeQuery
+                          type="background">
+                        </FreeQuery>
+                       </v-flex>
+                      </v-layout>
                     </v-tab-item>
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
@@ -69,7 +383,7 @@
               ></v-text-field>
             </v-flex>
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0" v-if="num_overlapping_sequences !== 0">
-              <h3> Select from where the overlapping sequences should be removed </h3>
+              <h3> Remove overlapping data from </h3>
             </v-flex>
             <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px" v-if="num_overlapping_sequences !== 0">
             <v-select
@@ -82,7 +396,7 @@
             </v-flex>
 
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin-top: 20px">
-               <h2>SELECT PROTEINS TO ANALYZE</h2>
+               <h2>SELECT THE PROTEINS TO COMPARE</h2>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                <h4>(selecting none is equivalent to "all proteins")</h4>
@@ -104,8 +418,8 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqFreeQuery">
               <span style="text-align: center">
-                 <span style="color: red"> number of sequences selected is too low (minimum 10 for both target and background)</span><br>
-                 <span style="color: red"> (the number of sequences in {{selectRemoveOverlapping.toLowerCase()}} is calculated taking care of the overlapping sequences)</span>
+                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span><br>
+                 <span style="color: red"> (Please be aware that overlapping entries are removed from {{selectRemoveOverlapping.toLowerCase()}})</span>
               </span>
                </v-flex>
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
@@ -128,7 +442,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
-                  <h2>APPLY FILTERS FOR SELECTING THE CHANGES IN THE TABLE BELOW</h2>
+                  <h2>ADVANCED FILTERS</h2>
                </v-flex>
                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
@@ -604,10 +918,10 @@
                </v-flex>
                <v-card width="1000px" color="#F1FAEE" style="margin-top: 50px; padding: 10px" v-if="queryFreeTarget['lineage']">
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center; margin-top: 12px" v-if="fixedRowsTable.length !== 0">
-                     <h3>IMPORTANT CHANGES OF TARGET LINEAGE:</h3>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="fixedRowsTable.length !== 0">
+                     <h3>CHANGES TO HIGHLIGHT:</h3>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center" v-if="fixedRowsTable.length !== 0">
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center" v-if="fixedRowsTable.length !== 0">
                      <v-select
                       v-model="selectedTypeImportantMutation"
                       :items="possibleTypeImportantMutation"
@@ -616,7 +930,7 @@
                       hide-details>
                      </v-select>
                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center; margin-top: 12px" v-if="fixedRowsTable.length !== 0">
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; margin-top: 12px" v-if="fixedRowsTable.length !== 0">
                      <ImportantMutation
                      :importantMutationECDC="importantMutationECDC"
                      :importantMutation75Percentage="importantMutation75Percentage"
@@ -735,7 +1049,7 @@
                       <h5>P-VALUE:</h5>
                     </v-card-title>
                     <v-card-text >
-                      <v-layout row wrap justify-space-around style="margin-top: 10px">
+                      <v-layout row wrap justify-space-around>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -779,7 +1093,7 @@
                     <v-card-title class="justify-center">
                       <h5>SELECT PROTEIN (mandatory):</h5>
                     </v-card-title>
-                    <v-card-text style="margin-top: 30px">
+                    <v-card-text style="margin-top: 10px">
                       <v-autocomplete
                         v-model="selectedProteinForPValue"
                         :items="possibleProteinForPValue"
@@ -794,13 +1108,10 @@
                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
-                        <h5>INCLUDE CHANGES:</h5>
+                        <h5>PREVALENCE RANGE OF AA CHANGES:</h5>
                     </v-card-title>
                     <v-card-text style="padding-top: 0; margin-top: 0">
                       <v-layout row wrap justify-space-around style="margin-top: 0; padding: 0">
-                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0">
-                          <h5 style="text-align: center;">Include the changes that appear in a % of the sequences between the 2 values below</h5>
-                        </v-flex>
                         <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center">
                           <v-layout row wrap justify-center>
                             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
@@ -879,13 +1190,13 @@
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F1FAEE">
                               <v-card-title class="justify-center">
-                                <h5>HIGHLIGHT MUTAGENESIS SITES:</h5>
+                                <h5>HIGHLIGHT FUNCTIONALLY CHARACTERISED<br> SITES:</h5>
                               </v-card-title>
                               <v-card-text>
                                 <v-autocomplete
                                   v-model="selectedDomainForPValueMutagenesis"
                                   :items="possibleDomainForPValueMutagenesis"
-                                  label="Mutagenesis Sites"
+                                  label="Functionally Characterised Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
@@ -906,15 +1217,23 @@
                               </v-card-title>
                               <v-card-text>
                                 <v-autocomplete
-                                  v-model="selectedDomainForPValueAaModifications"
+                                  v-model="selectedDomainForPValueAaModificationsFake"
                                   :items="possibleDomainForPValueAaModifications"
                                   label="Glycosylation Sites"
                                   solo
                                   hide-details
                                   :item-text="getFieldTextDomain"
-                                  multiple
                                 >
                                 </v-autocomplete>
+                                <v-layout row wrap justify-center style="padding: 0; margin: 0">
+                                  <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0">
+                                    <v-checkbox v-model="selectedAllAaModifications"
+                                    label="Select All"
+                                    input-value="true"
+                                    hide-details>
+                                    </v-checkbox>
+                                  </v-flex>
+                                </v-layout>
                               </v-card-text>
                            </v-card>
                          </v-flex>
@@ -948,6 +1267,97 @@
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueAaModifications.length > 0">
+                              <v-card color="#FFA50080" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
+                     </v-layout>
+                    </v-flex>
+                 </v-layout>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                     <v-card width="400px" color="#F1FAEE">
+                        <v-card-title class="justify-center">
+                          <h5>UPLOAD YOUR REGIONS:</h5>
+                          <v-dialog width="500">
+                              <template v-slot:activator="{ on }">
+                                <v-btn
+                                      v-on="on"
+                                        slot="activator"
+                                        class="info-button"
+                                        x-small
+                                        text icon color="grey"
+                                        style="margin-bottom: 5px; margin-left: 20px">
+                                    <v-icon class="info-icon">mdi-information</v-icon>
+                                </v-btn>
+                              </template>
+                              <v-card>
+                                  <v-card-title
+                                          class="headline grey lighten-2"
+                                          primary-title
+                                  >
+                                      UPLOAD YOUR REGIONS:
+                                  </v-card-title>
+                                  <v-card-text style="text-align: center;">
+                                   <span><br>... infos ...
+                                    <br><br>
+                                   </span>
+                                    <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleCSV()" x-small icon
+                                      style="margin-left: 20px;">
+                                        <v-icon size="18">
+                                          mdi-download-circle-outline
+                                        </v-icon>
+                                    </v-btn></span>
+                                  </v-card-text>
+                              </v-card>
+                          </v-dialog>
+                        </v-card-title>
+                        <v-card-text>
+                           <v-layout wrap justify-space-around>
+                              <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                <input id="inputDomainCSVFree" type="file" style="display:none"
+                                             v-on:change="loadDomainCSV()" accept=".csv"
+                                             onclick="document.getElementById('inputDomainCSVFree').value = ''"
+                                      />
+                                <v-btn
+                                       onclick="document.getElementById('inputDomainCSVFree').click()"
+                                       class="white--text"
+                                       small
+                                       color="#E63946"
+                                       style="margin-top: 10px"
+                                >
+                                    Upload CSV
+                                </v-btn>
+                              </v-flex>
+                             <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
+                               <v-text-field
+                                :value = this.nameFileDomainCSV
+                                solo
+                                readonly
+                                hide-details
+                                style="margin-right: 10px"
+                              ></v-text-field>
+                               <v-btn
+                                  style="background-color: red; margin-top: 10px;"
+                                  icon
+                                  x-small
+                                color="white"
+                                  @click="deleteDomainCSV()"
+                              >
+                                <v-icon size="18">mdi-close</v-icon>
+                              </v-btn>
+                             </v-flex>
+                           </v-layout>
+                        </v-card-text>
+                     </v-card>
+                   </v-flex>
+                 </v-layout>
+                 <v-layout row wrap justify-center>
+                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                     <v-layout row wrap justify-center>
+                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueUploaded" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueUploaded.length > 0">
                               <v-card :color="color_3[idx%color_3.length] + 80" height="100%">
                                 <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
                               </v-card>
@@ -997,7 +1407,15 @@
                              :possibleDomainForPValueMutagenesis="possibleDomainForPValueMutagenesis"
                              :selectedDomainForPValueAaModifications="selectedDomainForPValueAaModifications"
                              :possibleDomainForPValueAaModifications="possibleDomainForPValueAaModifications"
-                             type="free">
+                             :selectedDomainForPValueUploaded="selectedDomainForPValueUploaded"
+                             :possibleDomainForPValueUploaded="possibleDomainForPValueUploaded"
+                             type="free"
+                             :rowsAnalTime = rows
+                             :protein = selectedProteinForPValue
+                             :nameFileAccIdsTarget = nameFileAccIdsTarget
+                             :nameFileAccIdsBackground = nameFileAccIdsBackground
+                             :listAccIdsTargetInserted = listAccIdsTargetInserted
+                             :listAccIdsBackgroundInserted = listAccIdsBackgroundInserted>
                          </PValueBarChart>
                        </v-flex>
                     </v-layout>
@@ -1024,12 +1442,11 @@
       width="700"
     >
       <v-card>
-        <v-card-title class="headline" style="background-color: #A8DADC ; color: white">
+        <v-card-title class="headline" style="background-color: #A8DADC ;">
           Accession IDs
           <v-spacer></v-spacer>
           <v-btn
             color="rgb(122, 139, 157)"
-            style="color:white;"
             text
             @click="downloadAccessionIds()"
           >
@@ -1037,7 +1454,6 @@
           </v-btn>
           <v-btn
             color="rgb(122, 139, 157)"
-            style="color:white;"
             text
             @click="dialogAccessionIds = !dialogAccessionIds"
           >
@@ -1132,10 +1548,15 @@ export default {
       begin_value_domain_mutagenesis: [],
       end_value_domain_mutagenesis: [],
 
+      selectedAllAaModifications: false,
+      selectedDomainForPValueAaModificationsFake: [],
       selectedDomainForPValueAaModifications: [],
       possibleDomainForPValueAaModifications: [],
       begin_value_domain_aa_modifications: [],
       end_value_domain_aa_modifications: [],
+
+      possibleDomainForPValueUploaded: [],
+      selectedDomainForPValueUploaded: [],
 
       selectedHeatmapMode: '% Target',
       possibleHeatmapMode: ['% Target', '% Target - % Background', 'Odds ratio'],
@@ -1151,6 +1572,30 @@ export default {
 
       selectedTypeImportantMutation: 'ECDC',
       possibleTypeImportantMutation: ['ECDC', 'Present in 75% of the lineage (worldwide)'],
+
+      fileDomainCSV: null,
+      nameFileDomainCSV: null,
+
+      accessionIdsTargetOrBackground: null,
+      accessionIdsSingleMutation: null,
+
+      listAccIdsTarget: [],
+      listAccIdsBackground: [],
+
+      fileAccIdsTarget: null,
+      nameFileAccIdsTarget: null,
+      listAccIdsTargetFile: [],
+      fileAccIdsBackground: null,
+      nameFileAccIdsBackground: null,
+      listAccIdsBackgroundFile: [],
+
+      accession_id_target: null,
+      accession_id_background: null,
+      listAccIdsTargetInserted: [],
+      listAccIdsBackgroundInserted: [],
+
+      dialogAccIdsTargetInserted: false,
+      dialogAccIdsBackgroundInserted: false,
     }
   },
   computed: {
@@ -1161,8 +1606,209 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['setStartDateQueryFreeTarget', 'setStartDateQueryFreeBackground',
+                     'setStopDateQueryFreeTarget', 'setStopDateQueryFreeBackground', 'setNumSequencesQueryFreeTarget',
+                     'setNumSequencesQueryFreeBackground']),
     ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
+    deleteAllAccIdsTargetInserted(){
+      this.listAccIdsTargetInserted = [];
+      this.dialogAccIdsTargetInserted = false;
+    },
+    deleteAllAccIdsBackgroundInserted(){
+      this.listAccIdsBackgroundInserted = [];
+      this.dialogAccIdsBackgroundInserted = false;
+    },
+    deleteAccIdsTargetInserted(index){
+      let array = JSON.parse(JSON.stringify(this.listAccIdsTargetInserted));
+      array.splice(index, 1);
+      this.listAccIdsTargetInserted = array;
+    },
+    deleteAccIdsBackgroundInserted(index){
+      let array = JSON.parse(JSON.stringify(this.listAccIdsBackgroundInserted));
+      array.splice(index, 1);
+      this.listAccIdsBackgroundInserted = array;
+    },
+    addAccessionIdTarget(){
+      let arr_acc_ids = this.accession_id_target.split(/(?:,|;|\t|\n| )+/);
+      for(let i = 0; i < arr_acc_ids.length; i = i + 1) {
+        if (!this.listAccIdsTargetInserted.includes(arr_acc_ids[i]) && arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
+          this.listAccIdsTargetInserted.push(arr_acc_ids[i]);
+        }
+      }
+      this.accession_id_target = null;
+    },
+    addAccessionIdBackground(){
+      let arr_acc_ids = this.accession_id_background.split(/(?:,|;|\t|\n| )+/);
+      for(let i = 0; i < arr_acc_ids.length; i = i + 1) {
+        if (!this.listAccIdsBackgroundInserted.includes(arr_acc_ids[i]) && arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
+          this.listAccIdsBackgroundInserted.push(arr_acc_ids[i]);
+        }
+      }
+      this.accession_id_background = null;
+    },
+    downloadExampleListAccessionIds(){
+      let text = 'EPI_ISL_2978687,  EPI_ISL_3039740;  EPI_ISL_3039752;  EPI_ISL_3039761;  EPI_ISL_3039764;  ' +
+          'EPI_ISL_3039780;  EPI_ISL_3039789;  EPI_ISL_3039813;  EPI_ISL_3039825;  EPI_ISL_3051315;  EPI_ISL_3051318;  ' +
+          'EPI_ISL_3051328;  EPI_ISL_3051345;  EPI_ISL_3051370;  EPI_ISL_3051383;';
+      let filename = 'exampleListAccessionIds.txt';
+      let element = document.createElement('a');
+      element.setAttribute('download', filename);
+      var data = new Blob([text]);
+      element.href = URL.createObjectURL(data);
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
+    loadAccIdsTarget(){
+      let reader = new FileReader();
+      let selectedFile = document.getElementById ('inputAccIdsTarget'). files[0];
+      this.nameFileAccIdsTarget = selectedFile.name;
+      let that = this;
+      reader.onload = function() {
+        that.fileAccIdsTarget = reader.result;
+      }
+      reader.readAsText(selectedFile);
+    },
+    deleteAccIdsTarget(){
+      this.fileAccIdsTarget = null;
+      this.nameFileAccIdsTarget = null;
+      this.listAccIdsTargetFile = [];
+    },
+    loadAccIdsBackground(){
+      let reader = new FileReader();
+      let selectedFile = document.getElementById ('inputAccIdsBackground'). files[0];
+      this.nameFileAccIdsBackground = selectedFile.name;
+      let that = this;
+      reader.onload = function() {
+        that.fileAccIdsBackground = reader.result;
+      }
+      reader.readAsText(selectedFile);
+    },
+    deleteAccIdsBackground(){
+      this.fileAccIdsBackground = null;
+      this.nameFileAccIdsBackground = null;
+      this.listAccIdsBackgroundFile = [];
+    },
+    loadDomainCSV(){
+      this.fileDomainCSV = null;
+      this.nameFileDomainCSV = null;
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      let reader = new FileReader();
+      let selectedFile = document.getElementById ('inputDomainCSVFree'). files[0];
+      this.nameFileDomainCSV = selectedFile.name;
+      let that = this;
+      reader.onload = function() {
+        let fileDomain = reader.result.replaceAll('"', '');
+        let jsonTranslate = that.CSVToJson(fileDomain);
+        localStorage.setItem('uploadedDomainsFree', jsonTranslate);
+        localStorage.setItem('uploadedFileNameFree', that.nameFileDomainCSV);
+        that.calculateUploadedDomains();
+      }
+      reader.readAsText(selectedFile);
+    },
+    CSVToJson(file){
+      let lines= file.split("\r\n");
+      let result = [];
+      let headers = lines[0].split(",");
+
+      for(let i=1;i<lines.length;i++){
+          let obj = {};
+          let currentline=lines[i].split(",");
+          for(let j=0;j<headers.length;j++){
+              if(headers[j] === 'Begin' || headers[j] === 'End'){
+                obj[headers[j]] = parseInt(currentline[j]);
+              }
+              else{
+                obj[headers[j]] = currentline[j];
+              }
+          }
+          result.push(obj);
+      }
+      return JSON.stringify(result);
+    },
+    deleteDomainCSV(){
+      this.fileDomainCSV = null;
+      this.nameFileDomainCSV = null;
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      localStorage.setItem('uploadedDomainsFree', JSON.stringify([]));
+      localStorage.setItem('uploadedFileNameFree', null);
+      this.calculateUploadedDomains();
+    },
+    calculateUploadedDomains() {
+      let name = localStorage.getItem('uploadedFileNameFree');
+      if( name === null || name === 'null'){
+        this.fileDomainCSV = null;
+        this.nameFileDomainCSV = null;
+      }
+      else{
+        this.fileDomainCSV = JSON.parse(localStorage.getItem('uploadedDomainsFree'));
+        this.nameFileDomainCSV = localStorage.getItem('uploadedFileNameFree');
+        if(this.pValueBarChartApplied){
+          this.calculatePossibleAndSelectedUploadedDomain();
+        }
+      }
+    },
+    calculatePossibleAndSelectedUploadedDomain(){
+      let that = this;
+      this.possibleDomainForPValueUploaded = this.fileDomainCSV.filter(function (dom){
+        return dom['Protein'] === that.selectedProteinForPValue;
+      })
+
+      for(let i = 0; i < this.possibleDomainForPValueUploaded.length; i = i + 1){
+         let single_domain = this.possibleDomainForPValueUploaded[i]['Description'] + ' / (' +
+                             this.possibleDomainForPValueUploaded[i]['Begin'] + ' , ' +
+                             this.possibleDomainForPValueUploaded[i]['End'] + ')';
+         this.selectedDomainForPValueUploaded.push(single_domain);
+      }
+    },
+    downloadExampleCSV(){
+      let text = "";
+      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-1', 'Begin': 10, 'End': 20},
+                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-2', 'Begin': 501, 'End': 501},
+                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'E (envelope protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF10 protein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP3', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP4', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP11', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP13 (helicase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP6', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP7', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP8', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP9', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP10', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'ORF1a polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NSP2', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+      ];
+      let headers = [{'text': 'Protein', 'value': 'Protein'},
+                     {'text': 'Description', 'value': 'Description'},
+                     {'text': 'Begin', 'value': 'Begin'},
+                     {'text': 'End', 'value': 'End'}];
+      text = this.json2csvDomains(result_sorted, headers);
+      let filename = 'exampleDomain.csv';
+      let element = document.createElement('a');
+      element.setAttribute('download', filename);
+      var data = new Blob([text]);
+      element.href = URL.createObjectURL(data);
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
     getFieldTextDomain(item){
       return `${item['Description']}` + ' / (' + `${item['Begin']}` + ' , ' + `${item['End']}` + ')';
     },
@@ -1251,7 +1897,106 @@ export default {
       if(table === 'table'){
         text = this.json2csv(result_sorted, this.headerTable);
       }
-      let filename = 'result.csv';
+      let filename = 'open_analysis_table_' + '(';
+      if(this.listAccIdsTarget.length === 0) {
+        if (this.queryFreeTarget['lineage']) {
+          filename += this.queryFreeTarget['lineage'] + '_';
+        }
+        if (!this.queryFreeTarget['geo_group']) {
+          filename += 'World';
+        } else if (!this.queryFreeTarget['country']) {
+          if(this.queryFreeTarget['geo_group'].length > 2){
+            filename += this.queryFreeTarget['geo_group'][0] + '_etc';
+          }
+          else {
+            filename += this.queryFreeTarget['geo_group'];
+          }
+        } else if (!this.queryFreeTarget['region']) {
+          if(this.queryFreeTarget['country'].length > 2){
+            filename += this.queryFreeTarget['country'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeTarget['country'];
+          }
+        } else if (!this.queryFreeTarget['province']) {
+          if(this.queryFreeTarget['region'].length > 2){
+            filename += this.queryFreeTarget['region'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeTarget['region'];
+          }
+        } else {
+          if(this.queryFreeTarget['province'].length > 2){
+            filename += this.queryFreeTarget['province'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeTarget['province'];
+          }
+        }
+        filename += '_' + this.startDateQueryFreeTarget + '_' + this.stopDateQueryFreeTarget;
+      }
+      else{
+        if(this.listAccIdsTargetFile.length > 0) {
+          filename += this.nameFileAccIdsTarget.split('.txt')[0];
+        }
+        if(this.listAccIdsTargetInserted.length > 0){
+          if(this.listAccIdsTargetFile.length > 0) {
+            filename += '_';
+          }
+          filename += 'userSelectedIds';
+        }
+      }
+      filename += ')' + '_vs_(';
+      if(this.listAccIdsBackground.length === 0) {
+        if (this.queryFreeBackground['lineage']) {
+          filename += this.queryFreeBackground['lineage'] + '_';
+        }
+        if (!this.queryFreeBackground['geo_group']) {
+          filename += 'World';
+        } else if (!this.queryFreeBackground['country']) {
+          if(this.queryFreeBackground['geo_group'].length > 2){
+            filename += this.queryFreeBackground['geo_group'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeBackground['geo_group'];
+          }
+        } else if (!this.queryFreeBackground['region']) {
+          if(this.queryFreeBackground['country'].length > 2){
+            filename += this.queryFreeBackground['country'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeBackground['country'];
+          }
+        } else if (!this.queryFreeBackground['province']) {
+          if(this.queryFreeBackground['region'].length > 2){
+            filename += this.queryFreeBackground['region'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeBackground['region'];
+          }
+        } else {
+          if(this.queryFreeBackground['province'].length > 2){
+            filename += this.queryFreeBackground['province'][0] + '_etc';
+          }
+          else{
+            filename += this.queryFreeBackground['province'];
+          }
+        }
+        filename += '_' + this.startDateQueryFreeBackground + '_' + this.stopDateQueryFreeBackground;
+      }
+      else{
+        if(this.listAccIdsBackgroundFile.length > 0) {
+          filename += this.nameFileAccIdsBackground.split('.txt')[0];
+        }
+        if(this.listAccIdsBackgroundInserted.length > 0){
+          if(this.listAccIdsBackgroundFile.length > 0) {
+            filename += '_';
+          }
+          filename += 'userSelectedIds';
+        }
+      }
+      filename += ')';
+      filename += '.csv';
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);
@@ -1259,6 +2004,37 @@ export default {
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);
+    },
+    json2csvDomains(input, selected_headers) {
+        var json = input;
+        var fields = [];
+        var fields2 = [];
+        selected_headers.forEach(function (el) {
+            fields.push(el.text);
+        });
+        selected_headers.forEach(function (el) {
+            fields2.push(el.value);
+        });
+        var csv = json.map(function (row) {
+            return fields2.map(function (fieldName) {
+                let string_val;
+                if (fieldName === 'mutation_position'){
+                  string_val = row['mutation'];
+                  if(typeof string_val === 'string' || string_val instanceof String) {
+                    string_val = string_val.replaceAll("\n", " ");
+                  }
+                }
+                else {
+                  string_val = row[fieldName];
+                  if(typeof string_val === 'string' || string_val instanceof String) {
+                    string_val = string_val.replaceAll("\n", " ");
+                  }
+                }
+                return string_val;
+            }).join(',')
+        });
+        csv.unshift(fields.join(','));
+        return csv.join('\r\n')
     },
     json2csv(input, selected_headers) {
         var json = input;
@@ -1471,6 +2247,11 @@ export default {
     },
     applyFilterPValueChart(){
       this.selectedDomainForPValue = [];
+      this.selectedDomainForPValueMutagenesis = [];
+      this.selectedDomainForPValueAaModifications = [];
+      this.selectedDomainForPValueUploaded = [];
+      this.possibleDomainForPValueUploaded = [];
+      this.selectedAllAaModifications = false;
       this.pValueContent = [];
       this.pValueName = [];
 
@@ -1545,10 +2326,26 @@ export default {
                     return value_a > value_b ? 1 : -1;
                   });
                   this.possibleDomainForPValueAaModifications = res['aa_modifications'].sort(function(a, b){
+                    a['disabled'] = true;
+                    b['disabled'] = true;
                     let value_a = a['Description'].toLowerCase();
                     let value_b = b['Description'].toLowerCase();
                     return value_a > value_b ? 1 : -1;
                   })
+
+                  if(this.fileDomainCSV !== null) {
+                    let that = this;
+                    this.possibleDomainForPValueUploaded = this.fileDomainCSV.filter(function (dom) {
+                      return dom['Protein'] === that.selectedProteinForPValue;
+                    })
+
+                    for (let i = 0; i < this.possibleDomainForPValueUploaded.length; i = i + 1) {
+                      let single_domain = this.possibleDomainForPValueUploaded[i]['Description'] + ' / (' +
+                          this.possibleDomainForPValueUploaded[i]['Begin'] + ' , ' +
+                          this.possibleDomainForPValueUploaded[i]['End'] + ')';
+                      this.selectedDomainForPValueUploaded.push(single_domain);
+                    }
+                  }
 
                   this.overlay = false;
                   this.pValueBarChartApplied = true;
@@ -1571,24 +2368,40 @@ export default {
       let query_false = '';
       let query_target = 'empty';
       if(type === 'target'){
+        this.accessionIdsTargetOrBackground = type;
+        this.accessionIdsSingleMutation = '(' + item['product'] + '_' + item['sequence_aa_original'] + item['start_aa_original'] + item['sequence_aa_alternative'] + ')';
         query['lineage'] = item['lineage_target'];
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateBackground'] = this.startDateQueryFreeTarget;
-        query['maxDateBackground'] = this.stopDateQueryFreeTarget;
+        if(this.startDateQueryFreeTarget !== null) {
+          query['minDateBackground'] = this.startDateQueryFreeTarget;
+        }
+        if(this.stopDateQueryFreeTarget !== null) {
+          query['maxDateBackground'] = this.stopDateQueryFreeTarget;
+        }
+        if(this.selectRemoveOverlapping === 'Both' || this.selectRemoveOverlapping === 'Target') {
+          query_target = JSON.parse(JSON.stringify(this.queryFreeBackground));
+        }
         query['product'] = item['product'];
       }
       else if(type === 'background'){
+        this.accessionIdsTargetOrBackground = type;
+        this.accessionIdsSingleMutation = '(' + item['product'] + '_' + item['sequence_aa_original'] + item['start_aa_original'] + item['sequence_aa_alternative'] + ')';
         query['lineage'] = item['lineage_background'];
         query['start_aa_original'] = item['start_aa_original'];
         query['sequence_aa_original'] = item['sequence_aa_original'];
         query['sequence_aa_alternative'] = item['sequence_aa_alternative'];
-        query['minDateBackground'] = this.startDateQueryFreeBackground;
-        query['maxDateBackground'] = this.stopDateQueryFreeBackground;
+        if(this.startDateQueryFreeBackground !== null) {
+          query['minDateBackground'] = this.startDateQueryFreeBackground;
+        }
+        if(this.stopDateQueryFreeBackground !== null) {
+          query['maxDateBackground'] = this.stopDateQueryFreeBackground;
+        }
         query['product'] = item['product'];
-
-        query_target = JSON.parse(JSON.stringify(this.queryFreeTarget));
+        if(this.selectRemoveOverlapping === 'Both' || this.selectRemoveOverlapping === 'Background') {
+          query_target = JSON.parse(JSON.stringify(this.queryFreeTarget));
+        }
       }
 
       if(type === 'target') {
@@ -1617,7 +2430,108 @@ export default {
       for (let i=0; i<this.listAccessionIds.length; i=i+1){
         text = text + this.listAccessionIds[i] + ';  ';
       }
-      let filename = 'accession_ids.txt';
+      let filename = 'open_analysis_' + this.accessionIdsSingleMutation + '_';
+      if(this.accessionIdsTargetOrBackground === 'target') {
+        if(this.listAccIdsTarget.length === 0) {
+          if (this.queryFreeTarget['lineage']) {
+            filename += this.queryFreeTarget['lineage'] + '_';
+          }
+          if (!this.queryFreeTarget['geo_group']) {
+            filename += 'World';
+          } else if (!this.queryFreeTarget['country']) {
+            if(this.queryFreeTarget['geo_group'].length > 2){
+              filename += this.queryFreeTarget['geo_group'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeTarget['geo_group'];
+            }
+          } else if (!this.queryFreeTarget['region']) {
+            if(this.queryFreeTarget['country'].length > 2){
+              filename += this.queryFreeTarget['country'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeTarget['country'];
+            }
+          } else if (!this.queryFreeTarget['province']) {
+            if(this.queryFreeTarget['region'].length > 2){
+              filename += this.queryFreeTarget['region'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeTarget['region'];
+            }
+          } else {
+            if(this.queryFreeTarget['province'].length > 2){
+              filename += this.queryFreeTarget['province'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeTarget['province'];
+            }
+          }
+          filename += '_' + this.startDateQueryFreeTarget + '_' + this.stopDateQueryFreeTarget;
+        }
+        else{
+          if(this.listAccIdsTargetFile.length > 0) {
+            filename += this.nameFileAccIdsTarget.split('.txt')[0];
+          }
+          if(this.listAccIdsTargetInserted.length > 0){
+            if(this.listAccIdsTargetFile.length > 0) {
+              filename += '_';
+            }
+            filename += 'userSelectedIds';
+          }
+        }
+      }
+      else {
+        if(this.listAccIdsBackground.length === 0) {
+          if (this.queryFreeBackground['lineage']) {
+            filename += this.queryFreeBackground['lineage'] + '_';
+          }
+          if (!this.queryFreeBackground['geo_group']) {
+            filename += 'World';
+          } else if (!this.queryFreeBackground['country']) {
+            if(this.queryFreeBackground['geo_group'].length > 2){
+              filename += this.queryFreeBackground['geo_group'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeBackground['geo_group'];
+            }
+          } else if (!this.queryFreeBackground['region']) {
+            if(this.queryFreeBackground['country'].length > 2){
+              filename += this.queryFreeBackground['country'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeBackground['country'];
+            }
+          } else if (!this.queryFreeBackground['province']) {
+            if(this.queryFreeBackground['region'].length > 2){
+              filename += this.queryFreeBackground['region'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeBackground['region'];
+            }
+          } else {
+            if(this.queryFreeBackground['province'].length > 2){
+              filename += this.queryFreeBackground['province'][0] + '_etc';
+            }
+            else{
+              filename += this.queryFreeBackground['province'];
+            }
+          }
+          filename += '_' + this.startDateQueryFreeBackground + '_' + this.stopDateQueryFreeBackground;
+        }
+        else{
+          if(this.listAccIdsBackgroundFile.length > 0) {
+            filename += this.nameFileAccIdsBackground.split('.txt')[0];
+          }
+          if(this.listAccIdsBackgroundInserted.length > 0){
+            if(this.listAccIdsBackgroundFile.length > 0) {
+              filename += '_';
+            }
+            filename += 'userSelectedIds';
+          }
+        }
+      }
+      filename += '.txt'
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);
@@ -1679,9 +2593,180 @@ export default {
       else {
         this.overlay = false;
       }
+    },
+    checkErrorNumSeqFreeQuery(){
+      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
+          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
+          || (this.selectRemoveOverlapping === 'Target'
+              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+          || (this.selectRemoveOverlapping === 'Background'
+              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+          || (this.selectRemoveOverlapping === 'Both' && (
+                (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+                || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+              )
+          )
+      );
     }
   },
   watch:{
+    listAccIdsTargetInserted(){
+      this.listAccIdsTarget = [];
+      let arrayFull = [];
+      this.setQueryFreeTarget({field: 'accession_id', list: null});
+      this.setQueryFreeTarget({field: 'lineage', list: null});
+      this.setQueryFreeTarget({field: 'geo_group', list: null});
+      this.setQueryFreeTarget({field: 'country', list: null});
+      this.setQueryFreeTarget({field: 'region', list: null});
+      this.setQueryFreeTarget({field: 'province', list: null});
+      this.setStartDateQueryFreeTarget(null);
+      this.setStopDateQueryFreeTarget(null);
+      if(this.listAccIdsTargetFile.length > 0){
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsTargetFile));
+        for(let i = 0; i < this.listAccIdsTargetInserted.length; i = i + 1){
+          if(!arrayFull.includes(this.listAccIdsTargetInserted[i])){
+            arrayFull.push(this.listAccIdsTargetInserted[i]);
+          }
+        }
+      }
+      else{
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsTargetInserted));
+      }
+      this.listAccIdsTarget = arrayFull;
+      if(arrayFull.length === 0){
+        this.setQueryFreeTarget({field: 'accession_id', list: null});
+      }
+      else{
+        this.setQueryFreeTarget({field: 'accession_id', list: arrayFull});
+      }
+      this.setNumSequencesQueryFreeTarget(arrayFull.length);
+      this.checkErrorNumSeqFreeQuery();
+    },
+    listAccIdsBackgroundInserted(){
+      this.listAccIdsBackground = [];
+      let arrayFull = [];
+      this.setQueryFreeBackground({field: 'accession_id', list: null});
+      this.setQueryFreeBackground({field: 'lineage', list: null});
+      this.setQueryFreeBackground({field: 'geo_group', list: null});
+      this.setQueryFreeBackground({field: 'country', list: null});
+      this.setQueryFreeBackground({field: 'region', list: null});
+      this.setQueryFreeBackground({field: 'province', list: null});
+      this.setStartDateQueryFreeBackground(null);
+      this.setStopDateQueryFreeBackground(null);
+      if(this.listAccIdsBackgroundFile.length > 0){
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsBackgroundFile));
+        for(let i = 0; i < this.listAccIdsBackgroundInserted.length; i = i + 1){
+          if(!arrayFull.includes(this.listAccIdsBackgroundInserted[i])){
+            arrayFull.push(this.listAccIdsBackgroundInserted[i]);
+          }
+        }
+      }
+      else{
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsBackgroundInserted));
+      }
+      this.listAccIdsBackground = arrayFull;
+      if(arrayFull.length === 0){
+        this.setQueryFreeBackground({field: 'accession_id', list: null});
+      }
+      else{
+        this.setQueryFreeBackground({field: 'accession_id', list: arrayFull});
+      }
+      this.setNumSequencesQueryFreeBackground(arrayFull.length);
+      this.checkErrorNumSeqFreeQuery();
+    },
+    fileAccIdsTarget(){
+      this.listAccIdsTarget = [];
+      this.listAccIdsTargetFile = [];
+      this.setQueryFreeTarget({field: 'accession_id', list: null});
+      this.setQueryFreeTarget({field: 'lineage', list: null});
+      this.setQueryFreeTarget({field: 'geo_group', list: null});
+      this.setQueryFreeTarget({field: 'country', list: null});
+      this.setQueryFreeTarget({field: 'region', list: null});
+      this.setQueryFreeTarget({field: 'province', list: null});
+      this.setStartDateQueryFreeTarget(null);
+      this.setStopDateQueryFreeTarget(null);
+      if(this.fileAccIdsTarget !== null) {
+        this.listAccIdsTargetFile = this.fileAccIdsTarget.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/) ;
+        for(let i = 0; i < this.listAccIdsTargetFile.length; i = i + 1){
+          if(this.listAccIdsTargetFile[i] === ''){
+            this.listAccIdsTargetFile.splice(i, 1);
+          }
+        }
+      }
+      let arrayFull = [];
+      if(this.listAccIdsTargetInserted.length > 0){
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsTargetFile));
+        for(let i = 0; i < this.listAccIdsTargetInserted.length; i = i + 1){
+          if(!arrayFull.includes(this.listAccIdsTargetInserted[i])){
+            arrayFull.push(this.listAccIdsTargetInserted[i]);
+          }
+        }
+      }
+      else{
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsTargetFile));
+      }
+      this.listAccIdsTarget = arrayFull;
+      if(arrayFull.length === 0){
+        this.setQueryFreeTarget({field: 'accession_id', list: null});
+      }
+      else{
+        this.setQueryFreeTarget({field: 'accession_id', list: arrayFull});
+      }
+      this.setNumSequencesQueryFreeTarget(arrayFull.length);
+      this.checkErrorNumSeqFreeQuery();
+    },
+    fileAccIdsBackground(){
+      this.listAccIdsBackground = [];
+      this.listAccIdsBackgroundFile = [];
+      this.setQueryFreeBackground({field: 'accession_id', list: null});
+      this.setQueryFreeBackground({field: 'lineage', list: null});
+      this.setQueryFreeBackground({field: 'geo_group', list: null});
+      this.setQueryFreeBackground({field: 'country', list: null});
+      this.setQueryFreeBackground({field: 'region', list: null});
+      this.setQueryFreeBackground({field: 'province', list: null});
+      this.setStartDateQueryFreeBackground(null);
+      this.setStopDateQueryFreeBackground(null);
+      if(this.fileAccIdsBackground !== null){
+        this.listAccIdsBackgroundFile = this.fileAccIdsBackground.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/) ;
+        for(let i = 0; i < this.listAccIdsBackgroundFile.length; i = i + 1){
+          if(this.listAccIdsBackgroundFile[i] === ''){
+            this.listAccIdsBackgroundFile.splice(i, 1);
+          }
+        }
+      }
+      let arrayFull = [];
+      if(this.listAccIdsBackgroundInserted.length > 0){
+        arrayFull = JSON.parse(JSON.stringify(this.listAccIdsBackgroundFile));
+        for(let i = 0; i < this.listAccIdsBackgroundInserted.length; i = i + 1){
+          if(!arrayFull.includes(this.listAccIdsBackgroundInserted[i])){
+            arrayFull.push(this.listAccIdsBackgroundInserted[i]);
+          }
+        }
+      }
+      else{
+        JSON.parse(JSON.stringify(arrayFull = this.listAccIdsBackgroundFile));
+      }
+      this.listAccIdsBackground = arrayFull;
+      if(arrayFull.length === 0){
+        this.setQueryFreeBackground({field: 'accession_id', list: null});
+      }
+      else{
+        this.setQueryFreeBackground({field: 'accession_id', list: arrayFull});
+      }
+      this.setNumSequencesQueryFreeBackground(arrayFull.length);
+      this.checkErrorNumSeqFreeQuery();
+    },
+    selectedAllAaModifications(){
+      this.selectedDomainForPValueAaModifications = [];
+      if(this.selectedAllAaModifications){
+        for(let i = 0; i < this.possibleDomainForPValueAaModifications.length; i = i + 1){
+          let selected = this.possibleDomainForPValueAaModifications[i]['Description']  + ' / (' +
+                         this.possibleDomainForPValueAaModifications[i]['Begin'] + ' , ' +
+                         this.possibleDomainForPValueAaModifications[i]['End'] + ')';
+          this.selectedDomainForPValueAaModifications.push(selected);
+        }
+      }
+    },
     selectedTypeImportantMutation(){
       if(this.selectedTypeImportantMutation === 'ECDC'){
         this.importantMutation = this.importantMutationECDC;
@@ -1755,83 +2840,55 @@ export default {
     },
     selectRemoveOverlapping(){
       this.resetApplied();
-      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
-          || (this.selectRemoveOverlapping === 'Target'
-              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-          || (this.selectRemoveOverlapping === 'Background'
-              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          || (this.selectRemoveOverlapping === 'Both' &&
-              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          )
-      );
+      this.checkErrorNumSeqFreeQuery();
     },
     selectedTabFreeQuery(){
       this.boldTabs();
     },
     'queryFreeTarget.geo_group': function (){
-        this.setQueryFreeTarget({field: 'country', list: null});
-        this.setQueryFreeTarget({field: 'region', list: null});
-        this.setQueryFreeTarget({field: 'province', list: null});
+      if(!this.queryFreeTarget['geo_group'] || this.queryFreeTarget['geo_group'].length === 0) {
+        this.setQueryFreeTarget({field: 'country', list: []});
+        this.setQueryFreeTarget({field: 'region', list: []});
+        this.setQueryFreeTarget({field: 'province', list: []});
+      }
     },
     'queryFreeTarget.country': function (){
-        this.setQueryFreeTarget({field: 'region', list: null});
-        this.setQueryFreeTarget({field: 'province', list: null});
+      if(!this.queryFreeTarget['country'] || this.queryFreeTarget['country'].length === 0) {
+        this.setQueryFreeTarget({field: 'region', list: []});
+        this.setQueryFreeTarget({field: 'province', list: []});
+      }
     },
     'queryFreeTarget.region': function (){
-        this.setQueryFreeTarget({field: 'province', list: null});
+      if(!this.queryFreeTarget['region'] || this.queryFreeTarget['region'].length === 0) {
+        this.setQueryFreeTarget({field: 'province', list: []});
+      }
     },
     'queryFreeBackground.geo_group': function (){
-        this.setQueryFreeBackground({field: 'country', list: null});
-        this.setQueryFreeBackground({field: 'region', list: null});
-        this.setQueryFreeBackground({field: 'province', list: null});
+      if(!this.queryFreeBackground['geo_group'] || this.queryFreeBackground['geo_group'].length === 0) {
+        this.setQueryFreeBackground({field: 'country', list: []});
+        this.setQueryFreeBackground({field: 'region', list: []});
+        this.setQueryFreeBackground({field: 'province', list: []});
+      }
     },
     'queryFreeBackground.country': function (){
-        this.setQueryFreeBackground({field: 'region', list: null});
-        this.setQueryFreeBackground({field: 'province', list: null});
+      if(!this.queryFreeBackground['country'] || this.queryFreeBackground['country'].length === 0) {
+        this.setQueryFreeBackground({field: 'region', list: []});
+        this.setQueryFreeBackground({field: 'province', list: []});
+      }
     },
     'queryFreeBackground.region': function (){
-        this.setQueryFreeBackground({field: 'province', list: null});
+      if(!this.queryFreeBackground['region'] || this.queryFreeBackground['region'].length === 0) {
+        this.setQueryFreeBackground({field: 'province', list: []});
+      }
     },
     numSequencesQueryFreeTarget(){
-      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
-          || (this.selectRemoveOverlapping === 'Target'
-              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-          || (this.selectRemoveOverlapping === 'Background'
-              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          || (this.selectRemoveOverlapping === 'Both' &&
-              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          )
-      );
+      this.checkErrorNumSeqFreeQuery();
     },
     numSequencesQueryFreeBackground(){
-      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
-          || (this.selectRemoveOverlapping === 'Target'
-              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-          || (this.selectRemoveOverlapping === 'Background'
-              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          || (this.selectRemoveOverlapping === 'Both' &&
-              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          )
-      );
+      this.checkErrorNumSeqFreeQuery();
     },
     num_overlapping_sequences(){
-      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
-          || (this.selectRemoveOverlapping === 'Target'
-              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-          || (this.selectRemoveOverlapping === 'Background'
-              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          || (this.selectRemoveOverlapping === 'Both' &&
-              (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-              || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          )
-      );
+      this.checkErrorNumSeqFreeQuery();
     },
     all_protein(){
       this.possibleProtein = this.all_protein;
@@ -1998,6 +3055,7 @@ export default {
 
   },
   mounted() {
+    this.calculateUploadedDomains();
     this.possibleProtein = this.all_protein;
     this.boldTabs();
     this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target

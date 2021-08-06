@@ -9,7 +9,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-               <h2>SELECT GEO-GRANULARITY AND LOCATION</h2>
+               <h2>PICK A PLACE</h2>
               </v-flex>
               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
                 <v-select
@@ -24,7 +24,7 @@
                 <v-autocomplete
                   v-model="selectedSpecificGeo"
                   :items="possibleSpecificGeo"
-                  label="Specific Locality"
+                  label="Place"
                   solo
                   hide-details
                   :item-text="getFieldText"
@@ -155,7 +155,9 @@
                   :descColumn = "sortDescTableLineageCountry"
                   :numSequences = "numberOfSequencesGeo"
                   :geoGranularity = "selectedGeo"
-                  :denominators = "denominators">
+                  :denominators = "denominators"
+                  :selectedSpecificGeo = "selectedSpecificGeo"
+                  :selectedGeoCount = "selectedGeoCount">
                  </HeatmapAnalyzeDistribution>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 20px">
@@ -231,7 +233,8 @@ export default {
       if(table === 'table_geo'){
         text = this.json2csv(result_sorted, this.headerTableLineageCountry);
       }
-      let filename = 'result.csv';
+      let filename = 'lineage_analysis_table_' + this.selectedGeoCount + '%' + '_' + this.selectedSpecificGeo + '_' + this.startDateDistributionLineageInGeo
+          + '_' + this.stopDateDistributionLineageInGeo + '.csv';
       let element = document.createElement('a');
       element.setAttribute('download', filename);
       var data = new Blob([text]);

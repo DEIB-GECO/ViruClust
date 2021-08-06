@@ -33,6 +33,8 @@ export default {
     numSequences: {required: true,},
     geoGranularity: {required: true,},
     denominators: {required: true,},
+    selectedSpecificGeo: {required: true,},
+    selectedGeoCount: {required: true,},
   },
   data(){
     return {
@@ -121,7 +123,8 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      $a.download = 'lineage_analysis_heatmap_' + this.selectedGeoCount + '%' + '_' + this.selectedSpecificGeo + '_' + this.startDateDistributionLineageInGeo
+          + '_' + this.stopDateDistributionLineageInGeo + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {

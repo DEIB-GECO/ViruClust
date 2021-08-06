@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative;">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
-        <h2 style="margin-top: 50px;">TIME DISTRIBUTION <v-btn @click="download" x-small icon
+        <h2 style="margin-top: 50px;"># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
                 mdi-download-circle-outline
@@ -117,7 +117,7 @@
         </v-flex>
         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px">
           <v-card style="width: 80%; padding: 10px; background: linear-gradient(0deg, #F1FAEE 50%, #F1FAEE 50%)">
-            <v-card-title class="justify-center"><h3>Select type of analysis</h3></v-card-title>
+            <v-card-title class="justify-center"><h3>Type of analysis</h3></v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around>
                 <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
@@ -129,10 +129,10 @@
                     hide-details
                     ></v-select>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
-                  <h3>Select length of the period</h3>
+                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="selectedTypeOfAnalysis === 'User defined interval'">
+                  <h3>Span of the user defined interval (in days)</h3>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin: 0; padding: 0" v-if="selectedTypeOfAnalysis === 'Analysis per specific num of days'">
+                <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin: 0; padding: 0" v-if="selectedTypeOfAnalysis === 'User defined interval'">
                   <v-text-field
                     v-model="selectedNumDaysAnalysis"
                     label="Protein"
@@ -144,7 +144,7 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 20px" >
-                  <span><b>(only bold squared periods are analyzed, as they contain enough sequences and can be compared with the adjacent periods)</b></span>
+                  <span><b>Only intervals associated with a sufficient number of genomic sequences (in bold) will be compared</b></span>
                 </v-flex>
                 <v-flex class="no-horizontal-padding xs12 md5 lg5 d-flex"
                         style="justify-content: center; margin-bottom: 5px"
@@ -215,8 +215,8 @@ export default {
       wrong_last_start_date: false,
       wrong_last_stop_date: false,
 
-      selectedTypeOfAnalysis: 'Analysis per specific num of days',
-      possibleTypeOfAnalysis: ['Analysis per specific num of days', 'Analysis per week', 'Analysis per month'],
+      selectedTypeOfAnalysis: 'Months',
+      possibleTypeOfAnalysis: ['Months', 'Weeks', 'User defined interval'],
 
       selectedNumDaysAnalysis: 30,
       timeDivision: [],
@@ -292,7 +292,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['timeDivisionAcceptable']),
+    ...mapState(['timeDivisionAcceptable', 'queryTime']),
     ...mapGetters({}),
   },
   methods: {
@@ -305,7 +305,22 @@ export default {
       });
       let $a = document.createElement('a');
       let type = 'png';
-      $a.download = 'graph.' + type;
+      let filename = 'temporal_analysis_timeDistributionNPeriods';
+        if(this.queryTime['lineage']){
+          filename += '_' + this.queryTime['lineage'];
+        }
+        if (!this.queryTime['geo_group']) {
+          filename += '_World';
+        } else if (!this.queryTime['country']) {
+          filename += '_' + this.queryTime['geo_group'];
+        } else if (!this.queryTime['region']) {
+          filename += '_' + this.queryTime['country'];
+        } else if (!this.queryTime['province']) {
+          filename += '_' + this.queryTime['region'];
+        } else {
+          filename += '_' + this.queryTime['province'];
+        }
+      $a.download = filename + '.' + type;
       $a.target = '_blank';
       $a.href = url;
       if (typeof MouseEvent === 'function') {
@@ -401,7 +416,7 @@ export default {
       let stop ;
       let num_days;
       let arr_acceptable_time_division = [];
-      if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[0]) {
+      if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[2]) {  // USER DEFINED
         start = this.slider[0];
         stop = this.slider[1];
         num_days = parseInt(this.selectedNumDaysAnalysis);
@@ -503,7 +518,7 @@ export default {
           num_days = 7;
         }
       }
-      else if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[2]) { // MONTH
+      else if(this.selectedTypeOfAnalysis === this.possibleTypeOfAnalysis[0]) { // MONTH
         let startDate = new Date(this.translateIndexToDate(this.slider[0]));
         let stopDate = new Date(this.translateIndexToDate(this.slider[1]));
         // let firstDay = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
@@ -670,7 +685,7 @@ export default {
       }
     },
     selectedTypeOfAnalysis(){
-      if(this.selectedTypeOfAnalysis !== this.possibleTypeOfAnalysis[0]
+      if(this.selectedTypeOfAnalysis !== this.possibleTypeOfAnalysis[2]
         || (this.selectedNumDaysAnalysis !== null
           && this.selectedNumDaysAnalysis !== undefined
           && this.selectedNumDaysAnalysis !== ''
