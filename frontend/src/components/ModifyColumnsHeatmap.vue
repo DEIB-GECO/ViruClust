@@ -219,6 +219,9 @@ export default {
 
       //// LOCAL STORAGE
       let mergeColumnStorage = JSON.parse(localStorage.getItem('mergeColumns'));
+      if(mergeColumnStorage === null){
+        mergeColumnStorage = [];
+      }
       if(!JSON.stringify(mergeColumnStorage).includes(JSON.stringify(single_union))){
         mergeColumnStorage.push(single_union);
       }
