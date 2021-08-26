@@ -17,21 +17,25 @@
         <v-spacer></v-spacer>
 
         <v-toolbar-items style="background-color: transparent" class="hidden-lg-and-down">
-          <v-btn icon text href="http://geco.deib.polimi.it/virusurf/" target="_blank"
+          <v-btn icon text href="http://gmql.eu/virusurf/" target="_blank"
                 style="background-color: transparent; width: 100px">
               <span>ViruSurf</span>
           </v-btn>
-          <v-btn icon text href="http://geco.deib.polimi.it/virusurf_gisaid/" target="_blank"
+          <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                 style="background-color: transparent; width: 200px">
               <span>ViruSurf GISAID</span>
           </v-btn>
-          <v-btn icon text href="http://geco.deib.polimi.it/episurf/" target="_blank"
+          <v-btn icon text href="http://gmql.eu/episurf/" target="_blank"
                  style="background-color: transparent; width: 100px">
               <span>EpiSurf</span>
           </v-btn>
-          <v-btn icon text href="http://geco.deib.polimi.it/episurf_gisaid/" target="_blank"
+          <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                  style="background-color: transparent; width: 200px">
               <span>EpiSurf GISAID</span>
+          </v-btn>
+          <v-btn icon text href="http://gmql.eu/virusviz/" target="_blank"
+                 style="background-color: transparent; width: 100px">
+              <span>VirusViz</span>
           </v-btn>
           <v-btn icon text href="https://github.com/DEIB-GECO/ViruClust/wiki" target="_blank"
                  style="background-color: transparent; width: 100px">
@@ -54,7 +58,7 @@
           </template>
           <v-list-item style="background-color: white;">
               <v-list-item-content>
-                <v-btn icon text href="http://geco.deib.polimi.it/virusurf/" target="_blank"
+                <v-btn icon text href="http://gmql.eu/virusurf/" target="_blank"
                       style="background-color: transparent; width: 200px">
                     <span>ViruSurf</span>
                 </v-btn>
@@ -62,7 +66,7 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="http://geco.deib.polimi.it/virusurf_gisaid/" target="_blank"
+                <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                       style="background-color: transparent; width: 200px">
                     <span>ViruSurf GISAID</span>
                 </v-btn>
@@ -70,7 +74,7 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="http://geco.deib.polimi.it/episurf/" target="_blank"
+                <v-btn icon text href="http://gmql.eu/episurf/" target="_blank"
                        style="background-color: transparent; width: 200px">
                     <span>EpiSurf</span>
                 </v-btn>
@@ -78,9 +82,17 @@
           </v-list-item>
           <v-list-item style="background-color: white; border-top: grey solid 1px">
               <v-list-item-content>
-                <v-btn icon text href="http://geco.deib.polimi.it/episurf_gisaid/" target="_blank"
+                <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                        style="background-color: transparent; width: 200px">
                     <span>EpiSurf GISAID</span>
+                </v-btn>
+              </v-list-item-content>
+          </v-list-item>
+          <v-list-item style="background-color: white; border-top: grey solid 1px">
+              <v-list-item-content>
+                <v-btn icon text href="http://gmql.eu/virusviz/" target="_blank"
+                       style="background-color: transparent; width: 200px">
+                    <span>VirusViz</span>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>

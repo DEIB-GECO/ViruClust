@@ -8,7 +8,7 @@
 <!--                     <br>-->
 <!--                      Users can freely select GISAID-provided metadata (lineages, locations, collection dates) to drive their analyses on SARS-CoV-2-->
 <!--                      <br>-->
-<!--                      We support four modes: (1) Lineage analysis; (2) Temporal analysis; (3) Spatial analysis; (4) Open analysis.-->
+<!--                      We support four modes: (1) Prevalence of Lineages; (2) Evolution in Time; (3) Evolution in Space; (4) Custom Analysis.-->
 <!--                      Modes (2), (3) and (4) allow to compare two different sub-populations, respectively referenced as target and background.-->
 <!--                  </h2>-->
 <!--         </v-card-text>-->
@@ -29,7 +29,7 @@
                 multiple>
                   <v-expansion-panel style="margin-bottom: 10px">
                     <v-expansion-panel-header style="background-color: #457B9D;">
-                        <span style="width: 80%; color: white;">LINEAGE ANALYSIS</span>
+                        <span style="width: 80%; color: white;">PREVALENCE OF LINEAGES</span>
                         <div>
                           <v-btn @click="goToRelatedPart(1)" small class="white--text" color="#1D3557">
                             START THIS ANALYSIS
@@ -38,7 +38,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content style="background-color: white; color: black;">
                       <br>
-                      The Lineage Analysis provides a concise summary of the prevalence of SARS-CoV-2 Pango lineages in a specific (user-selected) place (continent/country/region) at a specific time interval.<br>
+                      The <i>Prevalence of Lineages</i> provides a concise summary of the prevalence of SARS-CoV-2 Pango lineages in a specific (user-selected) place (continent/country/region) at a specific time interval.<br>
                       A histogram is used to show the number of genome sequences deposited in the GISAID database associated with the selected geographic location at different time points and ,<br>
                       A slider is used to visually select the time interval of choice on this histogram. <br>
                       Filters can be applied to select/represent only lineages above a user selected prevalence threshold.<br><br>
@@ -75,7 +75,7 @@
 
                   <v-expansion-panel style="margin-bottom: 10px">
                     <v-expansion-panel-header style="background-color: #457B9D;">
-                      <span style="width: 80%; color: white;">TEMPORAL ANALYSIS</span>
+                      <span style="width: 80%; color: white;">EVOLUTION IN TIME</span>
                       <div>
                         <v-btn @click="goToRelatedPart(2)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
@@ -84,8 +84,8 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content style="background-color: white; color: black">
                       <br>
-                      The Temporal Analysis allows the study of the evolution of the genome of SARS-CoV-2 in time, at a specific place. Users can  optionally limit this analysis to a specific lineage of interest (all lineages are considered otherwise); the selection of a geographic location (continent/country/region/) is mandatory. <br>
-                      Similar to the lineage analysis, the number of genomes deposited at different dates are displayed in the form of an histogram; users can restrict the comparison to a specific time-window: the start and end dates can be set by using the slider under the histogram.
+                      The <i>Evolution in Time</i> allows the study of the evolution of the genome of SARS-CoV-2 in time, at a specific place. Users can  optionally limit this analysis to a specific lineage of interest (all lineages are considered otherwise); the selection of a geographic location (continent/country/region/) is mandatory. <br>
+                      Similar to the <i>Prevalence of Lineages</i>, the number of genomes deposited at different dates are displayed in the form of an histogram; users can restrict the comparison to a specific time-window: the start and end dates can be set by using the slider under the histogram.
                       <br><br>
 
                       <p align="center">
@@ -187,7 +187,7 @@
 
                   <v-expansion-panel style="margin-bottom: 10px">
                     <v-expansion-panel-header style="background-color: #457B9D;">
-                      <span style="width: 80%; color: white;">SPATIAL ANALYSIS</span>
+                      <span style="width: 80%; color: white;">EVOLUTION IN SPACE</span>
                       <div>
                         <v-btn @click="goToRelatedPart(3)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
@@ -196,7 +196,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content style="background-color: white; color: black">
                       <br>
-                      The Spatial Analysis compares the prevalence of amino-acid substitutions in the genome of SARS-CoV-2 between two distinct geographic locations. <br>
+                      The <i>Evolution in Space</i> compares the prevalence of amino-acid substitutions in the genome of SARS-CoV-2 between two distinct geographic locations. <br>
                       A specific lineage can be optionally selected by the user (otherwise , all lineages are included). Selection of a geographic location (continent/country/region/sub-region) is mandatory.
                       The place selected by the user is used as the <i>target</i>, whereas the geographic entity of higher level (i.e country for a region, continent for a country and so on) is used as the <i>background</i>.
                       The <i>exclude</i> menu can be used to include/exclude specific entities from the background (thus providing users with a flexible mechanism for excluding specific sub-locations). <br>
@@ -208,7 +208,7 @@
                         />
                       </p>
                       <br>
-                      Similar to the lineage analysis, the number of genomes deposited at different dates are displayed in the form of an histogram;
+                      Similar to the <i>Prevalence of Lineages</i>, the number of genomes deposited at different dates are displayed in the form of an histogram;
                       users can restrict the comparison to a specific time-window: the start and end dates can be set by using the slider under the histogram.
                       <br><br>
                       <p align="center">
@@ -249,7 +249,7 @@
 
                   <v-expansion-panel style="margin-bottom: 10px">
                     <v-expansion-panel-header style="background-color: #457B9D;">
-                      <span style="width: 80%; color: white;">OPEN ANALYSIS</span>
+                      <span style="width: 80%; color: white;">CUSTOM ANALYSIS</span>
                       <div>
                         <v-btn @click="goToRelatedPart(4)" small class="white--text" color="#1D3557">
                           START THIS ANALYSIS
@@ -258,7 +258,7 @@
                     </v-expansion-panel-header>
                     <v-expansion-panel-content style="background-color: white; color: black">
                       <br>
-                      The Open Analysis, is used to perform an unconstrained comparison of a user-defined target and background. In other words users are free to select any lineage, time interval and place for both the target and background populations. <br>
+                      The <i>Custom Analysis</i>, is used to perform an unconstrained comparison of a user-defined target and background. In other words users are free to select any lineage, time interval and place for both the target and background populations. <br>
                       The first panel is used to define the target (here, e.g., Europe/Italy/Lombardy).
                       <br><br>
                       <p align="center">

@@ -4,7 +4,7 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
-            <h1>TEMPORAL ANALYSIS</h1>
+            <h1>EVOLUTION IN TIME</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
@@ -1019,7 +1019,7 @@
                                       UPLOAD YOUR REGIONS:
                                   </v-card-title>
                                   <v-card-text style="text-align: center;">
-                                   <span><br>... infos ...
+                                   <span>
                                     <br><br>
                                    </span>
                                     <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleCSV()" x-small icon
@@ -1388,35 +1388,35 @@ export default {
     },
     downloadExampleCSV(){
       let text = "";
-      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-1', 'Begin': 10, 'End': 20},
-                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-2', 'Begin': 501, 'End': 501},
-                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'E (envelope protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF10 protein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP3', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP4', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP11', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP13 (helicase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP6', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP7', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP8', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP9', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP10', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF1a polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP2', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Receptor-binding Domain (RBD)', 'Begin': 319, 'End': 541},
+                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Receptor-binding Motif (RBM)', 'Begin': 438, 'End': 506},
+                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 222},
+                           {'Protein': 'E (envelope protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 75},
+                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 419},
+                           {'Protein': 'ORF10 protein', 'Description': 'Whole protein', 'Begin': 1, 'End': 38},
+                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Whole protein', 'Begin': 1, 'End': 298},
+                           {'Protein': 'NSP3', 'Description': 'Whole protein', 'Begin': 1, 'End': 1945},
+                           {'Protein': 'NSP4', 'Description': 'Whole protein', 'Begin': 1, 'End': 500},
+                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Whole protein', 'Begin': 1, 'End': 346},
+                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 306},
+                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Whole protein', 'Begin': 1, 'End': 527},
+                           {'Protein': 'NSP11', 'Description': 'Whole protein', 'Begin': 1, 'End': 13},
+                           {'Protein': 'NSP13 (helicase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 601},
+                           {'Protein': 'NSP6', 'Description': 'Whole protein', 'Begin': 1, 'End': 290},
+                           {'Protein': 'NSP7', 'Description': 'Whole protein', 'Begin': 1, 'End': 84},
+                           {'Protein': 'NSP8', 'Description': 'Whole protein', 'Begin': 1, 'End': 198},
+                           {'Protein': 'NSP9', 'Description': 'Whole protein', 'Begin': 1, 'End': 113},
+                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 932},
+                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Whole protein', 'Begin': 1, 'End': 7096},
+                           {'Protein': 'NSP10', 'Description': 'Whole protein', 'Begin': 1, 'End': 138},
+                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 180},
+                           {'Protein': 'ORF1a polyprotein', 'Description': 'Whole protein', 'Begin': 1, 'End': 4405},
+                           {'Protein': 'NSP2', 'Description': 'Whole protein', 'Begin': 1, 'End': 638},
+                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 275},
+                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 61},
+                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 121},
+                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Whole protein', 'Begin': 1, 'End': 43},
+                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 121},
       ];
       let headers = [{'text': 'Protein', 'value': 'Protein'},
                      {'text': 'Description', 'value': 'Description'},

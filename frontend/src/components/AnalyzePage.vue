@@ -17,11 +17,11 @@
       </v-tab>
 
       <v-tab id="tab1" style="border-right: black solid 1px; width: 20%">
-         LINEAGE ANALYSIS
+         PREVALENCE OF LINEAGES
       </v-tab>
 
       <v-tab id="tab2" style="border-right: black solid 1px; width: 20%">
-         TEMPORAL ANALYSIS
+         EVOLUTION IN TIME
       </v-tab>
 
       <!--<v-tab id="tab2"  style="border-right: black solid 1px; width: 20%">
@@ -29,11 +29,11 @@
       </v-tab>-->
 
       <v-tab id="tab3"  style="border-right: black solid 1px; width: 20%">
-         SPATIAL ANALYSIS
+         EVOLUTION IN SPACE
       </v-tab>
 
       <v-tab id="tab4"  style="border-right: black solid 1px; width: 20%">
-         OPEN ANALYSIS
+         CUSTOM ANALYSIS
       </v-tab>
 
       <v-tab-item class="lol">
@@ -47,10 +47,6 @@
       <v-tab-item class="lol">
         <AnalyzeTimeLinCou></AnalyzeTimeLinCou>
       </v-tab-item>
-
-      <!--<v-tab-item>
-        <AnalyzeLineageAndCountry></AnalyzeLineageAndCountry>
-      </v-tab-item>-->
 
       <v-tab-item class="lol">
          <AnalyzeProvinceRegion></AnalyzeProvinceRegion>
@@ -99,12 +95,12 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapMutations(['setAllProtein', 'setAllLineages', 'setAllGeo', 'setHomePage', 'setColor1', 'setColor2', 'setColor3', 'setSelectedTabAnalyzeFromHome']),
+    ...mapMutations(['setAllProtein', 'setAllGeo', 'setHomePage', 'setColor1', 'setColor2', 'setColor3', 'setSelectedTabAnalyzeFromHome']),
     ...mapActions([]),
   },
   watch:{
     finished_api(){
-      if(this.finished_api === 3){
+      if(this.finished_api === 2){
         this.overlay = false;
       }
     },
@@ -183,17 +179,6 @@ export default {
     .then((res) => {
       this.finished_api = this.finished_api + 1;
       this.setAllProtein(res);
-    });
-
-    let url2 = `/analyze/allLineages`;
-    axios.get(url2)
-    .then((res) => {
-      return res.data;
-    })
-    .then((res) => {
-      this.finished_api = this.finished_api + 1;
-      this.possibleLineage = res;
-      this.setAllLineages(res);
     });
 
     let url3 = `/analyze/allGeo`;

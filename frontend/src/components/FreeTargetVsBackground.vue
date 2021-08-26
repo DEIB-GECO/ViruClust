@@ -3,7 +3,7 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
-            <h1>OPEN ANALYSIS</h1>
+            <h1>CUSTOM ANALYSIS</h1>
           </v-card-title>
           <v-layout row wrap justify-center>
             <v-flex class="no-horizontal-padding xs12 d-flex">
@@ -32,329 +32,416 @@
                   <v-tabs-items v-model="selectedTabFreeQuery" style="background: transparent;">
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
-                      <v-layout row wrap justify-center>
-                        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                          <v-card color="#F1FAEE" width="100%" style="padding: 11px">
-                            <v-card-title class="justify-center">
-                              <h5>ADD ACCESSION IDs:</h5>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-layout row wrap justify-center>
-                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                                  <v-text-field
-                                    v-model = "accession_id_target"
-                                    solo
-                                    hide-details
-                                    style="margin-right: 10px"
-                                  ></v-text-field>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+
+                      <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
+
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                          <v-btn id="tabTargetFree1" large color="#457B9D" @click="selectedTabTargetFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> DEFINE THROUGH METADATA</v-btn>
+                          <v-btn id="tabTargetFree2" large color="#457B9D" @click="selectedTabTargetFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> DEFINE THROUGH IDs </v-btn>
+                        </v-flex>
+
+                        <v-layout row wrap justify-center v-if="selectedTabTargetFreeQuery === 0">
+                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsTarget.length > 0)">
+                            <FreeQuery
+                              type="target">
+                            </FreeQuery>
+                           </v-flex>
+                        </v-layout>
+
+
+                        <v-layout row wrap justify-center v-if="selectedTabTargetFreeQuery === 1">
+                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+                            <h2>INSERT ACCESSION IDs</h2>
+                            <v-dialog width="500">
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                      class="white--text"
-                                       small
-                                       color="#E63946"
-                                       style="margin-top: 10px"
-                                      @click="addAccessionIdTarget()"
-                                  >
-                                    ADD
+                                        v-on="on"
+                                          slot="activator"
+                                          class="info-button"
+                                          x-small
+                                          text icon color="grey"
+                                          style="margin-top: 10px; margin-left: 20px">
+                                      <v-icon class="info-icon">mdi-information</v-icon>
                                   </v-btn>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                                  <v-dialog width="500" v-model="dialogAccIdsTargetInserted">
-                                      <template v-slot:activator="{ on }">
-                                        <v-btn
-                                            v-on="on"
-                                            slot="activator"
-                                            class="white--text"
-                                             small
-                                             color="#1D3557"
-                                             style="margin-top: 10px"
-                                            :disabled="!(listAccIdsTargetInserted.length > 0)"
-                                        >
-                                          SHOW LIST ({{listAccIdsTargetInserted.length}})
-                                        </v-btn>
-                                      </template>
-                                      <v-card>
-                                          <v-card-title
-                                                  class="headline"
-                                                  style="background-color: #A8DADC"
-                                          >
-                                              ACCESSION IDs ADDED:
-                                            <v-spacer></v-spacer>
-                                            <v-btn
-                                              color="black"
-                                              text
-                                              @click="deleteAllAccIdsTargetInserted();"
-                                            >
-                                              DELETE ALL
-                                            </v-btn>
-                                          </v-card-title>
-                                          <v-card-text style="text-align: center;">
-                                            <span><br>
-                                              <span v-for="(acc_id, index) in listAccIdsTargetInserted" v-bind:key="acc_id">
-                                                {{acc_id}}
-                                                <v-btn
-                                                      style="background-color: red; margin-left: 20px"
-                                                      icon
-                                                      width="15px"
-                                                      height="15px"
-                                                    color="white"
-                                                      @click="deleteAccIdsTargetInserted(index)"
-                                                  >
-                                                    <v-icon size="12">mdi-close</v-icon>
-                                                  </v-btn>
-                                                <br>
-                                              </span>
-                                            </span>
-                                          </v-card-text>
-                                      </v-card>
-                                  </v-dialog>
-                                </v-flex>
-                              </v-layout>
-                            </v-card-text>
-                            <v-card-title class="justify-center">
-                              <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
-                              <v-dialog width="500">
-                                  <template v-slot:activator="{ on }">
+                                </template>
+                                <v-card>
+                                    <v-card-title
+                                            class="headline grey lighten-2"
+                                            primary-title
+                                    >
+                                        INSERT ACCESSION IDs:
+                                    </v-card-title>
+                                    <v-card-text style="text-align: center;">
+                                     <span>
+                                       <br>
+                                        For statistical significance you need to provide at least 50 valid ids.
+                                       <br>
+                                     </span>
+                                    </v-card-text>
+                                </v-card>
+                            </v-dialog>
+                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                            <v-card color="#F1FAEE" width="100%" style="padding: 11px">
+                              <v-card-title class="justify-center">
+                                <h5>ADD ACCESSION IDs:</h5>
+                              </v-card-title>
+                              <v-card-text>
+                                <v-layout row wrap justify-center>
+                                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                    <v-text-field
+                                      v-model = "accession_id_target"
+                                      solo
+                                      hide-details
+                                      style="margin-right: 10px"
+                                    ></v-text-field>
+                                  </v-flex>
+                                  <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
                                     <v-btn
-                                          v-on="on"
-                                            slot="activator"
-                                            class="info-button"
-                                            x-small
-                                            text icon color="grey"
-                                            style="margin-bottom: 5px; margin-left: 20px">
-                                        <v-icon class="info-icon">mdi-information</v-icon>
-                                    </v-btn>
-                                  </template>
-                                  <v-card>
-                                      <v-card-title
-                                              class="headline grey lighten-2"
-                                              primary-title
-                                      >
-                                          UPLOAD LIST OF ACCESSION IDs:
-                                      </v-card-title>
-                                      <v-card-text style="text-align: center;">
-                                       <span><br>... infos ...
-                                        <br><br>
-                                       </span>
-                                        <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
-                                          style="margin-left: 20px;">
-                                            <v-icon size="18">
-                                              mdi-download-circle-outline
-                                            </v-icon>
-                                        </v-btn></span>
-                                      </v-card-text>
-                                  </v-card>
-                              </v-dialog>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-layout row wrap justify-space-around>
-                                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                                  <input id="inputAccIdsTarget" type="file" style="display:none"
-                                               v-on:change="loadAccIdsTarget()" accept=".txt"
-                                               onclick="document.getElementById('inputAccIdsTarget').value = ''"
-                                        />
-                                  <v-btn
-                                         onclick="document.getElementById('inputAccIdsTarget').click()"
-                                         class="white--text"
+                                        class="white--text"
                                          small
                                          color="#E63946"
                                          style="margin-top: 10px"
+                                        @click="addAccessionIdTarget()"
+                                    >
+                                      ADD
+                                    </v-btn>
+                                  </v-flex>
+                                  <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                    <v-dialog width="500" v-model="dialogAccIdsTargetInserted">
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                              v-on="on"
+                                              slot="activator"
+                                              class="white--text"
+                                               small
+                                               color="#1D3557"
+                                               style="margin-top: 10px"
+                                              :disabled="!(listAccIdsTargetInserted.length > 0)"
+                                          >
+                                            SHOW LIST ({{listAccIdsTargetInserted.length}})
+                                          </v-btn>
+                                        </template>
+                                        <v-card>
+                                            <v-card-title
+                                                    class="headline"
+                                                    style="background-color: #A8DADC"
+                                            >
+                                                ACCESSION IDs ADDED:
+                                              <v-spacer></v-spacer>
+                                              <v-btn
+                                                color="black"
+                                                text
+                                                @click="deleteAllAccIdsTargetInserted();"
+                                              >
+                                                DELETE ALL
+                                              </v-btn>
+                                            </v-card-title>
+                                            <v-card-text style="text-align: center;">
+                                              <span><br>
+                                                <span v-for="(acc_id, index) in listAccIdsTargetInserted" v-bind:key="acc_id">
+                                                  {{acc_id}}
+                                                  <v-btn
+                                                        style="background-color: red; margin-left: 20px"
+                                                        icon
+                                                        width="15px"
+                                                        height="15px"
+                                                      color="white"
+                                                        @click="deleteAccIdsTargetInserted(index)"
+                                                    >
+                                                      <v-icon size="12">mdi-close</v-icon>
+                                                    </v-btn>
+                                                  <br>
+                                                </span>
+                                              </span>
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-dialog>
+                                  </v-flex>
+                                </v-layout>
+                              </v-card-text>
+                              <v-card-title class="justify-center">
+                                <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
+                                <v-dialog width="500">
+                                    <template v-slot:activator="{ on }">
+                                      <v-btn
+                                            v-on="on"
+                                              slot="activator"
+                                              class="info-button"
+                                              x-small
+                                              text icon color="grey"
+                                              style="margin-bottom: 5px; margin-left: 20px">
+                                          <v-icon class="info-icon">mdi-information</v-icon>
+                                      </v-btn>
+                                    </template>
+                                    <v-card>
+                                        <v-card-title
+                                                class="headline grey lighten-2"
+                                                primary-title
+                                        >
+                                            UPLOAD LIST OF ACCESSION IDs:
+                                        </v-card-title>
+                                        <v-card-text style="text-align: center;">
+                                         <span>
+                                          <br><br>
+                                         </span>
+                                          <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                            style="margin-left: 20px;">
+                                              <v-icon size="18">
+                                                mdi-download-circle-outline
+                                              </v-icon>
+                                          </v-btn></span>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-dialog>
+                              </v-card-title>
+                              <v-card-text>
+                                <v-layout row wrap justify-space-around>
+                                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                    <input id="inputAccIdsTarget" type="file" style="display:none"
+                                                 v-on:change="loadAccIdsTarget()" accept=".txt"
+                                                 onclick="document.getElementById('inputAccIdsTarget').value = ''"
+                                          />
+                                    <v-btn
+                                           onclick="document.getElementById('inputAccIdsTarget').click()"
+                                           class="white--text"
+                                           small
+                                           color="#E63946"
+                                           style="margin-top: 10px"
+                                    >
+                                        Upload Target Accession IDs
+                                    </v-btn>
+                                  </v-flex>
+                                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                   <v-text-field
+                                    :value = this.nameFileAccIdsTarget
+                                    solo
+                                    readonly
+                                    hide-details
+                                    style="margin-right: 10px"
+                                  ></v-text-field>
+                                   <v-btn
+                                      style="background-color: red; margin-top: 10px;"
+                                      icon
+                                      x-small
+                                    color="white"
+                                      @click="deleteAccIdsTarget()"
                                   >
-                                      Upload Target Accession IDs
+                                    <v-icon size="18">mdi-close</v-icon>
                                   </v-btn>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                                 <v-text-field
-                                  :value = this.nameFileAccIdsTarget
-                                  solo
-                                  readonly
-                                  hide-details
-                                  style="margin-right: 10px"
-                                ></v-text-field>
-                                 <v-btn
-                                    style="background-color: red; margin-top: 10px;"
-                                    icon
-                                    x-small
-                                  color="white"
-                                    @click="deleteAccIdsTarget()"
-                                >
-                                  <v-icon size="18">mdi-close</v-icon>
-                                </v-btn>
-                               </v-flex>
-                              </v-layout>
-                            </v-card-text>
-                          </v-card>
-                        </v-flex>
-                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsTarget.length > 0)">
-                        <FreeQuery
-                          type="target">
-                        </FreeQuery>
-                       </v-flex>
-                      </v-layout>
+                                 </v-flex>
+                                </v-layout>
+                              </v-card-text>
+                            </v-card>
+                          </v-flex>
+                        </v-layout>
+                      </v-container>
                     </v-tab-item>
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
-                      <v-layout row wrap justify-center>
-                        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                          <v-card color="#F1FAEE" width="100%" style="padding: 11px">
-                            <v-card-title class="justify-center">
-                              <h5>ADD ACCESSION IDs:</h5>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-layout row wrap justify-center>
-                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                                  <v-text-field
-                                    v-model = "accession_id_background"
-                                    solo
-                                    hide-details
-                                    style="margin-right: 10px"
-                                  ></v-text-field>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+
+                      <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
+
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                          <v-btn id="tabBackgroundFree1" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> DEFINE THROUGH METADATA</v-btn>
+                          <v-btn id="tabBackgroundFree2" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> DEFINE THROUGH IDs </v-btn>
+                        </v-flex>
+
+                          <v-layout row wrap justify-center v-if="selectedTabBackgroundFreeQuery === 0">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsBackground.length > 0)">
+                            <FreeQuery
+                              type="background">
+                            </FreeQuery>
+                           </v-flex>
+                          </v-layout>
+
+                          <v-layout row wrap justify-center v-if="selectedTabBackgroundFreeQuery === 1">
+                            <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
+                            <h2>INSERT ACCESSION IDs</h2>
+                            <v-dialog width="500">
+                                <template v-slot:activator="{ on }">
                                   <v-btn
-                                      class="white--text"
-                                       small
-                                       color="#E63946"
-                                       style="margin-top: 10px"
-                                      @click="addAccessionIdBackground()"
-                                  >
-                                    ADD
+                                        v-on="on"
+                                          slot="activator"
+                                          class="info-button"
+                                          x-small
+                                          text icon color="grey"
+                                          style="margin-top: 10px; margin-left: 20px">
+                                      <v-icon class="info-icon">mdi-information</v-icon>
                                   </v-btn>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                                  <v-dialog width="500"  v-model="dialogAccIdsBackgroundInserted">
+                                </template>
+                                <v-card>
+                                    <v-card-title
+                                            class="headline grey lighten-2"
+                                            primary-title
+                                    >
+                                        INSERT ACCESSION IDs:
+                                    </v-card-title>
+                                    <v-card-text style="text-align: center;">
+                                     <span>
+                                       <br>
+                                        For statistical significance you need to provide at least 50 valid ids.
+                                       <br>
+                                     </span>
+                                    </v-card-text>
+                                </v-card>
+                            </v-dialog>
+                          </v-flex>
+                            <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                              <v-card color="#F1FAEE" width="100%" style="padding: 11px">
+                                <v-card-title class="justify-center">
+                                  <h5>ADD ACCESSION IDs:</h5>
+                                </v-card-title>
+                                <v-card-text>
+                                  <v-layout row wrap justify-center>
+                                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                      <v-text-field
+                                        v-model = "accession_id_background"
+                                        solo
+                                        hide-details
+                                        style="margin-right: 10px"
+                                      ></v-text-field>
+                                    </v-flex>
+                                    <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                      <v-btn
+                                          class="white--text"
+                                           small
+                                           color="#E63946"
+                                           style="margin-top: 10px"
+                                          @click="addAccessionIdBackground()"
+                                      >
+                                        ADD
+                                      </v-btn>
+                                    </v-flex>
+                                    <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                      <v-dialog width="500"  v-model="dialogAccIdsBackgroundInserted">
+                                          <template v-slot:activator="{ on }">
+                                            <v-btn
+                                                v-on="on"
+                                                slot="activator"
+                                                class="white--text"
+                                                 small
+                                                 color="#1D3557"
+                                                 style="margin-top: 10px"
+                                                :disabled="!(listAccIdsBackgroundInserted.length > 0)"
+                                            >
+                                              SHOW LIST ({{listAccIdsBackgroundInserted.length}})
+                                            </v-btn>
+                                          </template>
+                                          <v-card>
+                                              <v-card-title
+                                                      class="headline"
+                                                      style="background-color: #A8DADC"
+                                              >
+                                                  ACCESSION IDs ADDED:
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                  color="black"
+                                                  text
+                                                  @click="deleteAllAccIdsBackgroundInserted();"
+                                                >
+                                                  DELETE ALL
+                                                </v-btn>
+                                              </v-card-title>
+                                              <v-card-text style="text-align: center;">
+                                                <span><br>
+                                                  <span v-for="(acc_id, index) in listAccIdsBackgroundInserted" v-bind:key="acc_id">
+                                                    {{acc_id}}
+                                                    <v-btn
+                                                          style="background-color: red; margin-left: 20px"
+                                                          icon
+                                                          width="15px"
+                                                          height="15px"
+                                                        color="white"
+                                                          @click="deleteAccIdsBackgroundInserted(index)"
+                                                      >
+                                                        <v-icon size="12">mdi-close</v-icon>
+                                                      </v-btn>
+                                                    <br>
+                                                  </span>
+                                                </span>
+                                              </v-card-text>
+                                          </v-card>
+                                      </v-dialog>
+                                    </v-flex>
+                                  </v-layout>
+                                </v-card-text>
+                                <v-card-title class="justify-center">
+                                  <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
+                                  <v-dialog width="500">
                                       <template v-slot:activator="{ on }">
                                         <v-btn
-                                            v-on="on"
-                                            slot="activator"
-                                            class="white--text"
-                                             small
-                                             color="#1D3557"
-                                             style="margin-top: 10px"
-                                            :disabled="!(listAccIdsBackgroundInserted.length > 0)"
-                                        >
-                                          SHOW LIST ({{listAccIdsBackgroundInserted.length}})
+                                              v-on="on"
+                                                slot="activator"
+                                                class="info-button"
+                                                x-small
+                                                text icon color="grey"
+                                                style="margin-bottom: 5px; margin-left: 20px">
+                                            <v-icon class="info-icon">mdi-information</v-icon>
                                         </v-btn>
                                       </template>
                                       <v-card>
                                           <v-card-title
-                                                  class="headline"
-                                                  style="background-color: #A8DADC"
+                                                  class="headline grey lighten-2"
+                                                  primary-title
                                           >
-                                              ACCESSION IDs ADDED:
-                                            <v-spacer></v-spacer>
-                                            <v-btn
-                                              color="black"
-                                              text
-                                              @click="deleteAllAccIdsBackgroundInserted();"
-                                            >
-                                              DELETE ALL
-                                            </v-btn>
+                                              UPLOAD LIST OF ACCESSION IDs:
                                           </v-card-title>
                                           <v-card-text style="text-align: center;">
-                                            <span><br>
-                                              <span v-for="(acc_id, index) in listAccIdsBackgroundInserted" v-bind:key="acc_id">
-                                                {{acc_id}}
-                                                <v-btn
-                                                      style="background-color: red; margin-left: 20px"
-                                                      icon
-                                                      width="15px"
-                                                      height="15px"
-                                                    color="white"
-                                                      @click="deleteAccIdsBackgroundInserted(index)"
-                                                  >
-                                                    <v-icon size="12">mdi-close</v-icon>
-                                                  </v-btn>
-                                                <br>
-                                              </span>
-                                            </span>
+                                           <span>
+                                            <br><br>
+                                           </span>
+                                            <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                              style="margin-left: 20px;">
+                                                <v-icon size="18">
+                                                  mdi-download-circle-outline
+                                                </v-icon>
+                                            </v-btn></span>
                                           </v-card-text>
                                       </v-card>
                                   </v-dialog>
-                                </v-flex>
-                              </v-layout>
-                            </v-card-text>
-                            <v-card-title class="justify-center">
-                              <h5>UPLOAD LIST OF ACCESSION IDs:</h5>
-                              <v-dialog width="500">
-                                  <template v-slot:activator="{ on }">
-                                    <v-btn
-                                          v-on="on"
-                                            slot="activator"
-                                            class="info-button"
-                                            x-small
-                                            text icon color="grey"
-                                            style="margin-bottom: 5px; margin-left: 20px">
-                                        <v-icon class="info-icon">mdi-information</v-icon>
-                                    </v-btn>
-                                  </template>
-                                  <v-card>
-                                      <v-card-title
-                                              class="headline grey lighten-2"
-                                              primary-title
+                                </v-card-title>
+                                <v-card-text>
+                                  <v-layout row wrap justify-space-around>
+                                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                      <input id="inputAccIdsBackground" type="file" style="display:none"
+                                                   v-on:change="loadAccIdsBackground()" accept=".txt"
+                                                   onclick="document.getElementById('inputAccIdsBackground').value = ''"
+                                            />
+                                      <v-btn
+                                             onclick="document.getElementById('inputAccIdsBackground').click()"
+                                             class="white--text"
+                                             small
+                                             color="#E63946"
+                                             style="margin-top: 10px"
                                       >
-                                          UPLOAD LIST OF ACCESSION IDs:
-                                      </v-card-title>
-                                      <v-card-text style="text-align: center;">
-                                       <span><br>... infos ...
-                                        <br><br>
-                                       </span>
-                                        <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
-                                          style="margin-left: 20px;">
-                                            <v-icon size="18">
-                                              mdi-download-circle-outline
-                                            </v-icon>
-                                        </v-btn></span>
-                                      </v-card-text>
-                                  </v-card>
-                              </v-dialog>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-layout row wrap justify-space-around>
-                                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
-                                  <input id="inputAccIdsBackground" type="file" style="display:none"
-                                               v-on:change="loadAccIdsBackground()" accept=".txt"
-                                               onclick="document.getElementById('inputAccIdsBackground').value = ''"
-                                        />
-                                  <v-btn
-                                         onclick="document.getElementById('inputAccIdsBackground').click()"
-                                         class="white--text"
-                                         small
-                                         color="#E63946"
-                                         style="margin-top: 10px"
-                                  >
-                                      Upload Background Accession IDs
-                                  </v-btn>
-                                </v-flex>
-                                <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
-                                 <v-text-field
-                                  :value = this.nameFileAccIdsBackground
-                                  solo
-                                  readonly
-                                  hide-details
-                                  style="margin-right: 10px"
-                                ></v-text-field>
-                                 <v-btn
-                                    style="background-color: red; margin-top: 10px;"
-                                    icon
-                                    x-small
-                                  color="white"
-                                    @click="deleteAccIdsBackground()"
-                                >
-                                  <v-icon size="18">mdi-close</v-icon>
-                                </v-btn>
-                               </v-flex>
-                              </v-layout>
-                            </v-card-text>
-                          </v-card>
-                        </v-flex>
-                       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="!(listAccIdsBackground.length > 0)">
-                        <FreeQuery
-                          type="background">
-                        </FreeQuery>
-                       </v-flex>
-                      </v-layout>
+                                          Upload Background Accession IDs
+                                      </v-btn>
+                                    </v-flex>
+                                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                     <v-text-field
+                                      :value = this.nameFileAccIdsBackground
+                                      solo
+                                      readonly
+                                      hide-details
+                                      style="margin-right: 10px"
+                                    ></v-text-field>
+                                     <v-btn
+                                        style="background-color: red; margin-top: 10px;"
+                                        icon
+                                        x-small
+                                      color="white"
+                                        @click="deleteAccIdsBackground()"
+                                    >
+                                      <v-icon size="18">mdi-close</v-icon>
+                                    </v-btn>
+                                   </v-flex>
+                                  </v-layout>
+                                </v-card-text>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                      </v-container>
                     </v-tab-item>
 
                     <v-tab-item style="background-color: #A8DADC; padding-top: 40px">
@@ -418,7 +505,7 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqFreeQuery">
               <span style="text-align: center">
-                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span><br>
+                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 (or 50 if defined by ids) genomes need to be selected for both the target and the background.</span><br>
                  <span style="color: red"> (Please be aware that overlapping entries are removed from {{selectRemoveOverlapping.toLowerCase()}})</span>
               </span>
                </v-flex>
@@ -1300,7 +1387,7 @@
                                       UPLOAD YOUR REGIONS:
                                   </v-card-title>
                                   <v-card-text style="text-align: center;">
-                                   <span><br>... infos ...
+                                   <span>
                                     <br><br>
                                    </span>
                                     <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleCSV()" x-small icon
@@ -1488,6 +1575,11 @@ export default {
       errorNumSeqFreeQuery: false,
       min_num_seq_target: 10,
       min_num_seq_background: 10,
+      min_num_seq_target_acc_ids: 50,
+      min_num_seq_background_acc_ids: 50,
+
+      selectedTabTargetFreeQuery: 0,
+      selectedTabBackgroundFreeQuery: 0,
 
       num_overlapping_sequences: 0,
 
@@ -1631,8 +1723,19 @@ export default {
     addAccessionIdTarget(){
       let arr_acc_ids = this.accession_id_target.split(/(?:,|;|\t|\n| )+/);
       for(let i = 0; i < arr_acc_ids.length; i = i + 1) {
-        if (!this.listAccIdsTargetInserted.includes(arr_acc_ids[i]) && arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
-          this.listAccIdsTargetInserted.push(arr_acc_ids[i]);
+        if (arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
+          let url = `/analyze/checkAccessionId`;
+          let to_send = {'accession_id': arr_acc_ids[i]}
+          axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              if(res === true && !this.listAccIdsTargetInserted.includes(arr_acc_ids[i])){
+                this.listAccIdsTargetInserted.push(arr_acc_ids[i]);
+              }
+            })
+          // this.listAccIdsTargetInserted.push(arr_acc_ids[i]);
         }
       }
       this.accession_id_target = null;
@@ -1640,8 +1743,19 @@ export default {
     addAccessionIdBackground(){
       let arr_acc_ids = this.accession_id_background.split(/(?:,|;|\t|\n| )+/);
       for(let i = 0; i < arr_acc_ids.length; i = i + 1) {
-        if (!this.listAccIdsBackgroundInserted.includes(arr_acc_ids[i]) && arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
-          this.listAccIdsBackgroundInserted.push(arr_acc_ids[i]);
+        if (arr_acc_ids[i] !== null && arr_acc_ids[i] !== '') {
+          let url = `/analyze/checkAccessionId`;
+          let to_send = {'accession_id': arr_acc_ids[i]}
+          axios.post(url, to_send)
+            .then((res) => {
+              return res.data;
+            })
+            .then((res) => {
+              if(res === true && !this.listAccIdsBackgroundInserted.includes(arr_acc_ids[i])){
+                this.listAccIdsBackgroundInserted.push(arr_acc_ids[i]);
+              }
+            })
+          //this.listAccIdsBackgroundInserted.push(arr_acc_ids[i]);
         }
       }
       this.accession_id_background = null;
@@ -1649,7 +1763,13 @@ export default {
     downloadExampleListAccessionIds(){
       let text = 'EPI_ISL_2978687,  EPI_ISL_3039740;  EPI_ISL_3039752;  EPI_ISL_3039761;  EPI_ISL_3039764;  ' +
           'EPI_ISL_3039780;  EPI_ISL_3039789;  EPI_ISL_3039813;  EPI_ISL_3039825;  EPI_ISL_3051315;  EPI_ISL_3051318;  ' +
-          'EPI_ISL_3051328;  EPI_ISL_3051345;  EPI_ISL_3051370;  EPI_ISL_3051383;';
+          'EPI_ISL_3051328;  EPI_ISL_3051345;  EPI_ISL_3051370;  EPI_ISL_3051383; EPI_ISL_3039900; EPI_ISL_3039901; ' +
+          'EPI_ISL_3039902; EPI_ISL_3039903; EPI_ISL_3039904; EPI_ISL_3039905; EPI_ISL_3039906; EPI_ISL_3039907; ' +
+          'EPI_ISL_3039908; EPI_ISL_3039909; EPI_ISL_3039500; EPI_ISL_3039501; EPI_ISL_3039502; EPI_ISL_3039503;' +
+          'EPI_ISL_3039504; EPI_ISL_3039505; EPI_ISL_3039506; EPI_ISL_3039507; EPI_ISL_3039508; EPI_ISL_3039509;' +
+          ' EPI_ISL_3039510; EPI_ISL_3039511; EPI_ISL_3039512; EPI_ISL_3039513; EPI_ISL_3039514; EPI_ISL_3039515;' +
+          ' EPI_ISL_3039516; EPI_ISL_3039517; EPI_ISL_3039518; EPI_ISL_3039519; EPI_ISL_3039520; EPI_ISL_3039521;' +
+          ' EPI_ISL_3039522; EPI_ISL_3039523; EPI_ISL_3039524;';
       let filename = 'exampleListAccessionIds.txt';
       let element = document.createElement('a');
       element.setAttribute('download', filename);
@@ -1665,7 +1785,27 @@ export default {
       this.nameFileAccIdsTarget = selectedFile.name;
       let that = this;
       reader.onload = function() {
-        that.fileAccIdsTarget = reader.result;
+        let arrayIds = reader.result.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/);
+        let arrayAllIds = [];
+        console.log("quiqui", arrayIds);
+        for(let i = 0; i < arrayIds.length; i = i + 1) {
+          if (arrayIds[i] !== null && arrayIds[i] !== undefined) {
+            let url = `/analyze/checkAccessionId`;
+            let to_send = {'accession_id': arrayIds[i]}
+            axios.post(url, to_send)
+                .then((res) => {
+                  return res.data;
+                })
+                .then((res) => {
+                  if (res === true) {
+                    arrayAllIds.push(arrayIds[i]);
+                  }
+                  if(i === arrayIds.length - 1){
+                    that.fileAccIdsTarget = arrayAllIds;
+                  }
+                })
+          }
+        }
       }
       reader.readAsText(selectedFile);
     },
@@ -1680,7 +1820,26 @@ export default {
       this.nameFileAccIdsBackground = selectedFile.name;
       let that = this;
       reader.onload = function() {
-        that.fileAccIdsBackground = reader.result;
+        let arrayIds = reader.result.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/);
+        let arrayAllIds = [];
+        for(let i = 0; i < arrayIds.length; i = i + 1) {
+          if (arrayIds[i] !== null && arrayIds[i] !== undefined) {
+            let url = `/analyze/checkAccessionId`;
+            let to_send = {'accession_id': arrayIds[i]}
+            axios.post(url, to_send)
+                .then((res) => {
+                  return res.data;
+                })
+                .then((res) => {
+                  if (res === true) {
+                    arrayAllIds.push(arrayIds[i]);
+                  }
+                  if (i === arrayIds.length - 1) {
+                    that.fileAccIdsBackground = arrayAllIds;
+                  }
+                })
+          }
+        }
       }
       reader.readAsText(selectedFile);
     },
@@ -1765,35 +1924,35 @@ export default {
     },
     downloadExampleCSV(){
       let text = "";
-      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-1', 'Begin': 10, 'End': 20},
-                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Region-2', 'Begin': 501, 'End': 501},
-                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'E (envelope protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF10 protein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP3', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP4', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP11', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP13 (helicase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP6', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP7', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP8', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP9', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP10', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'ORF1a polyprotein', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NSP2', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
-                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Region-1', 'Begin': 1, 'End': 10},
+      let result_sorted = [{'Protein': 'Spike (surface glycoprotein)', 'Description': 'Receptor-binding Domain (RBD)', 'Begin': 319, 'End': 541},
+                           {'Protein': 'Spike (surface glycoprotein)', 'Description': 'Receptor-binding Motif (RBM)', 'Begin': 438, 'End': 506},
+                           {'Protein': 'M (membrane glycoprotein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 222},
+                           {'Protein': 'E (envelope protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 75},
+                           {'Protein': 'N (nucleocapsid phosphoprotein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 419},
+                           {'Protein': 'ORF10 protein', 'Description': 'Whole protein', 'Begin': 1, 'End': 38},
+                           {'Protein': "NSP16 (2'-O-ribose methyltransferase)", 'Description': 'Whole protein', 'Begin': 1, 'End': 298},
+                           {'Protein': 'NSP3', 'Description': 'Whole protein', 'Begin': 1, 'End': 1945},
+                           {'Protein': 'NSP4', 'Description': 'Whole protein', 'Begin': 1, 'End': 500},
+                           {'Protein': 'NSP15 (endoRNAse)', 'Description': 'Whole protein', 'Begin': 1, 'End': 346},
+                           {'Protein': 'NSP5 (3C-like proteinase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 306},
+                           {'Protein': "NSP14 (3'-to-5' exonuclease)", 'Description': 'Whole protein', 'Begin': 1, 'End': 527},
+                           {'Protein': 'NSP11', 'Description': 'Whole protein', 'Begin': 1, 'End': 13},
+                           {'Protein': 'NSP13 (helicase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 601},
+                           {'Protein': 'NSP6', 'Description': 'Whole protein', 'Begin': 1, 'End': 290},
+                           {'Protein': 'NSP7', 'Description': 'Whole protein', 'Begin': 1, 'End': 84},
+                           {'Protein': 'NSP8', 'Description': 'Whole protein', 'Begin': 1, 'End': 198},
+                           {'Protein': 'NSP9', 'Description': 'Whole protein', 'Begin': 1, 'End': 113},
+                           {'Protein': 'NSP12 (RNA-dependent RNA polymerase)', 'Description': 'Whole protein', 'Begin': 1, 'End': 932},
+                           {'Protein': 'ORF1ab polyprotein', 'Description': 'Whole protein', 'Begin': 1, 'End': 7096},
+                           {'Protein': 'NSP10', 'Description': 'Whole protein', 'Begin': 1, 'End': 138},
+                           {'Protein': 'NSP1 (leader protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 180},
+                           {'Protein': 'ORF1a polyprotein', 'Description': 'Whole protein', 'Begin': 1, 'End': 4405},
+                           {'Protein': 'NSP2', 'Description': 'Whole protein', 'Begin': 1, 'End': 638},
+                           {'Protein': 'NS3 (ORF3a protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 275},
+                           {'Protein': 'NS6 (ORF6 protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 61},
+                           {'Protein': 'NS7a (ORF7a protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 121},
+                           {'Protein': 'NS7b (ORF7b)', 'Description': 'Whole protein', 'Begin': 1, 'End': 43},
+                           {'Protein': 'NS8 (ORF8 protein)', 'Description': 'Whole protein', 'Begin': 1, 'End': 121},
       ];
       let headers = [{'text': 'Protein', 'value': 'Protein'},
                      {'text': 'Description', 'value': 'Description'},
@@ -2576,7 +2735,7 @@ export default {
 
       this.num_overlapping_sequences = 0;
 
-      if(Object.keys(query_target).length > 0 && Object.keys(query_background).length > 0) {
+      if(Object.keys(query_target).length > 1 && Object.keys(query_background).length > 1) {
 
         axios.post(url, to_send)
             .then((res) => {
@@ -2595,21 +2754,120 @@ export default {
       }
     },
     checkErrorNumSeqFreeQuery(){
-      this.errorNumSeqFreeQuery = (this.numSequencesQueryFreeTarget < this.min_num_seq_target
-          || this.numSequencesQueryFreeBackground < this.min_num_seq_background
-          || (this.selectRemoveOverlapping === 'Target'
-              && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-          || (this.selectRemoveOverlapping === 'Background'
-              && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
-          || (this.selectRemoveOverlapping === 'Both' && (
-                (this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
-                || (this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+      this.errorNumSeqFreeQuery = (
+          (this.selectedTabTargetFreeQuery === 0 && this.numSequencesQueryFreeTarget < this.min_num_seq_target)
+          ||
+          (this.selectedTabTargetFreeQuery === 1 && this.numSequencesQueryFreeTarget < this.min_num_seq_target_acc_ids)
+          ||
+          (this.selectedTabBackgroundFreeQuery === 0 && this.numSequencesQueryFreeBackground < this.min_num_seq_background)
+          ||
+          (this.selectedTabBackgroundFreeQuery === 1 && this.numSequencesQueryFreeBackground < this.min_num_seq_background_acc_ids)
+          ||
+          (this.selectRemoveOverlapping === 'Target'
+              &&
+              (
+                  (this.selectedTabTargetFreeQuery === 0 && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+                  ||
+                  (this.selectedTabTargetFreeQuery === 1 && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target_acc_ids)
+              )
+          )
+          ||
+          (this.selectRemoveOverlapping === 'Background'
+              &&
+              (
+                  (this.selectedTabBackgroundFreeQuery === 0 && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+                  ||
+                  (this.selectedTabBackgroundFreeQuery === 1 && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background_acc_ids)
+              )
+          )
+          ||
+          (this.selectRemoveOverlapping === 'Both' && (
+              (this.selectedTabTargetFreeQuery === 0 && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target)
+              ||
+              (this.selectedTabTargetFreeQuery === 1 && this.numSequencesQueryFreeTarget - this.num_overlapping_sequences < this.min_num_seq_target_acc_ids)
+              ||
+              (this.selectedTabBackgroundFreeQuery === 0 && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background)
+              ||
+              (this.selectedTabBackgroundFreeQuery === 1 && this.numSequencesQueryFreeBackground - this.num_overlapping_sequences < this.min_num_seq_background_acc_ids)
               )
           )
       );
     }
   },
   watch:{
+    selectedTabTargetFreeQuery(){
+      if(this.selectedTabTargetFreeQuery === 1){
+        let id1 = 'tabTargetFree2';
+        let id2 = 'tabTargetFree1';
+        let elem1 = document.getElementById(id1);
+        elem1.style['color'] = 'white';
+        elem1.style['font-weight'] = 'bold';
+        let elem2 = document.getElementById(id2);
+        elem2.style['color'] = '#FFFFFF80';
+        elem2.style['font-weight'] = 'normal';
+        this.setQueryFreeTarget({field: 'accession_id', list: null});
+        this.setQueryFreeTarget({field: 'lineage', list: null});
+        this.setQueryFreeTarget({field: 'geo_group', list: null});
+        this.setQueryFreeTarget({field: 'country', list: null});
+        this.setQueryFreeTarget({field: 'region', list: null});
+        this.setQueryFreeTarget({field: 'province', list: null});
+        this.setStartDateQueryFreeTarget(null);
+        this.setStopDateQueryFreeTarget(null);
+        // this.setQueryFreeBackground({field: 'accession_id', list: this.listAccIdsTarget});
+        this.setNumSequencesQueryFreeTarget(0);
+      }
+      else{
+        let id1 = 'tabTargetFree2';
+        let id2 = 'tabTargetFree1';
+        let elem1 = document.getElementById(id1);
+        elem1.style['color'] = '#FFFFFF80';
+        elem1.style['font-weight'] = 'normal';
+        let elem2 = document.getElementById(id2);
+        elem2.style['color'] = 'white';
+        elem2.style['font-weight'] = 'bold';
+        this.listAccIdsTarget = [];
+        this.listAccIdsTargetInserted = [];
+        this.nameFileAccIdsTarget = null;
+        this.fileAccIdsTarget = null;
+        this.setQueryFreeTarget({field: 'accession_id', list: null});
+      }
+    },
+    selectedTabBackgroundFreeQuery(){
+      if(this.selectedTabBackgroundFreeQuery === 1){
+        let id1 = 'tabBackgroundFree2';
+        let id2 = 'tabBackgroundFree1';
+        let elem1 = document.getElementById(id1);
+        elem1.style['color'] = 'white';
+        elem1.style['font-weight'] = 'bold';
+        let elem2 = document.getElementById(id2);
+        elem2.style['color'] = '#FFFFFF80';
+        elem2.style['font-weight'] = 'normal';
+        this.setQueryFreeBackground({field: 'accession_id', list: null});
+        this.setQueryFreeBackground({field: 'lineage', list: null});
+        this.setQueryFreeBackground({field: 'geo_group', list: null});
+        this.setQueryFreeBackground({field: 'country', list: null});
+        this.setQueryFreeBackground({field: 'region', list: null});
+        this.setQueryFreeBackground({field: 'province', list: null});
+        this.setStartDateQueryFreeBackground(null);
+        this.setStopDateQueryFreeBackground(null);
+        this.setNumSequencesQueryFreeBackground(0);
+      }
+      else{
+        let id1 = 'tabBackgroundFree2';
+        let id2 = 'tabBackgroundFree1';
+        let elem1 = document.getElementById(id1);
+        elem1.style['color'] = '#FFFFFF80';
+        elem1.style['font-weight'] = 'normal';
+        let elem2 = document.getElementById(id2);
+        elem2.style['color'] = 'white';
+        elem2.style['font-weight'] = 'bold';
+        this.listAccIdsBackground = [];
+        this.listAccIdsBackgroundInserted = [];
+        this.nameFileAccIdsBackground = null;
+        this.fileAccIdsBackground = null;
+        this.setQueryFreeBackground({field: 'accession_id', list: null});
+      }
+    },
     listAccIdsTargetInserted(){
       this.listAccIdsTarget = [];
       let arrayFull = [];
@@ -2686,7 +2944,7 @@ export default {
       this.setStartDateQueryFreeTarget(null);
       this.setStopDateQueryFreeTarget(null);
       if(this.fileAccIdsTarget !== null) {
-        this.listAccIdsTargetFile = this.fileAccIdsTarget.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/) ;
+        this.listAccIdsTargetFile = this.fileAccIdsTarget;
         for(let i = 0; i < this.listAccIdsTargetFile.length; i = i + 1){
           if(this.listAccIdsTargetFile[i] === ''){
             this.listAccIdsTargetFile.splice(i, 1);
@@ -2727,7 +2985,7 @@ export default {
       this.setStartDateQueryFreeBackground(null);
       this.setStopDateQueryFreeBackground(null);
       if(this.fileAccIdsBackground !== null){
-        this.listAccIdsBackgroundFile = this.fileAccIdsBackground.replaceAll(" ", "").split(/(?:,|;|\t|\n| )+/) ;
+        this.listAccIdsBackgroundFile = this.fileAccIdsBackground;
         for(let i = 0; i < this.listAccIdsBackgroundFile.length; i = i + 1){
           if(this.listAccIdsBackgroundFile[i] === ''){
             this.listAccIdsBackgroundFile.splice(i, 1);
@@ -2844,6 +3102,32 @@ export default {
     },
     selectedTabFreeQuery(){
       this.boldTabs();
+      if(this.selectedTabFreeQuery === 0 && this.selectedTabTargetFreeQuery === 0){
+        let delayInMilliseconds = 500;
+        setTimeout(function() {
+          let id1 = 'tabTargetFree1';
+          let id2 = 'tabTargetFree2';
+          let elem1 = document.getElementById(id1);
+          elem1.style['color'] = 'white';
+          elem1.style['font-weight'] = 'bold';
+          let elem2 = document.getElementById(id2);
+          elem2.style['color'] = '#FFFFFF80';
+          elem2.style['font-weight'] = 'normal';
+        }, delayInMilliseconds);
+      }
+      else if(this.selectedTabFreeQuery === 1 && this.selectedTabBackgroundFreeQuery === 0){
+        let delayInMilliseconds = 500;
+        setTimeout(function() {
+          let id3 = 'tabBackgroundFree1';
+          let id4 = 'tabBackgroundFree2';
+          let elem3 = document.getElementById(id3);
+          elem3.style['color'] = 'white';
+          elem3.style['font-weight'] = 'bold';
+          let elem4 = document.getElementById(id4);
+          elem4.style['color'] = '#FFFFFF80';
+          elem4.style['font-weight'] = 'normal';
+        }, delayInMilliseconds);
+      }
     },
     'queryFreeTarget.geo_group': function (){
       if(!this.queryFreeTarget['geo_group'] || this.queryFreeTarget['geo_group'].length === 0) {
@@ -3055,6 +3339,15 @@ export default {
 
   },
   mounted() {
+    let id1 = 'tabTargetFree1';
+    let id2 = 'tabTargetFree2';
+    let elem1 = document.getElementById(id1);
+    elem1.style['color'] = 'white';
+    elem1.style['font-weight'] = 'bold';
+    let elem2 = document.getElementById(id2);
+    elem2.style['color'] = '#FFFFFF80';
+    elem2.style['font-weight'] = 'normal';
+
     this.calculateUploadedDomains();
     this.possibleProtein = this.all_protein;
     this.boldTabs();

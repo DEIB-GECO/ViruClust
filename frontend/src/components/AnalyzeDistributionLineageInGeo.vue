@@ -4,7 +4,7 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
-            <h1>LINEAGE ANALYSIS</h1>
+            <h1>PREVALENCE OF LINEAGES</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">

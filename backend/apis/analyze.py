@@ -308,14 +308,6 @@ class FieldList(Resource):
         return all_geo
 
 
-@api.route('/allLineages')
-class FieldList(Resource):
-    @api.doc('all_lineages')
-    def get(self):
-        all_lin = all_lineage_dict['all_lineage']
-        return all_lin
-
-
 @api.route('/allProtein')
 class FieldList(Resource):
     @api.doc('all_protein')
@@ -364,7 +356,6 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('possible_country_lineage')
     def post(self):
-
         to_send = api.payload
 
         conn = http.client.HTTPConnection('geco.deib.polimi.it')
@@ -459,10 +450,10 @@ class FieldList(Resource):
 
             if single_item['odd_ratio'] >= 1:
                 single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_country'],
-                                                   item['numerator'] / item['denominator'])
+                                                       item['numerator'] / item['denominator'])
             else:
                 single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_country'],
-                                                       item['numerator'] / item['denominator'])
+                                                   item['numerator'] / item['denominator'])
 
             mutation_table2.append(single_item)
 
@@ -524,7 +515,7 @@ class FieldList(Resource):
                                                        item['numerator'] / item['denominator'])
             else:
                 single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                                                   item['numerator'] / item['denominator'])
 
             mutation_table2.append(single_item)
 
@@ -535,7 +526,6 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('analyze_time_distribution_country_lineage')
     def post(self):
-
         to_send = api.payload
 
         conn = http.client.HTTPConnection('geco.deib.polimi.it')
@@ -555,14 +545,14 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('analyze_time_distribution_country_lineage')
     def post(self):
-
         to_send = api.payload
 
         conn = http.client.HTTPConnection('geco.deib.polimi.it')
         headers = {'Content-type': 'application/json'}
         send = to_send
         json_data = json.dumps(send)
-        conn.request('POST', '/virusurf_epitope/api/epitope/analyzeTimeDistributionBackgroundQueryGeo', json_data, headers)
+        conn.request('POST', '/virusurf_epitope/api/epitope/analyzeTimeDistributionBackgroundQueryGeo', json_data,
+                     headers)
 
         response = conn.getresponse()
         all_result = response.read().decode()
@@ -632,7 +622,7 @@ class FieldList(Resource):
                                                        item['numerator'] / item['denominator'])
             else:
                 single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                                                   item['numerator'] / item['denominator'])
 
             mutation_table2.append(single_item)
 
@@ -694,7 +684,7 @@ class FieldList(Resource):
             if single_item['odd_ratio'] >= 1:
                 if item['denominator'] != 0:
                     single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                                                           item['numerator'] / item['denominator'])
                 else:
                     single_item['p_value'] = 0
             else:
@@ -713,14 +703,14 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('count_overlapping_sequence_target_background')
     def post(self):
-
         to_send = api.payload
 
         conn = http.client.HTTPConnection('geco.deib.polimi.it')
         headers = {'Content-type': 'application/json'}
         send = to_send
         json_data = json.dumps(send)
-        conn.request('POST', '/virusurf_epitope/api/epitope/countOverlappingSequenceTargetBackground', json_data, headers)
+        conn.request('POST', '/virusurf_epitope/api/epitope/countOverlappingSequenceTargetBackground', json_data,
+                     headers)
 
         response = conn.getresponse()
         all_result = response.read().decode()
@@ -753,7 +743,6 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('selector_query')
     def post(self):
-
         to_send = api.payload
 
         conn = http.client.HTTPConnection('geco.deib.polimi.it')
@@ -797,7 +786,6 @@ class FieldList(Resource):
 class FieldList(Resource):
     @api.doc('get_domains')
     def post(self):
-
         payload = api.payload
         name_protein = payload['protein']
 
@@ -809,26 +797,25 @@ class FieldList(Resource):
         annotations3 = copy.deepcopy(annotations)
 
         ann_mutagenesis = annotations1[(annotations.Description.str.lower() != 'n/d')
-                                      & (annotations.Protein.str.lower() == name_protein.lower())
-                                      & (annotations.Category.str.lower() == 'mutagenesis')
-                                      ]
+                                       & (annotations.Protein.str.lower() == name_protein.lower())
+                                       & (annotations.Category.str.lower() == 'mutagenesis')
+                                       ]
         ann_mutagenesis2 = ann_mutagenesis[['Description', 'Begin', 'End']]
         ann_mutagenesis3 = json.loads(ann_mutagenesis2.to_json(orient="records"))
 
         ann_aa_modifications = annotations2[(annotations.Description.str.lower() != 'n/d')
-                                      & (annotations.Protein.str.lower() == name_protein.lower())
-                                      & (annotations.Category.str.lower() == 'ptm')
-                                      & (annotations.Type.str.lower() == 'carbohyd')
-                                      ]
+                                            & (annotations.Protein.str.lower() == name_protein.lower())
+                                            & (annotations.Category.str.lower() == 'ptm')
+                                            & (annotations.Type.str.lower() == 'carbohyd')
+                                            ]
         ann_aa_modifications2 = ann_aa_modifications[['Description', 'Begin', 'End']]
         ann_aa_modifications3 = json.loads(ann_aa_modifications2.to_json(orient="records"))
-        print("ann", ann_aa_modifications3)
 
         ann_sites_family_dom = annotations3[(annotations.Description.str.lower() != 'n/d')
-                                           & (annotations.Protein.str.lower() == name_protein.lower())
-                                           & ((annotations.Category.str.lower() == 'domains_and_sites') |
-                                              (annotations.Type.str.lower() == 'n/d'))
-                                           ]
+                                            & (annotations.Protein.str.lower() == name_protein.lower())
+                                            & ((annotations.Category.str.lower() == 'domains_and_sites') |
+                                               (annotations.Type.str.lower() == 'n/d'))
+                                            ]
         ann_sites_family_dom2 = ann_sites_family_dom[['Description', 'Begin', 'End']]
         ann_sites_family_dom3 = json.loads(ann_sites_family_dom2.to_json(orient="records"))
 
@@ -927,7 +914,8 @@ class FieldList(Resource):
 
                 if not children_lineage and not already_done:
                     name_complete = lineage.split('.')[0]
-                    single_lineage = {'id': idx, 'alias': name_complete, 'name': name_complete, 'real_name': name_complete,
+                    single_lineage = {'id': idx, 'alias': name_complete, 'name': name_complete,
+                                      'real_name': name_complete,
                                       'who': '', 'children': [],
                                       'count': 0}
                     items.append(single_lineage)
@@ -988,6 +976,20 @@ class FieldList(Resource):
         return array_important_mutation
 
 
+@api.route('/checkAccessionId')
+class FieldList(Resource):
+    @api.doc('check_accession_id')
+    def post(self):
+
+        payload = api.payload
+        accession_id = payload['accession_id']
+        acc_id_arr = all_accession_id_dict['all_acc_id']
+        result = False
+        if accession_id in acc_id_arr:
+            result = True
+        return result
+
+
 def recursive_children_lineage(parent, lineage, alias, dict_copy2, dict_lineages):
     children = False
     idx = str(parent['id']) + '_' + str(len(parent['children']))
@@ -1004,7 +1006,8 @@ def recursive_children_lineage(parent, lineage, alias, dict_copy2, dict_lineages
         name_complete = lineage
         if dict_copy2[lineage]['WHO label'] != '':
             name_complete = lineage + ' (' + dict_copy2[lineage]['WHO label'] + ') '
-        single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage, 'who': dict_copy2[lineage]['WHO label'],
+        single_lineage = {'id': idx, 'alias': alias, 'name': name_complete, 'real_name': lineage,
+                          'who': dict_copy2[lineage]['WHO label'],
                           'children': [], 'count': dict_lineages[lineage]['count']}
         parent['children'].append(single_lineage)
 
@@ -1038,7 +1041,7 @@ all_protein_dict = {}
 
 def get_all_protein():
     print("inizio request protein")
-    to_send = {'gcm': {'taxon_name':["severe acute respiratory syndrome coronavirus 2"]}}
+    to_send = {'gcm': {'taxon_name': ["severe acute respiratory syndrome coronavirus 2"]}}
 
     conn = http.client.HTTPConnection('geco.deib.polimi.it')
     headers = {'Content-type': 'application/json'}
@@ -1057,27 +1060,6 @@ def get_all_protein():
     secs = delta_t.total_seconds()
     t2 = Timer(secs, get_all_protein)
     t2.start()
-
-
-all_lineage_dict = {}
-
-
-def get_all_lineage():
-    print("inizio request lineage")
-    conn = http.client.HTTPConnection('geco.deib.polimi.it')
-    conn.request('GET', '/virusurf_epitope/api/epitope/allLineages')
-
-    response = conn.getresponse()
-    all_lin = response.read().decode()
-    all_lin = json.loads(all_lin)
-    all_lineage_dict['all_lineage'] = all_lin
-    print("fine request lineage")
-    x = datetime.today()
-    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
-    delta_t = y - x
-    secs = delta_t.total_seconds()
-    t3 = Timer(secs, get_all_lineage)
-    t3.start()
 
 
 all_geo_dict = {}
@@ -1101,58 +1083,187 @@ def get_all_geo():
     t4.start()
 
 
+all_accession_id_dict = {}
+
+
+def get_all_accession_id():
+    print("inizio request accession id")
+    conn = http.client.HTTPConnection('geco.deib.polimi.it')
+    conn.request('GET', '/virusurf_epitope/api/epitope/allAccessionIds')
+
+    response = conn.getresponse()
+    all_acc_id = response.read().decode()
+    all_acc_id = json.loads(all_acc_id)
+    all_accession_id_arr = []
+    for itm in all_acc_id:
+        all_accession_id_arr.append(itm['accession_id'])
+    all_accession_id_dict['all_acc_id'] = all_accession_id_arr
+    print("fine request accession id")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t3 = Timer(secs, get_all_geo)
+    t3.start()
+
+# -----------------------------------------    MONGO DB    ----------------------------------------------- #
+
+
 def prova_mongo_db():
     print("prova Mongo")
-    # results = db.seq.aggregate([
+    # seq = db.seq
+    #
+    # pipeline = [
     #     {
-    #         "$group": {
-    #             "fullname": {
-    #                 "$covv_accession_id"
-    #             }
-    #         }
-    #     }]
-    # )
-    # print("qui", results)
+    #         "$match": {
+    #             'covv_collection_date': {
+    #                 '$gte': "2019-01-01",
+    #                 '$lte': "2021-07-31",
+    #                 '$regex': "\d\d\d\d-\d\d-\d\d"
+    #             },
+    #                     'covv_location': {
+    #                         '$regex': "Italy"
+    #                      },
+    #         },
+    #     },
+    #     {"$unwind": "$muts"},
+    #     {"$group": {"_id": {'pr': "$muts.pr",
+    #                         'orig': "$muts.orig",
+    #                         'loc': "$muts.loc",
+    #                         'alt': "$muts.alt",
+    #                         }
+    #         , "count": {"$sum": 1}}},
+    #     #     { '$sort': { "_id.orig": -1 } }
+    #
+    # ]
+    # print("start")
+    # results = seq.aggregate(pipeline, )
+    # print("stop")
     # for i, x in enumerate(results):
-    #     print("qui2", x)
+    #     if i < 1:
+    #         print("qui", x)
+    #         break
+    # print("fine prova Mongo2")
 
-    seq = db.seq
 
-    pipeline = [
-        {
-            "$match": {
-                'covv_collection_date': {
-                    '$gte': "2019-01-01",
-                    '$lte': "2021-07-31",
-                    '$regex': "\d\d\d\d-\d\d-\d\d"
+def get_all_geo_mongoDB():
+    print("inizio request geo")
+    results = db.seq.aggregate(
+        [
+            {
+                "$match": {
+                    'covv_collection_date': {
+                        '$gte': "2019-01-01",
+                        '$regex': "\d\d\d\d-\d\d-\d\d"
+                    },
                 },
-                        'covv_location': {
-                            '$regex': "Italy"
-                         },
             },
-        },
-        {"$unwind": "$muts"},
-        {"$group": {"_id": {'pr': "$muts.pr",
-                            'orig': "$muts.orig",
-                            'loc': "$muts.loc",
-                            'alt': "$muts.alt",
-                            }
-            , "count": {"$sum": 1}}},
-        #     { '$sort': { "_id.orig": -1 } }
+            {
+                "$group": {"_id": {"location": "$covv_location"
+                                   },
+                           "count": {"$sum": 1}
+                           }
+            },
+        ]
+    )
+    list_geo_dict = []
+    for single_item in results:
+        single_item_remodel = {}
+        all_location = single_item['_id']['location'].replace(" / ", "/").replace("/ ", "/").replace(" /", "/").split(
+            '/')
+        i = 0
+        while i < 4:
+            if i == 0:
+                if i > len(all_location) - 1:
+                    single_item_remodel['geo_group'] = None
+                else:
+                    single_item_remodel['geo_group'] = all_location[i]
+            elif i == 1:
+                if i > len(all_location) - 1:
+                    single_item_remodel['country'] = None
+                else:
+                    single_item_remodel['country'] = all_location[i]
+            elif i == 2:
+                if i > len(all_location) - 1:
+                    single_item_remodel['region'] = None
+                else:
+                    single_item_remodel['region'] = all_location[i]
+            elif i == 3:
+                if i > len(all_location) - 1:
+                    single_item_remodel['province'] = None
+                else:
+                    single_item_remodel['province'] = all_location[i]
+            i = i + 1
+        single_item_remodel['count'] = single_item['count']
+        list_geo_dict.append(single_item_remodel)
+    all_geo_dict['all_geo'] = list_geo_dict
+    print("fine request geo")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t4 = Timer(secs, get_all_geo)
+    t4.start()
 
-    ]
-    print("start")
-    results = seq.aggregate(pipeline, )
-    print("stop")
-    for i, x in enumerate(results):
-        if i < 1:
-            print("qui", x)
-            break
-    print("fine prova Mongo2")
+
+@api.route('/selectorQueryMongoDB')
+class FieldList(Resource):
+    @api.doc('selector_query_mongo_db')
+    def post(self):
+
+        to_use = api.payload
+        field_name = to_use['field']
+        query_fields = to_use['query']
+
+        if field_name in query_fields:
+            del query_fields[field_name]
+
+        i = 0
+        where_part = {}
+        if query_fields is not None:
+            for key in query_fields:
+                if key == 'minDate':
+                    where_part['covv_collection_date'] = {}
+                    where_part['covv_collection_date']['$regex'] = "\d\d\d\d-\d\d-\d\d"
+                    where_part['covv_collection_date']['$gte'] = f"{query_fields[key]}"
+                elif key == 'maxDate':
+                    where_part['covv_collection_date'] = {}
+                    where_part['covv_collection_date']['$regex'] = "\d\d\d\d-\d\d-\d\d"
+                    where_part['covv_collection_date']['$lte'] = f"{query_fields[key]}"
+                else:
+                    if key == 'toExclude':
+                        for fieldToExclude in query_fields[key]:
+                            for geoToExclude in query_fields[key][fieldToExclude]:
+                                where_part[f'{fieldToExclude}'] = {}
+                                geo_value = geoToExclude.replace("'", "''")
+                                where_part[f'{fieldToExclude}']['$ne'] = f'{geo_value}'
+                    else:
+                        if isinstance(query_fields[key], list):
+                            where_part[f'{key}'] = {}
+                            where_part[f'{key}']['$or'] = []
+                            for itm in query_fields[key]:
+                                single_or = {}
+                                field_value = itm
+                                if key != 'start_aa_original':
+                                    field_value = itm.replace("'", "''")
+                                single_or[f'$eq'] = f'{field_value}'
+                                where_part[f'{key}']['$or'].append(single_or)
+                        else:
+                            replace_fields_value = query_fields[key]
+                            if key != 'start_aa_original':
+                                replace_fields_value = query_fields[key].replace("'", "''")
+                            where_part[f'{key}'] = f'{replace_fields_value}'
+                i = i + 1
+        print("qui", where_part)
+        return 0
+
+
+# -----------------------------------------    START FUNCTIONS    ----------------------------------------------- #
 
 
 get_all_important_mutation()
+get_all_accession_id()
 get_all_geo()
 get_all_protein()
-get_all_lineage()
+
 # prova_mongo_db()
