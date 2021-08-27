@@ -301,8 +301,8 @@ export default {
       wrong_last_start_date: false,
       wrong_last_stop_date: false,
 
-      min_num_seq_target: 10,
-      min_num_seq_background: 10,
+      min_num_seq_target: 50,
+      min_num_seq_background: 50,
       target_name: 'World',
       background_name: 'World',
 

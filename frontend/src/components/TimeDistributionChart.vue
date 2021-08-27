@@ -296,8 +296,8 @@ export default {
       wrongDateStartTarget: false,
       wrongDateStopTarget: false,
 
-      min_num_seq_target: 10,
-      min_num_seq_background: 10,
+      min_num_seq_target: 50,
+      min_num_seq_background: 50,
       isStartTargetStopBackground: false,
 
       options_slider: {

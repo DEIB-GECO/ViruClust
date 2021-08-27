@@ -108,7 +108,7 @@
                  </v-card-title>
                  <v-card-text style="text-align: center; padding-top: 0; margin-top: 0;">
                    <span>
-                      <span style="color: red; text-align: center"> (The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.) </span><br><br>
+                      <span style="color: red; text-align: center"> (The number of some of the currently selected genomic sequences is too low. A minimum of 50 sequences must be selected for both the target and background. Please change your setting.) </span><br><br>
                       <span style="color: black; text-align: center" v-for="location in locationToExcludeMulti" v-bind:key="location"> {{location}}<br> </span>
                    </span>
                  </v-card-text>
@@ -116,11 +116,11 @@
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px"
              v-if="locationToExcludeMulti.length > 0 && errorNumSeqQueryGeo">
-               <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span>
+               <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 50 sequences must be selected for both the target and background. Please change your setting.</span>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 30px"
              v-else-if="errorNumSeqQueryGeo">
-               <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span>
+               <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 50 sequences must be selected for both the target and background. Please change your setting.</span>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                <v-btn

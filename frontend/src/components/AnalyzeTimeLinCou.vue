@@ -114,7 +114,7 @@
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqQueryTime">
-                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 genomes need to be selected for both the target and the background.</span>
+                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 50 sequences must be selected for both the target and background. Please change your setting.</span>
                </v-flex>
                 <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                   <v-btn

@@ -222,7 +222,7 @@ export default {
       timeDivision: [],
       timeDivisionNumSeqAcceptable: [],
 
-      min_num_seq: 10,
+      min_num_seq: 50,
 
       options_slider: {
         enableCross: false

@@ -36,8 +36,8 @@
                       <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
 
                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                          <v-btn id="tabTargetFree1" large color="#457B9D" @click="selectedTabTargetFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> DEFINE THROUGH METADATA</v-btn>
-                          <v-btn id="tabTargetFree2" large color="#457B9D" @click="selectedTabTargetFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> DEFINE THROUGH IDs </v-btn>
+                          <v-btn id="tabTargetFree1" large color="#457B9D" @click="selectedTabTargetFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
+                          <v-btn id="tabTargetFree2" large color="#457B9D" @click="selectedTabTargetFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> USE IDS </v-btn>
                         </v-flex>
 
                         <v-layout row wrap justify-center v-if="selectedTabTargetFreeQuery === 0">
@@ -74,7 +74,7 @@
                                     <v-card-text style="text-align: center;">
                                      <span>
                                        <br>
-                                        For statistical significance you need to provide at least 50 valid ids.
+                                        For statistical significance you need to provide at least 50 valid ids not overlapping with the background.
                                        <br>
                                      </span>
                                     </v-card-text>
@@ -185,7 +185,7 @@
                                          <span>
                                           <br><br>
                                          </span>
-                                          <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                          <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds('target')" x-small icon
                                             style="margin-left: 20px;">
                                               <v-icon size="18">
                                                 mdi-download-circle-outline
@@ -243,8 +243,8 @@
                       <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
 
                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                          <v-btn id="tabBackgroundFree1" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> DEFINE THROUGH METADATA</v-btn>
-                          <v-btn id="tabBackgroundFree2" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> DEFINE THROUGH IDs </v-btn>
+                          <v-btn id="tabBackgroundFree1" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
+                          <v-btn id="tabBackgroundFree2" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> USE IDS </v-btn>
                         </v-flex>
 
                           <v-layout row wrap justify-center v-if="selectedTabBackgroundFreeQuery === 0">
@@ -280,7 +280,7 @@
                                     <v-card-text style="text-align: center;">
                                      <span>
                                        <br>
-                                        For statistical significance you need to provide at least 50 valid ids.
+                                        For statistical significance you need to provide at least 50 valid ids not overlapping with the target.
                                        <br>
                                      </span>
                                     </v-card-text>
@@ -391,7 +391,7 @@
                                            <span>
                                             <br><br>
                                            </span>
-                                            <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds()" x-small icon
+                                            <span><b>EXAMPLE OF FILE</b> <v-btn @click="downloadExampleListAccessionIds('background')" x-small icon
                                               style="margin-left: 20px;">
                                                 <v-icon size="18">
                                                   mdi-download-circle-outline
@@ -505,7 +505,7 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;"
                v-if="errorNumSeqFreeQuery">
               <span style="text-align: center">
-                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 10 (or 50 if defined by ids) genomes need to be selected for both the target and the background.</span><br>
+                 <span style="color: red"> The number of currently selected genomic sequences is too low. A minimum of 50 non-overlapping sequences must be selected for both the target and background. Please change your setting.</span><br>
                  <span style="color: red"> (Please be aware that overlapping entries are removed from {{selectRemoveOverlapping.toLowerCase()}})</span>
               </span>
                </v-flex>
@@ -1573,8 +1573,8 @@ export default {
     return {
       selectedTabFreeQuery: 0,
       errorNumSeqFreeQuery: false,
-      min_num_seq_target: 10,
-      min_num_seq_background: 10,
+      min_num_seq_target: 50,
+      min_num_seq_background: 50,
       min_num_seq_target_acc_ids: 50,
       min_num_seq_background_acc_ids: 50,
 
@@ -1760,16 +1760,30 @@ export default {
       }
       this.accession_id_background = null;
     },
-    downloadExampleListAccessionIds(){
-      let text = 'EPI_ISL_2978687,  EPI_ISL_3039740;  EPI_ISL_3039752;  EPI_ISL_3039761;  EPI_ISL_3039764;  ' +
-          'EPI_ISL_3039780;  EPI_ISL_3039789;  EPI_ISL_3039813;  EPI_ISL_3039825;  EPI_ISL_3051315;  EPI_ISL_3051318;  ' +
-          'EPI_ISL_3051328;  EPI_ISL_3051345;  EPI_ISL_3051370;  EPI_ISL_3051383; EPI_ISL_3039900; EPI_ISL_3039901; ' +
-          'EPI_ISL_3039902; EPI_ISL_3039903; EPI_ISL_3039904; EPI_ISL_3039905; EPI_ISL_3039906; EPI_ISL_3039907; ' +
-          'EPI_ISL_3039908; EPI_ISL_3039909; EPI_ISL_3039500; EPI_ISL_3039501; EPI_ISL_3039502; EPI_ISL_3039503;' +
-          'EPI_ISL_3039504; EPI_ISL_3039505; EPI_ISL_3039506; EPI_ISL_3039507; EPI_ISL_3039508; EPI_ISL_3039509;' +
-          ' EPI_ISL_3039510; EPI_ISL_3039511; EPI_ISL_3039512; EPI_ISL_3039513; EPI_ISL_3039514; EPI_ISL_3039515;' +
-          ' EPI_ISL_3039516; EPI_ISL_3039517; EPI_ISL_3039518; EPI_ISL_3039519; EPI_ISL_3039520; EPI_ISL_3039521;' +
-          ' EPI_ISL_3039522; EPI_ISL_3039523; EPI_ISL_3039524;';
+    downloadExampleListAccessionIds(type){
+      let text;
+      if(type === 'target'){
+        text = 'EPI_ISL_3039500;  EPI_ISL_3039501;  EPI_ISL_3039502;  EPI_ISL_3039503;  EPI_ISL_3039504;  ' +
+          ' EPI_ISL_3039505; EPI_ISL_3039506; EPI_ISL_3039507; EPI_ISL_3039508; EPI_ISL_3039509; EPI_ISL_3039510;' +
+          ' EPI_ISL_3039511; EPI_ISL_3039512; EPI_ISL_3039513; EPI_ISL_3039514; EPI_ISL_3039515; EPI_ISL_3039516;' +
+          ' EPI_ISL_3039517; EPI_ISL_3039518; EPI_ISL_3039519; EPI_ISL_3039520; EPI_ISL_3039521; EPI_ISL_3039522;' +
+          ' EPI_ISL_3039523; EPI_ISL_3039524; EPI_ISL_3039525; EPI_ISL_3039526; EPI_ISL_3039527; EPI_ISL_3039528;' +
+          ' EPI_ISL_3039529; EPI_ISL_3039530; EPI_ISL_3039531; EPI_ISL_3039532; EPI_ISL_3039533; EPI_ISL_3039534;' +
+          ' EPI_ISL_3039535; EPI_ISL_3039536; EPI_ISL_3039537; EPI_ISL_3039538; EPI_ISL_3039539; EPI_ISL_3039540;' +
+          ' EPI_ISL_3039541; EPI_ISL_3039542; EPI_ISL_3039543; EPI_ISL_3039544; EPI_ISL_3039545; EPI_ISL_3039546;' +
+          ' EPI_ISL_3039547; EPI_ISL_3039548; EPI_ISL_3039549;';
+      }
+      else{
+        text = 'EPI_ISL_3039300;  EPI_ISL_3039301;  EPI_ISL_3039302;  EPI_ISL_3039303;  EPI_ISL_3039304;  ' +
+          ' EPI_ISL_3039305; EPI_ISL_3039306; EPI_ISL_3039307; EPI_ISL_3039308; EPI_ISL_3039309; EPI_ISL_3039310;' +
+          ' EPI_ISL_3039311; EPI_ISL_3039312; EPI_ISL_3039313; EPI_ISL_3039314; EPI_ISL_3039315; EPI_ISL_3039316;' +
+          ' EPI_ISL_3039317; EPI_ISL_3039318; EPI_ISL_3039319; EPI_ISL_3039320; EPI_ISL_3039321; EPI_ISL_3039322;' +
+          ' EPI_ISL_3039323; EPI_ISL_3039324; EPI_ISL_3039325; EPI_ISL_3039326; EPI_ISL_3039327; EPI_ISL_3039328;' +
+          ' EPI_ISL_3039329; EPI_ISL_3039330; EPI_ISL_3039331; EPI_ISL_3039332; EPI_ISL_3039333; EPI_ISL_3039334;' +
+          ' EPI_ISL_3039335; EPI_ISL_3039336; EPI_ISL_3039337; EPI_ISL_3039338; EPI_ISL_3039339; EPI_ISL_3039340;' +
+          ' EPI_ISL_3039341; EPI_ISL_3039342; EPI_ISL_3039343; EPI_ISL_3039344; EPI_ISL_3039345; EPI_ISL_3039346;' +
+          ' EPI_ISL_3039347; EPI_ISL_3039348; EPI_ISL_3039349; EPI_ISL_3039350;';
+      }
       let filename = 'exampleListAccessionIds.txt';
       let element = document.createElement('a');
       element.setAttribute('download', filename);
