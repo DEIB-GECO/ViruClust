@@ -9,11 +9,12 @@
                 </v-icon>
            </v-btn>
         </v-flex>
-        <v-row justify="center" align="center" style="z-index: 1">
+        <v-row justify="center" align="center" style="z-index: 1; position: relative">
           <div :id="nameHeatmap" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white; z-index: 1">
           </div>
+          <span style="position: absolute; bottom: 75px; z-index: 2; color: black">Interval of Percentage</span>
         </v-row>
     </v-container>
 </template>

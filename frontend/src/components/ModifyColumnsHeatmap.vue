@@ -45,8 +45,8 @@
                  <v-text-field
                   v-model = "newNameColumn"
                   solo
-                  label= "Insert new name for column"
                   hide-details
+                  :label="labelNameColumn"
                 ></v-text-field>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
@@ -136,6 +136,7 @@ export default {
         newNameColumn: null,
         arrayOfUnions: [],
         allCombinedColumns: [],
+        labelNameColumn: 'New column label'
       }
    },
   computed: {
