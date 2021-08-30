@@ -1100,7 +1100,9 @@
                                         <span style="color: white; font-weight: 900; background-color: red; padding: 5px" v-if="header.value === 'mutation_position' && importantMutation['mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
                                         <span style="color: white; font-weight: 900; background-color: orange; padding: 5px" v-else-if="header.value === 'mutation_position' && importantMutation['additional_mutation'].includes(item['mutation'])">{{item['mutation']}}</span>
                                         <span v-else-if="header.value === 'mutation_position'">{{item['mutation']}}</span>
-                                        <span v-else-if="header.value === 'p_value'">{{item['p_value'].toFixed(5)}}</span>
+                                        <span v-else-if="header.value === 'p_value' && item['p_value'] >= 0.00001">{{item['p_value'].toFixed(5)}}</span>
+                                        <span v-else-if="header.value === 'p_value' && item['p_value'] > 0 && item['p_value'] < 0.00001">{{item['p_value']}}</span>
+                                        <span v-else-if="header.value === 'p_value' && item['p_value'] === 0">{{p_value_lower}}</span>
                                         <span v-else-if="header.value === 'odd_ratio'">
                                           <span v-if="item['percentage_background'] === 0"> INF </span>
                                           <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
@@ -1600,6 +1602,7 @@ export default {
       pValueName: [],
       pValueContent: [],
       pValueBarChartApplied: false,
+      p_value_lower: '<0.00001',
 
       selectedProteinForPValue: null,
       possibleProteinForPValue: [],

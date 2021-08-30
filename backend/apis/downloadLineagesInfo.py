@@ -112,7 +112,8 @@ def create_dictionary():
                 for lin in arr_lineage:
                     if lin in dict_lineage_mutation:
                         single_line = dict_lineage_mutation[lin]
-                        single_line['WHO label'] = row['WHO label']
+                        if dict_lineage_mutation[lin]['WHO label'] == '':
+                            single_line['WHO label'] = row['WHO label']
                         mutation = row['Spike mutations of interest']
                         mutation = mutation.replace("'", "")
                         mutation = mutation.replace("ins", "-")
