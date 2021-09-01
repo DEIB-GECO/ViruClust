@@ -5,7 +5,8 @@ import json
 import pandas as pd
 import copy
 
-from scipy.stats import binom
+import statsmodels.stats.multitest as sms
+from scipy.stats import binom, chi2_contingency
 from flask_restplus import Namespace, Resource
 
 from datetime import datetime, timedelta
@@ -418,6 +419,7 @@ class FieldList(Resource):
         all_result = json.loads(all_result)
 
         mutation_table2 = []
+        arr_p_values = []
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
@@ -449,13 +451,33 @@ class FieldList(Resource):
                                        (single_item['percentage_background'] + epsilon)
 
             if single_item['odd_ratio'] >= 1:
-                single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_country'],
-                                                       item['numerator'] / item['denominator'])
+                # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_country'],
+                #                                        item['numerator'] / item['denominator'])
+                stat, p, dof, expected =  \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
             else:
-                single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_country'],
-                                                   item['numerator'] / item['denominator'])
+                # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_country'],
+                #                                    item['numerator'] / item['denominator'])
+                stat, p, dof, expected = \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
 
+            arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
+
+        a, new_p_values, c, d = sms.multipletests(arr_p_values, method='bonferroni')
+
+        i = 0
+        for item in mutation_table2:
+            item['pvalue'] = new_p_values[i]
+            i = i + 1
 
         return mutation_table2
 
@@ -478,6 +500,7 @@ class FieldList(Resource):
         all_result = json.loads(all_result)
 
         mutation_table2 = []
+        arr_p_values = []
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
@@ -511,13 +534,33 @@ class FieldList(Resource):
                                        (single_item['percentage_background'] + epsilon)
 
             if single_item['odd_ratio'] >= 1:
-                single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
+                #                                        item['numerator'] / item['denominator'])
+                stat, p, dof, expected =  \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
             else:
-                single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
-                                                   item['numerator'] / item['denominator'])
+                # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
+                #                                    item['numerator'] / item['denominator'])
+                stat, p, dof, expected = \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
 
+            arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
+
+        a, new_p_values, c, d = sms.multipletests(arr_p_values, method='bonferroni')
+
+        i = 0
+        for item in mutation_table2:
+            item['pvalue'] = new_p_values[i]
+            i = i + 1
 
         return mutation_table2
 
@@ -579,6 +622,7 @@ class FieldList(Resource):
         all_result = json.loads(all_result)
 
         mutation_table2 = []
+        arr_p_values = []
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
@@ -618,13 +662,33 @@ class FieldList(Resource):
                                        (single_item['percentage_background'] + epsilon)
 
             if single_item['odd_ratio'] >= 1:
-                single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
+                #                                        item['numerator'] / item['denominator'])
+                stat, p, dof, expected = \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
             else:
-                single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
-                                                   item['numerator'] / item['denominator'])
+                # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
+                #                                    item['numerator'] / item['denominator'])
+                stat, p, dof, expected = \
+                    chi2_contingency([[single_item['numerator_background'],
+                                       single_item['denominator_background'] - single_item['numerator_background']],
+                                      [single_item['numerator_target'],
+                                       single_item['denominator_target'] - single_item['numerator_target']]])
+                single_item['p_value'] = p
 
+            arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
+
+        a, new_p_values, c, d = sms.multipletests(arr_p_values, method='bonferroni')
+
+        i = 0
+        for item in mutation_table2:
+            item['pvalue'] = new_p_values[i]
+            i = i + 1
 
         return mutation_table2
 
@@ -647,6 +711,7 @@ class FieldList(Resource):
         all_result = json.loads(all_result)
 
         mutation_table2 = []
+        arr_p_values = []
         for item in all_result:
             single_item = {}
             if item['product'] == 'Spike (surface glycoprotein)':
@@ -683,18 +748,50 @@ class FieldList(Resource):
 
             if single_item['odd_ratio'] >= 1:
                 if item['denominator'] != 0:
-                    single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
-                                                           item['numerator'] / item['denominator'])
+                    # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
+                    #                                        item['numerator'] / item['denominator'])
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
                 else:
-                    single_item['p_value'] = 0
+                    # single_item['p_value'] = 0
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
             else:
                 if item['denominator'] != 0:
-                    single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
-                                                       item['numerator'] / item['denominator'])
+                    # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
+                    #                                    item['numerator'] / item['denominator'])
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
                 else:
-                    single_item['p_value'] = 0
+                    # single_item['p_value'] = 0
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
 
+            arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
+
+        a, new_p_values, c, d = sms.multipletests(arr_p_values, method='bonferroni')
+
+        i = 0
+        for item in mutation_table2:
+            item['pvalue'] = new_p_values[i]
+            i = i + 1
 
         return mutation_table2
 
@@ -1109,58 +1206,92 @@ def get_all_accession_id():
 # -----------------------------------------    MONGO DB    ----------------------------------------------- #
 
 
+translate_dictionary = {
+    'accession_id': '_id',
+    'lineage': 'covv_lineage',
+    'collection_date': 'covv_collection_date',
+    'location': 'covv_location',
+}
+
+
 def prova_mongo_db():
     print("prova Mongo")
-    # seq = db.seq
-    #
-    # pipeline = [
-    #     {
-    #         "$match": {
-    #             'covv_collection_date': {
-    #                 '$gte': "2019-01-01",
-    #                 '$lte': "2021-07-31",
-    #                 '$regex': "\d\d\d\d-\d\d-\d\d"
-    #             },
-    #                     'covv_location': {
-    #                         '$regex': "Italy"
-    #                      },
-    #         },
-    #     },
-    #     {"$unwind": "$muts"},
-    #     {"$group": {"_id": {'pr': "$muts.pr",
-    #                         'orig': "$muts.orig",
-    #                         'loc': "$muts.loc",
-    #                         'alt': "$muts.alt",
-    #                         }
-    #         , "count": {"$sum": 1}}},
-    #     #     { '$sort': { "_id.orig": -1 } }
-    #
-    # ]
-    # print("start")
-    # results = seq.aggregate(pipeline, )
-    # print("stop")
+    seq = db.seq
+    print("prova Mongo2")
+
+    #             "$match": {
+    #             # 'covv_collection_date': {
+    #             #     '$gte': "2019-01-01",
+    #             #     '$lte': "2021-07-31",
+    #             #     '$regex': "\d\d\d\d-\d\d-\d\d"
+    #             # },
+    #             # 'covv_location': {
+    #             #     '$regex': "Italy"
+    #             #  },
+
+    pipeline = [
+        {
+            "$match": {
+                'location.geo_group': {
+                    '$eq': 'Oceania'
+                },
+                'location.country': {
+                    '$eq': 'Australia'
+                },
+                'location.region': {
+                    '$eq': 'Northern Territory'
+                },
+            },
+        },
+        {"$unwind": "$muts"},
+        {"$group":
+         #{"_id": "$_id",
+            {"_id":
+                {'pro': "$muts.pro",
+                 'org': "$muts.org",
+                 'loc': "$muts.loc",
+                 'alt': "$muts.alt",
+                 },
+             "count": {"$sum": 1}
+             }
+         },
+        {'$sort':
+            {"_id.pro": -1}
+         }
+    ]
+    print("start")
+    results = seq.aggregate(pipeline, )
+    print("stop", len(list(results)))
     # for i, x in enumerate(results):
-    #     if i < 1:
-    #         print("qui", x)
+    #    print("qui", x)
+    #    if i < 1:
+    #        print("qui", x)
     #         break
-    # print("fine prova Mongo2")
+    print("fine prova Mongo2")
 
 
 def get_all_geo_mongoDB():
     print("inizio request geo")
+    start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
     results = db.seq.aggregate(
         [
             {
                 "$match": {
-                    'covv_collection_date': {
-                        '$gte': "2019-01-01",
-                        '$regex': "\d\d\d\d-\d\d-\d\d"
+                    'collection_date': {
+                        '$gte': start_date
                     },
+                    'c_coll_date_prec': {
+                        '$eq': 2
+                      },
                 },
             },
             {
-                "$group": {"_id": {"location": "$covv_location"
-                                   },
+                "$group": {"_id":
+                               {"geo_group": "$location.geo_group",
+                                "country": "$location.country",
+                                "region": "$location.region",
+                                "province": "$location.province"
+                                },
                            "count": {"$sum": 1}
                            }
             },
@@ -1168,33 +1299,10 @@ def get_all_geo_mongoDB():
     )
     list_geo_dict = []
     for single_item in results:
-        single_item_remodel = {}
-        all_location = single_item['_id']['location'].replace(" / ", "/").replace("/ ", "/").replace(" /", "/").split(
-            '/')
-        i = 0
-        while i < 4:
-            if i == 0:
-                if i > len(all_location) - 1:
-                    single_item_remodel['geo_group'] = None
-                else:
-                    single_item_remodel['geo_group'] = all_location[i]
-            elif i == 1:
-                if i > len(all_location) - 1:
-                    single_item_remodel['country'] = None
-                else:
-                    single_item_remodel['country'] = all_location[i]
-            elif i == 2:
-                if i > len(all_location) - 1:
-                    single_item_remodel['region'] = None
-                else:
-                    single_item_remodel['region'] = all_location[i]
-            elif i == 3:
-                if i > len(all_location) - 1:
-                    single_item_remodel['province'] = None
-                else:
-                    single_item_remodel['province'] = all_location[i]
-            i = i + 1
-        single_item_remodel['count'] = single_item['count']
+        single_item_remodel = {'geo_group': single_item['_id']['geo_group'],
+                               'country': single_item['_id']['country'],
+                               'region': single_item['_id']['region'],
+                               'province': single_item['_id']['province'], 'count': single_item['count']}
         list_geo_dict.append(single_item_remodel)
     all_geo_dict['all_geo'] = list_geo_dict
     print("fine request geo")
@@ -1215,48 +1323,129 @@ class FieldList(Resource):
         field_name = to_use['field']
         query_fields = to_use['query']
 
+        # field_name = 'country'
+        # query_fields = {'lineage': 'B.1', 'geo_group': ['Europe', 'Asia'], 'minDate': '2020-01-01', 'maxDate': "2021-01-01",
+        #                 'toExclude': {}}
+        # 'toExclude': {'geo_group': ['Asia'], 'country': ['Italy', 'France']
+
         if field_name in query_fields:
             del query_fields[field_name]
 
         i = 0
         where_part = {}
+        start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
+        where_part['c_coll_date_prec'] = {}
+        where_part['c_coll_date_prec']['$eq'] = 2
+        where_part['collection_date'] = {}
+        where_part['collection_date']['$gte'] = start_date
+
+        field_not_null = field_name
+        if field_not_null in translate_dictionary:
+            field_not_null = translate_dictionary[field_name]
+        if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
+            field_not_null = 'location.' + field_name
+        where_part[field_not_null] = {'$ne': None}
+
         if query_fields is not None:
             for key in query_fields:
                 if key == 'minDate':
-                    where_part['covv_collection_date'] = {}
-                    where_part['covv_collection_date']['$regex'] = "\d\d\d\d-\d\d-\d\d"
-                    where_part['covv_collection_date']['$gte'] = f"{query_fields[key]}"
+                    start_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+                    where_part['collection_date']['$gte'] = start_date
                 elif key == 'maxDate':
-                    where_part['covv_collection_date'] = {}
-                    where_part['covv_collection_date']['$regex'] = "\d\d\d\d-\d\d-\d\d"
-                    where_part['covv_collection_date']['$lte'] = f"{query_fields[key]}"
-                else:
-                    if key == 'toExclude':
-                        for fieldToExclude in query_fields[key]:
-                            for geoToExclude in query_fields[key][fieldToExclude]:
-                                where_part[f'{fieldToExclude}'] = {}
-                                geo_value = geoToExclude.replace("'", "''")
-                                where_part[f'{fieldToExclude}']['$ne'] = f'{geo_value}'
-                    else:
-                        if isinstance(query_fields[key], list):
-                            where_part[f'{key}'] = {}
-                            where_part[f'{key}']['$or'] = []
-                            for itm in query_fields[key]:
-                                single_or = {}
-                                field_value = itm
-                                if key != 'start_aa_original':
-                                    field_value = itm.replace("'", "''")
-                                single_or[f'$eq'] = f'{field_value}'
-                                where_part[f'{key}']['$or'].append(single_or)
-                        else:
-                            replace_fields_value = query_fields[key]
-                            if key != 'start_aa_original':
-                                replace_fields_value = query_fields[key].replace("'", "''")
-                            where_part[f'{key}'] = f'{replace_fields_value}'
-                i = i + 1
-        print("qui", where_part)
-        return 0
+                    stop_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+                    where_part['collection_date']['$lte'] = stop_date
 
+                elif key == 'toExclude':
+                    for fieldToExclude in query_fields[key]:
+                        if '$and' not in where_part:
+                            where_part['$and'] = []
+
+                        single_where_part = {'$and': []}
+                        for geoToExclude in query_fields[key][fieldToExclude]:
+                            real_field_to_exclude = fieldToExclude
+                            if fieldToExclude == 'geo_group' or fieldToExclude == 'country' \
+                                    or fieldToExclude == 'region' or fieldToExclude == 'province':
+                                real_field_to_exclude = 'location.' + fieldToExclude
+                            specific_and = {}
+                            geo_value = geoToExclude.replace("'", "''")
+                            specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
+                            single_where_part['$and'].append(specific_and)
+                        where_part['$and'].append(single_where_part)
+
+                elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+                    if '$and' not in where_part:
+                        where_part['$and'] = []
+
+                    real_key = key
+                    if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+                        real_key = 'location.' + key
+                    if isinstance(query_fields[key], list):
+                        single_where_part_or = {'$or': []}
+                        for itm in query_fields[key]:
+                            specific_or = {}
+                            field_value = itm.replace("'", "''")
+                            specific_or[f'{real_key}'] = {'$eq': field_value}
+                            single_where_part_or['$or'].append(specific_or)
+                        where_part['$and'].append(single_where_part_or)
+                    else:
+                        single_where_part_or = {'$or': []}
+                        replace_fields_value = query_fields[key].replace("'", "''")
+                        specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
+                        single_where_part_or['$or'].append(specific_or)
+                        where_part['$and'].append(single_where_part_or)
+
+                else:
+                    real_key = key
+                    if key in translate_dictionary:
+                        real_key = translate_dictionary[key]
+                    replace_fields_value = query_fields[key]
+                    if key != 'start_aa_original':
+                        replace_fields_value = query_fields[key].replace("'", "''")
+                    if real_key not in where_part:
+                        where_part[real_key] = {}
+                    where_part[real_key]['$eq'] = replace_fields_value
+
+                i = i + 1
+
+        query = []
+
+        query_where = {"$match": where_part}
+        query.append(query_where)
+
+        group_part = {}
+        real_field = field_name
+        if field_name in translate_dictionary:
+            real_field = translate_dictionary[field_name]
+        if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
+            real_field = 'location.' + field_name
+        group_part["_id"] = {"value": f"${real_field}"}
+        group_part["count"] = {"$sum": 1}
+        query_group = {"$group": group_part}
+        query.append(query_group)
+
+        sort_part = {"count": -1}
+        query_sort = {"$sort": sort_part}
+        query.append(query_sort)
+        # print("query", query)
+
+        results = db.seq.aggregate(query)
+
+        list_dict = []
+        for single_item in list(results):
+            single_item_remodel = {}
+            for key in single_item:
+                if key == '_id':
+                    single_item_remodel['value'] = single_item['_id']['value']
+                else:
+                    single_item_remodel[key] = single_item[key]
+            list_dict.append(single_item_remodel)
+
+        # print("field:", field_name, "  result:", list_dict)
+        return list_dict
+
+
+def prova_mongo_2():
+    print("qui2")
 
 # -----------------------------------------    START FUNCTIONS    ----------------------------------------------- #
 
@@ -1267,3 +1456,4 @@ get_all_geo()
 get_all_protein()
 
 # prova_mongo_db()
+# prova_mongo_2()
