@@ -151,7 +151,7 @@ export default {
               if(this.type === 'background') {
                 query = this.queryFreeBackground;
               }
-              if(query[this.field]){
+              if(query[this.field] && this.field !== 'lineage'){
                 let arr = query[this.field];
                 let index_to_cancel = [];
                 for(let i = 0; i < arr.length; i = i + 1){

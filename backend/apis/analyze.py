@@ -453,21 +453,29 @@ class FieldList(Resource):
             if single_item['odd_ratio'] >= 1:
                 # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_country'],
                 #                                        item['numerator'] / item['denominator'])
-                stat, p, dof, expected =  \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
             else:
                 # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_country'],
                 #                                    item['numerator'] / item['denominator'])
-                stat, p, dof, expected = \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
 
             arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
@@ -536,21 +544,29 @@ class FieldList(Resource):
             if single_item['odd_ratio'] >= 1:
                 # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
                 #                                        item['numerator'] / item['denominator'])
-                stat, p, dof, expected =  \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected =  \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
             else:
                 # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
                 #                                    item['numerator'] / item['denominator'])
-                stat, p, dof, expected = \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
 
             arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
@@ -664,21 +680,29 @@ class FieldList(Resource):
             if single_item['odd_ratio'] >= 1:
                 # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
                 #                                        item['numerator'] / item['denominator'])
-                stat, p, dof, expected = \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
             else:
                 # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
                 #                                    item['numerator'] / item['denominator'])
-                stat, p, dof, expected = \
-                    chi2_contingency([[single_item['numerator_background'],
-                                       single_item['denominator_background'] - single_item['numerator_background']],
-                                      [single_item['numerator_target'],
-                                       single_item['denominator_target'] - single_item['numerator_target']]])
-                single_item['p_value'] = p
+                if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                        and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                    single_item['p_value'] = 1
+                else:
+                    stat, p, dof, expected = \
+                        chi2_contingency([[single_item['numerator_background'],
+                                           single_item['denominator_background'] - single_item['numerator_background']],
+                                          [single_item['numerator_target'],
+                                           single_item['denominator_target'] - single_item['numerator_target']]])
+                    single_item['p_value'] = p
 
             arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
@@ -750,38 +774,58 @@ class FieldList(Resource):
                 if item['denominator'] != 0:
                     # single_item['p_value'] = 1 - binom.cdf(item['count_seq'] - 1, item['denominator_target'],
                     #                                        item['numerator'] / item['denominator'])
-                    stat, p, dof, expected = \
-                        chi2_contingency([[single_item['numerator_background'],
-                                           single_item['denominator_background'] - single_item['numerator_background']],
-                                          [single_item['numerator_target'],
-                                           single_item['denominator_target'] - single_item['numerator_target']]])
-                    single_item['p_value'] = p
+                    if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                            and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                        single_item['p_value'] = 1
+                    else:
+                        stat, p, dof, expected = \
+                            chi2_contingency([[single_item['numerator_background'],
+                                               single_item['denominator_background'] - single_item[
+                                                   'numerator_background']],
+                                              [single_item['numerator_target'],
+                                               single_item['denominator_target'] - single_item['numerator_target']]])
+                        single_item['p_value'] = p
                 else:
                     # single_item['p_value'] = 0
-                    stat, p, dof, expected = \
-                        chi2_contingency([[single_item['numerator_background'],
-                                           single_item['denominator_background'] - single_item['numerator_background']],
-                                          [single_item['numerator_target'],
-                                           single_item['denominator_target'] - single_item['numerator_target']]])
-                    single_item['p_value'] = p
+                    if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                            and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                        single_item['p_value'] = 1
+                    else:
+                        stat, p, dof, expected = \
+                            chi2_contingency([[single_item['numerator_background'],
+                                               single_item['denominator_background'] - single_item[
+                                                   'numerator_background']],
+                                              [single_item['numerator_target'],
+                                               single_item['denominator_target'] - single_item['numerator_target']]])
+                        single_item['p_value'] = p
             else:
                 if item['denominator'] != 0:
                     # single_item['p_value'] = binom.cdf(item['count_seq'], item['denominator_target'],
                     #                                    item['numerator'] / item['denominator'])
-                    stat, p, dof, expected = \
-                        chi2_contingency([[single_item['numerator_background'],
-                                           single_item['denominator_background'] - single_item['numerator_background']],
-                                          [single_item['numerator_target'],
-                                           single_item['denominator_target'] - single_item['numerator_target']]])
-                    single_item['p_value'] = p
+                    if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                            and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                        single_item['p_value'] = 1
+                    else:
+                        stat, p, dof, expected = \
+                            chi2_contingency([[single_item['numerator_background'],
+                                               single_item['denominator_background'] - single_item[
+                                                   'numerator_background']],
+                                              [single_item['numerator_target'],
+                                               single_item['denominator_target'] - single_item['numerator_target']]])
+                        single_item['p_value'] = p
                 else:
                     # single_item['p_value'] = 0
-                    stat, p, dof, expected = \
-                        chi2_contingency([[single_item['numerator_background'],
-                                           single_item['denominator_background'] - single_item['numerator_background']],
-                                          [single_item['numerator_target'],
-                                           single_item['denominator_target'] - single_item['numerator_target']]])
-                    single_item['p_value'] = p
+                    if single_item['denominator_background'] - single_item['numerator_background'] == 0 \
+                            and single_item['denominator_target'] - single_item['numerator_target'] == 0:
+                        single_item['p_value'] = 1
+                    else:
+                        stat, p, dof, expected = \
+                            chi2_contingency([[single_item['numerator_background'],
+                                               single_item['denominator_background'] - single_item[
+                                                   'numerator_background']],
+                                              [single_item['numerator_target'],
+                                               single_item['denominator_target'] - single_item['numerator_target']]])
+                        single_item['p_value'] = p
 
             arr_p_values.append(single_item['p_value'])
             mutation_table2.append(single_item)
