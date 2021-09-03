@@ -22,6 +22,8 @@ uri = "mongodb://localhost:23456/gcm_gisaid"
 client = MongoClient(uri)
 db = client.gcm_gisaid
 
+collection_db = db.seq_2021_08_26
+
 ########################################################################################################
 
 
@@ -339,6 +341,7 @@ class FieldList(Resource):
             single_line = {'lineage': item['lineage']}
             country_count = item['country_count']
             country_count = country_count.replace('"', "")
+            country_count = country_count.replace(")\\", "")
             country_count = country_count.replace("\\", "")
             country_count = country_count.replace("{", "")
             country_count = country_count.replace("}", "")
@@ -1258,106 +1261,6 @@ translate_dictionary = {
 }
 
 
-def prova_mongo_db():
-    print("prova Mongo")
-    seq = db.seq
-    print("prova Mongo2")
-
-    #             "$match": {
-    #             # 'covv_collection_date': {
-    #             #     '$gte': "2019-01-01",
-    #             #     '$lte': "2021-07-31",
-    #             #     '$regex': "\d\d\d\d-\d\d-\d\d"
-    #             # },
-    #             # 'covv_location': {
-    #             #     '$regex': "Italy"
-    #             #  },
-
-    pipeline = [
-        {
-            "$match": {
-                'location.geo_group': {
-                    '$eq': 'Oceania'
-                },
-                'location.country': {
-                    '$eq': 'Australia'
-                },
-                'location.region': {
-                    '$eq': 'Northern Territory'
-                },
-            },
-        },
-        {"$unwind": "$muts"},
-        {"$group":
-         #{"_id": "$_id",
-            {"_id":
-                {'pro': "$muts.pro",
-                 'org': "$muts.org",
-                 'loc': "$muts.loc",
-                 'alt': "$muts.alt",
-                 },
-             "count": {"$sum": 1}
-             }
-         },
-        {'$sort':
-            {"_id.pro": -1}
-         }
-    ]
-    print("start")
-    results = seq.aggregate(pipeline, )
-    print("stop", len(list(results)))
-    # for i, x in enumerate(results):
-    #    print("qui", x)
-    #    if i < 1:
-    #        print("qui", x)
-    #         break
-    print("fine prova Mongo2")
-
-
-def get_all_geo_mongoDB():
-    print("inizio request geo")
-    start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
-    results = db.seq.aggregate(
-        [
-            {
-                "$match": {
-                    'collection_date': {
-                        '$gte': start_date
-                    },
-                    'c_coll_date_prec': {
-                        '$eq': 2
-                      },
-                },
-            },
-            {
-                "$group": {"_id":
-                               {"geo_group": "$location.geo_group",
-                                "country": "$location.country",
-                                "region": "$location.region",
-                                "province": "$location.province"
-                                },
-                           "count": {"$sum": 1}
-                           }
-            },
-        ]
-    )
-    list_geo_dict = []
-    for single_item in results:
-        single_item_remodel = {'geo_group': single_item['_id']['geo_group'],
-                               'country': single_item['_id']['country'],
-                               'region': single_item['_id']['region'],
-                               'province': single_item['_id']['province'], 'count': single_item['count']}
-        list_geo_dict.append(single_item_remodel)
-    all_geo_dict['all_geo'] = list_geo_dict
-    print("fine request geo")
-    x = datetime.today()
-    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
-    delta_t = y - x
-    secs = delta_t.total_seconds()
-    t4 = Timer(secs, get_all_geo)
-    t4.start()
-
-
 @api.route('/selectorQueryMongoDB')
 class FieldList(Resource):
     @api.doc('selector_query_mongo_db')
@@ -1462,6 +1365,29 @@ class FieldList(Resource):
             real_field = translate_dictionary[field_name]
         if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
             real_field = 'location.' + field_name
+            # group_part["_id"] = {"value":
+            #                          {"$cond":
+            #                               [{"$eq": [f"${real_field}", ""]},
+            #                                None,
+            #                                {"$cond":
+            #                                     [{"$eq": [f"${real_field}", None]},
+            #                                      f"${real_field}",
+            #                                      {"$concat": [
+            #                                          {"$toUpper":
+            #                                               {"$substrCP": [f"${real_field}", 0, 1]}
+            #                                           },
+            #                                          {
+            #                                              "$substrCP": [
+            #                                                  f"${real_field}", 1,
+            #                                                  {"$subtract": [{"$strLenCP": f"${real_field}"}, 1]}
+            #                                              ]
+            #                                          }
+            #                                      ]}
+            #                                      ]
+            #                                 }
+            #                                ]
+            #                           },
+            #                     }
         group_part["_id"] = {"value": f"${real_field}"}
         group_part["count"] = {"$sum": 1}
         query_group = {"$group": group_part}
@@ -1472,7 +1398,7 @@ class FieldList(Resource):
         query.append(query_sort)
         # print("query", query)
 
-        results = db.seq.aggregate(query)
+        results = collection_db.aggregate(query)
 
         list_dict = []
         for single_item in list(results):
@@ -1486,6 +1412,196 @@ class FieldList(Resource):
 
         # print("field:", field_name, "  result:", list_dict)
         return list_dict
+
+
+def get_all_geo_mongoDB():
+    print("inizio request geo")
+    start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
+    query = [
+            {
+                "$match": {
+                    'collection_date': {
+                        '$gte': start_date
+                    },
+                    'c_coll_date_prec': {
+                        '$eq': 2
+                      },
+                },
+            },
+            {
+                "$group": {"_id":
+                    {
+                        'geo_group': '$location.geo_group',
+                        'country': '$location.country',
+                        'region': '$location.region',
+                        'province': '$location.province',
+                    },
+                    "count": {"$sum": 1}
+                }
+            },
+        ]
+
+        # {"geo_group":
+        # {"$cond":
+        #      [{"$eq": ["$location.geo_group", ""]},
+        #       None,
+        #       {"$cond":
+        #            [{"$eq": ["$location.geo_group", None]},
+        #             "$location.geo_group",
+        #             {"$concat": [
+        #                 {"$toUpper":
+        #                      {"$substrCP": ["$location.geo_group", 0, 1]}
+        #                  },
+        #                 {
+        #                     "$substrCP": [
+        #                         "$location.geo_group", 1,
+        #                         {"$subtract": [{"$strLenCP": "$location.geo_group"}, 1]}
+        #                     ]
+        #                 }
+        #             ]}
+        #             ]
+        #        }
+        #       ]
+        #  },
+        # "country":
+        # {"$cond":
+        #      [{"$eq": ["$location.country", ""]},
+        #       None,
+        #       {"$cond":
+        #            [{"$eq": ["$location.country", None]},
+        #             "$location.country",
+        #             {"$concat": [
+        #                 {"$toUpper":
+        #                      {"$substrCP": ["$location.country", 0, 1]}
+        #                  },
+        #                 {
+        #                     "$substrCP": [
+        #                         "$location.country", 1,
+        #                         {"$subtract": [{"$strLenCP": "$location.country"}, 1]}
+        #                     ]
+        #                 }
+        #             ]}
+        #             ]
+        #        }
+        #       ]
+        #  },
+        # "region":
+        # {"$cond":
+        #      [{"$eq": ["$location.region", ""]},
+        #       None,
+        #       {"$cond":
+        #            [{"$eq": ["$location.region", None]},
+        #             "$location.region",
+        #             {"$concat": [
+        #                 {"$toUpper":
+        #                      {"$substrCP": ["$location.region", 0, 1]}
+        #                  },
+        #                 {
+        #                     "$substrCP": [
+        #                         "$location.region", 1,
+        #                         {"$subtract": [{"$strLenCP": "$location.region"}, 1]}
+        #                     ]
+        #                 }
+        #             ]}
+        #             ]
+        #        }
+        #       ]
+        #  },
+        # "province":
+        # {"$cond":
+        #      [{"$eq": ["$location.province", ""]},
+        #       None,
+        #       {"$cond":
+        #            [{"$eq": ["$location.province", None]},
+        #             "$location.province",
+        #             {"$concat": [
+        #                 {"$toUpper":
+        #                      {"$substrCP": ["$location.province", 0, 1]}
+        #                  },
+        #                 {
+        #                     "$substrCP": [
+        #                         "$location.province", 1,
+        #                         {"$subtract": [{"$strLenCP": "$location.province"}, 1]}
+        #                     ]
+        #                 }
+        #             ]}
+        #             ]
+        #        }
+        #       ]
+        #  },
+
+    results = collection_db.aggregate(query)
+    list_geo_dict = []
+    for single_item in results:
+        single_item_remodel = {'geo_group': single_item['_id']['geo_group'],
+                               'country': single_item['_id']['country'],
+                               'region': single_item['_id']['region'],
+                               'province': single_item['_id']['province'], 'count': single_item['count']}
+        list_geo_dict.append(single_item_remodel)
+    all_geo_dict['all_geo'] = list_geo_dict
+    print("fine request geo")
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=2, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t4 = Timer(secs, get_all_geo)
+    t4.start()
+
+
+def prova_mongo_db():
+    print("prova Mongo")
+    seq = collection_db
+    print("prova Mongo2")
+
+    #             "$match": {
+    #             # 'covv_collection_date': {
+    #             #     '$gte': "2019-01-01",
+    #             #     '$lte': "2021-07-31",
+    #             #     '$regex': "\d\d\d\d-\d\d-\d\d"
+    #             # },
+    #             # 'covv_location': {
+    #             #     '$regex': "Italy"
+    #             #  },
+
+    pipeline = [
+        {
+            "$match": {
+                'location.geo_group': {
+                    '$eq': 'Oceania'
+                },
+                'location.country': {
+                    '$eq': 'Australia'
+                },
+                'location.region': {
+                    '$eq': 'Northern Territory'
+                },
+            },
+        },
+        {"$unwind": "$muts"},
+        {"$group":
+         #{"_id": "$_id",
+            {"_id":
+                {'pro': "$muts.pro",
+                 'org': "$muts.org",
+                 'loc': "$muts.loc",
+                 'alt': "$muts.alt",
+                 },
+             "count": {"$sum": 1}
+             }
+         },
+        {'$sort':
+            {"_id.pro": -1}
+         }
+    ]
+    print("start")
+    results = seq.aggregate(pipeline, )
+    print("stop", len(list(results)))
+    # for i, x in enumerate(results):
+    #    print("qui", x)
+    #    if i < 1:
+    #        print("qui", x)
+    #         break
+    print("fine prova Mongo2")
 
 
 def prova_mongo_2():

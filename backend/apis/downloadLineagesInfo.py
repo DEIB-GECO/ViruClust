@@ -4,6 +4,9 @@ import requests
 import lxml.html
 import pandas as pd
 
+from datetime import datetime, timedelta
+from threading import Timer
+
 from flask_restplus import Namespace
 
 api = Namespace('downloadLineagesInfo', description='downloadLineagesInfo')
@@ -56,6 +59,13 @@ def load_lineages_and_mutation():
             data_frame_mutation.append(pd.DataFrame(rows, columns=columns))
             # print("qui2", dataFrameMutation)
             # pd.DataFrame(rows, columns=columns).to_csv(f"VC_{i}.csv", index=False)
+
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=1, minute=50, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t1 = Timer(secs, load_lineages_and_mutation)
+    t1.start()
 
 
 dict_lineage_mutation = {}
@@ -112,7 +122,7 @@ def create_dictionary():
                 for lin in arr_lineage:
                     if lin in dict_lineage_mutation:
                         single_line = dict_lineage_mutation[lin]
-                        if dict_lineage_mutation[lin]['WHO label'] == '':
+                        if dict_lineage_mutation[lin]['WHO label'] == '' and row['WHO label'] != 'n/a':
                             single_line['WHO label'] = row['WHO label']
                         mutation = row['Spike mutations of interest']
                         mutation = mutation.replace("'", "")
@@ -124,6 +134,13 @@ def create_dictionary():
                             arr_mut.append(single_mutation)
                         single_line['mutation'] = arr_mut
                         dict_lineage_mutation[lin] = single_line
+
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=1, minute=55, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t2 = Timer(secs, create_dictionary)
+    t2.start()
 
 
 load_lineages_and_mutation()
