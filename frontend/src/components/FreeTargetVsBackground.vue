@@ -1697,14 +1697,14 @@ export default {
     ...mapState(['queryFreeTarget', 'queryFreeBackground', 'numSequencesQueryFreeTarget',
       'numSequencesQueryFreeBackground', 'all_protein', 'startDateQueryFreeTarget', "stopDateQueryFreeTarget",
       'startDateQueryFreeBackground', 'stopDateQueryFreeBackground', 'toExcludeFreeTarget', 'toExcludeFreeBackground',
-      'colorPValueInfoBox', 'color_1', 'color_2', 'color_3']),
+      'colorPValueInfoBox', 'color_1', 'color_2', 'color_3', 'startAndStopQueryFreeTarget', 'startAndStopQueryFreeBackground']),
     ...mapGetters({}),
   },
   methods: {
     ...mapMutations(['setStartDateQueryFreeTarget', 'setStartDateQueryFreeBackground',
                      'setStopDateQueryFreeTarget', 'setStopDateQueryFreeBackground', 'setNumSequencesQueryFreeTarget',
-                     'setNumSequencesQueryFreeBackground']),
-    ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
+                     'setNumSequencesQueryFreeBackground', 'setStartAndStopQueryFreeBackground', 'setStartAndStopQueryFreeTarget']),
+    ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground', 'setToExcludeFreeTarget', 'setToExcludeFreeBackground']),
     deleteAllAccIdsTargetInserted(){
       this.listAccIdsTargetInserted = [];
       this.dialogAccIdsTargetInserted = false;
@@ -2828,10 +2828,16 @@ export default {
         this.setQueryFreeTarget({field: 'country', list: null});
         this.setQueryFreeTarget({field: 'region', list: null});
         this.setQueryFreeTarget({field: 'province', list: null});
-        this.setStartDateQueryFreeTarget(null);
-        this.setStopDateQueryFreeTarget(null);
+        let obj = {'start': null, 'stop': null}
+        this.setStartAndStopQueryFreeTarget(obj);
+        // this.setStartDateQueryFreeTarget(null);
+        // this.setStopDateQueryFreeTarget(null);
         // this.setQueryFreeBackground({field: 'accession_id', list: this.listAccIdsTarget});
         this.setNumSequencesQueryFreeTarget(0);
+        this.setToExcludeFreeTarget({field: 'geo_group', list: null});
+        this.setToExcludeFreeTarget({field: 'country', list: null});
+        this.setToExcludeFreeTarget({field: 'region', list: null});
+        this.setToExcludeFreeTarget({field: 'province', list: null});
       }
       else{
         let id1 = 'tabTargetFree2';
@@ -2865,9 +2871,15 @@ export default {
         this.setQueryFreeBackground({field: 'country', list: null});
         this.setQueryFreeBackground({field: 'region', list: null});
         this.setQueryFreeBackground({field: 'province', list: null});
-        this.setStartDateQueryFreeBackground(null);
-        this.setStopDateQueryFreeBackground(null);
+        let obj = {'start': null, 'stop': null}
+        this.setStartAndStopQueryFreeBackground(obj);
+        // this.setStartDateQueryFreeBackground(null);
+        // this.setStopDateQueryFreeBackground(null);
         this.setNumSequencesQueryFreeBackground(0);
+        this.setToExcludeFreeBackground({field: 'geo_group', list: null});
+        this.setToExcludeFreeBackground({field: 'country', list: null});
+        this.setToExcludeFreeBackground({field: 'region', list: null});
+        this.setToExcludeFreeBackground({field: 'province', list: null});
       }
       else{
         let id1 = 'tabBackgroundFree2';
@@ -2894,8 +2906,10 @@ export default {
       this.setQueryFreeTarget({field: 'country', list: null});
       this.setQueryFreeTarget({field: 'region', list: null});
       this.setQueryFreeTarget({field: 'province', list: null});
-      this.setStartDateQueryFreeTarget(null);
-      this.setStopDateQueryFreeTarget(null);
+      let obj = {'start': null, 'stop': null}
+      this.setStartAndStopQueryFreeTarget(obj);
+      // this.setStartDateQueryFreeTarget(null);
+      // this.setStopDateQueryFreeTarget(null);
       if(this.listAccIdsTargetFile.length > 0){
         arrayFull = JSON.parse(JSON.stringify(this.listAccIdsTargetFile));
         for(let i = 0; i < this.listAccIdsTargetInserted.length; i = i + 1){
@@ -2926,8 +2940,10 @@ export default {
       this.setQueryFreeBackground({field: 'country', list: null});
       this.setQueryFreeBackground({field: 'region', list: null});
       this.setQueryFreeBackground({field: 'province', list: null});
-      this.setStartDateQueryFreeBackground(null);
-      this.setStopDateQueryFreeBackground(null);
+      let obj = {'start': null, 'stop': null};
+      this.setStartAndStopQueryFreeBackground(obj);
+      // this.setStartDateQueryFreeBackground(null);
+      // this.setStopDateQueryFreeBackground(null);
       if(this.listAccIdsBackgroundFile.length > 0){
         arrayFull = JSON.parse(JSON.stringify(this.listAccIdsBackgroundFile));
         for(let i = 0; i < this.listAccIdsBackgroundInserted.length; i = i + 1){
@@ -2958,8 +2974,10 @@ export default {
       this.setQueryFreeTarget({field: 'country', list: null});
       this.setQueryFreeTarget({field: 'region', list: null});
       this.setQueryFreeTarget({field: 'province', list: null});
-      this.setStartDateQueryFreeTarget(null);
-      this.setStopDateQueryFreeTarget(null);
+      let obj = {'start': null, 'stop': null};
+      this.setStartAndStopQueryFreeTarget(obj);
+      // this.setStartDateQueryFreeTarget(null);
+      // this.setStopDateQueryFreeTarget(null);
       if(this.fileAccIdsTarget !== null) {
         this.listAccIdsTargetFile = this.fileAccIdsTarget;
         for(let i = 0; i < this.listAccIdsTargetFile.length; i = i + 1){
@@ -2999,8 +3017,10 @@ export default {
       this.setQueryFreeBackground({field: 'country', list: null});
       this.setQueryFreeBackground({field: 'region', list: null});
       this.setQueryFreeBackground({field: 'province', list: null});
-      this.setStartDateQueryFreeBackground(null);
-      this.setStopDateQueryFreeBackground(null);
+      let obj = {'start': null, 'stop': null};
+      this.setStartAndStopQueryFreeBackground(obj);
+      // this.setStartDateQueryFreeBackground(null);
+      // this.setStopDateQueryFreeBackground(null);
       if(this.fileAccIdsBackground !== null){
         this.listAccIdsBackgroundFile = this.fileAccIdsBackground;
         for(let i = 0; i < this.listAccIdsBackgroundFile.length; i = i + 1){
@@ -3194,22 +3214,30 @@ export default {
     all_protein(){
       this.possibleProtein = this.all_protein;
     },
-    startDateQueryFreeTarget(){
+    startAndStopQueryFreeTarget(){
       this.resetApplied();
       this.countOverlappingSequenceTargetBackground();
     },
-    stopDateQueryFreeTarget(){
+    // startDateQueryFreeTarget(){
+    //   this.resetApplied();
+    //   this.countOverlappingSequenceTargetBackground();
+    // },
+    // stopDateQueryFreeTarget(){
+    //   this.resetApplied();
+    //   this.countOverlappingSequenceTargetBackground();
+    // },
+    startAndStopQueryFreeBackground(){
       this.resetApplied();
       this.countOverlappingSequenceTargetBackground();
     },
-    startDateQueryFreeBackground(){
-      this.resetApplied();
-      this.countOverlappingSequenceTargetBackground();
-    },
-    stopDateQueryFreeBackground(){
-      this.resetApplied();
-      this.countOverlappingSequenceTargetBackground();
-    },
+    // startDateQueryFreeBackground(){
+    //   this.resetApplied();
+    //   this.countOverlappingSequenceTargetBackground();
+    // },
+    // stopDateQueryFreeBackground(){
+    //   this.resetApplied();
+    //   this.countOverlappingSequenceTargetBackground();
+    // },
     queryFreeTarget(){
       this.resetApplied();
       this.countOverlappingSequenceTargetBackground();

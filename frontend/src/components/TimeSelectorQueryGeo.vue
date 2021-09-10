@@ -253,12 +253,12 @@
       </v-row>
     </v-container>
 
-<!--    <v-overlay :value="overlay">-->
-<!--      <v-progress-circular-->
-<!--        indeterminate-->
-<!--        size="64"-->
-<!--      ></v-progress-circular>-->
-<!--    </v-overlay>-->
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
 
   </div>
 </template>
@@ -782,7 +782,7 @@ export default {
                     this.changeMarkerAndRender(this.slider[0], this.slider[0]);
                     this.setStartDateQueryGeo(this.last_start_date);
                     this.setStopDateQueryGeo(this.last_stop_date);
-
+                    this.overlay = false;
                   });
             });
       }

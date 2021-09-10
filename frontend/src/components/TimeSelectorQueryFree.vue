@@ -37,6 +37,7 @@
                 color="#F48C0680"
                 track-color="grey"
                 height="2px"
+                @mouseup="mouseUpSlider"
               >
             </v-range-slider>
           </div>
@@ -117,6 +118,13 @@
 
       </v-row>
     </v-container>
+
+  <v-overlay :value="overlay">
+    <v-progress-circular
+      indeterminate
+      size="64"
+    ></v-progress-circular>
+  </v-overlay>
 
   </div>
 </template>
@@ -220,8 +228,29 @@ export default {
   },
   methods: {
     ...mapMutations(['setStartDateQueryFreeTarget', 'setStopDateQueryFreeTarget', 'setStartDateQueryFreeBackground',
-      'setStopDateQueryFreeBackground', 'setNumSequencesQueryFreeTarget', 'setNumSequencesQueryFreeBackground']),
+      'setStopDateQueryFreeBackground', 'setNumSequencesQueryFreeTarget', 'setNumSequencesQueryFreeBackground',
+      'setStartAndStopQueryFreeTarget', 'setStartAndStopQueryFreeBackground']),
     ...mapActions(['setQueryFreeTarget', 'setQueryFreeBackground']),
+    mouseUpSlider() {
+      let min = this.slider[0];
+      let max = this.slider[1];
+      this.changeMarkerAndRender(min, max);
+
+      this.last_start_date = this.translateIndexToDate(this.slider[0]);
+      this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+      if(this.type === 'target') {
+        let obj = {'start': this.last_start_date, 'stop': this.last_stop_date}
+        this.setStartAndStopQueryFreeTarget(obj);
+        // this.setStartDateQueryFreeTarget(this.last_start_date);
+        // this.setStopDateQueryFreeTarget(this.last_stop_date);
+      }
+      else if(this.type === 'background') {
+        let obj = {'start': this.last_start_date, 'stop': this.last_stop_date}
+        this.setStartAndStopQueryFreeBackground(obj);
+        // this.setStartDateQueryFreeBackground(this.last_start_date);
+        // this.setStopDateQueryFreeBackground(this.last_stop_date);
+      }
+    },
     download(){
       let url = this.my_chart.getConnectedDataURL({
           pixelRatio: 2,
@@ -501,16 +530,21 @@ export default {
             }
 
             this.slider = [index_start, index_stop];
+            this.mouseUpSlider();
             this.last_start_date = this.translateIndexToDate(this.slider[0]);
             this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-            this.changeMarkerAndRender(this.slider[0], this.slider[0]);
+            this.changeMarkerAndRender(this.slider[0], this.slider[1]);
             if(this.type === 'target') {
-              this.setStartDateQueryFreeTarget(this.last_start_date);
-              this.setStopDateQueryFreeTarget(this.last_stop_date);
+              let obj = {'start': this.last_start_date, 'stop': this.last_stop_date}
+              this.setStartAndStopQueryFreeTarget(obj);
+              // this.setStartDateQueryFreeTarget(this.last_start_date);
+              // this.setStopDateQueryFreeTarget(this.last_stop_date);
             }
             else if(this.type === 'background') {
-              this.setStartDateQueryFreeBackground(this.last_start_date);
-              this.setStopDateQueryFreeBackground(this.last_stop_date);
+              let obj = {'start': this.last_start_date, 'stop': this.last_stop_date}
+              this.setStartAndStopQueryFreeBackground(obj);
+              // this.setStartDateQueryFreeBackground(this.last_start_date);
+              // this.setStopDateQueryFreeBackground(this.last_stop_date);
             }
 
             this.chosenApplied = true;
@@ -529,6 +563,7 @@ export default {
       else {
         let stop = this.slider[1];
         this.slider = [start, stop];
+        this.mouseUpSlider();
       }
     },
     last_stop_date(){
@@ -540,6 +575,7 @@ export default {
       else {
         let start = this.slider[0];
         this.slider = [start, stop];
+        this.mouseUpSlider();
       }
     },
     queryFreeTarget() {
@@ -562,22 +598,22 @@ export default {
         this.loadData();
       }
     },
-    slider(){
-      let min = this.slider[0];
-      let max = this.slider[1];
-      this.changeMarkerAndRender(min, max);
-
-      this.last_start_date = this.translateIndexToDate(this.slider[0]);
-      this.last_stop_date = this.translateIndexToDate(this.slider[1]);
-      if(this.type === 'target') {
-        this.setStartDateQueryFreeTarget(this.last_start_date);
-        this.setStopDateQueryFreeTarget(this.last_stop_date);
-      }
-      else if(this.type === 'background') {
-        this.setStartDateQueryFreeBackground(this.last_start_date);
-        this.setStopDateQueryFreeBackground(this.last_stop_date);
-      }
-    },
+    // slider(){
+    //   let min = this.slider[0];
+    //   let max = this.slider[1];
+    //   this.changeMarkerAndRender(min, max);
+    //
+    //   this.last_start_date = this.translateIndexToDate(this.slider[0]);
+    //   this.last_stop_date = this.translateIndexToDate(this.slider[1]);
+    //   if(this.type === 'target') {
+    //     this.setStartDateQueryFreeTarget(this.last_start_date);
+    //     this.setStopDateQueryFreeTarget(this.last_stop_date);
+    //   }
+    //   else if(this.type === 'background') {
+    //     this.setStartDateQueryFreeBackground(this.last_start_date);
+    //     this.setStopDateQueryFreeBackground(this.last_stop_date);
+    //   }
+    // },
   },
   mounted() {
       this.loadData();

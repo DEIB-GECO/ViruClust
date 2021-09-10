@@ -41,8 +41,10 @@ const state = {
     queryFreeBackground: {},
     startDateQueryFreeTarget: null,
     stopDateQueryFreeTarget: null,
+    startAndStopQueryFreeTarget: {'start' : '2019-01-01', 'stop': '2019-01-01'},
     startDateQueryFreeBackground: null,
     stopDateQueryFreeBackground: null,
+    startAndStopQueryFreeBackground: {'start' : '2019-01-01', 'stop': '2019-01-01'},
     numSequencesQueryFreeTarget: 0,
     numSequencesQueryFreeBackground: 0,
 
@@ -215,16 +217,39 @@ const mutations = {
         state.numLevelAboveBackground = value;
     },
     setStartDateQueryFreeTarget: (state, value) => {
-        state.startDateQueryFreeTarget = value;
+        let obj = state.startAndStopQueryFreeTarget;
+        obj['start'] = value;
+        state.startAndStopQueryFreeTarget = obj;
+        // state.startDateQueryFreeTarget = value;
     },
     setStopDateQueryFreeTarget: (state, value) => {
-        state.stopDateQueryFreeTarget= value;
+        let obj = state.startAndStopQueryFreeTarget;
+        obj['stop'] = value;
+        state.startAndStopQueryFreeTarget = obj;
+        // state.stopDateQueryFreeTarget= value;
+    },
+    setStartAndStopQueryFreeTarget: (state, value) => {
+        // obj = {'start' : xxx, 'stop': yyy}
+        state.startAndStopQueryFreeTarget = value;
+        state.startDateQueryFreeTarget = value['start'];
+        state.stopDateQueryFreeTarget = value['stop'];
     },
     setStartDateQueryFreeBackground: (state, value) => {
-        state.startDateQueryFreeBackground = value;
+        let obj = state.startAndStopQueryFreeBackground;
+        obj['start'] = value;
+        state.startAndStopQueryFreeBackground = obj;
+        // state.startDateQueryFreeBackground = value;
     },
     setStopDateQueryFreeBackground: (state, value) => {
-        state.stopDateQueryFreeBackground = value;
+        let obj = state.startAndStopQueryFreeBackground;
+        obj['stop'] = value;
+        state.startAndStopQueryFreeBackground = obj;
+        // state.stopDateQueryFreeBackground = value;
+    },
+    setStartAndStopQueryFreeBackground: (state, value) => {
+        state.startAndStopQueryFreeBackground = value;
+        state.startDateQueryFreeBackground = value['start'];
+        state.stopDateQueryFreeBackground = value['stop'];
     },
     setQueryFreeTargetField: (state, payload) => {
         state.queryFreeTarget[payload.field] = payload.fieldQuery;

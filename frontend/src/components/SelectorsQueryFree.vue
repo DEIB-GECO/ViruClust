@@ -234,42 +234,58 @@ export default {
     },
     'queryFreeTarget.geo_group': function (){
         if(this.field === 'geo_group' && (!this.queryFreeTarget['geo_group'] || this.queryFreeTarget['geo_group'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'target') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeTarget.country': function (){
         if(this.field === 'country' && (!this.queryFreeTarget['country'] || this.queryFreeTarget['country'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'target') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeTarget.region': function (){
         if(this.field === 'region' && (!this.queryFreeTarget['region'] || this.queryFreeTarget['region'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'target') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeTarget.province': function (){
         if(this.field === 'province' && (!this.queryFreeTarget['province'] || this.queryFreeTarget['province'].length === 0 )) {
-          this.clearToExcludeField();
+          if(this.type === 'target') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeBackground.geo_group': function (){
         if(this.field === 'geo_group' && (!this.queryFreeBackground['geo_group'] || this.queryFreeBackground['geo_group'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'background') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeBackground.country': function (){
         if(this.field === 'country' && (!this.queryFreeBackground['country'] || this.queryFreeBackground['country'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'background') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeBackground.region': function (){
         if(this.field === 'region' && (!this.queryFreeBackground['region'] || this.queryFreeBackground['region'].length === 0)) {
-          this.clearToExcludeField();
+          if(this.type === 'background') {
+            this.clearToExcludeField();
+          }
         }
     },
     'queryFreeBackground.province': function (){
         if(this.field === 'province' && (!this.queryFreeBackground['province'] || this.queryFreeBackground['province'].length === 0 )) {
-          this.clearToExcludeField();
+          if(this.type === 'background') {
+            this.clearToExcludeField();
+          }
         }
     },
   }
