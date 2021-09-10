@@ -19,12 +19,11 @@ import zipimport
 
 from . import DistlibException, resources
 from .compat import StringIO
-from .version import get_scheme, UnsupportedVersionError
 from .metadata import (Metadata, METADATA_FILENAME, WHEEL_METADATA_FILENAME,
                        LEGACY_METADATA_FILENAME)
 from .util import (parse_requirement, cached_property, parse_name_and_version,
                    read_exports, write_exports, CSVReader, CSVWriter)
-
+from .version import get_scheme, UnsupportedVersionError
 
 __all__ = ['Distribution', 'BaseInstalledDistribution',
            'InstalledDistribution', 'EggInfoDistribution',

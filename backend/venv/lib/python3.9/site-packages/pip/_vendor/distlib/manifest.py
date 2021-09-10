@@ -18,7 +18,6 @@ from . import DistlibException
 from .compat import fsdecode
 from .util import convert_path
 
-
 __all__ = ['Manifest']
 
 logger = logging.getLogger(__name__)

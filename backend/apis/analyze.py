@@ -1,25 +1,22 @@
 from __future__ import print_function
 
+import copy
 import http
 import json
-import pandas as pd
-import copy
-
-import statsmodels.stats.multitest as sms
-from scipy.stats import binom, chi2_contingency
-from flask_restplus import Namespace, Resource
-
 from datetime import datetime, timedelta
 from threading import Timer
 
+import pandas as pd
+import statsmodels.stats.multitest as sms
+from flask_restplus import Namespace, Resource
 from pymongo import MongoClient
+from scipy.stats import chi2_contingency
 
 from .downloadLineagesInfo import dict_lineage_mutation
 
 api = Namespace('analyze', description='analyze')
 
 uri = "mongodb://localhost:23456/gcm_gisaid"
-# uri = "mongodb://localhost:23457/gcm_gisaid"
 client = MongoClient(uri)
 db = client.gcm_gisaid
 
@@ -2584,15 +2581,17 @@ class FieldList(Resource):
                 if key == 'minDate':
                     start_date = datetime.strptime(f"{query_background[key]}", '%Y-%m-%d')
                     where_part_background_overlapping['collection_date']['$gte'] = start_date
-                    if where_part_target_overlapping['collection_date']['$gte'] < start_date\
-                            < where_part_target_overlapping['collection_date']['$lte']:
-                        where_part_target_overlapping['collection_date']['$gte'] = start_date
+                    if "$lte" in where_part_target_overlapping['collection_date']:
+                        if where_part_target_overlapping['collection_date']['$gte'] < start_date\
+                                < where_part_target_overlapping['collection_date']['$lte']:
+                            where_part_target_overlapping['collection_date']['$gte'] = start_date
                 elif key == 'maxDate':
                     stop_date = datetime.strptime(f"{query_background[key]}", '%Y-%m-%d')
                     where_part_background_overlapping['collection_date']['$lte'] = stop_date
-                    if where_part_target_overlapping['collection_date']['$gte'] < stop_date \
-                            < where_part_target_overlapping['collection_date']['$lte']:
-                        where_part_target_overlapping['collection_date']['$lte'] = stop_date
+                    if "$lte" in where_part_target_overlapping['collection_date']:
+                        if where_part_target_overlapping['collection_date']['$gte'] < stop_date \
+                                < where_part_target_overlapping['collection_date']['$lte']:
+                            where_part_target_overlapping['collection_date']['$lte'] = stop_date
 
                 elif key == 'toExclude':
                     for fieldToExclude in query_background[key]:

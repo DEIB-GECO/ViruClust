@@ -1,10 +1,10 @@
 from flask import Blueprint
 from flask_restplus import Api
 
-from .ufl import api as ufl
-from .private import api as private
 from .analyze import api as analyze
 from .downloadLineagesInfo import api as downloadLineagesInfo
+from .private import api as private
+from .ufl import api as ufl
 
 enable_doc = True
 

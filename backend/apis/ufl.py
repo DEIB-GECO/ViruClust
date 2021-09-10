@@ -1,11 +1,8 @@
+import http.client
 import json
-import urllib
 
 import requests
-import http.client
-
 from flask_restplus import Namespace, Resource
-
 
 api = Namespace('ufl', description='ufl')
 

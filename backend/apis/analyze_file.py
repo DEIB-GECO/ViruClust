@@ -1,34 +1,17 @@
 from __future__ import print_function
+
+import collections
 # %config Completer.use_jedi = False
 import datetime
-import os
-import re
-
-import requests
-import io
 import http.client
+import io
+import itertools
 import json
+from collections import defaultdict
+from io import StringIO
 
 import pandas as pd
-from collections import defaultdict
-from Bio import SeqIO
-from io import StringIO
-from Bio import Align, Seq, pairwise2
-from Bio.Data import CodonTable
-import numpy as np
-import itertools
-import collections
-import logomaker
-import tqdm
-import psycopg2
-import matplotlib.pyplot as plt
-
-from ipywidgets import interact, interactive, fixed, interact_manual
-import ipywidgets as widgets
-from IPython.core.display import HTML
-
 from flask_restplus import Namespace, Resource
-
 
 api = Namespace('analyze_file', description='analyze_file')
 

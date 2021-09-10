@@ -7,6 +7,7 @@ import warnings
 from binascii import hexlify, unhexlify
 from hashlib import md5, sha1, sha256
 
+from .url import BRACELESS_IPV6_ADDRZ_RE, IPV4_RE
 from ..exceptions import (
     InsecurePlatformWarning,
     ProxySchemeUnsupported,
@@ -14,7 +15,6 @@ from ..exceptions import (
     SSLError,
 )
 from ..packages import six
-from .url import BRACELESS_IPV6_ADDRZ_RE, IPV4_RE
 
 SSLContext = None
 SSLTransport = None

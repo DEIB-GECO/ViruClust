@@ -1,12 +1,10 @@
 import json
-
-import requests
-import lxml.html
-import pandas as pd
-
 from datetime import datetime, timedelta
 from threading import Timer
 
+import lxml.html
+import pandas as pd
+import requests
 from flask_restplus import Namespace
 
 api = Namespace('downloadLineagesInfo', description='downloadLineagesInfo')
