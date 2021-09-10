@@ -21,6 +21,7 @@ client = MongoClient(uri)
 db = client.gcm_gisaid
 
 collection_db = db.seq_2021_08_26_2
+collection_update_date = db.db_meta
 
 ########################################################################################################
 
@@ -299,6 +300,15 @@ sars_cov_2_products = {
 
 
 ########################################################################################################
+
+
+@api.route('/updateDate')
+class FieldList(Resource):
+    @api.doc('update_date')
+    def get(self):
+        results = collection_update_date.find({}, {"date": {"$toString": '$date_of_import'}})
+        result_to_return = results[0]['date'].split('T')[0]
+        return result_to_return
 
 
 @api.route('/allGeo')

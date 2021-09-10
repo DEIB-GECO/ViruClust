@@ -1,5 +1,10 @@
 <template>
-  <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px">
+  <v-container fluid grid-list-xl style="justify-content: center; padding: 0;">
+    <v-layout wrap align-center style="margin: 0; padding: 0">
+          <v-flex md12 sm12 class=" no-horizontal-padding" style="text-align: right; padding: 0; margin-right: 10px">
+              Last update date: {{update_date}}
+          </v-flex>
+    </v-layout>
 
     <v-tabs v-model="selectedTabAnalyze"
             background-color="#457B9D"
@@ -88,6 +93,7 @@ export default {
       selectedTabAnalyze: 0,
       overlay: true,
       finished_api: 0,
+      update_date: null,
     }
   },
   computed: {
@@ -100,7 +106,7 @@ export default {
   },
   watch:{
     finished_api(){
-      if(this.finished_api === 2){
+      if(this.finished_api === 3){
         this.overlay = false;
       }
     },
@@ -170,6 +176,17 @@ export default {
       }
       i = i + 1;
     }
+
+    let url2 = `/analyze/updateDate`;
+    axios.get(url2)
+    .then((res) => {
+      return res.data;
+    })
+    .then((res) => {
+      this.finished_api = this.finished_api + 1;
+      console.log("qui", res);
+      this.update_date = res;
+    });
 
     let url = `/analyze/allProtein`;
     axios.get(url)
