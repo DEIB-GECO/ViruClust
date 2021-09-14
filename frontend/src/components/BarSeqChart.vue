@@ -150,6 +150,10 @@ export default {
       if(re_init) {
         this.my_chart2 = echarts.init(document.getElementById('chart2'));
       }
+      else{
+        this.my_chart2.dispose();
+        this.my_chart2 = echarts.init(document.getElementById('chart2'));
+      }
       this.my_chart2.setOption(this.sequenceBarChart, true);
       this.firstUpdate = false;
       let my_c = document.getElementById('chart2');

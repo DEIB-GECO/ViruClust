@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <v-container fluid grid-list-xl style="justify-content: center; width: 1500px">
+  <div style="width: 100%;">
+    <v-container fluid grid-list-xl style="justify-content: center;">
       <v-layout row wrap justify-center>
-        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin: 0; padding: 0">
-          <div :id="namePValue" style="width: 1200px; height: 250px; user-select: none;
+        <v-flex class="no-horizontal-padding xs11 d-flex" style="justify-content: center; margin: 0; padding: 0">
+          <div :id="namePValue" style="width: 100px; height: 250px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white;">
           </div>
+        </v-flex>
+        <v-flex class="no-horizontal-padding xs1 d-flex" style="justify-content: center; margin: 0; padding: 0">
            <v-btn @click="download" small icon v-if="my_chart !== null"
             style="margin-left: 20px; margin-top: 110px">
               <v-icon size="32">
@@ -321,6 +323,10 @@ export default {
     },
     renderGraph(met){
 
+      let width = window.innerWidth * 0.6;
+      let elem = document.getElementById(this.namePValue);
+      elem.style['width'] = width + 'px';
+
       let len = met.length;
       let i = 0;
       let arrX = [];
@@ -612,6 +618,10 @@ export default {
       if(this.my_chart === null) {
         this.my_chart = echarts.init(document.getElementById(this.namePValue));
       }
+      else{
+        this.my_chart.dispose();
+        this.my_chart = echarts.init(document.getElementById(this.namePValue));
+      }
       this.my_chart.setOption(this.barChart, true);
 
       let that = this;
@@ -686,6 +696,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }
@@ -700,6 +714,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }
@@ -714,6 +732,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }
@@ -728,6 +750,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }
@@ -742,6 +768,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }
@@ -756,6 +786,10 @@ export default {
           if (this.my_chart === null) {
             this.my_chart = echarts.init(document.getElementById(this.namePValue));
           }
+          // else{
+          //   this.my_chart.dispose();
+          //   this.my_chart = echarts.init(document.getElementById(this.namePValue));
+          // }
           this.my_chart.setOption(this.barChart, true);
         }
       }

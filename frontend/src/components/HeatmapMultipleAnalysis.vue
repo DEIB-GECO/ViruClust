@@ -440,6 +440,10 @@ export default {
         if (this.my_chart === null) {
           this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height});
         }
+        else{
+          this.my_chart.dispose();
+          this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height});
+        }
         this.heatmap.grid.height = (this.y_axis.length * 20);
         this.my_chart.setOption(this.heatmap, true);
       }

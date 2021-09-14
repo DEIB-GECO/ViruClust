@@ -1,5 +1,5 @@
 <template>
-<div style="position: relative;">
+<div style="position: relative; width: 95%">
     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
      <h2># GENOMES BY COLLECTION DATE
         <v-btn @click="download" x-small icon
@@ -10,7 +10,7 @@
         </v-btn>
      </h2>
     </v-flex>
-    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1; width: 1500px">
+    <v-container fluid grid-list-xl style="justify-content: center; z-index: 1;">
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
@@ -308,6 +308,10 @@ name: "TimeSelectorDistributionLineageInGeo",
       this.barChart.xAxis.data = arrX;
 
       if(this.my_chart === null) {
+        this.my_chart = echarts.init(document.getElementById(this.timeName));
+      }
+      else{
+        this.my_chart.dispose();
         this.my_chart = echarts.init(document.getElementById(this.timeName));
       }
       this.my_chart.setOption(this.barChart, true);

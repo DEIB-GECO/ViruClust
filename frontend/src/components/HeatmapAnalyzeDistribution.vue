@@ -188,6 +188,11 @@ export default {
         let height = (this.rowTable.length * 20 + 300);
         this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height}); //, null, {height: height}
       }
+      else{
+        this.my_chart.dispose();
+        let height = (this.rowTable.length * 20 + 300);
+        this.my_chart = echarts.init(document.getElementById(this.nameHeatmap), null, {height: height}); //, null, {height: height}
+      }
       this.heatmap.grid.height =  (this.rowTable.length * 20);
       this.my_chart.setOption(this.heatmap, true);
     },

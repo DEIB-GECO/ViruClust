@@ -1,6 +1,6 @@
 <template>
-<div style="position: relative;">
-    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1; width: 1500px">
+<div style="position: relative; width: 95%">
+    <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1">
         <h2># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
@@ -417,6 +417,10 @@ export default {
       this.barChart.xAxis.data = arrX;
 
       if(this.my_chart === null) {
+        this.my_chart = echarts.init(document.getElementById(this.timeName));
+      }
+      else{
+        this.my_chart.dispose();
         this.my_chart = echarts.init(document.getElementById(this.timeName));
       }
       this.my_chart.setOption(this.barChart, true);

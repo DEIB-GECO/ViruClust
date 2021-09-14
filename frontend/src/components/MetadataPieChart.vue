@@ -62,6 +62,10 @@ export default {
       if(this.my_chart === null) {
         this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
       }
+      else{
+        this.my_chart.dispose();
+        this.my_chart = echarts.init(document.getElementById(this.nameMetadata));
+      }
       this.my_chart.setOption(this.pieChart, true);
     },
     renderGraphFilterDate(){

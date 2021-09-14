@@ -12,25 +12,25 @@
        </v-flex>
        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
        </v-flex>
-       <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'geo_group'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'country'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'region'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'province'
           :type = 'type'>
@@ -47,7 +47,7 @@
       </v-flex>
       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
       </v-flex>
-      <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
          <TimeSelectorQueryFree
             :timeName = 'type + "timeDistribution"'
             :type = 'type'

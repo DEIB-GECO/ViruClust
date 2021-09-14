@@ -4,7 +4,7 @@
         <v-layout row wrap justify-center>
           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; position: relative">
 
-            <div :id="nameField" style="width: 100%; height: 400px; user-select: none;
+            <div :id="nameField" style="width: 300px; height: 400px; user-select: none;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0;
              background-color: white; margin-bottom: 30px; border: black solid 1px">
             </div>
@@ -115,6 +115,10 @@ export default {
           return num1 - num2;
         });
         if (this.my_chart === null) {
+          this.my_chart = echarts.init(document.getElementById(this.nameField));
+        }
+        else{
+          this.my_chart.dispose();
           this.my_chart = echarts.init(document.getElementById(this.nameField));
         }
         this.my_chart.setOption(this.pieChart, true);

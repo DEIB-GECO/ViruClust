@@ -586,7 +586,17 @@ export default {
       return items;
     },
     applyChosen(){
-      this.chosenApplied = true;
+      if(this.chosenApplied === true){
+        this.chosenApplied = false;
+        let delayInMilliseconds = 10;
+        let that = this;
+        setTimeout(function() {
+          that.chosenApplied = true;
+        }, delayInMilliseconds);
+      }
+      else {
+        this.chosenApplied = true;
+      }
     }
   },
   watch: {
