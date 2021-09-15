@@ -36,8 +36,16 @@
                       <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
 
                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                          <v-btn id="tabTargetFree1" large color="#457B9D" @click="selectedTabTargetFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
-                          <v-btn id="tabTargetFree2" large color="#457B9D" @click="selectedTabTargetFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> USE IDS </v-btn>
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 md5 lg4 d-flex" style="justify-content: center;">
+                              <v-btn id="tabTargetFree1" large color="#457B9D" @click="selectedTabTargetFreeQuery = 0" style=" width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs0 md1 d-flex" style="justify-content: center;">
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 md5 lg4 d-flex" style="justify-content: center;">
+                              <v-btn id="tabTargetFree2" large color="#457B9D" @click="selectedTabTargetFreeQuery = 1;" style=" width: 400px; height: 70px;"> USE IDS </v-btn>
+                            </v-flex>
+                          </v-layout>
                         </v-flex>
 
                         <v-layout row wrap justify-center v-if="selectedTabTargetFreeQuery === 0">
@@ -81,14 +89,14 @@
                                 </v-card>
                             </v-dialog>
                           </v-flex>
-                          <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                          <v-flex class="no-horizontal-padding xs10 md8 lg6 d-flex" style="justify-content: center;">
                             <v-card color="#F1FAEE" width="100%" style="padding: 11px">
                               <v-card-title class="justify-center">
                                 <h5>ADD ACCESSION IDs:</h5>
                               </v-card-title>
                               <v-card-text>
                                 <v-layout row wrap justify-center>
-                                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                  <v-flex class="no-horizontal-padding xs12 md6 d-flex" style="justify-content: center;">
                                     <v-text-field
                                       v-model = "accession_id_target"
                                       solo
@@ -96,7 +104,7 @@
                                       style="margin-right: 10px"
                                     ></v-text-field>
                                   </v-flex>
-                                  <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-flex class="no-horizontal-padding xs8 md3 d-flex" style="justify-content: center;">
                                     <v-btn
                                         class="white--text"
                                          small
@@ -107,7 +115,7 @@
                                       ADD
                                     </v-btn>
                                   </v-flex>
-                                  <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                  <v-flex class="no-horizontal-padding xs8 md3 d-flex" style="justify-content: center;">
                                     <v-dialog width="500" v-model="dialogAccIdsTargetInserted">
                                         <template v-slot:activator="{ on }">
                                           <v-btn
@@ -197,7 +205,7 @@
                               </v-card-title>
                               <v-card-text>
                                 <v-layout row wrap justify-space-around>
-                                  <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                  <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center;">
                                     <input id="inputAccIdsTarget" type="file" style="display:none"
                                                  v-on:change="loadAccIdsTarget()" accept=".txt"
                                                  onclick="document.getElementById('inputAccIdsTarget').value = ''"
@@ -212,7 +220,7 @@
                                         Upload Target Accession IDs
                                     </v-btn>
                                   </v-flex>
-                                  <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                  <v-flex class="no-horizontal-padding xs12 md6 d-flex" style="justify-content: center;">
                                    <v-text-field
                                     :value = this.nameFileAccIdsTarget
                                     solo
@@ -243,8 +251,16 @@
                       <v-container fluid grid-list-xl style="justify-content: center; padding: 0; margin-top: 10px;">
 
                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                          <v-btn id="tabBackgroundFree1" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 0" style="margin-right: 10px; width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
-                          <v-btn id="tabBackgroundFree2" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 1;" style="margin-left: 10px; width: 400px; height: 70px;"> USE IDS </v-btn>
+                          <v-layout row wrap justify-center>
+                            <v-flex class="no-horizontal-padding xs12 md5 lg4 d-flex" style="justify-content: center;">
+                              <v-btn id="tabBackgroundFree1" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 0" style="width: 400px; height: 70px;"> USE METADATA SEARCH </v-btn>
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs0 md1 d-flex" style="justify-content: center;">
+                            </v-flex>
+                            <v-flex class="no-horizontal-padding xs12 md5 lg4 d-flex" style="justify-content: center;">
+                              <v-btn id="tabBackgroundFree2" large color="#457B9D" @click="selectedTabBackgroundFreeQuery = 1;" style="width: 400px; height: 70px;"> USE IDS </v-btn>
+                            </v-flex>
+                          </v-layout>
                         </v-flex>
 
                           <v-layout row wrap justify-center v-if="selectedTabBackgroundFreeQuery === 0">
@@ -287,14 +303,14 @@
                                 </v-card>
                             </v-dialog>
                           </v-flex>
-                            <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                            <v-flex class="no-horizontal-padding xs10 md8 lg6 d-flex" style="justify-content: center;">
                               <v-card color="#F1FAEE" width="100%" style="padding: 11px">
                                 <v-card-title class="justify-center">
                                   <h5>ADD ACCESSION IDs:</h5>
                                 </v-card-title>
                                 <v-card-text>
                                   <v-layout row wrap justify-center>
-                                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                    <v-flex class="no-horizontal-padding xs12 md6 d-flex" style="justify-content: center;">
                                       <v-text-field
                                         v-model = "accession_id_background"
                                         solo
@@ -302,7 +318,7 @@
                                         style="margin-right: 10px"
                                       ></v-text-field>
                                     </v-flex>
-                                    <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                    <v-flex class="no-horizontal-padding xs8 md3 d-flex" style="justify-content: center;">
                                       <v-btn
                                           class="white--text"
                                            small
@@ -313,7 +329,7 @@
                                         ADD
                                       </v-btn>
                                     </v-flex>
-                                    <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
+                                    <v-flex class="no-horizontal-padding xs8 md3 d-flex" style="justify-content: center;">
                                       <v-dialog width="500"  v-model="dialogAccIdsBackgroundInserted">
                                           <template v-slot:activator="{ on }">
                                             <v-btn
@@ -403,7 +419,7 @@
                                 </v-card-title>
                                 <v-card-text>
                                   <v-layout row wrap justify-space-around>
-                                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                                    <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center;">
                                       <input id="inputAccIdsBackground" type="file" style="display:none"
                                                    v-on:change="loadAccIdsBackground()" accept=".txt"
                                                    onclick="document.getElementById('inputAccIdsBackground').value = ''"
@@ -418,7 +434,7 @@
                                           Upload Background Accession IDs
                                       </v-btn>
                                     </v-flex>
-                                    <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+                                    <v-flex class="no-horizontal-padding xs12 md6 d-flex" style="justify-content: center;">
                                      <v-text-field
                                       :value = this.nameFileAccIdsBackground
                                       solo
@@ -460,7 +476,7 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
               <h2> NUM OVERLAPPING SEQUENCES </h2>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px">
+            <v-flex class="no-horizontal-padding xs8 md4 lg2 d-flex" style="justify-content: center; margin-bottom: 30px">
               <v-text-field
                 :value = "num_overlapping_sequences"
                 solo
@@ -472,7 +488,7 @@
             <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0" v-if="num_overlapping_sequences !== 0">
               <h3> Remove overlapping data from </h3>
             </v-flex>
-            <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center; margin-bottom: 30px" v-if="num_overlapping_sequences !== 0">
+            <v-flex class="no-horizontal-padding xs8 md4 lg2 d-flex" style="justify-content: center; margin-bottom: 30px" v-if="num_overlapping_sequences !== 0">
             <v-select
                     v-model="selectRemoveOverlapping"
                     :items="possibleRemoveOverlapping"
@@ -489,7 +505,7 @@
                <h4>(selecting none is equivalent to "all proteins")</h4>
              </v-flex>
              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
-                 <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+                 <v-flex class="no-horizontal-padding xs10 md4 lg2 d-flex" style="justify-content: center;">
                     <v-autocomplete
                       v-model="selectedProtein"
                       :items="possibleProtein"
@@ -531,7 +547,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                   <h2>ADVANCED FILTERS</h2>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% BACKGROUND:</h5>
@@ -598,7 +614,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5># SEQUENCES IN BACKGROUND:</h5>
@@ -665,7 +681,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>% TARGET:</h5>
@@ -732,7 +748,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5># SEQUENCES IN TARGET:</h5>
@@ -799,7 +815,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
@@ -868,7 +884,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                   <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>ODDS RATIO:</h5>
@@ -952,7 +968,7 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-               <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 xl3 d-flex" style="justify-content: center">
                      <v-card width="500px" color="#F1FAEE">
                         <v-card-title class="justify-center">
                           <h5>FILTER PROTEIN:</h5>
@@ -1028,7 +1044,7 @@
                </v-card>
 
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 80px">
-                 <h2>CHANGES IN TARGET vs BACKGROUND LOCATION</h2>
+                 <h2 style="text-align: center">CHANGES IN TARGET vs BACKGROUND LOCATION</h2>
                </v-flex>
                <v-tabs v-model="selectedTabTable"
                 background-color="#6A040F"
@@ -1132,7 +1148,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                 <h2> TARGET SEQUENCES BAR CHART </h2>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>P-VALUE:</h5>
@@ -1177,7 +1193,7 @@
                     </v-card-text>
                  </v-card>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center">
                       <h5>SELECT PROTEIN (mandatory):</h5>
@@ -1194,7 +1210,7 @@
                     </v-card-text>
                  </v-card>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center;">
                  <v-card width="500px" color="#F1FAEE">
                     <v-card-title class="justify-center" style="margin: 0; padding-bottom: 0">
                         <h5>PREVALENCE RANGE OF AA CHANGES:</h5>
@@ -1251,7 +1267,7 @@
                </v-flex>
                <div v-if="pValueBarChartApplied">
                <v-layout row wrap justify-center style="margin-top: 30px">
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                   <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F1FAEE">
@@ -1272,9 +1288,16 @@
                               </v-card-text>
                            </v-card>
                          </v-flex>
+                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValue.length > 0">
+                              <v-card :color="color_1[idx%color_1.length] + 80" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
                      </v-layout>
                     </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                   <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F1FAEE">
@@ -1295,9 +1318,16 @@
                               </v-card-text>
                            </v-card>
                          </v-flex>
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueMutagenesis" v-bind:key="idx">
+                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueMutagenesis.length > 0">
+                              <v-card :color="color_2[idx%color_2.length] + 80" height="100%">
+                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
+                              </v-card>
+                            </v-card>
+                         </v-flex>
                      </v-layout>
                     </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                   <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                            <v-card width="400px" color="#F1FAEE">
@@ -1326,35 +1356,7 @@
                               </v-card-text>
                            </v-card>
                          </v-flex>
-                     </v-layout>
-                    </v-flex>
-                 </v-layout>
-                 <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-layout row wrap justify-center>
-                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValue" v-bind:key="idx">
-                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValue.length > 0">
-                              <v-card :color="color_1[idx%color_1.length] + 80" height="100%">
-                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
-                              </v-card>
-                            </v-card>
-                         </v-flex>
-                     </v-layout>
-                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-layout row wrap justify-center>
-                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueMutagenesis" v-bind:key="idx">
-                            <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueMutagenesis.length > 0">
-                              <v-card :color="color_2[idx%color_2.length] + 80" height="100%">
-                                <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
-                              </v-card>
-                            </v-card>
-                         </v-flex>
-                     </v-layout>
-                    </v-flex>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
-                     <v-layout row wrap justify-center>
-                         <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
+                        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueAaModifications" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueAaModifications.length > 0">
                               <v-card color="#FFA50080" height="100%">
                                 <h5 style="text-align: center; color: black ">{{domain.toUpperCase()}}</h5>
@@ -1365,7 +1367,7 @@
                     </v-flex>
                  </v-layout>
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                   <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center;">
                      <v-card width="400px" color="#F1FAEE">
                         <v-card-title class="justify-center">
                           <h5>UPLOAD YOUR REGIONS:</h5>
@@ -1443,7 +1445,7 @@
                    </v-flex>
                  </v-layout>
                  <v-layout row wrap justify-center>
-                   <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center">
+                   <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-center>
                          <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; padding-bottom: 5px!important;" v-for="(domain, idx) in selectedDomainForPValueUploaded" v-bind:key="idx">
                             <v-card style="width: 400px;" color="white" v-if="selectedDomainForPValueUploaded.length > 0">
@@ -1461,9 +1463,9 @@
                 <v-layout row wrap justify-space-around style="margin: 10px; padding: 10px">
                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center">
                      <v-layout row wrap justify-space-between>
-                        <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: left;">
-                           <v-card width="500px" color="#F1FAEE" style="height: 250px">
-                            <v-card-text style="text-align: center; padding-top: 30%">
+                        <v-flex class="no-horizontal-padding xs12 md2 d-flex" style="justify-content: left;">
+                           <v-card max-width="500px" color="#F1FAEE" style="height: 250px">
+                            <v-card-text style="text-align: center; padding-top: 55px">
                               <span>
                                 <b> TARGET: </b>
                                 <br>
@@ -1484,7 +1486,7 @@
                             </v-card-text>
                          </v-card>
                        </v-flex>
-                      <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center;">
+                      <v-flex class="no-horizontal-padding xs12 md10 d-flex" style="justify-content: center;">
                          <PValueBarChart
                              :namePValue="pValueName[index]"
                              :pValueContent="pValueContent[index]"
@@ -2423,6 +2425,7 @@ export default {
     },
     applyFilterPValueChart(){
       this.selectedDomainForPValue = [];
+      this.pValueBarChartApplied = false;
       this.selectedDomainForPValueMutagenesis = [];
       this.selectedDomainForPValueAaModifications = [];
       this.selectedDomainForPValueUploaded = [];

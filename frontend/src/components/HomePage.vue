@@ -16,7 +16,7 @@
 
       <v-card width="80%" style="margin-top:50px; padding: 10px;" color="#A8DADC">
         <v-card-title class="justify-center" style=" margin: 1% 20% 3%;">
-          <span style="font-size: 1.2vw;">HOW TO USE <b>VIRU</b>CLUST</span>
+          <span>HOW TO USE <b>VIRU</b>CLUST</span>
         </v-card-title>
          <v-card-text>
            <v-layout row wrap justify-center style="margin-right: 10%; margin-left: 10%; margin-top: 1%">

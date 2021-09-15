@@ -5,7 +5,7 @@
           <h2>SUMMARY</h2>
         </v-flex>
         <v-layout row wrap justify-center style="padding: 20px;">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md10 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 80%; margin: 20px" color="#457B9D">
             <v-card-title class="justify-center" style="color: white">
               TARGET
@@ -34,7 +34,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md10 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 80%; margin: 20px" color="#1D3557">
             <v-card-title class="justify-center" style="color: white">
               BACKGROUND

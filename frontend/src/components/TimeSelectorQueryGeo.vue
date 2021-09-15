@@ -1,14 +1,19 @@
 <template>
   <div style="position: relative; width: 95%">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1;">
-        <h2 style="margin-top: 50px;"># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
-            style="margin-left: 20px; margin-bottom: 5px">
-              <v-icon size="23">
-                mdi-download-circle-outline
-              </v-icon>
-         </v-btn></h2>
-        <v-layout row wrap justify-center style="background-color: white; margin-top: 30px; padding-top: 30px; padding-left: 15%; padding-right: 15%;">
-
+       <v-layout row wrap justify-center>
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px;">
+            <h2># GENOMES BY COLLECTION DATE </h2>
+            <v-btn @click="download" x-small icon
+                  style="margin-left: 20px; margin-bottom: 5px">
+                    <v-icon size="23">
+                      mdi-download-circle-outline
+                    </v-icon>
+               </v-btn>
+           </v-flex>
+       </v-layout>
+        <v-layout row wrap justify-center style="background-color: white; margin-top: 30px; padding-top: 30px;">
+           <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center; padding-left: 0; padding-right: 0;">
           <v-btn-toggle v-model="perc_or_absolute_num_exclusive" mandatory color="black">
             <v-btn small>
               <span>NUM SEQUENCES</span>
@@ -18,23 +23,25 @@
               <span>% SEQUENCES</span>
             </v-btn>
           </v-btn-toggle>
+           </v-flex>
+          <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center; padding: 0">
+          </v-flex>
+          <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center; padding-left: 0; padding-right: 0; ">
 
-          <v-spacer></v-spacer>
+            <v-btn-toggle v-model="view_exclusive" mandatory color="black">
+              <v-btn small>
+                <span>SHOW <span style="color: #457B9D">TARGET</span></span>
+              </v-btn>
 
-          <v-btn-toggle v-model="view_exclusive" mandatory color="black">
-            <v-btn small>
-              <span>SHOW <span style="color: #457B9D">TARGET</span></span>
-            </v-btn>
+              <v-btn small>
+                <span>SHOW <span style="color: #1D3557">BACKGROUND</span></span>
+              </v-btn>
 
-            <v-btn small>
-              <span>SHOW <span style="color: #1D3557">BACKGROUND</span></span>
-            </v-btn>
-
-            <v-btn small>
-              <span>SHOW BOTH</span>
-            </v-btn>
-          </v-btn-toggle>
-
+              <v-btn small>
+                <span>SHOW BOTH</span>
+              </v-btn>
+            </v-btn-toggle>
+          </v-flex>
         </v-layout>
         <v-row justify="center" align="center" style="z-index: 1; margin-top: 0">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
@@ -69,9 +76,9 @@
             </v-range-slider>
           </div>
         </v-flex>
-        <v-flex class="no-horizontal-padding xs8 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12  d-flex" style="justify-content: center;">
           <v-layout row wrap justify-center style="">
-            <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+            <v-flex class="no-horizontal-padding xs6 md4 lg2 d-flex" style="justify-content: center;">
               <v-select
                 v-model="selectedTarget"
                 :items="possibleTarget"
@@ -87,7 +94,7 @@
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md6 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin-bottom: 20px" color="#457B9D">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
@@ -95,7 +102,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3 style="color: white">TARGET: </h3>
+                      <h3 style="color: white; text-align: center">TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -112,7 +119,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3 style="color: white">NUM SEQUENCES TARGET: </h3>
+                      <h3 style="color: white; text-align: center">NUM SEQUENCES TARGET: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -131,7 +138,7 @@
         </v-flex>
 
 
-        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md6 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin-bottom: 20px" color="#1D3557">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 20px; padding-top: 5px">
@@ -139,7 +146,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3 style="color: white">BACKGROUND: </h3>
+                      <h3 style="color: white; text-align: center">BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -156,7 +163,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <h3 style="color: white">NUM SEQUENCES BACKGROUND: </h3>
+                      <h3 style="color: white; text-align: center">NUM SEQUENCES BACKGROUND: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -178,9 +185,9 @@
         </v-flex>
 
 
-        <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md6 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin-bottom: 20px" color="#F48C0680">
-            <v-card-title class="justify-center" style="margin: 0; padding: 0; margin-top: 5px !important;">
+            <v-card-title class="justify-center" style="margin: 0; padding: 0; margin-top: 5px !important; margin-bottom: 5px!important;">
               TIME INTERVAL
             </v-card-title>
             <v-card-text>
@@ -189,7 +196,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>START: </h3>
+                      <h3 style="text-align: center">START: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -211,7 +218,7 @@
                       </v-text-field>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                      <span style="text-align: center"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -219,7 +226,7 @@
                  padding: 0; position: relative; margin-top: 10px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>END: </h3>
+                      <h3 style="text-align: center">END: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -241,7 +248,7 @@
                       </v-text-field>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                      <span style="text-align: center"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>

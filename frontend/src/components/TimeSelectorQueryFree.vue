@@ -1,12 +1,17 @@
 <template>
 <div style="position: relative; width: 95%">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1">
-        <h2># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
-            style="margin-left: 20px; margin-bottom: 5px">
-              <v-icon size="23">
-                mdi-download-circle-outline
-              </v-icon>
-         </v-btn></h2>
+      <v-layout row wrap justify-center>
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px;">
+            <h2 style="text-align: center"># GENOMES BY COLLECTION DATE </h2>
+            <v-btn @click="download" x-small icon
+                  style="margin-left: 20px; margin-top: 5px">
+                    <v-icon size="23">
+                      mdi-download-circle-outline
+                    </v-icon>
+               </v-btn>
+           </v-flex>
+      </v-layout>
 
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
@@ -47,15 +52,15 @@
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md12 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative;">
+                <v-flex class="no-horizontal-padding xs10 md5 lg5 d-flex" style="justify-content: center;
+                 padding: 0; position: relative; margin-top: 15px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>START: </h3>
+                      <h3 style="text-align: center;">START: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -77,15 +82,15 @@
                       </v-text-field>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                      <span style="text-align: center;"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative">
+                <v-flex class="no-horizontal-padding xs10 md5 lg5 d-flex" style="justify-content: center;
+                 padding: 0; position: relative; margin-top: 15px">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>END: </h3>
+                      <h3 style="text-align: center;">END: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -107,7 +112,7 @@
                       </v-text-field>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                      <span style="text-align: center;"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>

@@ -1,12 +1,17 @@
 <template>
   <div style="position: relative; width: 95%">
     <v-container fluid grid-list-xl style="justify-content: center; text-align: center; z-index: 1;">
-        <h2 style="margin-top: 50px;"># GENOMES BY COLLECTION DATE <v-btn @click="download" x-small icon
-            style="margin-left: 20px; margin-bottom: 5px">
-              <v-icon size="23">
-                mdi-download-circle-outline
-              </v-icon>
-         </v-btn></h2>
+      <v-layout row wrap justify-center>
+           <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px;">
+             <h2># GENOMES BY COLLECTION DATE </h2>
+             <v-btn @click="download" x-small icon
+                style="margin-left: 20px; margin-bottom: 5px">
+                  <v-icon size="23">
+                    mdi-download-circle-outline
+                  </v-icon>
+             </v-btn>
+           </v-flex>
+      </v-layout>
         <v-row justify="center" align="center" style="z-index: 1">
           <div :id="timeName" style="width: 100%; height: 500px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
@@ -45,17 +50,17 @@
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md10 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 100%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 30px; padding-top: 30px">
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative;">
+                <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center;
+                 padding-bottom: 0;">
                   <v-layout row wrap justify-space-around>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>START: </h3>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
+                      <h3 style="text-align: center">START: </h3>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
                         v-model = "last_start_date"
                         solo
@@ -74,18 +79,18 @@
                           </template>
                       </v-text-field>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding-top: 0;">
+                      <span style="text-align: center"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs5 d-flex" style="justify-content: center;
-                 padding: 0; position: relative">
+                <v-flex class="no-horizontal-padding xs12 md6 lg4 d-flex" style="justify-content: center;
+                 padding-bottom: 0;">
                   <v-layout row wrap justify-space-around>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>END: </h3>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
+                      <h3 style="text-align: center">END: </h3>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
                         v-model = "last_stop_date"
                         solo
@@ -104,8 +109,8 @@
                         </template>
                       </v-text-field>
                     </v-flex>
-                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                      <span> (input date using the YYYY-MM-DD format) </span>
+                    <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding-top: 0;">
+                      <span style="text-align: center"> (input date using the YYYY-MM-DD format) </span>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -120,7 +125,7 @@
             <v-card-title class="justify-center"><h3>Type of analysis</h3></v-card-title>
             <v-card-text>
               <v-layout row wrap justify-space-around>
-                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                <v-flex class="no-horizontal-padding xs12 md4 lg4 d-flex" style="justify-content: center;">
                   <v-select
                     v-model="selectedTypeOfAnalysis"
                     :items="possibleTypeOfAnalysis"

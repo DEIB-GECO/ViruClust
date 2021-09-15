@@ -4,14 +4,14 @@
       <v-row justify="center" align="center">
         <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
           <v-card-title class="justify-center">
-            <h1>PREVALENCE OF LINEAGES</h1>
+            <h1 style="word-break: break-word; text-align: center">PREVALENCE OF LINEAGES</h1>
           </v-card-title>
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                <h2>PICK A PLACE</h2>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+              <v-flex class="no-horizontal-padding xs12 md4 lg2 d-flex" style="justify-content: center;">
                 <v-select
                   v-model="selectedGeoToChange"
                   :items="possibleGeo"
@@ -20,7 +20,7 @@
                   hide-details
                 ></v-select>
               </v-flex>
-              <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+              <v-flex class="no-horizontal-padding xs12 md4 lg2 d-flex" style="justify-content: center;">
                 <v-autocomplete
                   v-model="selectedSpecificGeo"
                   :items="possibleSpecificGeo"
@@ -60,7 +60,7 @@
                <h4>(The minimum percentage is used to filter the list of lineages in the result. Only the lineages
                  with at least the min % of the total number of sequences fulfilling all filters will appear)</h4>
               </v-flex>
-               <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;"  v-if="chosenApplied">
+               <v-flex class="no-horizontal-padding xs12 md4 lg2 d-flex" style="justify-content: center;"  v-if="chosenApplied">
                   <v-text-field v-model.number="selectedGeoCount" min="0" max="100" step = "0.1"  solo type="number" hide-details></v-text-field>
                 </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;" v-if="chosenApplied">
@@ -82,7 +82,7 @@
            <v-card-text>
              <v-layout row wrap justify-center style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-                 <h2>LINEAGES AND THEIR PRESENCE IN THE SELECTED LOCATION</h2>
+                 <h2 style="text-align: center;">LINEAGES AND THEIR PRESENCE IN THE SELECTED LOCATION</h2>
                 <v-btn @click="downloadTable('table_geo')" x-small icon
                 style="margin-left: 20px;">
                   <v-icon size="23">

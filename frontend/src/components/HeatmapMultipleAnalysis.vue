@@ -11,7 +11,7 @@
          </v-btn>
       </h2>
      </v-flex>
-     <v-flex class="no-horizontal-padding xs2 d-flex" style="justify-content: center;">
+     <v-flex class="no-horizontal-padding xs8 md4 lg2 d-flex" style="justify-content: center;">
       <v-autocomplete
               v-model="heatmapMode"
               :items="possibleHeatmapMode"

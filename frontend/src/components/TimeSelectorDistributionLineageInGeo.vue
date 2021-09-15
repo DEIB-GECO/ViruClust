@@ -1,14 +1,13 @@
 <template>
 <div style="position: relative; width: 95%">
     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 50px">
-     <h2># GENOMES BY COLLECTION DATE
+      <h2 style="text-align: center"># GENOMES BY COLLECTION DATE </h2>
         <v-btn @click="download" x-small icon
             style="margin-left: 20px; margin-bottom: 5px">
               <v-icon size="23">
                 mdi-download-circle-outline
               </v-icon>
         </v-btn>
-     </h2>
     </v-flex>
     <v-container fluid grid-list-xl style="justify-content: center; z-index: 1;">
         <v-row justify="center" align="center" style="z-index: 1">
@@ -49,14 +48,14 @@
     <v-container fluid grid-list-xl style="justify-content: center;
   background-color: white; width: 100%">
       <v-row justify="center" align="center">
-        <v-flex class="no-horizontal-padding xs6 d-flex" style="justify-content: center;">
+        <v-flex class="no-horizontal-padding xs12 md10 lg6 d-flex" style="justify-content: center;">
           <v-card style="width: 80%; margin: 20px" color="#F48C0680">
             <v-card-text>
               <v-layout row wrap justify-space-around style="padding-bottom: 5px; padding-top: 5px">
-                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
+                <v-flex class="no-horizontal-padding xs12 md12 lg12 xl4 d-flex" style="justify-content: center;">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0;">
-                    <h3>NUM SEQUENCES: </h3>
+                    <h3 style="text-align: center;">NUM SEQUENCES: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0;">
                       <v-text-field
@@ -69,10 +68,10 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; position: relative;">
+                <v-flex class="no-horizontal-padding xs12 md6 lg6 xl4 d-flex" style="justify-content: center; position: relative;">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>START: </h3>
+                      <h3 style="text-align: center;">START: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
@@ -95,10 +94,10 @@
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; position: relative">
+                <v-flex class="no-horizontal-padding xs12 md6 lg6 xl4 d-flex" style="justify-content: center; position: relative">
                   <v-layout row wrap justify-space-around>
                     <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
-                      <h3>END: </h3>
+                      <h3 style="text-align: center;">END: </h3>
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs10 d-flex" style="justify-content: center; padding: 0">
                       <v-text-field
