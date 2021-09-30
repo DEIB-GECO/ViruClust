@@ -4,7 +4,7 @@
         <v-img :src="require('./images/virusurf_logo.png')" contain max-width="39px" max-height="39px"></v-img>
         <v-toolbar-title class="headline" style="font-size: 32px !important; margin-left: 20px">
             <span>Viru</span>
-            <span class="font-weight-light">Clust GISAID</span>
+            <span class="font-weight-light">Clust</span>
         </v-toolbar-title>
 
         <span style="font-size: 20px; white-space: nowrap; margin-left: 50px">enabled by data from
