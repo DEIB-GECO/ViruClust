@@ -23,7 +23,9 @@
           </v-btn>
           <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                 style="background-color: transparent; width: 200px">
-              <span>ViruSurf GISAID</span>
+              <span>ViruSurf</span>
+              <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
+                     height="13px"/>
           </v-btn>
           <v-btn icon text href="http://gmql.eu/episurf/" target="_blank"
                  style="background-color: transparent; width: 100px">
@@ -31,7 +33,9 @@
           </v-btn>
           <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                  style="background-color: transparent; width: 200px">
-              <span>EpiSurf GISAID</span>
+              <span>EpiSurf</span>
+              <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
+                     height="13px"/>
           </v-btn>
           <v-btn icon text href="http://gmql.eu/virusviz/" target="_blank"
                  style="background-color: transparent; width: 100px">
@@ -68,7 +72,9 @@
               <v-list-item-content>
                 <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                       style="background-color: transparent; width: 200px">
-                    <span>ViruSurf GISAID</span>
+                    <span>ViruSurf</span>
+                    <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
+                     height="15px"/>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>
@@ -84,7 +90,9 @@
               <v-list-item-content>
                 <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                        style="background-color: transparent; width: 200px">
-                    <span>EpiSurf GISAID</span>
+                    <span>EpiSurf</span>
+                    <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
+                     height="15px"/>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>
