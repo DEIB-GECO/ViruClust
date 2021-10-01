@@ -24,8 +24,8 @@
           <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                 style="background-color: transparent; width: 200px">
               <span>ViruSurf</span>
-              <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
-                     height="13px"/>
+              <img style="vertical-align: middle;" :src="require('./assets/enabled_gisaid_white.png')" alt="gisaid-logo"
+                     height="40px"/>
           </v-btn>
           <v-btn icon text href="http://gmql.eu/episurf/" target="_blank"
                  style="background-color: transparent; width: 100px">
@@ -34,8 +34,8 @@
           <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                  style="background-color: transparent; width: 200px">
               <span>EpiSurf</span>
-              <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
-                     height="13px"/>
+              <img style="vertical-align: middle;" :src="require('./assets/enabled_gisaid_white.png')" alt="gisaid-logo"
+                     height="40px"/>
           </v-btn>
           <v-btn icon text href="http://gmql.eu/virusviz/" target="_blank"
                  style="background-color: transparent; width: 100px">
@@ -73,8 +73,8 @@
                 <v-btn icon text href="http://gmql.eu/virusurf_gisaid/" target="_blank"
                       style="background-color: transparent; width: 200px">
                     <span>ViruSurf</span>
-                    <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
-                     height="15px"/>
+                    <img style="vertical-align: middle;" :src="require('./assets/enabled_gisaid_grey.png')" alt="gisaid-logo"
+                     height="50px"/>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>
@@ -91,8 +91,8 @@
                 <v-btn icon text href="http://gmql.eu/episurf_gisaid/" target="_blank"
                        style="background-color: transparent; width: 200px">
                     <span>EpiSurf</span>
-                    <img style="vertical-align: middle;" :src="require('./assets/gisaid.png')" alt="gisaid-logo"
-                     height="15px"/>
+                    <img style="vertical-align: middle;" :src="require('./assets/enabled_gisaid_grey.png')" alt="gisaid-logo"
+                     height="50px"/>
                 </v-btn>
               </v-list-item-content>
           </v-list-item>
