@@ -2667,15 +2667,29 @@ class FieldList(Resource):
                         where_part_background_overlapping['$and'].append(single_where_part_or)
                         where_part_target_overlapping['$and'].append(single_where_part_or)
                     else:
-                        replace_fields_value = query_background[key]
-                        if key != 'start_aa_original':
-                            replace_fields_value = query_background[key]  # .replace("'", "''")
-                        if real_key not in where_part_background_overlapping:
-                            where_part_background_overlapping[real_key] = {}
-                        if real_key not in where_part_target_overlapping:
-                            where_part_target_overlapping[real_key] = {}
-                        where_part_background_overlapping[real_key]['$eq'] = replace_fields_value
-                        where_part_target_overlapping[real_key]['$eq'] = replace_fields_value
+                        if real_key == 'covv_lineage':
+                            if '$and' not in where_part_background_overlapping:
+                                where_part_background_overlapping['$and'] = []
+                            if '$and' not in where_part_target_overlapping:
+                                where_part_target_overlapping['$and'] = []
+                            single_where_part_and = {'$and': []}
+                            for itm in query_background[key]:
+                                specific_or = {}
+                                field_value = itm  # .replace("'", "''")
+                                specific_or[f'{real_key}'] = {'$eq': field_value}
+                                single_where_part_and['$and'].append(specific_or)
+                            where_part_background_overlapping['$and'].append(single_where_part_and)
+                            where_part_target_overlapping['$and'].append(single_where_part_and)
+                        else:
+                            replace_fields_value = query_background[key]
+                            if key != 'start_aa_original':
+                                replace_fields_value = query_background[key]  # .replace("'", "''")
+                            if real_key not in where_part_background_overlapping:
+                                where_part_background_overlapping[real_key] = {}
+                            if real_key not in where_part_target_overlapping:
+                                where_part_target_overlapping[real_key] = {}
+                            where_part_background_overlapping[real_key]['$eq'] = replace_fields_value
+                            where_part_target_overlapping[real_key]['$eq'] = replace_fields_value
 
         # query_target_overlapping = []
         # query_where_target_overlapping = {"$match": where_part_target_overlapping}
