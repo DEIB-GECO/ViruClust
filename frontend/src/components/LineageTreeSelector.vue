@@ -8,7 +8,7 @@
               hide-details
               @click="clickOnTextField"
               :loading="isLoading || isLoadingLineage"
-              :disabled="isLoading || isLoadingLineage"
+              :disabled="isLoading || isLoadingLineage || (radio_select === 'only_mutations')"
               style="position: relative; width: 350px; padding: 0"
             >
           <template v-slot:label>
@@ -71,6 +71,7 @@ export default {
     isLoading: {required: true,},
     possibleValues: {required: true,},
     type: {required: true,},
+    radio_select: {required: false,},
   },
   data() {
     return {
@@ -135,6 +136,10 @@ export default {
               this.items = res;
             });
       }
+      else{
+        this.items = [];
+        this.clearSelectedLineage();
+      }
     },
     clickOnTextField(){
       this.showLineages = true;
@@ -181,6 +186,11 @@ export default {
     },
   },
   watch: {
+    radio_select(){
+      if(this.radio_select === 'only_mutations') {
+        this.clearSelectedLineage();
+      }
+    },
     possibleValues(){
       this.computeLineageTree();
     },

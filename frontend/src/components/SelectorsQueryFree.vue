@@ -37,6 +37,7 @@
               <LineageTreeSelector
                 :isLoading = "isLoading"
                 :possibleValues = "possibleValues"
+                :radio_select = "radio_select"
                 :type = "type" style="width: 100%">
               </LineageTreeSelector>
            </v-flex>
@@ -59,6 +60,7 @@ export default {
   props: {
     field: {required: true,},
     type: {required: true,},
+    radio_select: {required: false,},
   },
   data() {
     return {
@@ -144,32 +146,43 @@ export default {
             })
             .then((res) => {
               this.possibleValues = res;
-              let query;
-              if(this.type === 'target') {
-                query = this.queryFreeTarget;
-              }
-              if(this.type === 'background') {
-                query = this.queryFreeBackground;
-              }
-              if(query[this.field] && this.field !== 'lineage'){
-                let arr = query[this.field];
-                let index_to_cancel = [];
-                for(let i = 0; i < arr.length; i = i + 1){
-                  if(!this.possibleValues.some(item => item.value === arr[i])){
-                    index_to_cancel.unshift(i);
-                  }
+             if(this.possibleValues.length === 0){
+                this.selected = null;
+                if (this.type === 'target') {
+                  this.setQueryFreeTarget({field: this.field, list: null});
                 }
-                for(let j = 0; j < index_to_cancel.length; j = j + 1){
-                  arr.splice(index_to_cancel[j],1);
-                }
-                if(this.type === 'target') {
-                  this.setQueryFreeTarget({field: this.field, list: arr});
-                }
-                if(this.type === 'background') {
-                  this.setQueryFreeBackground({field: this.field, list: arr});
+                if (this.type === 'background') {
+                  this.setQueryFreeBackground({field: this.field, list: null});
                 }
               }
-              this.isLoading = false;
+             else {
+               let query;
+               if (this.type === 'target') {
+                 query = this.queryFreeTarget;
+               }
+               if (this.type === 'background') {
+                 query = this.queryFreeBackground;
+               }
+               if (query[this.field] && this.field !== 'lineage') {
+                 let arr = query[this.field];
+                 let index_to_cancel = [];
+                 for (let i = 0; i < arr.length; i = i + 1) {
+                   if (!this.possibleValues.some(item => item.value === arr[i])) {
+                     index_to_cancel.unshift(i);
+                   }
+                 }
+                 for (let j = 0; j < index_to_cancel.length; j = j + 1) {
+                   arr.splice(index_to_cancel[j], 1);
+                 }
+                 if (this.type === 'target') {
+                   this.setQueryFreeTarget({field: this.field, list: arr});
+                 }
+                 if (this.type === 'background') {
+                   this.setQueryFreeBackground({field: this.field, list: arr});
+                 }
+               }
+             }
+             this.isLoading = false;
             });
       }
       else{

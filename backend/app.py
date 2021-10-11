@@ -8,7 +8,7 @@ from flask_executor import Executor
 
 from apis import api_blueprint
 
-base_url = '/viruclust_gisaid/'
+base_url = '/viruclust_test/'
 api_url = base_url + 'api'
 repo_static_url = base_url + 'repo_static'
 

@@ -14,10 +14,40 @@
                <!--<v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(both fields can be empty, meaning that all lineages/countries are interesting)</h4>
                </v-flex>-->
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryTime
-                  field = 'lineage'>
-                 </SelectorsQueryTime>
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                   <v-layout row wrap justify-center>
+                      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                        <v-radio-group
+                          v-model="radio_group_lineage"
+                          row
+                        >
+                          <v-radio
+                            label="Only Lineage"
+                            value="only_lineage"
+                          ></v-radio>
+                          <v-radio
+                            label="Lineage + Set of Mutations"
+                            value="lineage_and_mutations"
+                          ></v-radio>
+                          <v-radio
+                            label="Only Set of Mutations"
+                            value="only_mutations"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-flex>
+                     <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+                       <SelectorsQueryTime
+                        field = 'lineage'
+                        :radio_select = "radio_group_lineage">
+                       </SelectorsQueryTime>
+                     </v-flex>
+                     <v-flex class="no-horizontal-padding xs12 lg12 xl12 d-flex" style="justify-content: center;">
+                       <SetMutationPanel
+                       type="time"
+                       :radio_group_lineage = "radio_group_lineage">
+                       </SetMutationPanel>
+                     </v-flex>
+                   </v-layout>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
@@ -1195,16 +1225,20 @@ import TimeDistributionChartWeekMonth from "./TimeDistributionChartWeekMonth";
 import HeatmapMultipleAnalysis from "./HeatmapMultipleAnalysis";
 import SelectorQueryToExclude from "./SelectorQueryToExclude";
 import ImportantMutation from "./ImportantMutation";
+import SetMutationPanel from "./SetMutationPanel";
 
 export default {
   name: "AnalyzeTimeLinCou",
   components: {
+    SetMutationPanel,
     ImportantMutation,
     SelectorQueryToExclude,
     HeatmapMultipleAnalysis,
     TimeDistributionChartWeekMonth, SelectorsQueryTime, TimeDistributionChart, PValueBarChart},
   data() {
     return {
+      radio_group_lineage: 'only_lineage',
+
       overlay: false,
       rowsAnalyzeTime: [],
       fixedRowAnalyzeTime: [],
@@ -2149,6 +2183,11 @@ export default {
     }
   },
   watch: {
+    radio_group_lineage(){
+      if(this.radio_group_lineage === 'only_lineage'){
+        this.setQueryTime({field: 'mutations', list: null});
+      }
+    },
     selectedAllAaModifications(){
       this.selectedDomainForPValueAaModifications = [];
       if(this.selectedAllAaModifications){

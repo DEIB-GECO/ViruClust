@@ -676,23 +676,25 @@ export default {
               let first_date;
               let last_date;
               if (res.length !== 0) {
-
                 first_date = new Date(res[0]['name']);
-                last_date = new Date();
-                last_date.setDate(last_date.getDate() + 1)
-
-                dayList = this.getDaysArray(first_date, last_date);
-                dayList.forEach(day => {
-                  let idx = res.findIndex(item => item['name'] === day);
-                  if (idx === -1) {
-                    let single_element = {'name': day, 'value': 0};
-                    arrOfDates.push(single_element);
-                  } else {
-                    let single_element = {'name': day, 'value': res[idx]['value']};
-                    arrOfDates.push(single_element);
-                  }
-                })
               }
+              else {
+                first_date = new Date('2019-01-01');
+              }
+              last_date = new Date();
+              last_date.setDate(last_date.getDate() + 1)
+
+              dayList = this.getDaysArray(first_date, last_date);
+              dayList.forEach(day => {
+                let idx = res.findIndex(item => item['name'] === day);
+                if (idx === -1) {
+                  let single_element = {'name': day, 'value': 0};
+                  arrOfDates.push(single_element);
+                } else {
+                  let single_element = {'name': day, 'value': res[idx]['value']};
+                  arrOfDates.push(single_element);
+                }
+              })
               this.timeContent[0] = arrOfDates;
               this.max_range = this.timeContent[0].length - 1;
 
@@ -861,33 +863,35 @@ export default {
             let first_date;
             let last_date;
             if (res.length !== 0) {
-
               first_date = new Date(res[0]['name']);
-              if(this.startDateMultiMinor === null || (this.startDateMultiMinor > first_date)){
-                this.startDateMultiMinor = first_date;
-              }
-              if(startDate !== null && first_date > startDate){
-                first_date = startDate;
-              }
-              else{
-                startDate = first_date;
-              }
-
-              last_date = new Date();
-              last_date.setDate(last_date.getDate() + 1)
-
-              dayList = this.getDaysArray(first_date, last_date);
-              dayList.forEach(day => {
-                let idx = res.findIndex(item => item['name'] === day);
-                if (idx === -1) {
-                  let single_element = {'name': day, 'value': 0};
-                  arrOfDates.push(single_element);
-                } else {
-                  let single_element = {'name': day, 'value': res[idx]['value']};
-                  arrOfDates.push(single_element);
-                }
-              })
             }
+           else {
+              first_date = new Date('2019-01-01');
+            }
+            if(this.startDateMultiMinor === null || (this.startDateMultiMinor > first_date)){
+              this.startDateMultiMinor = first_date;
+            }
+            if(startDate !== null && first_date > startDate){
+              first_date = startDate;
+            }
+            else{
+              startDate = first_date;
+            }
+
+            last_date = new Date();
+            last_date.setDate(last_date.getDate() + 1)
+
+            dayList = this.getDaysArray(first_date, last_date);
+            dayList.forEach(day => {
+              let idx = res.findIndex(item => item['name'] === day);
+              if (idx === -1) {
+                let single_element = {'name': day, 'value': 0};
+                arrOfDates.push(single_element);
+              } else {
+                let single_element = {'name': day, 'value': res[idx]['value']};
+                arrOfDates.push(single_element);
+              }
+            })
             this.timeContent[i] = arrOfDates;
 
             // if(this.max_range < this.timeContent[this.targetIndex].length - 1) {

@@ -11,10 +11,40 @@
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                <h2>PICK A LINEAGE, PLACE AND INTERVAL OF TIME</h2>
               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
-                 <SelectorsQueryGeo
-                  field = 'lineage'>
-                 </SelectorsQueryGeo>
+                              <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                   <v-layout row wrap justify-center>
+                      <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
+                        <v-radio-group
+                          v-model="radio_group_lineage"
+                          row
+                        >
+                          <v-radio
+                            label="Only Lineage"
+                            value="only_lineage"
+                          ></v-radio>
+                          <v-radio
+                            label="Lineage + Set of Mutations"
+                            value="lineage_and_mutations"
+                          ></v-radio>
+                          <v-radio
+                            label="Only Set of Mutations"
+                            value="only_mutations"
+                          ></v-radio>
+                        </v-radio-group>
+                      </v-flex>
+                     <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+                       <SelectorsQueryGeo
+                        field = 'lineage'
+                        :radio_select = "radio_group_lineage">
+                       </SelectorsQueryGeo>
+                     </v-flex>
+                     <v-flex class="no-horizontal-padding xs12 lg12 xl12 d-flex" style="justify-content: center;">
+                       <SetMutationPanel
+                       type="geo"
+                       :radio_group_lineage = "radio_group_lineage">
+                       </SetMutationPanel>
+                     </v-flex>
+                   </v-layout>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
@@ -1210,14 +1240,18 @@ import TimeSelectorQueryGeo from "./TimeSelectorQueryGeo";
 import SelectorQueryToExclude from "./SelectorQueryToExclude";
 import HeatmapMultipleAnalysis from "./HeatmapMultipleAnalysis";
 import ImportantMutation from "./ImportantMutation";
+import SetMutationPanel from "./SetMutationPanel";
 
 export default {
   name: "AnalyzeProvinceRegion",
   components: {
+    SetMutationPanel,
     ImportantMutation,
     HeatmapMultipleAnalysis, SelectorQueryToExclude, TimeSelectorQueryGeo, SelectorsQueryGeo, PValueBarChart},
   data() {
     return {
+      radio_group_lineage: 'only_lineage',
+
       overlay: false,
       num_sequences_forProvReg: null,
       selectedContinent_forProvReg: null,
@@ -2414,6 +2448,11 @@ export default {
     },
   },
   watch: {
+    radio_group_lineage(){
+      if(this.radio_group_lineage === 'only_lineage'){
+        this.setQueryGeo({field: 'mutations', list: null});
+      }
+    },
     selectedAllAaModifications(){
       this.selectedDomainForPValueAaModifications = [];
       if(this.selectedAllAaModifications){

@@ -42,6 +42,7 @@
               <LineageTreeSelector
                 :isLoading = "isLoading"
                 :possibleValues = "possibleValues2"
+                :radio_select = "radio_select"
                 type = "geo" style="width: 100%">
               </LineageTreeSelector>
            </v-flex>
@@ -63,6 +64,7 @@ export default {
   components: {LineageTreeSelector, SelectorsPieChart},
   props: {
     field: {required: true,},
+    radio_select: {required: false,},
   },
   data() {
     return {
@@ -142,6 +144,10 @@ export default {
             })
             .then((res) => {
               this.possibleValues2 = res;
+              if(this.possibleValues2.length === 0){
+                 this.selected2 = null;
+                 this.setQueryGeo({field: this.field, list: null})
+              }
               this.isLoading = false;
             });
       }

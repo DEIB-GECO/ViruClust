@@ -36,6 +36,7 @@
               <LineageTreeSelector
               :isLoading = "isLoading"
               :possibleValues = "possibleValues"
+              :radio_select = "radio_select"
               type = "time" style="width: 100%">
               </LineageTreeSelector>
            </v-flex>
@@ -57,6 +58,7 @@ export default {
   components: {LineageTreeSelector, SelectorsPieChart},
   props: {
     field: {required: true,},
+    radio_select: {required: false,},
   },
   data() {
     return {
@@ -114,6 +116,10 @@ export default {
             })
             .then((res) => {
               this.possibleValues = res;
+              if(this.possibleValues.length === 0){
+                this.selected = null;
+                 this.setQueryTime({field: this.field, list: null})
+              }
               this.isLoading = false;
             });
       }
