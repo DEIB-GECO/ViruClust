@@ -678,9 +678,15 @@ class FieldList(Resource):
                     if '$and' not in where_part:
                         where_part['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
+                        # mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
+                        #            str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
+                        # single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
                         where_part['$and'].append(single_obj)
 
                 else:
@@ -1021,9 +1027,12 @@ class FieldList(Resource):
                     if '$and' not in where_part:
                         where_part['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part['$and'].append(single_obj)
 
                 else:
@@ -1145,9 +1154,12 @@ class FieldList(Resource):
                     if '$and' not in where_part:
                         where_part['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part['$and'].append(single_obj)
 
                 else:
@@ -1362,9 +1374,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_background_denominator:
                         where_part_background_denominator['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_target['$and'].append(single_obj)
                         where_part_background['$and'].append(single_obj)
                         where_part_target_denominator['$and'].append(single_obj)
@@ -1395,10 +1410,10 @@ class FieldList(Resource):
         query_target_denominator = []
         query_background_denominator = []
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
+        # query_unwind_target = {"$unwind": "$muts"}
+        # query_target.append(query_unwind_target)
+        # query_unwind_background = {"$unwind": "$muts"}
+        # query_background.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
         query_target.append(query_where_target)
@@ -1408,6 +1423,11 @@ class FieldList(Resource):
         query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
         query_background_denominator.append(query_where_background_denominator)
+
+        query_unwind_target = {"$unwind": "$muts"}
+        query_target.append(query_unwind_target)
+        query_unwind_background = {"$unwind": "$muts"}
+        query_background.append(query_unwind_background)
 
         group_part = {"_id": {}}
         real_field = translate_dictionary['product']
@@ -1748,9 +1768,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_background_denominator:
                         where_part_background_denominator['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_target['$and'].append(single_obj)
                         where_part_background['$and'].append(single_obj)
                         where_part_target_denominator['$and'].append(single_obj)
@@ -1797,10 +1820,10 @@ class FieldList(Resource):
         query_target_denominator = []
         query_background_denominator = []
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
+        # query_unwind_target = {"$unwind": "$muts"}
+        # query_target.append(query_unwind_target)
+        # query_unwind_background = {"$unwind": "$muts"}
+        # query_background.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
         query_target.append(query_where_target)
@@ -1810,6 +1833,11 @@ class FieldList(Resource):
         query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
         query_background_denominator.append(query_where_background_denominator)
+
+        query_unwind_target = {"$unwind": "$muts"}
+        query_target.append(query_unwind_target)
+        query_unwind_background = {"$unwind": "$muts"}
+        query_background.append(query_unwind_background)
 
         group_part = {"_id": {}}
         real_field = translate_dictionary['product']
@@ -2144,9 +2172,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_target_overlapping:
                         where_part_target_overlapping['$and'] = []
                     for single_mutation in query_target[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_target['$and'].append(single_obj)
                         where_part_target_denominator['$and'].append(single_obj)
                         where_part_target_overlapping['$and'].append(single_obj)
@@ -2260,9 +2291,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_background_overlapping:
                         where_part_background_overlapping['$and'] = []
                     for single_mutation in query_background[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_background['$and'].append(single_obj)
                         where_part_background_denominator['$and'].append(single_obj)
                         where_part_background_overlapping['$and'].append(single_obj)
@@ -2358,10 +2392,10 @@ class FieldList(Resource):
         query_target_denominator = []
         query_background_denominator = []
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
+        # query_unwind_target = {"$unwind": "$muts"}
+        # query_target.append(query_unwind_target)
+        # query_unwind_background = {"$unwind": "$muts"}
+        # query_background.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
         query_target.append(query_where_target)
@@ -2371,6 +2405,11 @@ class FieldList(Resource):
         query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
         query_background_denominator.append(query_where_background_denominator)
+
+        query_unwind_target = {"$unwind": "$muts"}
+        query_target.append(query_unwind_target)
+        query_unwind_background = {"$unwind": "$muts"}
+        query_background.append(query_unwind_background)
 
         group_part = {"_id": {}}
         real_field = translate_dictionary['product']
@@ -2660,9 +2699,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_target_overlapping:
                         where_part_target_overlapping['$and'] = []
                     for single_mutation in query_target[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_target_overlapping['$and'].append(single_obj)
 
                 else:
@@ -2756,9 +2798,12 @@ class FieldList(Resource):
                     if '$and' not in where_part_target_overlapping:
                         where_part_target_overlapping['$and'] = []
                     for single_mutation in query_background[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
-                                   str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part_background_overlapping['$and'].append(single_obj)
                         where_part_target_overlapping['$and'].append(single_obj)
 
@@ -2937,10 +2982,12 @@ class FieldList(Resource):
                         if '$and' not in where_part_target:
                             where_part_target['$and'] = []
                         for single_mutation in query_fields_target[key]:
-                            mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] + \
-                                       str(single_mutation['start_aa_original']) + single_mutation[
-                                           'sequence_aa_alternative']
-                            single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                            obj = {}
+                            for key_mut in single_mutation:
+                                if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                    real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                    obj[real_key_mut] = single_mutation[key_mut]
+                            single_obj = {'muts': {'$elemMatch': obj}}
                             where_part_target['$and'].append(single_obj)
 
                     else:
@@ -3025,10 +3072,12 @@ class FieldList(Resource):
                     if '$and' not in where_part:
                         where_part['$and'] = []
                     for single_mutation in query_fields[key]:
-                        mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] + \
-                                   str(single_mutation['start_aa_original']) + single_mutation[
-                                       'sequence_aa_alternative']
-                        single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
+                        obj = {}
+                        for key_mut in single_mutation:
+                            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                                real_key_mut = translate_dictionary[key_mut].split('.')[1]
+                                obj[real_key_mut] = single_mutation[key_mut]
+                        single_obj = {'muts': {'$elemMatch': obj}}
                         where_part['$and'].append(single_obj)
 
                 else:
@@ -3064,15 +3113,20 @@ class FieldList(Resource):
         query_target = []
         query = []
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind = {"$unwind": "$muts"}
-        query.append(query_unwind)
+        # query_unwind_target = {"$unwind": "$muts"}
+        # query_target.append(query_unwind_target)
+        # query_unwind = {"$unwind": "$muts"}
+        # query.append(query_unwind)
 
         query_where_target = {"$match": where_part_target}
         query_target.append(query_where_target)
         query_where = {"$match": where_part}
         query.append(query_where)
+
+        query_unwind_target = {"$unwind": "$muts"}
+        query_target.append(query_unwind_target)
+        query_unwind = {"$unwind": "$muts"}
+        query.append(query_unwind)
 
         group_part = {"_id": {"accession_id": "$_id"}}
         query_group = {"$group": group_part}
