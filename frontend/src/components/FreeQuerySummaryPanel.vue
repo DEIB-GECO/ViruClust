@@ -86,7 +86,7 @@ export default {
     ...mapGetters({}),
     arrayQueryFreeTarget(){
       let array = {};
-      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province'];
+      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province', 'mutations'];
       for(let i = 0; i < array_keys.length; i = i + 1){
         let key = array_keys[i];
         let key_to_use;
@@ -97,7 +97,30 @@ export default {
           key_to_use = key;
         }
         if(this.queryFreeTarget[key]){
-          array[key_to_use] = this.queryFreeTarget[key];
+          if(key_to_use === 'mutations'){
+            let listOfMutation = [];
+            let mutationToInsert = this.queryFreeTarget[key];
+            let len = mutationToInsert.length;
+            let i = 0;
+            while(i < len){
+              let stringMutation;
+              stringMutation = mutationToInsert[i]['product'] + '_' ;
+              if(mutationToInsert[i]['sequence_aa_original'] !== null){
+                stringMutation += mutationToInsert[i]['sequence_aa_original'] ;
+              }
+              else{
+                stringMutation += '*';
+              }
+              stringMutation += mutationToInsert[i]['start_aa_original']
+                  + mutationToInsert[i]['sequence_aa_alternative'];
+              listOfMutation.push(stringMutation);
+              i = i + 1;
+            }
+            array[key_to_use] = listOfMutation + " ( >= " + this.queryFreeTarget['minNumMut'] + " )";
+          }
+          else {
+            array[key_to_use] = this.queryFreeTarget[key];
+          }
         }
         // else{
         //   array[key_to_use] = 'N/D';
@@ -134,7 +157,7 @@ export default {
     },
     arrayQueryFreeBackground(){
       let array = {};
-      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province'];
+      let array_keys = ['accession_id', 'lineage', 'geo_group', 'country', 'region', 'province', 'mutations'];
       for(let i = 0; i < array_keys.length; i = i + 1){
         let key = array_keys[i];
         let key_to_use;
@@ -145,7 +168,30 @@ export default {
           key_to_use = key;
         }
         if(this.queryFreeBackground[key]){
-          array[key_to_use] = this.queryFreeBackground[key];
+          if(key_to_use === 'mutations'){
+            let listOfMutation = [];
+            let mutationToInsert = this.queryFreeBackground[key];
+            let len = mutationToInsert.length;
+            let i = 0;
+            while(i < len){
+              let stringMutation;
+              stringMutation = mutationToInsert[i]['product'] + '_' ;
+              if(mutationToInsert[i]['sequence_aa_original'] !== null){
+                stringMutation += mutationToInsert[i]['sequence_aa_original'] ;
+              }
+              else{
+                stringMutation += '*';
+              }
+              stringMutation += mutationToInsert[i]['start_aa_original']
+                  + mutationToInsert[i]['sequence_aa_alternative'];
+              listOfMutation.push(stringMutation);
+              i = i + 1;
+            }
+            array[key_to_use] = listOfMutation + " ( >= " + this.queryFreeBackground['minNumMut'] + " )";
+          }
+          else {
+            array[key_to_use] = this.queryFreeBackground[key];
+          }
         }
         // else{
         //   array[key_to_use] = 'N/D';
