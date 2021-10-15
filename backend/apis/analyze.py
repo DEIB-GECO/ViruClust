@@ -675,8 +675,8 @@ class FieldList(Resource):
                         single_where_part_or['$or'].append(specific_or)
                         where_part['$and'].append(single_where_part_or)
                 elif key == 'mutations':
-                    if '$and' not in where_part:
-                        where_part['$and'] = []
+                    if '$or' not in where_part:
+                        where_part['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -687,7 +687,10 @@ class FieldList(Resource):
                         # mutation = single_mutation['product'] + '_' + single_mutation['sequence_aa_original'] +\
                         #            str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
                         # single_obj = {'covsurver_prot_mutations': {'$regex': mutation, '$options': 'i'}}
-                        where_part['$and'].append(single_obj)
+                        where_part['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -701,47 +704,27 @@ class FieldList(Resource):
                     where_part[real_key]['$eq'] = replace_fields_value
 
         query = []
-
         query_where = {"$match": where_part}
-        query.append(query_where)
+        if 'mutations' not in query_fields:
+            query.append(query_where)
 
-        group_part = {}
-        real_field = field_name
-        if field_name in translate_dictionary:
-            real_field = translate_dictionary[field_name]
-        if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
-            real_field = 'location.' + field_name
-            # group_part["_id"] = {"value":
-            #                          {"$cond":
-            #                               [{"$eq": [f"${real_field}", ""]},
-            #                                None,
-            #                                {"$cond":
-            #                                     [{"$eq": [f"${real_field}", None]},
-            #                                      f"${real_field}",
-            #                                      {"$concat": [
-            #                                          {"$toUpper":
-            #                                               {"$substrCP": [f"${real_field}", 0, 1]}
-            #                                           },
-            #                                          {
-            #                                              "$substrCP": [
-            #                                                  f"${real_field}", 1,
-            #                                                  {"$subtract": [{"$strLenCP": f"${real_field}"}, 1]}
-            #                                              ]
-            #                                          }
-            #                                      ]}
-            #                                      ]
-            #                                 }
-            #                                ]
-            #                           },
-            #                     }
-        group_part["_id"] = {"value": f"${real_field}"}
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query.append(query_group)
+            group_part = {}
+            real_field = field_name
+            if field_name in translate_dictionary:
+                real_field = translate_dictionary[field_name]
+            if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
+                real_field = 'location.' + field_name
+            group_part["_id"] = {"value": f"${real_field}"}
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query.append(query_group)
 
-        sort_part = {"count": -1}
-        query_sort = {"$sort": sort_part}
-        query.append(query_sort)
+            sort_part = {"count": -1}
+            query_sort = {"$sort": sort_part}
+            query.append(query_sort)
+
+        else:
+            query = create_query_with_mutations(query_where, field_name, query_fields)
 
         list_dict = []
         if field_name == 'lineage' and (len(query_fields['toExclude']) == 0 and ((len(query_fields) == 2 and "lineage" in query_fields) or len(query_fields) < 2)):
@@ -774,6 +757,136 @@ class FieldList(Resource):
 
         # print("field:", field_name, "  result:", list_dict)
         return list_dict
+
+
+def create_query_with_mutations(query_where, field_name, query_fields):
+    query = [query_where]
+
+    query_unwind_1 = {"$unwind": "$muts"}
+    query.append(query_unwind_1)
+
+    array_mut_group = []
+    for single_mutation in query_fields['mutations']:
+        array_single_mutation = []
+        for key_mut in single_mutation:
+            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+                obj_single_mut = {}
+                real_key_mut = translate_dictionary[key_mut]
+                obj_single_mut["$eq"] = [f"${real_key_mut}", single_mutation[key_mut]]
+                array_single_mutation.append(obj_single_mut)
+        obj_and_muts = {"$and": array_single_mutation}
+        array_mut_group.append(obj_and_muts)
+
+    or_obj = {"$or": array_mut_group}
+
+    group_part_1 = {
+      '_id': {
+        "id": "$_id",
+        "muts": "$muts",
+        "location": "$location",
+        "covv_lineage": "$covv_lineage",
+        "collection_date": "$collection_date",
+        "value":
+           {"$cond":
+              [
+                 or_obj,
+                 1,
+                 0
+                 ]
+            },
+      },
+    }
+    query_group_1 = {"$group": group_part_1}
+    query.append(query_group_1)
+
+    group_part_2 = {
+      '_id': {
+        "id": "$_id.id",
+        "location": "$_id.location",
+        "covv_lineage": "$_id.covv_lineage",
+        "collection_date": "$_id.collection_date",
+      },
+      "values": {"$push": "$_id.value"},
+      "muts": {"$push": "$_id.muts"},
+    }
+    query_group_2 = {"$group": group_part_2}
+    query.append(query_group_2)
+
+    query_unwind_2 = {"$unwind": "$values"}
+    query.append(query_unwind_2)
+
+    group_part_3 = {
+      '_id': {
+        "id": "$_id.id",
+        "muts": "$muts",
+        "location": "$_id.location",
+        "covv_lineage": "$_id.covv_lineage",
+        "collection_date": "$_id.collection_date",
+      },
+      "sum": {"$sum": "$values"},
+    }
+    query_group_3 = {"$group": group_part_3}
+    query.append(query_group_3)
+
+    min_num_mut = query_fields['minNumMut'][0]
+
+    match_part_2 = {
+      'sum': {
+        '$gte': min_num_mut
+      },
+    }
+    query_match_2 = {"$match": match_part_2}
+    query.append(query_match_2)
+
+    if field_name != 'geo_group' and field_name != 'country' and field_name != 'region' and field_name != 'province' \
+            and field_name != 'lineage' and field_name != 'collection_date' and field_name != 'mutations_den' \
+            and field_name != 'overlapping_ids' and field_name != 'accession_ids':
+        query_unwind_3 = {"$unwind": "$_id.muts"}
+        query.append(query_unwind_3)
+
+    group_part_4 = {}
+    real_field = field_name
+    if field_name in translate_dictionary:
+        real_field = translate_dictionary[field_name]
+    if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province':
+        real_field = 'location.' + field_name
+    if field_name == 'geo_group' or field_name == 'country' or field_name == 'region' or field_name == 'province' \
+            or field_name == 'lineage':
+        group_part_4["_id"] = {"value": f"$_id.{real_field}"}
+        group_part_4["count"] = {"$sum": 1}
+    elif field_name == 'accession_id':
+        group_part_4["_id"] = {"accession_id": "$_id.id"}
+    elif field_name == 'collection_date':
+        group_part_4["_id"] = {"name": {"$toString": '$_id.collection_date'}}
+        group_part_4["count"] = {"$sum": 1}
+    elif field_name == 'mutations':
+        group_part_4 = {"_id": {}}
+        real_field = translate_dictionary['product']
+        group_part_4["_id"]["product"] = f"$_id.{real_field}"
+        real_field = translate_dictionary['start_aa_original']
+        group_part_4["_id"]["start_aa_original"] = f"$_id.{real_field}"
+        real_field = translate_dictionary['sequence_aa_original']
+        group_part_4["_id"]["sequence_aa_original"] = f"$_id.{real_field}"
+        real_field = translate_dictionary['sequence_aa_alternative']
+        group_part_4["_id"]["sequence_aa_alternative"] = f"$_id.{real_field}"
+        group_part_4["count"] = {"$sum": 1}
+    elif field_name == 'mutations_den':
+        group_part_4 = {"_id": {}}
+        group_part_4["count"] = {"$sum": 1}
+    elif field_name == 'overlapping_ids':
+        group_part_4 = {"_id": "$_id.id"}
+
+    query_group_4 = {"$group": group_part_4}
+    query.append(query_group_4)
+
+    if field_name == 'accession_id' or field_name == 'collection_date' or field_name == 'overlapping_ids':
+        sort_part = {"_id": 1}
+    else:
+        sort_part = {"count": -1}
+    query_sort = {"$sort": sort_part}
+    query.append(query_sort)
+
+    return query
 
 
 @api.route('/tableLineageCountry')
@@ -1024,8 +1137,8 @@ class FieldList(Resource):
                         where_part['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part:
-                        where_part['$and'] = []
+                    if '$or' not in where_part:
+                        where_part['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -1033,7 +1146,10 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part['$and'].append(single_obj)
+                        where_part['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -1047,23 +1163,27 @@ class FieldList(Resource):
                     where_part[real_key]['$eq'] = replace_fields_value
 
         query = []
-
         query_where = {"$match": where_part}
-        query.append(query_where)
 
-        group_part = {}
-        real_field = translate_dictionary['collection_date']
-        # group_part["_id"] = {"name": f"${real_field}"}
-        group_part["_id"] = {"name": {"$toString": '$collection_date'}}
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query.append(query_group)
+        if 'mutations' not in query_fields:
+            query.append(query_where)
+            group_part = {}
+            real_field = translate_dictionary['collection_date']
+            # group_part["_id"] = {"name": f"${real_field}"}
+            group_part["_id"] = {"name": {"$toString": '$collection_date'}}
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query.append(query_group)
 
-        sort_part = {"_id": 1}
-        query_sort = {"$sort": sort_part}
-        query.append(query_sort)
+            sort_part = {"_id": 1}
+            query_sort = {"$sort": sort_part}
+            query.append(query_sort)
 
-        # print("query", query)
+        else:
+            field_name = "collection_date"
+            query = create_query_with_mutations(query_where, field_name, query_fields)
+
+        # print("query time", query)
         results = collection_db.aggregate(query, allowDiskUse=True)
 
         list_dict = []
@@ -1151,8 +1271,8 @@ class FieldList(Resource):
                             where_part['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part:
-                        where_part['$and'] = []
+                    if '$or' not in where_part:
+                        where_part['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -1160,7 +1280,10 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part['$and'].append(single_obj)
+                        where_part['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -1184,19 +1307,23 @@ class FieldList(Resource):
         query = []
 
         query_where = {"$match": where_part}
-        query.append(query_where)
+        if 'mutations' not in query_fields:
+            query.append(query_where)
+            group_part = {}
+            real_field = translate_dictionary['collection_date']
+            # group_part["_id"] = {"name": f"${real_field}"}
+            group_part["_id"] = {"name": {"$toString": '$collection_date'}}
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query.append(query_group)
 
-        group_part = {}
-        real_field = translate_dictionary['collection_date']
-        # group_part["_id"] = {"name": f"${real_field}"}
-        group_part["_id"] = {"name": {"$toString": '$collection_date'}}
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query.append(query_group)
+            sort_part = {"_id": 1}
+            query_sort = {"$sort": sort_part}
+            query.append(query_sort)
 
-        sort_part = {"_id": 1}
-        query_sort = {"$sort": sort_part}
-        query.append(query_sort)
+        else:
+            field_name = "collection_date"
+            query = create_query_with_mutations(query_where, field_name, query_fields)
 
         # print("query", query)
         results = collection_db.aggregate(query, allowDiskUse=True)
@@ -1365,14 +1492,14 @@ class FieldList(Resource):
                         where_part_background_denominator['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_target:
-                        where_part_target['$and'] = []
-                    if '$and' not in where_part_background:
-                        where_part_background['$and'] = []
-                    if '$and' not in where_part_target_denominator:
-                        where_part_target_denominator['$and'] = []
-                    if '$and' not in where_part_background_denominator:
-                        where_part_background_denominator['$and'] = []
+                    if '$or' not in where_part_target:
+                        where_part_target['$or'] = []
+                    if '$or' not in where_part_background:
+                        where_part_background['$or'] = []
+                    if '$or' not in where_part_target_denominator:
+                        where_part_target_denominator['$or'] = []
+                    if '$or' not in where_part_background_denominator:
+                        where_part_background_denominator['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -1380,10 +1507,13 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_target['$and'].append(single_obj)
-                        where_part_background['$and'].append(single_obj)
-                        where_part_target_denominator['$and'].append(single_obj)
-                        where_part_background_denominator['$and'].append(single_obj)
+                        where_part_target['$or'].append(single_obj)
+                        where_part_background['$or'].append(single_obj)
+                        where_part_target_denominator['$or'].append(single_obj)
+                        where_part_background_denominator['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -1416,43 +1546,54 @@ class FieldList(Resource):
         # query_background.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
-        query_target.append(query_where_target)
         query_where_background = {"$match": where_part_background}
-        query_background.append(query_where_background)
         query_where_target_denominator = {"$match": where_part_target_denominator}
-        query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
-        query_background_denominator.append(query_where_background_denominator)
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
 
-        group_part = {"_id": {}}
-        real_field = translate_dictionary['product']
-        group_part["_id"]["product"] = f"${real_field}"
-        real_field = translate_dictionary['start_aa_original']
-        group_part["_id"]["start_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_original']
-        group_part["_id"]["sequence_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_alternative']
-        group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query_target.append(query_group)
-        query_background.append(query_group)
+        if 'mutations' not in query_fields:
+            query_target.append(query_where_target)
+            query_background.append(query_where_background)
+            query_target_denominator.append(query_where_target_denominator)
+            query_background_denominator.append(query_where_background_denominator)
 
-        group_part_denominator = {"_id": {}}
-        group_part_denominator["count"] = {"$sum": 1}
-        query_group = {"$group": group_part_denominator}
-        query_target_denominator.append(query_group)
-        query_background_denominator.append(query_group)
+            query_unwind_target = {"$unwind": "$muts"}
+            query_target.append(query_unwind_target)
+            query_unwind_background = {"$unwind": "$muts"}
+            query_background.append(query_unwind_background)
 
-        sort_part = {"count": -1}
-        query_sort = {"$sort": sort_part}
-        query_target.append(query_sort)
-        query_background.append(query_sort)
+            group_part = {"_id": {}}
+            real_field = translate_dictionary['product']
+            group_part["_id"]["product"] = f"${real_field}"
+            real_field = translate_dictionary['start_aa_original']
+            group_part["_id"]["start_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_original']
+            group_part["_id"]["sequence_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_alternative']
+            group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query_target.append(query_group)
+            query_background.append(query_group)
+
+            group_part_denominator = {"_id": {}}
+            group_part_denominator["count"] = {"$sum": 1}
+            query_group = {"$group": group_part_denominator}
+            query_target_denominator.append(query_group)
+            query_background_denominator.append(query_group)
+
+            sort_part = {"count": -1}
+            query_sort = {"$sort": sort_part}
+            query_target.append(query_sort)
+            query_background.append(query_sort)
+
+        else:
+            field_name = "mutations"
+            query_target = create_query_with_mutations(query_where_target, field_name, query_fields)
+            query_background = create_query_with_mutations(query_where_background, field_name, query_fields)
+            field_name = "mutations_den"
+            query_target_denominator = create_query_with_mutations(query_where_target_denominator, field_name, query_fields)
+            query_background_denominator = create_query_with_mutations(query_where_background_denominator, field_name, query_fields)
 
         # print("query target", query_target)
         # print("query target denominator", query_target_denominator)
@@ -1461,18 +1602,22 @@ class FieldList(Resource):
 
         results_target = collection_db.aggregate(query_target, allowDiskUse=True)
         results_background = collection_db.aggregate(query_background, allowDiskUse=True)
-        # results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
-        # results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
-        results_target_denominator = collection_db.count_documents(where_part_target_denominator)
-        results_background_denominator = collection_db.count_documents(where_part_background_denominator)
 
-        denominator_country = results_target_denominator
-        # for single_item in list(results_target_denominator):
-        #     denominator_country = single_item['count']
+        if 'mutations' not in query_fields:
+            results_target_denominator = collection_db.count_documents(where_part_target_denominator)
+            results_background_denominator = collection_db.count_documents(where_part_background_denominator)
+            denominator_country = results_target_denominator
+            denominator = results_background_denominator
 
-        denominator = results_background_denominator
-        # for single_item in list(results_background_denominator):
-        #     denominator = single_item['count']
+        else:
+            results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
+            results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
+
+            for single_item in list(results_target_denominator):
+                denominator_country = single_item['count']
+
+            for single_item in list(results_background_denominator):
+                denominator = single_item['count']
 
         list_dict_target = []
         for single_item in list(results_target):
@@ -1759,14 +1904,14 @@ class FieldList(Resource):
                         where_part_background_denominator['$and'].append(single_where_part_or_background)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_target:
-                        where_part_target['$and'] = []
-                    if '$and' not in where_part_background:
-                        where_part_background['$and'] = []
-                    if '$and' not in where_part_target_denominator:
-                        where_part_target_denominator['$and'] = []
-                    if '$and' not in where_part_background_denominator:
-                        where_part_background_denominator['$and'] = []
+                    if '$or' not in where_part_target:
+                        where_part_target['$or'] = []
+                    if '$or' not in where_part_background:
+                        where_part_background['$or'] = []
+                    if '$or' not in where_part_target_denominator:
+                        where_part_target_denominator['$or'] = []
+                    if '$or' not in where_part_background_denominator:
+                        where_part_background_denominator['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -1774,10 +1919,13 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_target['$and'].append(single_obj)
-                        where_part_background['$and'].append(single_obj)
-                        where_part_target_denominator['$and'].append(single_obj)
-                        where_part_background_denominator['$and'].append(single_obj)
+                        where_part_target['$or'].append(single_obj)
+                        where_part_background['$or'].append(single_obj)
+                        where_part_target_denominator['$or'].append(single_obj)
+                        where_part_background_denominator['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -1826,43 +1974,53 @@ class FieldList(Resource):
         # query_background.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
-        query_target.append(query_where_target)
         query_where_background = {"$match": where_part_background}
-        query_background.append(query_where_background)
         query_where_target_denominator = {"$match": where_part_target_denominator}
-        query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
-        query_background_denominator.append(query_where_background_denominator)
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
+        if 'mutations' not in query_fields:
+            query_target.append(query_where_target)
+            query_background.append(query_where_background)
+            query_target_denominator.append(query_where_target_denominator)
+            query_background_denominator.append(query_where_background_denominator)
 
-        group_part = {"_id": {}}
-        real_field = translate_dictionary['product']
-        group_part["_id"]["product"] = f"${real_field}"
-        real_field = translate_dictionary['start_aa_original']
-        group_part["_id"]["start_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_original']
-        group_part["_id"]["sequence_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_alternative']
-        group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query_target.append(query_group)
-        query_background.append(query_group)
+            query_unwind_target = {"$unwind": "$muts"}
+            query_target.append(query_unwind_target)
+            query_unwind_background = {"$unwind": "$muts"}
+            query_background.append(query_unwind_background)
 
-        group_part_denominator = {"_id": {}}
-        group_part_denominator["count"] = {"$sum": 1}
-        query_group = {"$group": group_part_denominator}
-        query_target_denominator.append(query_group)
-        query_background_denominator.append(query_group)
+            group_part = {"_id": {}}
+            real_field = translate_dictionary['product']
+            group_part["_id"]["product"] = f"${real_field}"
+            real_field = translate_dictionary['start_aa_original']
+            group_part["_id"]["start_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_original']
+            group_part["_id"]["sequence_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_alternative']
+            group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query_target.append(query_group)
+            query_background.append(query_group)
 
-        sort_part = {"count": -1}
-        query_sort = {"$sort": sort_part}
-        query_target.append(query_sort)
-        query_background.append(query_sort)
+            group_part_denominator = {"_id": {}}
+            group_part_denominator["count"] = {"$sum": 1}
+            query_group = {"$group": group_part_denominator}
+            query_target_denominator.append(query_group)
+            query_background_denominator.append(query_group)
+
+            sort_part = {"count": -1}
+            query_sort = {"$sort": sort_part}
+            query_target.append(query_sort)
+            query_background.append(query_sort)
+
+        else:
+            field_name = "mutations"
+            query_target = create_query_with_mutations(query_where_target, field_name, query_fields)
+            query_background = create_query_with_mutations(query_where_background, field_name, query_fields)
+            field_name = "mutations_den"
+            query_target_denominator = create_query_with_mutations(query_where_target_denominator, field_name, query_fields)
+            query_background_denominator = create_query_with_mutations(query_where_background_denominator, field_name, query_fields)
 
         # print("query target", query_target)
         # print("query target denominator", query_target_denominator)
@@ -1871,18 +2029,22 @@ class FieldList(Resource):
 
         results_target = collection_db.aggregate(query_target, allowDiskUse=True)
         results_background = collection_db.aggregate(query_background, allowDiskUse=True)
-        # results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
-        # results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
-        results_target_denominator = collection_db.count_documents(where_part_target_denominator)
-        results_background_denominator = collection_db.count_documents(where_part_background_denominator)
 
-        denominator_target = results_target_denominator
-        # for single_item in list(results_target_denominator):
-        #     denominator_target = single_item['count']
+        if 'mutations' not in query_fields:
+            results_target_denominator = collection_db.count_documents(where_part_target_denominator)
+            results_background_denominator = collection_db.count_documents(where_part_background_denominator)
+            denominator_target = results_target_denominator
+            denominator = results_background_denominator
 
-        denominator = results_background_denominator
-        # for single_item in list(results_background_denominator):
-        #     denominator = single_item['count']
+        else:
+            results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
+            results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
+
+            for single_item in list(results_target_denominator):
+                denominator_target = single_item['count']
+
+            for single_item in list(results_background_denominator):
+                denominator = single_item['count']
 
         list_dict_target = []
         for single_item in list(results_target):
@@ -2165,12 +2327,12 @@ class FieldList(Resource):
                         where_part_target_overlapping['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_target:
-                        where_part_target['$and'] = []
-                    if '$and' not in where_part_target_denominator:
-                        where_part_target_denominator['$and'] = []
-                    if '$and' not in where_part_target_overlapping:
-                        where_part_target_overlapping['$and'] = []
+                    if '$or' not in where_part_target:
+                        where_part_target['$or'] = []
+                    if '$or' not in where_part_target_denominator:
+                        where_part_target_denominator['$or'] = []
+                    if '$or' not in where_part_target_overlapping:
+                        where_part_target_overlapping['$or'] = []
                     for single_mutation in query_target[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -2178,9 +2340,12 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_target['$and'].append(single_obj)
-                        where_part_target_denominator['$and'].append(single_obj)
-                        where_part_target_overlapping['$and'].append(single_obj)
+                        where_part_target['$or'].append(single_obj)
+                        where_part_target_denominator['$or'].append(single_obj)
+                        where_part_target_overlapping['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -2284,12 +2449,12 @@ class FieldList(Resource):
                         where_part_background_overlapping['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_background:
-                        where_part_background['$and'] = []
-                    if '$and' not in where_part_background_denominator:
-                        where_part_background_denominator['$and'] = []
-                    if '$and' not in where_part_background_overlapping:
-                        where_part_background_overlapping['$and'] = []
+                    if '$or' not in where_part_background:
+                        where_part_background['$or'] = []
+                    if '$or' not in where_part_background_denominator:
+                        where_part_background_denominator['$or'] = []
+                    if '$or' not in where_part_background_overlapping:
+                        where_part_background_overlapping['$or'] = []
                     for single_mutation in query_background[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -2297,9 +2462,12 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_background['$and'].append(single_obj)
-                        where_part_background_denominator['$and'].append(single_obj)
-                        where_part_background_overlapping['$and'].append(single_obj)
+                        where_part_background['$or'].append(single_obj)
+                        where_part_background_denominator['$or'].append(single_obj)
+                        where_part_background_overlapping['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -2338,14 +2506,22 @@ class FieldList(Resource):
         if remove_overlapping.lower() == 'target' or remove_overlapping.lower() == 'both':
             query_background_overlapping = []
             query_where_background_overlapping = {"$match": where_part_background_overlapping}
-            query_background_overlapping.append(query_where_background_overlapping)
-            group_part_background_overlapping = {"_id": "$_id"}
-            query_group_background_overlapping = {"$group": group_part_background_overlapping}
-            query_background_overlapping.append(query_group_background_overlapping)
-            # ("query target overlapping", query_background_overlapping)
-            # results_background_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
-            results_background_overlapping = collection_db.find(where_part_background_overlapping, {})
-            array_background_overlapping = list(results_background_overlapping)
+
+            if 'mutations' not in query_background:
+                query_background_overlapping.append(query_where_background_overlapping)
+                group_part_background_overlapping = {"_id": "$_id"}
+                query_group_background_overlapping = {"$group": group_part_background_overlapping}
+                query_background_overlapping.append(query_group_background_overlapping)
+                # ("query target overlapping", query_background_overlapping)
+                # results_background_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
+                results_background_overlapping = collection_db.find(where_part_background_overlapping, {})
+                array_background_overlapping = list(results_background_overlapping)
+            else:
+                field_name = "overlapping_ids"
+                query_background_overlapping = create_query_with_mutations(query_where_background_overlapping, field_name, query_background)
+                results_background_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
+                array_background_overlapping = results_background_overlapping
+
             if '$and' not in where_part_target:
                 where_part_target['$and'] = []
             if '$and' not in where_part_target_denominator:
@@ -2364,14 +2540,22 @@ class FieldList(Resource):
         if remove_overlapping.lower() == 'background' or remove_overlapping.lower() == 'both':
             query_target_overlapping = []
             query_where_target_overlapping = {"$match": where_part_target_overlapping}
-            query_target_overlapping.append(query_where_target_overlapping)
-            group_part_target_overlapping = {"_id": "$_id"}
-            query_group_target_overlapping = {"$group": group_part_target_overlapping}
-            query_target_overlapping.append(query_group_target_overlapping)
-            # print("query background overlapping", query_target_overlapping)
-            # results_target_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
-            results_target_overlapping = collection_db.find(where_part_target_overlapping, {})
-            array_target_overlapping = list(results_target_overlapping)
+
+            if 'mutations' not in query_target:
+                query_target_overlapping.append(query_where_target_overlapping)
+                group_part_target_overlapping = {"_id": "$_id"}
+                query_group_target_overlapping = {"$group": group_part_target_overlapping}
+                query_target_overlapping.append(query_group_target_overlapping)
+                # print("query background overlapping", query_target_overlapping)
+                # results_target_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
+                results_target_overlapping = collection_db.find(where_part_target_overlapping, {})
+                array_target_overlapping = list(results_target_overlapping)
+            else:
+                field_name = "overlapping_ids"
+                query_target_overlapping = create_query_with_mutations(query_where_target_overlapping, field_name, query_target)
+                results_target_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
+                array_target_overlapping = results_target_overlapping
+
             if '$and' not in where_part_background:
                 where_part_background['$and'] = []
             if '$and' not in where_part_background_denominator:
@@ -2387,74 +2571,119 @@ class FieldList(Resource):
             where_part_background['$and'].append(single_where_part_background_overlapping_and)
             where_part_background_denominator['$and'].append(single_where_part_background_overlapping_and)
 
-        query_target = []
-        query_background = []
+        query_target_query = []
+        query_background_query = []
         query_target_denominator = []
         query_background_denominator = []
 
         # query_unwind_target = {"$unwind": "$muts"}
-        # query_target.append(query_unwind_target)
+        # query_target_query.append(query_unwind_target)
         # query_unwind_background = {"$unwind": "$muts"}
-        # query_background.append(query_unwind_background)
+        # query_background_query.append(query_unwind_background)
 
         query_where_target = {"$match": where_part_target}
-        query_target.append(query_where_target)
         query_where_background = {"$match": where_part_background}
-        query_background.append(query_where_background)
         query_where_target_denominator = {"$match": where_part_target_denominator}
-        query_target_denominator.append(query_where_target_denominator)
         query_where_background_denominator = {"$match": where_part_background_denominator}
-        query_background_denominator.append(query_where_background_denominator)
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind_background = {"$unwind": "$muts"}
-        query_background.append(query_unwind_background)
 
-        group_part = {"_id": {}}
-        real_field = translate_dictionary['product']
-        group_part["_id"]["product"] = f"${real_field}"
-        real_field = translate_dictionary['start_aa_original']
-        group_part["_id"]["start_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_original']
-        group_part["_id"]["sequence_aa_original"] = f"${real_field}"
-        real_field = translate_dictionary['sequence_aa_alternative']
-        group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
-        group_part["count"] = {"$sum": 1}
-        query_group = {"$group": group_part}
-        query_target.append(query_group)
-        query_background.append(query_group)
+        if 'mutations' not in query_target:
+            query_target_query.append(query_where_target)
+            query_target_denominator.append(query_where_target_denominator)
 
-        group_part_denominator = {"_id": {}}
-        group_part_denominator["count"] = {"$sum": 1}
-        query_group = {"$group": group_part_denominator}
-        query_target_denominator.append(query_group)
-        query_background_denominator.append(query_group)
+            query_unwind_target = {"$unwind": "$muts"}
+            query_target_query.append(query_unwind_target)
 
-        sort_part = {"count": -1}
-        query_sort = {"$sort": sort_part}
-        query_target.append(query_sort)
-        query_background.append(query_sort)
+            group_part = {"_id": {}}
+            real_field = translate_dictionary['product']
+            group_part["_id"]["product"] = f"${real_field}"
+            real_field = translate_dictionary['start_aa_original']
+            group_part["_id"]["start_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_original']
+            group_part["_id"]["sequence_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_alternative']
+            group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query_target_query.append(query_group)
 
-        # print("query target", query_target)
+            group_part_denominator = {"_id": {}}
+            group_part_denominator["count"] = {"$sum": 1}
+            query_group = {"$group": group_part_denominator}
+            query_target_denominator.append(query_group)
+
+            sort_part = {"count": -1}
+            query_sort = {"$sort": sort_part}
+            query_target_query.append(query_sort)
+
+        else:
+            field_name = "mutations"
+            query_target_query = create_query_with_mutations(query_where_target, field_name, query_target)
+            field_name = "mutations_den"
+            query_target_denominator = create_query_with_mutations(query_where_target_denominator, field_name, query_target)
+
+        results_target = collection_db.aggregate(query_target_query, allowDiskUse=True)
+
+        if 'mutations' not in query_target:
+            results_target_denominator = collection_db.count_documents(where_part_target_denominator)
+            denominator_target = results_target_denominator
+
+        else:
+            results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
+
+            for single_item in list(results_target_denominator):
+                denominator_target = single_item['count']
+
+        if 'mutations' not in query_background:
+            query_background_query.append(query_where_background)
+            query_background_denominator.append(query_where_background_denominator)
+
+            query_unwind_background = {"$unwind": "$muts"}
+            query_background_query.append(query_unwind_background)
+
+            group_part = {"_id": {}}
+            real_field = translate_dictionary['product']
+            group_part["_id"]["product"] = f"${real_field}"
+            real_field = translate_dictionary['start_aa_original']
+            group_part["_id"]["start_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_original']
+            group_part["_id"]["sequence_aa_original"] = f"${real_field}"
+            real_field = translate_dictionary['sequence_aa_alternative']
+            group_part["_id"]["sequence_aa_alternative"] = f"${real_field}"
+            group_part["count"] = {"$sum": 1}
+            query_group = {"$group": group_part}
+            query_background_query.append(query_group)
+
+            group_part_denominator = {"_id": {}}
+            group_part_denominator["count"] = {"$sum": 1}
+            query_group = {"$group": group_part_denominator}
+            query_background_denominator.append(query_group)
+
+            sort_part = {"count": -1}
+            query_sort = {"$sort": sort_part}
+            query_background_query.append(query_sort)
+        else:
+            field_name = "mutations"
+            query_background_query = create_query_with_mutations(query_where_background, field_name, query_background)
+            field_name = "mutations_den"
+            query_background_denominator = create_query_with_mutations(query_where_background_denominator, field_name, query_background)
+
+        results_background = collection_db.aggregate(query_background_query, allowDiskUse=True)
+
+        if 'mutations' not in query_background:
+            results_background_denominator = collection_db.count_documents(where_part_background_denominator)
+            denominator = results_background_denominator
+
+        else:
+            results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
+
+            for single_item in list(results_background_denominator):
+                denominator = single_item['count']
+
+        # print("query target", query_target_query)
         # print("query target denominator", query_target_denominator)
-        # print("query background", query_background)
+        # print("query background", query_background_query)
         # print("query background denominator", query_background_denominator)
-
-        results_target = collection_db.aggregate(query_target, allowDiskUse=True)
-        results_background = collection_db.aggregate(query_background, allowDiskUse=True)
-        # results_target_denominator = collection_db.aggregate(query_target_denominator, allowDiskUse=True)
-        # results_background_denominator = collection_db.aggregate(query_background_denominator, allowDiskUse=True)
-        results_target_denominator = collection_db.count_documents(where_part_target_denominator)
-        results_background_denominator = collection_db.count_documents(where_part_background_denominator)
-
-        denominator_target = results_target_denominator
-        # for single_item in list(results_target_denominator):
-        #     denominator_target = single_item['count']
-
-        denominator = results_background_denominator
-        # for single_item in list(results_background_denominator):
-        #     denominator = single_item['count']
 
         list_dict_target = []
         for single_item in list(results_target):
@@ -2631,6 +2860,7 @@ class FieldList(Resource):
         array_result = []
 
         where_part_target_overlapping = {}
+        where_part_target_overlapping_original = {}
         where_part_background_overlapping = {}
         start_date_target = datetime.strptime("2019-01-01", '%Y-%m-%d')
         start_date_background = datetime.strptime("2019-01-01", '%Y-%m-%d')
@@ -2638,12 +2868,16 @@ class FieldList(Resource):
         if 'accession_id' not in query_target:
             where_part_target_overlapping['c_coll_date_prec'] = {}
             where_part_target_overlapping['c_coll_date_prec']['$eq'] = 2
+            where_part_target_overlapping_original['c_coll_date_prec'] = {}
+            where_part_target_overlapping_original['c_coll_date_prec']['$eq'] = 2
         if 'accession_id' not in query_background:
             where_part_background_overlapping['c_coll_date_prec'] = {}
             where_part_background_overlapping['c_coll_date_prec']['$eq'] = 2
 
         where_part_target_overlapping['collection_date'] = {}
         where_part_target_overlapping['collection_date']['$gte'] = start_date_target
+        where_part_target_overlapping_original['collection_date'] = {}
+        where_part_target_overlapping_original['collection_date']['$gte'] = start_date_target
         where_part_background_overlapping['collection_date'] = {}
         where_part_background_overlapping['collection_date']['$gte'] = start_date_background
 
@@ -2652,14 +2886,18 @@ class FieldList(Resource):
                 if key == 'minDate':
                     start_date = datetime.strptime(f"{query_target[key]}", '%Y-%m-%d')
                     where_part_target_overlapping['collection_date']['$gte'] = start_date
+                    where_part_target_overlapping_original['collection_date']['$gte'] = start_date
                 elif key == 'maxDate':
                     stop_date = datetime.strptime(f"{query_target[key]}", '%Y-%m-%d')
                     where_part_target_overlapping['collection_date']['$lte'] = stop_date
+                    where_part_target_overlapping_original['collection_date']['$lte'] = stop_date
 
                 elif key == 'toExclude':
                     for fieldToExclude in query_target[key]:
                         if '$and' not in where_part_target_overlapping:
                             where_part_target_overlapping['$and'] = []
+                        if '$and' not in where_part_target_overlapping_original:
+                            where_part_target_overlapping_original['$and'] = []
 
                         single_where_part = {'$and': []}
                         for geoToExclude in query_target[key][fieldToExclude]:
@@ -2672,10 +2910,13 @@ class FieldList(Resource):
                             specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
                             single_where_part['$and'].append(specific_and)
                         where_part_target_overlapping['$and'].append(single_where_part)
+                        where_part_target_overlapping_original['$and'].append(single_where_part)
 
                 elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
                     if '$and' not in where_part_target_overlapping:
                         where_part_target_overlapping['$and'] = []
+                    if '$and' not in where_part_target_overlapping_original:
+                        where_part_target_overlapping_original['$and'] = []
 
                     real_key = key
                     if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
@@ -2688,16 +2929,20 @@ class FieldList(Resource):
                             specific_or[f'{real_key}'] = {'$eq': field_value}
                             single_where_part_or['$or'].append(specific_or)
                         where_part_target_overlapping['$and'].append(single_where_part_or)
+                        where_part_target_overlapping_original['$and'].append(single_where_part_or)
                     else:
                         single_where_part_or = {'$or': []}
                         replace_fields_value = query_target[key]  # .replace("'", "''")
                         specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
                         single_where_part_or['$or'].append(specific_or)
                         where_part_target_overlapping['$and'].append(single_where_part_or)
+                        where_part_target_overlapping_original['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_target_overlapping:
-                        where_part_target_overlapping['$and'] = []
+                    if '$or' not in where_part_target_overlapping:
+                        where_part_target_overlapping['$or'] = []
+                    if '$or' not in where_part_target_overlapping_original:
+                        where_part_target_overlapping_original['$or'] = []
                     for single_mutation in query_target[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -2705,7 +2950,11 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_target_overlapping['$and'].append(single_obj)
+                        where_part_target_overlapping['$or'].append(single_obj)
+                        where_part_target_overlapping_original['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -2714,6 +2963,8 @@ class FieldList(Resource):
                     if isinstance(query_target[key], list):
                         if '$and' not in where_part_target_overlapping:
                             where_part_target_overlapping['$and'] = []
+                        if '$and' not in where_part_target_overlapping_original:
+                            where_part_target_overlapping_original['$and'] = []
                         single_where_part_or = {'$or': []}
                         for itm in query_target[key]:
                             specific_or = {}
@@ -2721,13 +2972,17 @@ class FieldList(Resource):
                             specific_or[f'{real_key}'] = {'$eq': field_value}
                             single_where_part_or['$or'].append(specific_or)
                         where_part_target_overlapping['$and'].append(single_where_part_or)
+                        where_part_target_overlapping_original['$and'].append(single_where_part_or)
                     else:
                         replace_fields_value = query_target[key]
                         if key != 'start_aa_original':
                             replace_fields_value = query_target[key]  # .replace("'", "''")
                         if real_key not in where_part_target_overlapping:
                             where_part_target_overlapping[real_key] = {}
+                        if real_key not in where_part_target_overlapping_original:
+                            where_part_target_overlapping_original[real_key] = {}
                         where_part_target_overlapping[real_key]['$eq'] = replace_fields_value
+                        where_part_target_overlapping_original[real_key]['$eq'] = replace_fields_value
 
         if query_background is not None:
             for key in query_background:
@@ -2793,10 +3048,10 @@ class FieldList(Resource):
                         where_part_target_overlapping['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part_background_overlapping:
-                        where_part_background_overlapping['$and'] = []
-                    if '$and' not in where_part_target_overlapping:
-                        where_part_target_overlapping['$and'] = []
+                    if '$or' not in where_part_background_overlapping:
+                        where_part_background_overlapping['$or'] = []
+                    if '$or' not in where_part_target_overlapping:
+                        where_part_target_overlapping['$or'] = []
                     for single_mutation in query_background[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -2804,8 +3059,11 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part_background_overlapping['$and'].append(single_obj)
-                        where_part_target_overlapping['$and'].append(single_obj)
+                        where_part_background_overlapping['$or'].append(single_obj)
+                        where_part_target_overlapping['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -2871,25 +3129,123 @@ class FieldList(Resource):
         #     single_where_part_background_overlapping_or['$or'].append(specific_or)
         # where_part_background_overlapping['$and'].append(single_where_part_background_overlapping_or)
 
-        query_background_overlapping = []
-        # if '$and' not in where_part_background_overlapping:
-        #     where_part_background_overlapping['$and'] = []
-        # where_part_background_overlapping['$and'].append(where_part_target_overlapping)
-        query_where_background_overlapping = {"$match": where_part_background_overlapping}
-        query_background_overlapping.append(query_where_background_overlapping)
+        count_overlapping = [{"count": 0}]
 
-        group_part = {"_id": {}, "count": {"$sum": 1}}
-        query_group = {"$group": group_part}
-        query_background_overlapping.append(query_group)
+        if 'mutations' not in query_target and 'mutations' not in query_background:
+            query_background_overlapping = []
+            # if '$and' not in where_part_background_overlapping:
+            #     where_part_background_overlapping['$and'] = []
+            # where_part_background_overlapping['$and'].append(where_part_target_overlapping)
+            query_where_background_overlapping = {"$match": where_part_background_overlapping}
+            query_background_overlapping.append(query_where_background_overlapping)
 
-        # print("query count overlapping", query_background_overlapping)
-        # results_count_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
-        results_count_overlapping = collection_db.count_documents(where_part_target_overlapping)
+            group_part = {"_id": {}, "count": {"$sum": 1}}
+            query_group = {"$group": group_part}
+            query_background_overlapping.append(query_group)
 
-        count_overlapping = [{"count": results_count_overlapping}]
-        # for single_item in list(results_count_overlapping):
-        #     single_count = {"count": single_item['count']}
-        #     count_overlapping[0] = single_count
+            # print("query count overlapping", query_background_overlapping)
+            # results_count_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
+            results_count_overlapping = collection_db.count_documents(where_part_target_overlapping)
+
+            count_overlapping = [{"count": results_count_overlapping}]
+            # for single_item in list(results_count_overlapping):
+            #     single_count = {"count": single_item['count']}
+            #     count_overlapping[0] = single_count
+
+        else:
+            if 'mutations' in query_target and 'mutations' not in query_background:
+                field_name = "overlapping_ids"
+                query_where_target_overlapping = {"$match": where_part_target_overlapping_original}
+                query_target_overlapping = create_query_with_mutations(query_where_target_overlapping, field_name,
+                                                                       query_target)
+                results_target_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
+                array_target_overlapping = results_target_overlapping
+
+                if '$and' not in where_part_background_overlapping:
+                    where_part_background_overlapping['$and'] = []
+                single_where_part_background_overlapping_and = {'$or': []}
+                for single_accession_id in array_target_overlapping:
+                    specific_and = {}
+                    field = translate_dictionary['accession_id']
+                    real_field = field  # "$" + field
+                    field_value = single_accession_id[f"{field}"]
+                    specific_and[f'{real_field}'] = {'$eq': field_value}
+                    single_where_part_background_overlapping_and['$or'].append(specific_and)
+                where_part_background_overlapping['$and'].append(single_where_part_background_overlapping_and)
+
+                query_background_overlapping = []
+                query_where_background_overlapping = {"$match": where_part_background_overlapping}
+                query_background_overlapping.append(query_where_background_overlapping)
+
+                group_part = {"_id": {}, "count": {"$sum": 1}}
+                query_group = {"$group": group_part}
+                query_background_overlapping.append(query_group)
+
+                results_count_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
+
+                for single_item in list(results_count_overlapping):
+                    single_count = {"count": single_item['count']}
+                    count_overlapping = [single_count]
+
+            elif 'mutations' in query_background and 'mutations' not in query_target:
+
+                field_name = "overlapping_ids"
+                query_where_background_overlapping = {"$match": where_part_background_overlapping}
+                query_background_overlapping = create_query_with_mutations(query_where_background_overlapping, field_name,
+                                                                       query_background)
+                results_background_overlapping = collection_db.aggregate(query_background_overlapping, allowDiskUse=True)
+                array_background_overlapping = results_background_overlapping
+
+                if '$and' not in where_part_target_overlapping_original:
+                    where_part_target_overlapping_original['$and'] = []
+                single_where_part_target_overlapping_and = {'$or': []}
+                for single_accession_id in array_background_overlapping:
+                    specific_and = {}
+                    field = translate_dictionary['accession_id']
+                    real_field = field  # "$" + field
+                    field_value = single_accession_id[f"{field}"]
+                    specific_and[f'{real_field}'] = {'$eq': field_value}
+                    single_where_part_target_overlapping_and['$or'].append(specific_and)
+                where_part_target_overlapping_original['$and'].append(single_where_part_target_overlapping_and)
+
+                query_target_overlapping = []
+                query_where_target_overlapping = {"$match": where_part_target_overlapping_original}
+                query_target_overlapping.append(query_where_target_overlapping)
+
+                group_part = {"_id": {}, "count": {"$sum": 1}}
+                query_group = {"$group": group_part}
+                query_target_overlapping.append(query_group)
+
+                results_count_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
+
+                for single_item in list(results_count_overlapping):
+                    single_count = {"count": single_item['count']}
+                    count_overlapping = [single_count]
+
+            else:
+                field_name = "overlapping_ids"
+                query_where_target_overlapping = {"$match": where_part_target_overlapping_original}
+                query_target_overlapping = create_query_with_mutations(query_where_target_overlapping, field_name,
+                                                                       query_background)
+                results_target_overlapping = collection_db.aggregate(query_target_overlapping, allowDiskUse=True)
+                array_target_overlapping = results_target_overlapping
+
+                field_name = "overlapping_ids"
+                query_where_background_overlapping = {"$match": where_part_background_overlapping}
+                query_background_overlapping = create_query_with_mutations(query_where_background_overlapping,
+                                                                           field_name,
+                                                                           query_target)
+                results_background_overlapping = collection_db.aggregate(query_background_overlapping,
+                                                                         allowDiskUse=True)
+                array_background_overlapping = results_background_overlapping
+
+                count_overl = 0
+
+                for elem in array_target_overlapping:
+                    if elem in array_background_overlapping:
+                        count_overl = count_overl + 1
+
+                count_overlapping = [{"count": count_overl}]
 
         return count_overlapping
 
@@ -2926,9 +3282,11 @@ class FieldList(Resource):
         where_part['collection_date'] = {}
         where_part['collection_date']['$gte'] = start_date
 
+        mutation_query_fields_target = {}
+
         if query_fields_target != 'empty':
-            if '$and' not in where_part_target:
-                where_part_target['$and'] = []
+            # if '$and' not in where_part_target:
+            #     where_part_target['$and'] = []
 
             if query_fields_target is not None:
                 for key in query_fields_target:
@@ -2979,8 +3337,8 @@ class FieldList(Resource):
                             where_part_target['$and'].append(single_where_part_or)
 
                     elif key == 'mutations':
-                        if '$and' not in where_part_target:
-                            where_part_target['$and'] = []
+                        if '$or' not in where_part_target:
+                            where_part_target['$or'] = []
                         for single_mutation in query_fields_target[key]:
                             obj = {}
                             for key_mut in single_mutation:
@@ -2988,7 +3346,10 @@ class FieldList(Resource):
                                     real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                     obj[real_key_mut] = single_mutation[key_mut]
                             single_obj = {'muts': {'$elemMatch': obj}}
-                            where_part_target['$and'].append(single_obj)
+                            where_part_target['$or'].append(single_obj)
+
+                    elif key == 'minNumMut':
+                        print("")
 
                     else:
                         real_key = key
@@ -3006,11 +3367,17 @@ class FieldList(Resource):
                             where_part_target['$and'].append(single_where_part_or)
                         else:
                             replace_fields_value = query_fields_target[key]
-                            if key != 'start_aa_original':
-                                replace_fields_value = query_fields_target[key]  # .replace("'", "''")
-                            if real_key not in where_part_target:
-                                where_part_target[real_key] = {}
-                            where_part_target[real_key]['$eq'] = replace_fields_value
+                            if key == 'start_aa_original' or key == 'product' or key == 'sequence_aa_original' or key == 'sequence_aa_alternative':
+                                if query_fields_target[key] is not None:
+                                    mutation_query_fields_target[real_key.split('.')[1]] = query_fields_target[key]
+                            else:
+                                if real_key not in where_part_target:
+                                    where_part_target[real_key] = {}
+                                where_part_target[real_key]['$eq'] = replace_fields_value
+
+        # where_part_target['muts'] = {'$elemMatch': mutation_query_fields_target}
+
+        mutation_query_fields = {}
 
         if query_fields is not None:
             for key in query_fields:
@@ -3069,8 +3436,8 @@ class FieldList(Resource):
                             where_part['$and'].append(single_where_part_or)
 
                 elif key == 'mutations':
-                    if '$and' not in where_part:
-                        where_part['$and'] = []
+                    if '$or' not in where_part:
+                        where_part['$or'] = []
                     for single_mutation in query_fields[key]:
                         obj = {}
                         for key_mut in single_mutation:
@@ -3078,7 +3445,10 @@ class FieldList(Resource):
                                 real_key_mut = translate_dictionary[key_mut].split('.')[1]
                                 obj[real_key_mut] = single_mutation[key_mut]
                         single_obj = {'muts': {'$elemMatch': obj}}
-                        where_part['$and'].append(single_obj)
+                        where_part['$or'].append(single_obj)
+
+                elif key == 'minNumMut':
+                    print("")
 
                 else:
                     real_key = key
@@ -3104,39 +3474,56 @@ class FieldList(Resource):
                             where_part['$and'].append(single_where_part_or)
                         else:
                             replace_fields_value = query_fields[key]
-                            if key != 'start_aa_original':
-                                replace_fields_value = query_fields[key]  # .replace("'", "''")
-                            if real_key not in where_part:
-                                where_part[real_key] = {}
-                            where_part[real_key]['$eq'] = replace_fields_value
+                            if key == 'start_aa_original' or key == 'product' or key == 'sequence_aa_original' or key == 'sequence_aa_alternative':
+                                if query_fields[key] is not None:
+                                    mutation_query_fields[real_key.split('.')[1]] = query_fields[key]
+                            else:
+                                if real_key not in where_part:
+                                    where_part[real_key] = {}
+                                where_part[real_key]['$eq'] = replace_fields_value
+
+        where_part['muts'] = {'$elemMatch': mutation_query_fields}
+        where_part_target['muts'] = {'$elemMatch': mutation_query_fields}
 
         query_target = []
         query = []
 
-        # query_unwind_target = {"$unwind": "$muts"}
-        # query_target.append(query_unwind_target)
-        # query_unwind = {"$unwind": "$muts"}
-        # query.append(query_unwind)
-
         query_where_target = {"$match": where_part_target}
-        query_target.append(query_where_target)
         query_where = {"$match": where_part}
-        query.append(query_where)
 
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind = {"$unwind": "$muts"}
-        query.append(query_unwind)
+        if 'mutations' not in query_fields:
+            query.append(query_where)
 
-        group_part = {"_id": {"accession_id": "$_id"}}
-        query_group = {"$group": group_part}
-        query_target.append(query_group)
-        query.append(query_group)
+            query_unwind = {"$unwind": "$muts"}
+            query.append(query_unwind)
 
-        sort_part = {"_id": 1}
-        query_sort = {"$sort": sort_part}
-        query_target.append(query_sort)
-        query.append(query_sort)
+            group_part = {"_id": {"accession_id": "$_id"}}
+            query_group = {"$group": group_part}
+            query.append(query_group)
+
+            sort_part = {"_id": 1}
+            query_sort = {"$sort": sort_part}
+            query.append(query_sort)
+        else:
+            field_name = "accession_id"
+            query = create_query_with_mutations(query_where, field_name, query_fields)
+
+        if 'mutations' not in query_fields_target:
+            query_target.append(query_where_target)
+
+            query_unwind_target = {"$unwind": "$muts"}
+            query_target.append(query_unwind_target)
+
+            group_part = {"_id": {"accession_id": "$_id"}}
+            query_group = {"$group": group_part}
+            query_target.append(query_group)
+
+            sort_part = {"_id": 1}
+            query_sort = {"$sort": sort_part}
+            query_target.append(query_sort)
+        else:
+            field_name = "accession_id"
+            query_target = create_query_with_mutations(query_where_target, field_name, query_fields_target)
 
         list_dict_target = []
         if query_fields_target != 'empty':
@@ -3169,13 +3556,31 @@ all_important_mutation_dict = {}
 def get_all_important_mutation():
     print("inizio request important mutation")
 
+    start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
+
     pipeline = [
+        {"$match": {
+            'c_coll_date_prec': {
+                '$eq': 2
+            },
+            'collection_date': {
+                '$gte': start_date
+            },
+        }},
         {"$group": {"_id": '$covv_lineage', "count": {"$sum": 1}}},
     ]
 
     lin_info = {x['_id']: (x['count'], []) for x in collection_db.aggregate(pipeline, allowDiskUse=True)}
 
     pipeline = [
+        {"$match": {
+          'c_coll_date_prec': {
+            '$eq': 2
+          },
+          'collection_date': {
+            '$gte': start_date
+          },
+        }},
         {"$unwind": "$muts"},
         {"$group": {"_id": {'lin': '$covv_lineage',
                             'pro': "$muts.pro",

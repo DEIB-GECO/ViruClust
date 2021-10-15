@@ -55,7 +55,7 @@
                     </v-flex>
                     <v-flex class="no-horizontal-padding xs5 md2 d-flex" style="justify-content: center; margin-bottom: 10px">
                       <v-text-field
-                          id="positionSelector"
+                          :id="'positionSelector' + type"
                           v-model.number="selectedPosition"
                           solo
                           class="centered-input"
@@ -131,12 +131,12 @@
                           <v-card-text>
                              <v-layout wrap justify-space-around>
                                 <v-flex class="no-horizontal-padding xs3 d-flex" style="justify-content: center;">
-                                  <input id="inputMutationsFile" type="file" style="display:none"
+                                  <input :id="upload_id" type="file" style="display:none"
                                                v-on:change="loadMutationsFile()"
-                                               onclick="document.getElementById('inputMutationsFile').value = ''"
+                                               @click="fileClick"
                                         />
                                   <v-btn
-                                         onclick="document.getElementById('inputMutationsFile').click()"
+                                         @click="fileClick2"
                                          class="white--text"
                                          small
                                          color="#E63946"
@@ -218,12 +218,32 @@
                           </span>
                       </v-flex>
                   <v-spacer></v-spacer>
+                  <v-layout row wrap justify-center style="margin-top: 20px" v-if="mutationToInsert.length > 0">
+                    <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-bottom: 10px">
+                      <h3>Minimum number of mutations that each sequence must have:</h3>
+                    </v-flex>
+                    <v-flex class="no-horizontal-padding xs5 md2 d-flex" style="justify-content: center; margin-bottom: 10px">
+                      <v-text-field
+                          :id="'minimumNumberMutations' + type"
+                          v-model.number="minimumNumberMutations"
+                          solo
+                          class="centered-input"
+                          min="1"
+                          :max="mutationToInsert.length"
+                          type="number"
+                          label="Min Number of Muts"
+                          hide-details>
+                      </v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-spacer></v-spacer>
                   <v-layout row wrap justify-center style="margin-top: 20px">
                       <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">
                         <v-btn
                             @click="confirmMutations()"
                              color="#E63946"
-                             class="white--text">CONFIRM</v-btn>
+                             class="white--text"
+                            :disabled="(mutationToInsert.length !== 0 &&  (minimumNumberMutations > mutationToInsert.length || minimumNumberMutations < 1))">CONFIRM</v-btn>
                       </v-flex>
   <!--                    <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center;">-->
   <!--                      <v-btn-->
@@ -244,6 +264,7 @@
         <span v-if="index < listOfMutation.length - 1"> - </span>
         <span v-else> ] </span>
       </span>
+      <span v-if="listOfMutation.length > 0"> ( >= {{minimumNumberMutations}} ) </span>
     </div>
   </div>
 </template>
@@ -260,6 +281,8 @@ export default {
   },
   data() {
     return {
+      upload_id: null,
+      minimumNumberMutations: 0,
       listOfMutation: [],
       nameFileMutations: null,
       mutationToInsert: [],
@@ -289,6 +312,12 @@ export default {
   methods: {
     ...mapMutations([]),
     ...mapActions(['setQueryTime', 'setQueryGeo', 'setQueryFreeTarget', 'setQueryFreeBackground']),
+    fileClick(){
+      document.getElementById(this.upload_id).value = '';
+    },
+    fileClick2(){
+      document.getElementById(this.upload_id).click();
+    },
     recalculateIndexAfterDeletion(){
       for(let i = 0; i < this.mutationToInsert.length; i = i + 1) {
         this.mutationToInsert[i]['index'] = i;
@@ -317,7 +346,7 @@ export default {
       this.deleteMutationsFile();
       this.nameFileMutations = null;
       let reader = new FileReader();
-      let selectedFile = document.getElementById ('inputMutationsFile'). files[0];
+      let selectedFile = document.getElementById (this.upload_id). files[0];
       this.nameFileMutations = selectedFile.name;
       let that = this;
       reader.onload = function() {
@@ -354,6 +383,9 @@ export default {
         }
       }
       this.mutationToInsert = array;
+      if(this.mutationToInsert.length === 0){
+        this.minimumNumberMutations = 0;
+      }
       this.recalculateIndexAfterDeletion();
     },
     downloadMutationsAsTxt(){
@@ -392,6 +424,7 @@ export default {
     },
     deleteAllAccMutationsInserted(){
       this.mutationToInsert = [];
+      this.minimumNumberMutations = 0;
       this.nameFileMutations = null;
       this.recalculateIndexAfterDeletion();
     },
@@ -411,19 +444,42 @@ export default {
         this.mutationToInsert.push(mutation);
       }
     },
+    changeMinNumMutSelector(){
+      if(this.mutationToInsert.length > 0) {
+        if (this.minimumNumberMutations > this.mutationToInsert.length || this.minimumNumberMutations < 1) {
+          let delayInMilliseconds = 50;
+          let that = this;
+          setTimeout(function () {
+            let id1 = 'minimumNumberMutations' + that.type;
+            let elem1 = document.getElementById(id1);
+            elem1.style['color'] = 'red';
+          }, delayInMilliseconds);
+        } else {
+          let delayInMilliseconds = 50;
+          let that = this;
+          setTimeout(function () {
+            let id1 = 'minimumNumberMutations' + that.type;
+            let elem1 = document.getElementById(id1);
+            elem1.style['color'] = 'black';
+          }, delayInMilliseconds);
+        }
+      }
+    },
     changeColorPositionSelector(){
       if(this.selectedPosition > this.maxPositionProtein || this.selectedPosition < this.minPositionProtein){
         let delayInMilliseconds = 50;
+        let that = this;
         setTimeout(function() {
-          let id1 = 'positionSelector';
+          let id1 = 'positionSelector' + that.type;
           let elem1 = document.getElementById(id1);
           elem1.style['color'] = 'red';
         }, delayInMilliseconds);
       }
       else{
         let delayInMilliseconds = 50;
+        let that = this;
         setTimeout(function() {
-          let id1 = 'positionSelector';
+          let id1 = 'positionSelector' + that.type;
           let elem1 = document.getElementById(id1);
           elem1.style['color'] = 'black';
         }, delayInMilliseconds);
@@ -432,38 +488,50 @@ export default {
     confirmMutations(){
       if(this.type === 'time') {
         this.setQueryTime({field: "mutations", list: []});
+        this.setQueryTime({field: "minNumMut", list: []});
         if(this.mutationToInsert.length === 0){
           this.setQueryTime({field: "mutations", list: null});
+          this.setQueryTime({field: "minNumMut", list: null});
         }
         else {
           this.setQueryTime({field: "mutations", list: this.mutationToInsert});
+          this.setQueryTime({field: "minNumMut", list: [this.minimumNumberMutations]});
         }
       }
       else if(this.type === 'geo') {
         this.setQueryGeo({field: "mutations", list: []});
+        this.setQueryGeo({field: "minNumMut", list: []});
         if(this.mutationToInsert.length === 0){
           this.setQueryGeo({field: "mutations", list: null});
+          this.setQueryGeo({field: "minNumMut", list: null});
         }
         else {
           this.setQueryGeo({field: "mutations", list: this.mutationToInsert});
+          this.setQueryGeo({field: "minNumMut", list: [this.minimumNumberMutations]});
         }
       }
       else if(this.type === 'target') {
         this.setQueryFreeTarget({field: "mutations", list: []});
+        this.setQueryFreeTarget({field: "minNumMut", list: []});
         if(this.mutationToInsert.length === 0){
           this.setQueryFreeTarget({field: "mutations", list: null});
+          this.setQueryFreeTarget({field: "minNumMut", list: null});
         }
         else {
           this.setQueryFreeTarget({field: "mutations", list: this.mutationToInsert});
+          this.setQueryFreeTarget({field: "minNumMut", list: [this.minimumNumberMutations]});
         }
       }
       else if(this.type === 'background') {
         this.setQueryFreeBackground({field: "mutations", list: []});
+        this.setQueryFreeBackground({field: "minNumMut", list: []});
         if(this.mutationToInsert.length === 0){
           this.setQueryFreeBackground({field: "mutations", list: null});
+          this.setQueryFreeBackground({field: "minNumMut", list: null});
         }
         else {
           this.setQueryFreeBackground({field: "mutations", list: this.mutationToInsert});
+          this.setQueryFreeBackground({field: "minNumMut", list: [this.minimumNumberMutations]});
         }
       }
       this.createListOfMutation();
@@ -508,10 +576,17 @@ export default {
       array_copy.splice(index, 1);
       this.mutationToInsert = [];
       this.mutationToInsert = array_copy;
+      if(this.mutationToInsert.length === 0){
+        this.minimumNumberMutations = 0;
+      }
+      if(this.mutationToInsert.length < this.minimumNumberMutations){
+        this.minimumNumberMutations = this.mutationToInsert.length;
+      }
       this.recalculateIndexAfterDeletion();
     }
   },
   mounted() {
+    this.upload_id = 'inputMutationsFile' + this.type;
     if(this.type === 'time' && this.queryTime['mutations']) {
       this.mutationToInsert = this.queryTime['mutations'];
     }
@@ -539,6 +614,9 @@ export default {
     },
     selectedPosition() {
       this.changeColorPositionSelector();
+    },
+    minimumNumberMutations(){
+      this.changeMinNumMutSelector();
     },
     radio_group_lineage(){
       if(this.radio_group_lineage === 'only_lineage'){
