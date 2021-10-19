@@ -16,7 +16,7 @@ from .downloadLineagesInfo import dict_lineage_mutation
 
 api = Namespace('analyze', description='analyze')
 
-uri = "mongodb://localhost:23456/gcm_gisaid"
+uri = "mongodb://localhost:27017/gcm_gisaid"
 client = MongoClient(uri)
 db = client.gcm_gisaid
 
