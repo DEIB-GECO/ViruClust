@@ -762,22 +762,82 @@ class FieldList(Resource):
 def create_query_with_mutations(query_where, field_name, query_fields):
     query = [query_where]
 
-    query_unwind_1 = {"$unwind": "$muts"}
-    query.append(query_unwind_1)
+    # query_unwind_1 = {"$unwind": "$muts"}
+    # query.append(query_unwind_1)
+    #
+    # array_mut_group = []
+    # for single_mutation in query_fields['mutations']:
+    #     array_single_mutation = []
+    #     for key_mut in single_mutation:
+    #         if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
+    #             obj_single_mut = {}
+    #             real_key_mut = translate_dictionary[key_mut]
+    #             obj_single_mut["$eq"] = [f"${real_key_mut}", single_mutation[key_mut]]
+    #             array_single_mutation.append(obj_single_mut)
+    #     obj_and_muts = {"$and": array_single_mutation}
+    #     array_mut_group.append(obj_and_muts)
+    #
+    # or_obj = {"$or": array_mut_group}
+    #
+    # group_part_1 = {
+    #   '_id': {
+    #     "id": "$_id",
+    #     "muts": "$muts",
+    #     "location": "$location",
+    #     "covv_lineage": "$covv_lineage",
+    #     "collection_date": "$collection_date",
+    #     "value":
+    #        {"$cond":
+    #           [
+    #              or_obj,
+    #              1,
+    #              0
+    #              ]
+    #         },
+    #   },
+    # }
+    # query_group_1 = {"$group": group_part_1}
+    # query.append(query_group_1)
+    #
+    # group_part_2 = {
+    #   '_id': {
+    #     "id": "$_id.id",
+    #     "location": "$_id.location",
+    #     "covv_lineage": "$_id.covv_lineage",
+    #     "collection_date": "$_id.collection_date",
+    #   },
+    #   "values": {"$push": "$_id.value"},
+    #   "muts": {"$push": "$_id.muts"},
+    # }
+    # query_group_2 = {"$group": group_part_2}
+    # query.append(query_group_2)
+    #
+    # query_unwind_2 = {"$unwind": "$values"}
+    # query.append(query_unwind_2)
+    #
+    # group_part_3 = {
+    #   '_id': {
+    #     "id": "$_id.id",
+    #     "muts": "$muts",
+    #     "location": "$_id.location",
+    #     "covv_lineage": "$_id.covv_lineage",
+    #     "collection_date": "$_id.collection_date",
+    #   },
+    #   "sum": {"$sum": "$values"},
+    # }
+    # query_group_3 = {"$group": group_part_3}
+    # query.append(query_group_3)
+    #
+    # min_num_mut = query_fields['minNumMut'][0]
+    #
+    # match_part_2 = {
+    #   'sum': {
+    #     '$gte': min_num_mut
+    #   },
+    # }
+    # query_match_2 = {"$match": match_part_2}
+    # query.append(query_match_2)
 
-    array_mut_group = []
-    for single_mutation in query_fields['mutations']:
-        array_single_mutation = []
-        for key_mut in single_mutation:
-            if key_mut in translate_dictionary and single_mutation[key_mut] is not None:
-                obj_single_mut = {}
-                real_key_mut = translate_dictionary[key_mut]
-                obj_single_mut["$eq"] = [f"${real_key_mut}", single_mutation[key_mut]]
-                array_single_mutation.append(obj_single_mut)
-        obj_and_muts = {"$and": array_single_mutation}
-        array_mut_group.append(obj_and_muts)
-
-    or_obj = {"$or": array_mut_group}
 
     group_part_1 = {
       '_id': {
@@ -786,52 +846,63 @@ def create_query_with_mutations(query_where, field_name, query_fields):
         "location": "$location",
         "covv_lineage": "$covv_lineage",
         "collection_date": "$collection_date",
-        "value":
-           {"$cond":
-              [
-                 or_obj,
-                 1,
-                 0
-                 ]
-            },
       },
     }
-    query_group_1 = {"$group": group_part_1}
+
+    i = 1
+    for single_mutation in query_fields['mutations']:
+        name_value = "value" + str(i)
+        mutation = single_mutation['product'] + '_'
+        if single_mutation['sequence_aa_original'] is not None:
+            mutation += single_mutation['sequence_aa_original']
+        else:
+            mutation += '.*'
+        mutation += str(single_mutation['start_aa_original']) + single_mutation['sequence_aa_alternative']
+
+        obj_name_value = {
+                "$sum": {
+                    "$cond": [
+                        {
+                            "$regexMatch": {
+                                "input": "$covsurver_prot_mutations",
+                                "regex": mutation,
+                                "options": "i"
+                            }
+                        }
+                        ,
+                        1,
+                        0]
+                }
+                }
+        group_part_1[name_value] = obj_name_value
+        i = i + 1
+
+    query_group_1 = {"$project": group_part_1}
     query.append(query_group_1)
+
+    array_values = []
+    j = 1
+    for single_mutation in query_fields['mutations']:
+        name_value_2 = "$value" + str(j)
+        array_values.append(name_value_2)
+        j = j + 1
 
     group_part_2 = {
       '_id': {
-        "id": "$_id.id",
-        "location": "$_id.location",
-        "covv_lineage": "$_id.covv_lineage",
-        "collection_date": "$_id.collection_date",
+        'id': '$_id.id',
+        'muts': '$_id.muts',
+        'location': '$_id.location',
+        'covv_lineage': '$_id.covv_lineage',
+        'collection_date': '$_id.collection_date',
+        'totalSum': {'$add': array_values}
       },
-      "values": {"$push": "$_id.value"},
-      "muts": {"$push": "$_id.muts"},
     }
-    query_group_2 = {"$group": group_part_2}
+    query_group_2 = {"$project": group_part_2}
     query.append(query_group_2)
 
-    query_unwind_2 = {"$unwind": "$values"}
-    query.append(query_unwind_2)
-
-    group_part_3 = {
-      '_id': {
-        "id": "$_id.id",
-        "muts": "$muts",
-        "location": "$_id.location",
-        "covv_lineage": "$_id.covv_lineage",
-        "collection_date": "$_id.collection_date",
-      },
-      "sum": {"$sum": "$values"},
-    }
-    query_group_3 = {"$group": group_part_3}
-    query.append(query_group_3)
-
     min_num_mut = query_fields['minNumMut'][0]
-
     match_part_2 = {
-      'sum': {
+      '_id.totalSum': {
         '$gte': min_num_mut
       },
     }
