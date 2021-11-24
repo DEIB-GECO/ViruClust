@@ -26,6 +26,9 @@
               :multiple="checkMultiple()"
               :disabled="isLoading || possibleValues.length === 0"
             >
+              <span slot="prepend-item" class="firstElement">
+                Data of multiple location is merged.&emsp;&emsp;
+              </span>
               <template slot="item" slot-scope="data">
                   <span class="item-value-span">{{getFieldText(data.item)}}</span>
                   <span class="item-count-span">{{data.item.count}}</span>
@@ -303,5 +306,19 @@ export default {
       position: absolute;
       right: 0.5em;
   }
+
+  .firstElement{
+    padding: 5px;
+    margin: 0;
+    color: grey;
+    text-align: center;
+    border-bottom: grey solid 1px;
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: 0;
+    z-index: 1;
+    background: white;
+  }
+
 
 </style>

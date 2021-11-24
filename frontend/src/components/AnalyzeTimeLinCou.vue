@@ -2,41 +2,39 @@
   <div>
     <v-card width="100%" color="white" style="padding: 50px">
       <v-row justify="center" align="center">
-        <v-card width="1600px" style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
-          <v-card-title class="justify-center">
+        <v-card width="1600px"  style="padding: 50px; margin-top: 50px; margin-bottom: 50px" color="#A8DADC">
+          <v-card-title class="justify-center" >
             <h1>EVOLUTION IN TIME</h1>
           </v-card-title>
            <v-card-text>
-             <v-layout row wrap justify-center style="padding: 30px;">
+             <v-layout row wrap justify-space-between style="padding: 30px;">
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                  <h2>PICK LINEAGE AND PLACE OF INTEREST</h2>
                </v-flex>
                <!--<v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0">
                  <h4>(both fields can be empty, meaning that all lineages/countries are interesting)</h4>
                </v-flex>-->
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 lg12 xl12 d-flex" style="justify-content: center;">
                  <SelectorsQueryTime
                   field = 'lineage'>
                  </SelectorsQueryTime>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
-               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryTime
                   field = 'geo_group'>
                  </SelectorsQueryTime>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryTime
                   field = 'country'>
                  </SelectorsQueryTime>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryTime
                   field = 'region'>
                  </SelectorsQueryTime>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryTime
                   field = 'province'>
                  </SelectorsQueryTime>
@@ -44,7 +42,7 @@
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px;">
                 <h3>Exclude one or more places</h3>
               </v-flex>
-               <v-flex class="no-horizontal-padding xs4 d-flex" style="justify-content: center; padding: 0; margin: 0;">
+               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; padding: 0; margin: 0;">
                 <SelectorQueryToExclude
                   mode="time"
                   :field="fieldToExclude">
@@ -180,7 +178,7 @@
                                 % BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -247,7 +245,7 @@
                                 # SEQUENCES IN BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -314,7 +312,7 @@
                                 % TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -381,7 +379,7 @@
                                 # SEQUENCES IN TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -448,7 +446,7 @@
                                 P-VALUE
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their p-values. The p-value is calculated through a chi-squared test.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -517,7 +515,7 @@
                                 ODDS RATIO
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their odds ratio. The odds ratio is calculated as: (percentage in target + epsilon) / (percentage in background + epsilon)
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -601,7 +599,7 @@
                                 FILTER PROTEIN
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their protein.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -1912,7 +1910,66 @@ export default {
 
       for(let i = 0; i < this.rowsAnalyzeTime.length; i = i + 1) {
         let result = JSON.parse(JSON.stringify(this.fixedRowAnalyzeTime[i]));
-        var that = this;
+        let that = this;
+
+        // ASSOCIATE FILTERs TO BAR_CHARTs
+
+        // if (this.selectedProteinForTable !== null) {
+        //   let that = this;
+        //   result = result.filter(function (i) {
+        //     let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+        //     let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+        //     let p_value = JSON.parse(JSON.stringify(i['p_value']));
+        //     let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+        //     let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+        //     let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+        //     let product = JSON.parse(JSON.stringify(i['product']));
+        //     return (background_frequency >= that.selectedMinBackgroundFrequency
+        //         && background_frequency <= that.selectedMaxBackgroundFrequency
+        //         && target_frequency >= that.selectedMinTargetFrequency
+        //         && target_frequency <= that.selectedMaxTargetFrequency
+        //         && p_value >= that.selectedMinPValue
+        //         && p_value <= that.selectedMaxPValue
+        //         && background_numerator >= that.selectedMinBackgroundNumerator
+        //         && background_numerator <= that.selectedMaxBackgroundNumerator
+        //         && target_numerator >= that.selectedMinTargetNumerator
+        //         && target_numerator <= that.selectedMaxTargetNumerator
+        //         &&
+        //         ((odds_ratio >= that.selectedMinOddsRatio
+        //                 && odds_ratio <= that.selectedMaxOddsRatio) ||
+        //             (that.isInfinite
+        //                 && odds_ratio > that.totalMaxOddsRatio)
+        //         )
+        //         && product === that.selectedProteinForTable);
+        //   })
+        // } else {
+        //   let that = this;
+        //   result = result.filter(function (i) {
+        //     let background_frequency = JSON.parse(JSON.stringify(i['percentage_background']));
+        //     let target_frequency = JSON.parse(JSON.stringify(i['percentage_target']));
+        //     let p_value = JSON.parse(JSON.stringify(i['p_value']));
+        //     let background_numerator = JSON.parse(JSON.stringify(i['numerator_background']));
+        //     let target_numerator = JSON.parse(JSON.stringify(i['numerator_target']));
+        //     let odds_ratio = JSON.parse(JSON.stringify(i['odd_ratio']));
+        //     return (background_frequency >= that.selectedMinBackgroundFrequency
+        //         && background_frequency <= that.selectedMaxBackgroundFrequency
+        //         && target_frequency >= that.selectedMinTargetFrequency
+        //         && target_frequency <= that.selectedMaxTargetFrequency
+        //         && p_value >= that.selectedMinPValue
+        //         && p_value <= that.selectedMaxPValue
+        //         && background_numerator >= that.selectedMinBackgroundNumerator
+        //         && background_numerator <= that.selectedMaxBackgroundNumerator
+        //         && target_numerator >= that.selectedMinTargetNumerator
+        //         && target_numerator <= that.selectedMaxTargetNumerator
+        //         &&
+        //         ((odds_ratio >= that.selectedMinOddsRatio
+        //                 && odds_ratio <= that.selectedMaxOddsRatio) ||
+        //             (that.isInfinite
+        //                 && odds_ratio > that.totalMaxOddsRatio)
+        //         ));
+        //   })
+        // }
+
         result = result.filter(function (i){
           let p_value = JSON.parse(JSON.stringify(i['p_value']));
           let product = JSON.parse(JSON.stringify(i['product']));
@@ -2309,6 +2366,7 @@ export default {
       this.pValueBarChartApplied = false;
     },
     selectedMinBackgroundFrequency(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinBackgroundFrequency < 0 ){
         this.selectedMinBackgroundFrequency= 0;
       }
@@ -2317,6 +2375,7 @@ export default {
       }
     },
     selectedMaxBackgroundFrequency(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxBackgroundFrequency < this.selectedMinBackgroundFrequency ){
         this.selectedMaxBackgroundFrequency = this.selectedMinBackgroundFrequency;
       }
@@ -2325,6 +2384,7 @@ export default {
       }
     },
     selectedMinTargetFrequency(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinTargetFrequency < 0 ){
         this.selectedMinTargetFrequency= 0;
       }
@@ -2333,6 +2393,7 @@ export default {
       }
     },
     selectedMaxTargetFrequency(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxTargetFrequency < this.selectedMinTargetFrequency ){
         this.selectedMaxTargetFrequency = this.selectedMinTargetFrequency;
       }
@@ -2341,6 +2402,7 @@ export default {
       }
     },
     selectedMinPValue(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinPValue < 0 ){
         this.selectedMinPValue = 0;
       }
@@ -2349,6 +2411,7 @@ export default {
       }
     },
     selectedMaxPValue(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxPValue < this.selectedMinPValue ){
         this.selectedMaxPValue = this.selectedMinPValue;
       }
@@ -2357,6 +2420,7 @@ export default {
       }
     },
     selectedMinBackgroundNumerator(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinBackgroundNumerator < 0 ){
         this.selectedMinBackgroundNumerator= 0;
       }
@@ -2365,6 +2429,7 @@ export default {
       }
     },
     selectedMaxBackgroundNumerator(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxBackgroundNumerator < this.selectedMinBackgroundNumerator ){
         this.selectedMaxBackgroundNumerator = this.selectedMinBackgroundNumerator;
       }
@@ -2373,6 +2438,7 @@ export default {
       }
     },
     selectedMinTargetNumerator(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinTargetNumerator < 0 ){
         this.selectedMinTargetNumerator = 0;
       }
@@ -2381,6 +2447,7 @@ export default {
       }
     },
     selectedMaxTargetNumerator(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxTargetNumerator < this.selectedMinTargetNumerator ){
         this.selectedMaxTargetNumerator = this.selectedMinTargetNumerator;
       }
@@ -2389,6 +2456,7 @@ export default {
       }
     },
     selectedMinOddsRatio(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMinOddsRatio < 0 ){
         this.selectedMinOddsRatio = 0;
       }
@@ -2397,6 +2465,7 @@ export default {
       }
     },
     selectedMaxOddsRatio(){
+      // this.pValueBarChartApplied = false;
       if (this.selectedMaxOddsRatio < this.selectedMinOddsRatio ){
         this.selectedMaxOddsRatio = this.selectedMinOddsRatio;
       }

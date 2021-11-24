@@ -82,6 +82,7 @@ export default {
             {
                 type: 'pie',
                 radius: '50%',
+                cursor: 'default',
                 data: [],
                 emphasis: {
                     itemStyle: {
@@ -109,11 +110,34 @@ export default {
 
       if(!this.chartBlocked) {
 
-        this.pieChart.series[0].data = met.sort(function (a, b) {
+        let array_values = [];
+        let total_seq = 0;
+        for(let i = 0; i < met.length; i++){
+          total_seq = total_seq + met[i]['value'];
+        }
+        let single_ob_others = {'name': 'Others', 'value': 0};
+        for(let i = 0; i < met.length; i++){
+          if(met[i]['value'] > total_seq * 0.01){
+             let single_ob = {'name': met[i]['name'], 'value': met[i]['value']};
+             array_values.push(single_ob);
+          }
+          else{
+            single_ob_others['value'] = single_ob_others['value'] + met[i]['value'];
+          }
+        }
+
+        array_values = array_values.sort(function (a, b) {
           let num1 = a['value'];
           let num2 = b['value'];
           return num1 - num2;
         });
+
+        if(single_ob_others['value'] > 0) {
+          array_values.push(single_ob_others);
+        }
+
+        this.pieChart.series[0].data = array_values;
+
         if (this.my_chart === null) {
           this.my_chart = echarts.init(document.getElementById(this.nameField));
         }

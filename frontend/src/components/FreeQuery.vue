@@ -1,10 +1,10 @@
 <template>
-  <div style="margin-bottom: 100px">
-    <v-layout row wrap justify-center style="padding: 30px;">
+  <div style="margin-bottom: 100px; width: 90%">
+    <v-layout row wrap justify-space-between style="padding: 30px;">
        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
          <h2>PICK LINEAGE AND PLACE</h2>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 lg12 xl12 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'lineage'
           :type = 'type'>
@@ -12,25 +12,25 @@
        </v-flex>
        <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
        </v-flex>
-       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'geo_group'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'country'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'region'
           :type = 'type'>
          </SelectorsQueryFree>
        </v-flex>
-       <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+       <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
          <SelectorsQueryFree
           field = 'province'
           :type = 'type'>
@@ -39,7 +39,7 @@
       <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px;">
         <h3>Exclude one or more places</h3>
       </v-flex>
-      <v-flex class="no-horizontal-padding xs12 md4 d-flex" style="justify-content: center;">
+      <v-flex class="no-horizontal-padding xs12 md12 d-flex" style="justify-content: center;">
           <SelectorQueryToExclude
           :mode="'free' + type"
           :field="fieldToExclude">

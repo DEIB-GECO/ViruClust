@@ -3,7 +3,7 @@
     <v-container fluid grid-list-xl style="justify-content: center;">
       <v-layout row wrap justify-center>
         <v-flex class="no-horizontal-padding xs11 d-flex" style="justify-content: center; margin: 0; padding: 0">
-          <div :id="namePValue" style="width: 100px; height: 250px; user-select: none;
+          <div @click="filterPoint()" :id="namePValue" style="width: 100px; height: 250px; user-select: none;
           -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
            background-color: white;">
           </div>
@@ -18,6 +18,37 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <v-dialog
+      persistent
+      v-model="dialog_single_position"
+      width="500"
+      >
+        <v-card>
+          <v-card-title class="white--text" style="background-color: #457B9D;">
+            SINGLE POSITION ({{single_position}})
+            <v-spacer></v-spacer>
+            <v-btn
+                style="background-color: red"
+                slot="activator"
+                icon
+                small
+                color="white"
+                @click="closeDialogSinglePosition()"
+            >
+              X
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text class="text-xs-center">
+            <div :id="namePValue + '_single_position'" style="width: 50px; height: 250px; user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0; border-width: 0;
+             background-color: white;">
+            </div>
+          </v-card-text>
+
+        </v-card>
+      </v-dialog>
 
   </div>
 </template>
@@ -53,6 +84,9 @@ export default {
     return {
       begin_value_domain: 0,
       end_value_domain: 0,
+      params: null,
+      dialog_single_position: false,
+      single_position: null,
       barChart: {
         title: {
         },
@@ -101,32 +135,81 @@ export default {
             }
         ],
         xAxis: {
-            type: 'value',
-            splitLine: {
-               show: false
-            },
-            max: 0,
-            minInterval: 1,
-            // data: [],
-            // splitArea: {
-            //       interval: 0,
-            //       show: true,
-            //       areaStyle: {
-            //           color: []
-            //       }
-            //   }
+            type: 'category',
+            // splitLine: {
+            //    show: false
+            // },
+            // max: 0,
+            // minInterval: 1,
         },
         yAxis: {
             type: 'value',
             // max: 0,
+            name: 'log(odds_ratio)',
+            nameTextStyle: {
+              fontSize: 10,
+            },
         },
         dataZoom: [
             {
                 type: 'slider',
+                realtime: false,
+                maxValueSpan: 398,
             },
           ],
       },
+      barChartSinglePosition: {
+        title: {
+        },
+        series: [
+            {
+                type: 'bar',
+                radius: '50%',
+                data: [],
+                itemStyle: {color: '#457B9D'},
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: '#457B9D'
+                    }
+                },
+                stack: 'one',
+                markArea: {
+                    tooltip: {
+                        show: false,
+                    },
+                    data: [ [{
+                        xAxis: 0,
+                        itemStyle: {
+                            color: 'rgba(50, 255, 50, 0.5)',
+                        },
+                    }, {
+                        xAxis: 0
+                    }]
+                    ]
+                }
+            }
+        ],
+        xAxis: {
+            type: 'category',
+            axisTick: {
+              interval: 0,
+            },
+            axisLabel: {
+              interval: 0,
+            },
+        },
+        yAxis: {
+            type: 'value',
+            name: 'log(odds_ratio)',
+            nameTextStyle: {
+              fontSize: 10,
+            }
+        },
+      },
       my_chart: null,
+      my_chart_single_position: null,
     }
   },
   computed: {
@@ -145,6 +228,17 @@ export default {
                      'setStartValuePValueBarChartGeo', 'setEndValuePValueBarChartGeo',
                      'setStartValuePValueBarChartFree', 'setEndValuePValueBarChartFree']),
     ...mapActions([]),
+    closeDialogSinglePosition(){
+      this.dialog_single_position = false;
+      this.params = null;
+      this.single_position = null;
+    },
+    filterPoint(){
+        let that = this;
+        this.my_chart.on('click', function (params) {
+          that.params = params;
+        });
+    },
     download(){
       let url = this.my_chart.getConnectedDataURL({
           pixelRatio: 2,
@@ -304,14 +398,14 @@ export default {
     },
     createArrayOfZeros(){
       let arrY = [];
-      for (let j = 1; j <= this.startStopProtein['stop']; j = j + 1){
-        arrY.push([j, 0, 0, 0]);
+      for (let j = 0; j <= this.startStopProtein['stop']; j = j + 1){
+        arrY.push([j.toString(), 0, 0, 0]);
       }
       return arrY;
     },
     createArrayOfColor(toColor){
       let arrColor = [];
-      for (let j = 1; j <= this.startStopProtein['stop']; j = j + 1){
+      for (let j = 0; j <= this.startStopProtein['stop']; j = j + 1){
         if(toColor[j]){
           arrColor.push(toColor[j]);
         }
@@ -332,44 +426,55 @@ export default {
       let arrX = [];
       let arr_of_arrY = [];
       let arrY = [];
-      for (let j = 1; j <= this.startStopProtein['stop']; j = j + 1){
-        arrX.push(j);
-        arrY.push([j, 0, 0, 0]);
+      for (let j = 0; j <= this.startStopProtein['stop']; j = j + 1){
+        arrX.push(j.toString());
+        arrY.push([j.toString(), 0, 0, 0]);
       }
       arr_of_arrY.push(arrY);
 
       this.begin_value_domain = 0;
       this.end_value_domain = 0;
 
-      let maxY = 0;
+      // let maxY = 0;
 
       while (i < len) {
         let single_line = met[i];
         // arrX.push(single_line['name']);
         let single_cell;
         if (single_line['odds_ratio'] > this.totalMaxOddsRatio) {
-          if(single_line['value'] > maxY){
-            maxY = single_line['value'];
-          }
-          single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], 'INF', single_line['name']];
+          // if(Math.log(single_line['odds_ratio']) > maxY){
+          //   maxY = Math.log(single_line['odds_ratio']);
+          // }
+          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], 'INF', single_line['name']];
         } else {
-          if(single_line['value'] > maxY){
-            maxY = single_line['value'];
-          }
-          single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], single_line['odds_ratio'], single_line['name']];
+          // if(Math.log(single_line['odds_ratio']) > maxY){
+          //   maxY = Math.log(single_line['odds_ratio']);
+          // }
+          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], single_line['odds_ratio'], single_line['name']];
         }
+        // if (single_line['odds_ratio'] > this.totalMaxOddsRatio) {
+        //   if(single_line['value'] > maxY){
+        //     maxY = single_line['value'];
+        //   }
+        //   single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], 'INF', single_line['name']];
+        // } else {
+        //   if(single_line['value'] > maxY){
+        //     maxY = single_line['value'];
+        //   }
+        //   single_cell = [single_line['position'] - 1, single_line['value'], single_line['p_value'], single_line['odds_ratio'], single_line['name']];
+        // }
         let while_condition = true;
         let k = 0;
         while (while_condition) {
           let arr = arr_of_arrY[k];
-          if (JSON.stringify(arr[single_line['position'] - 1]) === JSON.stringify([single_line['position'], 0, 0, 0])) {
-            arr[single_line['position'] - 1] = single_cell;
+          if (JSON.stringify(arr[single_line['position']].toString()) === JSON.stringify([single_line['position'], 0, 0, 0].toString())) {
+            arr[single_line['position']] = single_cell;
             while_condition = false;
           } else {
             if (k + 1 >= arr_of_arrY.length) {
               arr_of_arrY.push(this.createArrayOfZeros());
               let arr2 = arr_of_arrY[k + 1];
-              arr2[single_line['position'] - 1] = single_cell;
+              arr2[single_line['position']] = single_cell;
               while_condition = false;
             }
           }
@@ -391,7 +496,7 @@ export default {
         else{
           let color ;
           if(ii %2 === 1){
-            color = '#A8DADC';
+            color = '#A8DADC'
           }
           else{
             color = '#457B9D';
@@ -595,7 +700,7 @@ export default {
       }
 
       // this.barChart.yAxis.max = maxY * 1.5;
-      this.barChart.xAxis.max = this.startStopProtein['stop'];
+      // this.barChart.xAxis.max = this.startStopProtein['stop'];
       // this.barChart.xAxis.data = arrX;
       // this.barChart.xAxis.splitArea.areaStyle.color = this.createArrayOfColor(toColor);
 
@@ -622,7 +727,10 @@ export default {
         this.my_chart.dispose();
         this.my_chart = echarts.init(document.getElementById(this.namePValue));
       }
+      console.log("qui", this.barChart);
       this.my_chart.setOption(this.barChart, true);
+      let my_c = document.getElementById(this.namePValue);
+      my_c.click();
 
       let that = this;
       this.my_chart.on('dataZoom', function (params) {
@@ -639,6 +747,33 @@ export default {
           that.setEndValuePValueBarChartFree(params.end / 100 * arrX.length);
         }
       });
+    },
+    renderGraphSinglePosition(met){
+
+      this.dialog_single_position = true;
+      let elem = document.getElementById(this.namePValue + '_single_position');
+      elem.style['width'] = 450 + 'px';
+
+      let len = met.length;
+      let arrX = [];
+      let arrY = [];
+      for (let j = 0; j < len; j++){
+        arrX.push(met[j]['name'].split('_')[1]);
+        // arrY.push([met[j]['name'], met[j]['odds_ratio'], met[j]['p_value']]);
+        arrY.push(Math.log(met[j]['odds_ratio']));
+      }
+
+      this.barChartSinglePosition.series[0]['data'] = arrY;
+      this.barChartSinglePosition.xAxis.data = arrX;
+
+      if(this.my_chart_single_position === null) {
+        this.my_chart_single_position = echarts.init(document.getElementById(this.namePValue + '_single_position'));
+      }
+      else{
+        this.my_chart_single_position.dispose();
+        this.my_chart_single_position = echarts.init(document.getElementById(this.namePValue + '_single_position'));
+      }
+      this.my_chart_single_position.setOption(this.barChartSinglePosition, true);
     }
   },
   mounted() {
@@ -646,6 +781,19 @@ export default {
       this.renderGraph(met);
   },
   watch: {
+    params(){
+      if(this.params !== null) {
+        this.dialog_single_position = true;
+        this.single_position = this.params['data'][0];
+        let filtered_value = this.pValueContent.filter(x => x.position === parseInt(this.params['data'][0]));
+
+        let delayInMilliseconds = 100;
+        let that = this;
+        setTimeout(function() {
+          that.renderGraphSinglePosition(filtered_value);
+        }, delayInMilliseconds);
+      }
+    },
     metadataContent(){
       let met =  JSON.parse(JSON.stringify(this.pValueContent));
       this.renderGraph(met);

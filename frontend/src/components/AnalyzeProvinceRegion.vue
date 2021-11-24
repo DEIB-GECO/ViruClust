@@ -7,33 +7,33 @@
             <h1>EVOLUTION IN SPACE</h1>
           </v-card-title>
            <v-card-text>
-             <v-layout row wrap justify-center style="padding: 30px;">
+             <v-layout row wrap justify-space-between style="padding: 30px;">
               <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center; margin-top: 10px">
                <h2>PICK A LINEAGE, PLACE AND INTERVAL OF TIME</h2>
               </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 lg12 xl12 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'lineage'>
                  </SelectorsQueryGeo>
                </v-flex>
                <v-flex class="no-horizontal-padding xs12 d-flex" style="justify-content: center;">
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'geo_group'>
                  </SelectorsQueryGeo>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'country'>
                  </SelectorsQueryGeo>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'region'>
                  </SelectorsQueryGeo>
                </v-flex>
-               <v-flex class="no-horizontal-padding xs12 lg6 xl3 d-flex" style="justify-content: center;">
+               <v-flex class="no-horizontal-padding xs12 md6 lg2 d-flex" style="justify-content: center;">
                  <SelectorsQueryGeo
                   field = 'province'>
                  </SelectorsQueryGeo>
@@ -167,7 +167,7 @@
                                 % BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -234,7 +234,7 @@
                                 # SEQUENCES IN BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -301,7 +301,7 @@
                                 % TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -368,7 +368,7 @@
                                 # SEQUENCES IN TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -435,7 +435,7 @@
                                 P-VALUE
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their p-values. The p-value is calculated through a chi-squared test.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -504,7 +504,7 @@
                                 ODDS RATIO
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their odds ratio. The odds ratio is calculated as: (percentage in target + epsilon) / (percentage in background + epsilon)
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -588,7 +588,7 @@
                                 FILTER PROTEIN
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their protein.
                             </v-card-text>
                         </v-card>
                     </v-dialog>

@@ -571,7 +571,7 @@
                                 % BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -638,7 +638,7 @@
                                 # SEQUENCES IN BACKGROUND
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the background population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -705,7 +705,7 @@
                                 % TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the percentage of appearance of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -772,7 +772,7 @@
                                 # SEQUENCES IN TARGET
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on the appearance (in absolute numbers) of each mutation in the target population.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -839,7 +839,7 @@
                                 P-VALUE
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their p-values. The p-value is calculated through a chi-squared test.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -908,7 +908,7 @@
                                 ODDS RATIO
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their odds ratio. The odds ratio is calculated as: (percentage in target + epsilon) / (percentage in background + epsilon)
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -992,7 +992,7 @@
                                 FILTER PROTEIN
                             </v-card-title>
                             <v-card-text>
-                             ...
+                             This filter allows to reduce the number of mutations shown in the results, based on their protein.
                             </v-card-text>
                         </v-card>
                     </v-dialog>
