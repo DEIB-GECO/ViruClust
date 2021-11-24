@@ -154,7 +154,7 @@ export default {
         dataZoom: [
             {
                 type: 'slider',
-                // realtime: false,
+                realtime: false,
                 maxValueSpan: 398,
             },
           ],
