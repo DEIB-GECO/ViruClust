@@ -162,6 +162,9 @@ export default {
       barChartSinglePosition: {
         title: {
         },
+        tooltip: {
+          trigger: 'item',
+        },
         series: [
             {
                 type: 'bar',
@@ -468,7 +471,7 @@ export default {
         let k = 0;
         while (while_condition) {
           let arr = arr_of_arrY[k];
-          if (JSON.stringify(arr[single_line['position']].toString()) === JSON.stringify([single_line['position'], 0, 0, 0].toString())) {
+          if (JSON.stringify(arr[single_line['position']].toString()) === JSON.stringify([single_line['position'], 0, 0, 0, 0].toString())) {
             arr[single_line['position']] = single_cell;
             while_condition = false;
           } else {
@@ -728,7 +731,7 @@ export default {
         this.my_chart.dispose();
         this.my_chart = echarts.init(document.getElementById(this.namePValue));
       }
-      console.log("qui", this.barChart);
+      // console.log("qui", this.barChart);
       this.my_chart.setOption(this.barChart, true);
       let my_c = document.getElementById(this.namePValue);
       my_c.click();
