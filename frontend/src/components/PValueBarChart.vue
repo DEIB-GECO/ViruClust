@@ -99,9 +99,10 @@ export default {
                           </span>`;
             let lineage =  `<span style="text-align: center; padding: 0; margin: 0;"><b>${params.data[4]}</b></span>`
             return `${icon0} ${lineage} <br /><br />
+                    <span><b>log odds_ratio:</b> ${params.data[1]}</span> <br />
                     <span><b>p-value:</b> ${params.data[2]}</span><br />
                     <span><b>odds ratio:</b> ${params.data[3]}</span><br />
-                    <span><b>num sequences:</b> ${params.data[1]}</span> <br />`;
+                    <span><b>num sequences:</b> ${params.data[5]}</span> <br />`;
           },
         },
         series: [
@@ -399,7 +400,7 @@ export default {
     createArrayOfZeros(){
       let arrY = [];
       for (let j = 0; j <= this.startStopProtein['stop']; j = j + 1){
-        arrY.push([j.toString(), 0, 0, 0]);
+        arrY.push([j.toString(), 0, 0, 0, 0]);
       }
       return arrY;
     },
@@ -428,7 +429,7 @@ export default {
       let arrY = [];
       for (let j = 0; j <= this.startStopProtein['stop']; j = j + 1){
         arrX.push(j.toString());
-        arrY.push([j.toString(), 0, 0, 0]);
+        arrY.push([j.toString(), 0, 0, 0, 0]);
       }
       arr_of_arrY.push(arrY);
 
@@ -445,12 +446,12 @@ export default {
           // if(Math.log(single_line['odds_ratio']) > maxY){
           //   maxY = Math.log(single_line['odds_ratio']);
           // }
-          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], 'INF', single_line['name']];
+          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], 'INF', single_line['name'], single_line['value']];
         } else {
           // if(Math.log(single_line['odds_ratio']) > maxY){
           //   maxY = Math.log(single_line['odds_ratio']);
           // }
-          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], single_line['odds_ratio'], single_line['name']];
+          single_cell = [single_line['position'].toString(), Math.log(single_line['odds_ratio']), single_line['p_value'], single_line['odds_ratio'], single_line['name'], single_line['value']];
         }
         // if (single_line['odds_ratio'] > this.totalMaxOddsRatio) {
         //   if(single_line['value'] > maxY){
