@@ -104,34 +104,35 @@ def create_dictionary():
         table_mutation2 = table_mutation.to_json(orient="records")
         table_mutation2 = json.loads(table_mutation2)
         for row in table_mutation2:
-            lineage = row['Lineage + additional mutations'].replace(' ', '')
-            lineage = lineage.split('+')
-            if len(lineage) > 1:
-                analyzed_lineage = lineage[0]
-                if analyzed_lineage in dict_lineage_mutation:
-                    single_line = dict_lineage_mutation[analyzed_lineage]
-                    additional_mutation = lineage[1]
-                    additional_mutation = 'Spike_' + additional_mutation
-                    single_line['additional_mutation'].append(additional_mutation)
-                    dict_lineage_mutation[analyzed_lineage] = single_line
-            else:
-                lineage = lineage[0]
-                arr_lineage = lineage.split('/')
-                for lin in arr_lineage:
-                    if lin in dict_lineage_mutation:
-                        single_line = dict_lineage_mutation[lin]
-                        if dict_lineage_mutation[lin]['WHO label'] == '' and row['WHO label'] != 'n/a':
-                            single_line['WHO label'] = row['WHO label']
-                        mutation = row['Spike mutations of interest']
-                        mutation = mutation.replace("'", "")
-                        mutation = mutation.replace("ins", "-")
-                        mutation = mutation.replace(' ', '').split(",")
-                        arr_mut = []
-                        for mut in mutation:
-                            single_mutation = 'Spike_' + mut
-                            arr_mut.append(single_mutation)
-                        single_line['mutation'] = arr_mut
-                        dict_lineage_mutation[lin] = single_line
+            if 'Lineage + additional mutations' in row:
+                lineage = row['Lineage + additional mutations'].replace(' ', '')
+                lineage = lineage.split('+')
+                if len(lineage) > 1:
+                    analyzed_lineage = lineage[0]
+                    if analyzed_lineage in dict_lineage_mutation:
+                        single_line = dict_lineage_mutation[analyzed_lineage]
+                        additional_mutation = lineage[1]
+                        additional_mutation = 'Spike_' + additional_mutation
+                        single_line['additional_mutation'].append(additional_mutation)
+                        dict_lineage_mutation[analyzed_lineage] = single_line
+                else:
+                    lineage = lineage[0]
+                    arr_lineage = lineage.split('/')
+                    for lin in arr_lineage:
+                        if lin in dict_lineage_mutation:
+                            single_line = dict_lineage_mutation[lin]
+                            if dict_lineage_mutation[lin]['WHO label'] == '' and row['WHO label'] != 'n/a':
+                                single_line['WHO label'] = row['WHO label']
+                            mutation = row['Spike mutations of interest']
+                            mutation = mutation.replace("'", "")
+                            mutation = mutation.replace("ins", "-")
+                            mutation = mutation.replace(' ', '').split(",")
+                            arr_mut = []
+                            for mut in mutation:
+                                single_mutation = 'Spike_' + mut
+                                arr_mut.append(single_mutation)
+                            single_line['mutation'] = arr_mut
+                            dict_lineage_mutation[lin] = single_line
 
     x = datetime.today()
     y = x.replace(day=x.day, hour=1, minute=55, second=0, microsecond=0) + timedelta(days=1)
