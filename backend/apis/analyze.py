@@ -20,19 +20,32 @@ uri = "mongodb://localhost:27017/gcm_gisaid"
 client = MongoClient(uri)
 db = client.gcm_gisaid
 
-# collection_db = db.seq_2021_08_26_2
-try:
-    # with open("./viruclust_active_databases.txt") as f:
-    with open("/home/cilibrasi/mongodb/viruclust_active_databases.txt") as f:
-        lines = f.readlines()
-        database_name = lines[0]
-        if database_name == 'viruclust_database_0':
-            collection_db = db.viruclust_db_0
-        else:
-            collection_db = db.viruclust_db_1
-except IOError:
-    pass
 
+# collection_db = db.seq_2021_08_26_2
+
+def change_database():
+    try:
+        # with open("./viruclust_active_databases.txt") as f:
+        with open("/home/cilibrasi/mongodb/viruclust_active_databases.txt") as f:
+            lines = f.readlines()
+            database_name_inside = lines[0]
+            if database_name_inside == 'viruclust_database_0':
+                collection_db_inside = db.viruclust_db_0
+                return collection_db_inside, database_name_inside
+            else:
+                collection_db_inside = db.viruclust_db_1
+                return collection_db_inside, database_name_inside
+    except IOError:
+        pass
+    x = datetime.today()
+    y = x.replace(day=x.day, hour=3, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    delta_t = y - x
+    secs = delta_t.total_seconds()
+    t1 = Timer(secs, change_database)
+    t1.start()
+
+
+collection_db, database_name = change_database()
 # collection_db = db.viruclust_db_1
 collection_update_date = db.db_meta
 
