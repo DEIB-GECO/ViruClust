@@ -21,7 +21,20 @@ client = MongoClient(uri)
 db = client.gcm_gisaid
 
 # collection_db = db.seq_2021_08_26_2
-collection_db = db.viruclust_db_1
+try:
+    # with open("./viruclust_active_databases.txt") as f:
+    with open("/home/cilibrasi/mongodb/viruclust_active_databases.txt") as f:
+        lines = f.readlines()
+        database_name = lines[0]
+        if database_name == 'viruclust_database_0':
+            collection_db = db.viruclust_db_0
+        else:
+            collection_db = db.viruclust_db_1
+        print("database ", database_name)
+except IOError:
+    pass
+
+# collection_db = db.viruclust_db_1
 collection_update_date = db.db_meta
 
 ########################################################################################################
@@ -309,8 +322,16 @@ class FieldList(Resource):
     def get(self):
         # results = collection_update_date.find({"collection_name": "seq_2021_08_26_2"},
         #                                       {"date": {"$toString": '$date_of_import'}})
-        results = collection_update_date.find({"collection_name": "viruclust_db_1"},
-                                              {"date": {"$toString": '$date_of_import'}})
+
+        # results = collection_update_date.find({"collection_name": "viruclust_db_1"},
+        #                                       {"date": {"$toString": '$date_of_import'}})
+
+        if database_name == 'viruclust_database_0':
+            results = collection_update_date.find({"collection_name": "viruclust_database_0"},
+                                                  {"date": {"$toString": '$date_of_import'}})
+        else:
+            results = collection_update_date.find({"collection_name": "viruclust_database_1"},
+                                                  {"date": {"$toString": '$date_of_import'}})
         result_to_return = results[0]['date'].split('T')[0]
         return result_to_return
 
