@@ -21,7 +21,7 @@ client = MongoClient(uri)
 db = client.gcm_gisaid
 
 # collection_db = db.seq_2021_08_26_2
-collection_db = db.viruclust_db_0
+collection_db = db.viruclust_db_1
 collection_update_date = db.db_meta
 
 ########################################################################################################
@@ -309,7 +309,7 @@ class FieldList(Resource):
     def get(self):
         # results = collection_update_date.find({"collection_name": "seq_2021_08_26_2"},
         #                                       {"date": {"$toString": '$date_of_import'}})
-        results = collection_update_date.find({"collection_name": "viruclust_db_0"},
+        results = collection_update_date.find({"collection_name": "viruclust_db_1"},
                                               {"date": {"$toString": '$date_of_import'}})
         result_to_return = results[0]['date'].split('T')[0]
         return result_to_return
