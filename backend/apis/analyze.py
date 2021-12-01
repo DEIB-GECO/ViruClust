@@ -30,7 +30,6 @@ try:
             collection_db = db.viruclust_db_0
         else:
             collection_db = db.viruclust_db_1
-        print("database ", database_name)
 except IOError:
     pass
 
@@ -326,6 +325,7 @@ class FieldList(Resource):
         # results = collection_update_date.find({"collection_name": "viruclust_db_1"},
         #                                       {"date": {"$toString": '$date_of_import'}})
 
+        print("database ", database_name)
         if database_name == 'viruclust_database_0':
             results = collection_update_date.find({"collection_name": "viruclust_database_0"},
                                                   {"date": {"$toString": '$date_of_import'}})
