@@ -28,6 +28,7 @@ database_name = 'viruclust_database_0'
 
 
 def change_database():
+    print("qui0", database_name)
     try:
         global collection_db
         global database_name
@@ -39,11 +40,13 @@ def change_database():
                 collection_db = db.viruclust_db_0
             else:
                 collection_db = db.viruclust_db_1
+            print("qui1", database_name)
     except IOError:
         pass
+    print("qui2", database_name)
     x = datetime.today()
     # y = x.replace(day=x.day, hour=13, minute=0, second=0, microsecond=0) + timedelta(days=1)
-    y = x.replace(day=x.day, hour=14, minute=0, second=0, microsecond=0) + timedelta(minutes=1)
+    y = x.replace(day=x.day, hour=x.hour, minute=x.minute, second=x.second, microsecond=x.microsecond) + timedelta(minutes=1)
     delta_t = y - x
     secs = delta_t.total_seconds()
     t1 = Timer(secs, change_database)
