@@ -28,10 +28,10 @@ database_name = 'viruclust_database_0'
 
 
 def change_database():
+    global collection_db
+    global database_name
     print("qui0", database_name)
     try:
-        global collection_db
-        global database_name
         # with open("./viruclust_active_databases.txt") as f:
         with open("/home/cilibrasi/mongodb/viruclust_active_databases.txt") as f:
             lines_inside = f.readlines()
