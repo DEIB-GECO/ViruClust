@@ -36,7 +36,8 @@ def change_database(collection_db_inside, database_name_inside):
     except IOError:
         pass
     x = datetime.today()
-    y = x.replace(day=x.day, hour=13, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    # y = x.replace(day=x.day, hour=13, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    y = x.replace(day=x.day, hour=13, minute=15, second=0, microsecond=0) + timedelta(minutes=1)
     delta_t = y - x
     secs = delta_t.total_seconds()
     t1 = Timer(secs, change_database, args=(collection_db_inside, database_name_inside, ))
