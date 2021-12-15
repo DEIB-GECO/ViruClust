@@ -2784,244 +2784,244 @@ class FieldList(Resource):
         return count_overlapping
 
 
-@api.route('/getAccessionIds')
-class FieldList(Resource):
-    @api.doc('get_accession_ids')
-    def post(self):
-        payload = api.payload
-        # payload = {'query': {'lineage': 'B.1.1.7', 'country': 'Italy', 'geo_group': 'Europe',
-        #                      'minDateTerget': '2021-03-31', 'maxDateTarget': '2021-06-28',
-        #                      'start_aa_original': 614, 'sequence_aa_original': 'D',
-        #                      'sequence_aa_alternative': 'G', 'product': 'Spike (surface glycoprotein)'},
-        #            'query_false': ''}
-        query_false_field = payload['query_false']
-        query_fields = payload['query']
-        query_fields_target = payload['query_target']
-
-        if "lineage" in query_fields and query_fields['lineage'] == 'empty':
-            del query_fields['lineage']
-        if "lineage" in query_fields_target and query_fields_target['lineage'] == 'empty':
-            del query_fields_target['lineage']
-
-        where_part_target = {}
-        where_part = {}
-        start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
-        where_part_target['c_coll_date_prec'] = {}
-        where_part_target['c_coll_date_prec']['$eq'] = 2
-        where_part['c_coll_date_prec'] = {}
-        where_part['c_coll_date_prec']['$eq'] = 2
-
-        where_part_target['collection_date'] = {}
-        where_part_target['collection_date']['$gte'] = start_date
-        where_part['collection_date'] = {}
-        where_part['collection_date']['$gte'] = start_date
-
-        if query_fields_target != 'empty':
-            if '$and' not in where_part_target:
-                where_part_target['$and'] = []
-
-            if query_fields_target is not None:
-                for key in query_fields_target:
-                    if key == 'minDateTarget' or key == 'minDateBackground':
-                        start_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
-                        where_part_target['collection_date']['$gte'] = start_date
-                    elif key == 'maxDateTarget' or key == 'maxDateBackground':
-                        stop_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
-                        where_part_target['collection_date']['$lte'] = stop_date
-
-                    elif key == 'toExclude':
-                        for fieldToExclude in query_fields_target[key]:
-                            if '$and' not in where_part_target:
-                                where_part_target['$and'] = []
-
-                            single_where_part = {'$and': []}
-                            for geoToExclude in query_fields_target[key][fieldToExclude]:
-                                real_field_to_exclude = fieldToExclude
-                                if fieldToExclude == 'geo_group' or fieldToExclude == 'country' \
-                                        or fieldToExclude == 'region' or fieldToExclude == 'province':
-                                    real_field_to_exclude = 'location.' + fieldToExclude
-                                specific_and = {}
-                                geo_value = geoToExclude  # .replace("'", "''")
-                                specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
-                                single_where_part['$and'].append(specific_and)
-                            where_part_target['$and'].append(single_where_part)
-
-                    elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
-                        if '$and' not in where_part_target:
-                            where_part_target['$and'] = []
-
-                        real_key = key
-                        if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
-                            real_key = 'location.' + key
-                        if isinstance(query_fields_target[key], list):
-                            single_where_part_or = {'$or': []}
-                            for itm in query_fields_target[key]:
-                                specific_or = {}
-                                field_value = itm  # .replace("'", "''")
-                                specific_or[f'{real_key}'] = {'$eq': field_value}
-                                single_where_part_or['$or'].append(specific_or)
-                            where_part_target['$and'].append(single_where_part_or)
-                        else:
-                            single_where_part_or = {'$or': []}
-                            replace_fields_value = query_fields_target[key]  # .replace("'", "''")
-                            specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
-                            single_where_part_or['$or'].append(specific_or)
-                            where_part_target['$and'].append(single_where_part_or)
-
-                    else:
-                        real_key = key
-                        if key in translate_dictionary:
-                            real_key = translate_dictionary[key]
-                        if isinstance(query_fields_target[key], list):
-                            if '$and' not in where_part_target:
-                                where_part_target['$and'] = []
-                            single_where_part_or = {'$or': []}
-                            for itm in query_fields_target[key]:
-                                specific_or = {}
-                                field_value = itm  # .replace("'", "''")
-                                specific_or[f'{real_key}'] = {'$eq': field_value}
-                                single_where_part_or['$or'].append(specific_or)
-                            where_part_target['$and'].append(single_where_part_or)
-                        else:
-                            replace_fields_value = query_fields_target[key]
-                            if key != 'start_aa_original':
-                                replace_fields_value = query_fields_target[key]  # .replace("'", "''")
-                            if real_key not in where_part_target:
-                                where_part_target[real_key] = {}
-                            where_part_target[real_key]['$eq'] = replace_fields_value
-
-        if query_fields is not None:
-            for key in query_fields:
-                if key == 'minDateTarget' or key == 'minDateBackground':
-                    start_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
-                    where_part['collection_date']['$gte'] = start_date
-                elif key == 'maxDateTarget' or key == 'maxDateBackground':
-                    stop_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
-                    where_part['collection_date']['$lte'] = stop_date
-
-                elif key == 'toExclude':
-                    for fieldToExclude in query_fields[key]:
-                        if '$and' not in where_part:
-                            where_part['$and'] = []
-
-                        single_where_part = {'$and': []}
-                        for geoToExclude in query_fields[key][fieldToExclude]:
-                            real_field_to_exclude = fieldToExclude
-                            if fieldToExclude == 'geo_group' or fieldToExclude == 'country' \
-                                    or fieldToExclude == 'region' or fieldToExclude == 'province':
-                                real_field_to_exclude = 'location.' + fieldToExclude
-                            specific_and = {}
-                            geo_value = geoToExclude  # .replace("'", "''")
-                            specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
-                            single_where_part['$and'].append(specific_and)
-                        where_part['$and'].append(single_where_part)
-
-                elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
-                    if '$and' not in where_part:
-                        where_part['$and'] = []
-
-                    real_key = key
-                    if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
-                        real_key = 'location.' + key
-                    if key == query_false_field:
-                        single_where_part_or = {'$or': []}
-                        specific_or = {f'{real_key}': {'$eq': None}}
-                        single_where_part_or['$or'].append(specific_or)
-                        specific_or = {f'{real_key}': {'$ne': query_fields[key]}}
-                        single_where_part_or['$or'].append(specific_or)
-                        where_part['$and'].append(single_where_part_or)
-                    else:
-                        if isinstance(query_fields[key], list):
-                            single_where_part_or = {'$or': []}
-                            for itm in query_fields[key]:
-                                specific_or = {}
-                                field_value = itm  # .replace("'", "''")
-                                specific_or[f'{real_key}'] = {'$eq': field_value}
-                                single_where_part_or['$or'].append(specific_or)
-                            where_part['$and'].append(single_where_part_or)
-                        else:
-                            single_where_part_or = {'$or': []}
-                            replace_fields_value = query_fields[key]  # .replace("'", "''")
-                            specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
-                            single_where_part_or['$or'].append(specific_or)
-                            where_part['$and'].append(single_where_part_or)
-
-                else:
-                    real_key = key
-                    if key in translate_dictionary:
-                        real_key = translate_dictionary[key]
-                    if isinstance(query_fields[key], list):
-                        if '$and' not in where_part:
-                            where_part['$and'] = []
-                        single_where_part_or = {'$or': []}
-                        for itm in query_fields[key]:
-                            specific_or = {}
-                            field_value = itm  # .replace("'", "''")
-                            specific_or[f'{real_key}'] = {'$eq': field_value}
-                            single_where_part_or['$or'].append(specific_or)
-                        where_part['$and'].append(single_where_part_or)
-                    else:
-                        if key == query_false_field:
-                            single_where_part_or = {'$or': []}
-                            specific_or = {f'{real_key}': {'$eq': None}}
-                            single_where_part_or['$or'].append(specific_or)
-                            specific_or = {f'{real_key}': {'$ne': query_fields[key]}}
-                            single_where_part_or['$or'].append(specific_or)
-                            where_part['$and'].append(single_where_part_or)
-                        else:
-                            replace_fields_value = query_fields[key]
-                            if key != 'start_aa_original':
-                                replace_fields_value = query_fields[key]  # .replace("'", "''")
-                            if real_key not in where_part:
-                                where_part[real_key] = {}
-                            where_part[real_key]['$eq'] = replace_fields_value
-
-        query_target = []
-        query = []
-
-        query_unwind_target = {"$unwind": "$muts"}
-        query_target.append(query_unwind_target)
-        query_unwind = {"$unwind": "$muts"}
-        query.append(query_unwind)
-
-        query_where_target = {"$match": where_part_target}
-        query_target.append(query_where_target)
-        query_where = {"$match": where_part}
-        query.append(query_where)
-
-        group_part = {"_id": {"accession_id": "$_id"}}
-        query_group = {"$group": group_part}
-        query_target.append(query_group)
-        query.append(query_group)
-
-        sort_part = {"_id": 1}
-        query_sort = {"$sort": sort_part}
-        query_target.append(query_sort)
-        query.append(query_sort)
-
-        list_dict_target = []
-        if query_fields_target != 'empty':
-            # print("query target", query_target)
-            results_target = collection_db.aggregate(query_target, allowDiskUse=True)
-            for single_item in list(results_target):
-                for key in single_item:
-                    if key == '_id':
-                        for k in single_item[key]:
-                            list_dict_target.append(single_item[key][k])
-
-        # print("query", query)
-        results = collection_db.aggregate(query, allowDiskUse=True)
-        list_dict = []
-        for single_item in list(results):
-            for key in single_item:
-                if key == '_id':
-                    for k in single_item[key]:
-                        if single_item[key][k] not in list_dict_target:
-                            list_dict.append(single_item[key][k])
-
-        acc_ids_result = [{'acc_ids': list_dict}]
-
-        return acc_ids_result
+# @api.route('/getAccessionIds')
+# class FieldList(Resource):
+#     @api.doc('get_accession_ids')
+#     def post(self):
+#         payload = api.payload
+#         # payload = {'query': {'lineage': 'B.1.1.7', 'country': 'Italy', 'geo_group': 'Europe',
+#         #                      'minDateTerget': '2021-03-31', 'maxDateTarget': '2021-06-28',
+#         #                      'start_aa_original': 614, 'sequence_aa_original': 'D',
+#         #                      'sequence_aa_alternative': 'G', 'product': 'Spike (surface glycoprotein)'},
+#         #            'query_false': ''}
+#         query_false_field = payload['query_false']
+#         query_fields = payload['query']
+#         query_fields_target = payload['query_target']
+#
+#         if "lineage" in query_fields and query_fields['lineage'] == 'empty':
+#             del query_fields['lineage']
+#         if "lineage" in query_fields_target and query_fields_target['lineage'] == 'empty':
+#             del query_fields_target['lineage']
+#
+#         where_part_target = {}
+#         where_part = {}
+#         start_date = datetime.strptime("2019-01-01", '%Y-%m-%d')
+#         where_part_target['c_coll_date_prec'] = {}
+#         where_part_target['c_coll_date_prec']['$eq'] = 2
+#         where_part['c_coll_date_prec'] = {}
+#         where_part['c_coll_date_prec']['$eq'] = 2
+#
+#         where_part_target['collection_date'] = {}
+#         where_part_target['collection_date']['$gte'] = start_date
+#         where_part['collection_date'] = {}
+#         where_part['collection_date']['$gte'] = start_date
+#
+#         if query_fields_target != 'empty':
+#             if '$and' not in where_part_target:
+#                 where_part_target['$and'] = []
+#
+#             if query_fields_target is not None:
+#                 for key in query_fields_target:
+#                     if key == 'minDateTarget' or key == 'minDateBackground':
+#                         start_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+#                         where_part_target['collection_date']['$gte'] = start_date
+#                     elif key == 'maxDateTarget' or key == 'maxDateBackground':
+#                         stop_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+#                         where_part_target['collection_date']['$lte'] = stop_date
+#
+#                     elif key == 'toExclude':
+#                         for fieldToExclude in query_fields_target[key]:
+#                             if '$and' not in where_part_target:
+#                                 where_part_target['$and'] = []
+#
+#                             single_where_part = {'$and': []}
+#                             for geoToExclude in query_fields_target[key][fieldToExclude]:
+#                                 real_field_to_exclude = fieldToExclude
+#                                 if fieldToExclude == 'geo_group' or fieldToExclude == 'country' \
+#                                         or fieldToExclude == 'region' or fieldToExclude == 'province':
+#                                     real_field_to_exclude = 'location.' + fieldToExclude
+#                                 specific_and = {}
+#                                 geo_value = geoToExclude  # .replace("'", "''")
+#                                 specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
+#                                 single_where_part['$and'].append(specific_and)
+#                             where_part_target['$and'].append(single_where_part)
+#
+#                     elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+#                         if '$and' not in where_part_target:
+#                             where_part_target['$and'] = []
+#
+#                         real_key = key
+#                         if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+#                             real_key = 'location.' + key
+#                         if isinstance(query_fields_target[key], list):
+#                             single_where_part_or = {'$or': []}
+#                             for itm in query_fields_target[key]:
+#                                 specific_or = {}
+#                                 field_value = itm  # .replace("'", "''")
+#                                 specific_or[f'{real_key}'] = {'$eq': field_value}
+#                                 single_where_part_or['$or'].append(specific_or)
+#                             where_part_target['$and'].append(single_where_part_or)
+#                         else:
+#                             single_where_part_or = {'$or': []}
+#                             replace_fields_value = query_fields_target[key]  # .replace("'", "''")
+#                             specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
+#                             single_where_part_or['$or'].append(specific_or)
+#                             where_part_target['$and'].append(single_where_part_or)
+#
+#                     else:
+#                         real_key = key
+#                         if key in translate_dictionary:
+#                             real_key = translate_dictionary[key]
+#                         if isinstance(query_fields_target[key], list):
+#                             if '$and' not in where_part_target:
+#                                 where_part_target['$and'] = []
+#                             single_where_part_or = {'$or': []}
+#                             for itm in query_fields_target[key]:
+#                                 specific_or = {}
+#                                 field_value = itm  # .replace("'", "''")
+#                                 specific_or[f'{real_key}'] = {'$eq': field_value}
+#                                 single_where_part_or['$or'].append(specific_or)
+#                             where_part_target['$and'].append(single_where_part_or)
+#                         else:
+#                             replace_fields_value = query_fields_target[key]
+#                             if key != 'start_aa_original':
+#                                 replace_fields_value = query_fields_target[key]  # .replace("'", "''")
+#                             if real_key not in where_part_target:
+#                                 where_part_target[real_key] = {}
+#                             where_part_target[real_key]['$eq'] = replace_fields_value
+#
+#         if query_fields is not None:
+#             for key in query_fields:
+#                 if key == 'minDateTarget' or key == 'minDateBackground':
+#                     start_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+#                     where_part['collection_date']['$gte'] = start_date
+#                 elif key == 'maxDateTarget' or key == 'maxDateBackground':
+#                     stop_date = datetime.strptime(f"{query_fields[key]}", '%Y-%m-%d')
+#                     where_part['collection_date']['$lte'] = stop_date
+#
+#                 elif key == 'toExclude':
+#                     for fieldToExclude in query_fields[key]:
+#                         if '$and' not in where_part:
+#                             where_part['$and'] = []
+#
+#                         single_where_part = {'$and': []}
+#                         for geoToExclude in query_fields[key][fieldToExclude]:
+#                             real_field_to_exclude = fieldToExclude
+#                             if fieldToExclude == 'geo_group' or fieldToExclude == 'country' \
+#                                     or fieldToExclude == 'region' or fieldToExclude == 'province':
+#                                 real_field_to_exclude = 'location.' + fieldToExclude
+#                             specific_and = {}
+#                             geo_value = geoToExclude  # .replace("'", "''")
+#                             specific_and[f'{real_field_to_exclude}'] = {'$ne': geo_value}
+#                             single_where_part['$and'].append(specific_and)
+#                         where_part['$and'].append(single_where_part)
+#
+#                 elif key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+#                     if '$and' not in where_part:
+#                         where_part['$and'] = []
+#
+#                     real_key = key
+#                     if key == 'geo_group' or key == 'country' or key == 'region' or key == 'province':
+#                         real_key = 'location.' + key
+#                     if key == query_false_field:
+#                         single_where_part_or = {'$or': []}
+#                         specific_or = {f'{real_key}': {'$eq': None}}
+#                         single_where_part_or['$or'].append(specific_or)
+#                         specific_or = {f'{real_key}': {'$ne': query_fields[key]}}
+#                         single_where_part_or['$or'].append(specific_or)
+#                         where_part['$and'].append(single_where_part_or)
+#                     else:
+#                         if isinstance(query_fields[key], list):
+#                             single_where_part_or = {'$or': []}
+#                             for itm in query_fields[key]:
+#                                 specific_or = {}
+#                                 field_value = itm  # .replace("'", "''")
+#                                 specific_or[f'{real_key}'] = {'$eq': field_value}
+#                                 single_where_part_or['$or'].append(specific_or)
+#                             where_part['$and'].append(single_where_part_or)
+#                         else:
+#                             single_where_part_or = {'$or': []}
+#                             replace_fields_value = query_fields[key]  # .replace("'", "''")
+#                             specific_or = {f'{real_key}': {'$eq': replace_fields_value}}
+#                             single_where_part_or['$or'].append(specific_or)
+#                             where_part['$and'].append(single_where_part_or)
+#
+#                 else:
+#                     real_key = key
+#                     if key in translate_dictionary:
+#                         real_key = translate_dictionary[key]
+#                     if isinstance(query_fields[key], list):
+#                         if '$and' not in where_part:
+#                             where_part['$and'] = []
+#                         single_where_part_or = {'$or': []}
+#                         for itm in query_fields[key]:
+#                             specific_or = {}
+#                             field_value = itm  # .replace("'", "''")
+#                             specific_or[f'{real_key}'] = {'$eq': field_value}
+#                             single_where_part_or['$or'].append(specific_or)
+#                         where_part['$and'].append(single_where_part_or)
+#                     else:
+#                         if key == query_false_field:
+#                             single_where_part_or = {'$or': []}
+#                             specific_or = {f'{real_key}': {'$eq': None}}
+#                             single_where_part_or['$or'].append(specific_or)
+#                             specific_or = {f'{real_key}': {'$ne': query_fields[key]}}
+#                             single_where_part_or['$or'].append(specific_or)
+#                             where_part['$and'].append(single_where_part_or)
+#                         else:
+#                             replace_fields_value = query_fields[key]
+#                             if key != 'start_aa_original':
+#                                 replace_fields_value = query_fields[key]  # .replace("'", "''")
+#                             if real_key not in where_part:
+#                                 where_part[real_key] = {}
+#                             where_part[real_key]['$eq'] = replace_fields_value
+#
+#         query_target = []
+#         query = []
+#
+#         query_unwind_target = {"$unwind": "$muts"}
+#         query_target.append(query_unwind_target)
+#         query_unwind = {"$unwind": "$muts"}
+#         query.append(query_unwind)
+#
+#         query_where_target = {"$match": where_part_target}
+#         query_target.append(query_where_target)
+#         query_where = {"$match": where_part}
+#         query.append(query_where)
+#
+#         group_part = {"_id": {"accession_id": "$_id"}}
+#         query_group = {"$group": group_part}
+#         query_target.append(query_group)
+#         query.append(query_group)
+#
+#         sort_part = {"_id": 1}
+#         query_sort = {"$sort": sort_part}
+#         query_target.append(query_sort)
+#         query.append(query_sort)
+#
+#         list_dict_target = []
+#         if query_fields_target != 'empty':
+#             # print("query target", query_target)
+#             results_target = collection_db.aggregate(query_target, allowDiskUse=True)
+#             for single_item in list(results_target):
+#                 for key in single_item:
+#                     if key == '_id':
+#                         for k in single_item[key]:
+#                             list_dict_target.append(single_item[key][k])
+#
+#         # print("query", query)
+#         results = collection_db.aggregate(query, allowDiskUse=True)
+#         list_dict = []
+#         for single_item in list(results):
+#             for key in single_item:
+#                 if key == '_id':
+#                     for k in single_item[key]:
+#                         if single_item[key][k] not in list_dict_target:
+#                             list_dict.append(single_item[key][k])
+#
+#         acc_ids_result = [{'acc_ids': list_dict}]
+#
+#         return acc_ids_result
 
 
 all_important_mutation_dict = {}

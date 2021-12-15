@@ -761,9 +761,9 @@
                                             <span v-if="item['percentage_background'] === 0"> INF </span>
                                             <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
                                           </span>
-                                          <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                          <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}}) <!--<a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>-->
                                           </span>
-                                          <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                          <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}}) <!--<a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>-->
                                           </span>
                                           <span v-else>{{item[header.value]}}</span>
                                     </td>
