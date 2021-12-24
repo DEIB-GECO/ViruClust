@@ -1123,9 +1123,9 @@
                                           <span v-if="item['percentage_background'] === 0"> INF </span>
                                           <span v-else>{{item['odd_ratio'].toFixed(5)}}</span>
                                         </span>
-                                        <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} %  <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>
+                                        <span v-else-if="header.value === 'percentage_target'">{{item['percentage_target'].toFixed(5)}} % ({{item['numerator_target']}}) <!-- <a @click="openDialogAccession('target', item)">({{item['numerator_target']}})</a>-->
                                         </span>
-                                        <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} %  <a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>
+                                        <span v-else-if="header.value === 'percentage_background'">{{item['percentage_background'].toFixed(5)}} % ({{item['numerator_background']}}) <!--<a @click="openDialogAccession('background', item)">({{item['numerator_background']}})</a>-->
                                         </span>
                                         <span v-else>{{item[header.value]}}</span>
                                   </td>
@@ -1768,26 +1768,10 @@ export default {
     downloadExampleListAccessionIds(type){
       let text;
       if(type === 'target'){
-        text = 'EPI_ISL_3039500;  EPI_ISL_3039501;  EPI_ISL_3039502;  EPI_ISL_3039503;  EPI_ISL_3039504;  ' +
-          ' EPI_ISL_3039505; EPI_ISL_3039506; EPI_ISL_3039507; EPI_ISL_3039508; EPI_ISL_3039509; EPI_ISL_3039510;' +
-          ' EPI_ISL_3039511; EPI_ISL_3039512; EPI_ISL_3039513; EPI_ISL_3039514; EPI_ISL_3039515; EPI_ISL_3039516;' +
-          ' EPI_ISL_3039517; EPI_ISL_3039518; EPI_ISL_3039519; EPI_ISL_3039520; EPI_ISL_3039521; EPI_ISL_3039522;' +
-          ' EPI_ISL_3039523; EPI_ISL_3039524; EPI_ISL_3039525; EPI_ISL_3039526; EPI_ISL_3039527; EPI_ISL_3039528;' +
-          ' EPI_ISL_3039529; EPI_ISL_3039530; EPI_ISL_3039531; EPI_ISL_3039532; EPI_ISL_3039533; EPI_ISL_3039534;' +
-          ' EPI_ISL_3039535; EPI_ISL_3039536; EPI_ISL_3039537; EPI_ISL_3039538; EPI_ISL_3039539; EPI_ISL_3039540;' +
-          ' EPI_ISL_3039541; EPI_ISL_3039542; EPI_ISL_3039543; EPI_ISL_3039544; EPI_ISL_3039545; EPI_ISL_3039546;' +
-          ' EPI_ISL_3039547; EPI_ISL_3039548; EPI_ISL_3039549;';
+        text = 'EPI_ISL_XXXXXXX;';
       }
       else{
-        text = 'EPI_ISL_3039300;  EPI_ISL_3039301;  EPI_ISL_3039302;  EPI_ISL_3039303;  EPI_ISL_3039304;  ' +
-          ' EPI_ISL_3039305; EPI_ISL_3039306; EPI_ISL_3039307; EPI_ISL_3039308; EPI_ISL_3039309; EPI_ISL_3039310;' +
-          ' EPI_ISL_3039311; EPI_ISL_3039312; EPI_ISL_3039313; EPI_ISL_3039314; EPI_ISL_3039315; EPI_ISL_3039316;' +
-          ' EPI_ISL_3039317; EPI_ISL_3039318; EPI_ISL_3039319; EPI_ISL_3039320; EPI_ISL_3039321; EPI_ISL_3039322;' +
-          ' EPI_ISL_3039323; EPI_ISL_3039324; EPI_ISL_3039325; EPI_ISL_3039326; EPI_ISL_3039327; EPI_ISL_3039328;' +
-          ' EPI_ISL_3039329; EPI_ISL_3039330; EPI_ISL_3039331; EPI_ISL_3039332; EPI_ISL_3039333; EPI_ISL_3039334;' +
-          ' EPI_ISL_3039335; EPI_ISL_3039336; EPI_ISL_3039337; EPI_ISL_3039338; EPI_ISL_3039339; EPI_ISL_3039340;' +
-          ' EPI_ISL_3039341; EPI_ISL_3039342; EPI_ISL_3039343; EPI_ISL_3039344; EPI_ISL_3039345; EPI_ISL_3039346;' +
-          ' EPI_ISL_3039347; EPI_ISL_3039348; EPI_ISL_3039349; EPI_ISL_3039350;';
+        text = 'EPI_ISL_XXXXXXX;';
       }
       let filename = 'exampleListAccessionIds.txt';
       let element = document.createElement('a');
