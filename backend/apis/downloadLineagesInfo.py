@@ -42,24 +42,27 @@ def load_lineages_and_mutation():
         #             columns=[get_inner_text(x) for x in trs[0]]).to_csv("lineage_new.csv", index=False)
 
     with requests.Session() as s:
-        url = 'https://www.ecdc.europa.eu/en/covid-19/variants-concern'
-        r = s.get(url, headers=headers)
-        content = r.content
-        tree = lxml.html.fromstring(content)
-        tables = tree.findall('.//table')
-        for i, table in enumerate(tables):
-            ths_head = table.findall('./thead/tr/th')
-            columns = [get_inner_text(x) for x in ths_head]
+        try:
+            url = 'https://www.ecdc.europa.eu/en/covid-19/variants-concern'
+            r = s.get(url, headers=headers)
+            content = r.content
+            tree = lxml.html.fromstring(content)
+            tables = tree.findall('.//table')
+            for i, table in enumerate(tables):
+                ths_head = table.findall('./thead/tr/th')
+                columns = [get_inner_text(x) for x in ths_head]
 
-            ths_body = table.findall('./tbody/tr')
-            len(columns)
-            rows = [[get_inner_text(x) for x in tr] for tr in ths_body]
-            for r in rows:
-                if len(r) > len(columns):
-                    del r[len(columns)-1:len(r)-1]
-            data_frame_mutation.append(pd.DataFrame(rows, columns=columns))
-            # print("qui2", dataFrameMutation)
-            # pd.DataFrame(rows, columns=columns).to_csv(f"VC_{i}.csv", index=False)
+                ths_body = table.findall('./tbody/tr')
+                len(columns)
+                rows = [[get_inner_text(x) for x in tr] for tr in ths_body]
+                for r in rows:
+                    if len(r) > len(columns):
+                        del r[len(columns) - 1:len(r) - 1]
+                data_frame_mutation.append(pd.DataFrame(rows, columns=columns))
+                # print("qui2", dataFrameMutation)
+                # pd.DataFrame(rows, columns=columns).to_csv(f"VC_{i}.csv", index=False)
+        except:
+            print("Something went wrong with ECDC table")
 
     x = datetime.today()
     y = x.replace(day=x.day, hour=1, minute=50, second=0, microsecond=0) + timedelta(days=1)
