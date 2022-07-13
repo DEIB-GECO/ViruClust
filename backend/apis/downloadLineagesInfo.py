@@ -54,6 +54,9 @@ def load_lineages_and_mutation():
             ths_body = table.findall('./tbody/tr')
             len(columns)
             rows = [[get_inner_text(x) for x in tr] for tr in ths_body]
+            for r in rows:
+                if len(r) > len(columns):
+                    del r[len(columns)-1:len(r)-1]
             data_frame_mutation.append(pd.DataFrame(rows, columns=columns))
             # print("qui2", dataFrameMutation)
             # pd.DataFrame(rows, columns=columns).to_csv(f"VC_{i}.csv", index=False)
